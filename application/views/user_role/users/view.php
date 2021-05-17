@@ -1,0 +1,81 @@
+  <section class="content">
+
+    <!-- SELECT2 EXAMPLE -->
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <?= link_on_data_top(user()->id_group); ?>
+        <!-- <div class="box-tools pull-right">
+          <a href="h3/part/add">
+            <button class="btn bg-blue btn-flat"><i class="fa fa-upload"></i> Upload</button>
+          </a>
+        </div> -->
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+        <div class="table-responsive">
+          <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
+            <thead>
+              <th>#</th>
+              <th>ID User</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Nama Lengkap</th>
+              <th>No. HP</th>
+              <th>Nama Group</th>
+              <th>Aktif</th>
+              <th>Aksi</th>
+            </thead>
+          </table>
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.box-body -->
+      <div class="box-footer">
+
+      </div>
+    </div>
+    <!-- /.box -->
+  </section>
+  <script>
+    $(document).ready(function() {
+      var dataTable = $('.serverside-tables').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "scrollX": true,
+        "language": {
+          "infoFiltered": "",
+          "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
+        },
+        "order": [],
+        "lengthMenu": [
+          [10, 25, 50, 75, 100],
+          [10, 25, 50, 75, 100]
+        ],
+        "ajax": {
+          url: "<?php echo site_url(get_controller() . '/fetchData'); ?>",
+          type: "POST",
+          dataSrc: "data",
+          data: function(d) {
+            // d.periode = '';
+            return d;
+          },
+        },
+        "columnDefs": [{
+            "targets": [0, 8],
+            "orderable": false
+          },
+          {
+            "targets": [7, 8],
+            "className": 'text-center'
+          },
+          // {
+          //   "targets": [3],
+          //   "className": 'text-right'
+          // },
+          // // { "targets":[0],"checkboxes":{'selectRow':true}}
+          // { "targets":[4],"className":'text-right'}, 
+          // // { "targets":[2,4,5], "searchable": false } 
+        ],
+      });
+    });
+  </script>

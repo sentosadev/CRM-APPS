@@ -1,0 +1,377 @@
+<?php
+
+function search_array($array, $search_list)
+{
+
+  // Create the result array 
+  $result = array();
+
+  // Iterate over each array element 
+  foreach ($array as $key => $value) {
+
+    // Iterate over each search condition 
+    foreach ($search_list as $k => $v) {
+
+      // If the array element does not meet 
+      // the search condition then continue 
+      // to the next element 
+      if (!isset($value[$k]) || $value[$k] != $v) {
+
+        // Skip two loops 
+        continue 2;
+      }
+    }
+
+    // Append array element's key to the 
+    //result array 
+    $result[] = $value;
+  }
+
+  // Return result  
+  return $result;
+}
+
+function tanggal()
+{
+  return gmdate("Y-m-d", time() + 60 * 60 * 7);
+}
+function tahun()
+{
+  return gmdate("Y", time() + 60 * 60 * 7);
+}
+
+function waktu()
+{
+  return gmdate("Y-m-d H:i:s", time() + 60 * 60 * 7);
+}
+function jam()
+{
+  return gmdate("H:i", time() + 60 * 60 * 7);
+}
+
+function _imp($arr)
+{
+  $expl = explode(',', $arr);
+  // $res = '';
+  foreach ($expl as $val) {
+    $res[] = "'$val'";
+  }
+  return implode(',', $res);
+}
+
+function arr_sql($arr)
+{
+  foreach ($arr as $val) {
+    $res[] = "'$val'";
+  }
+  return implode(',', $res);
+}
+
+function send_json($arr)
+{
+  echo json_encode($arr);
+  die();
+}
+
+function msg_wrong()
+{
+  return ['tipe' => 'danger', 'judul' => 'Peringatan', 'pesan' => 'Telah terjadi kesalahan !'];
+}
+function msg_kombinasi_login_salah()
+{
+  return 'Kombinasi Email atau Username dengan Password Anda salah. Mohon cek kembali';
+}
+function msg_not_found()
+{
+  return  ['icon' => 'error', 'title' => 'Peringatan', 'text' => 'Data tidak ditemukan'];
+}
+function msg_error($pesan)
+{
+  return ['tipe' => 'danger', 'judul' => 'Peringatan', 'pesan' => $pesan];
+}
+function msg_sukses_simpan()
+{
+  return  ['icon' => 'info', 'title' => 'Informasi', 'text' => 'Data berhasil disimpan'];
+}
+function msg_sukses_update()
+{
+  return  ['icon' => 'info', 'title' => 'Informasi', 'text' => 'Data berhasil diupdate'];
+}
+
+function msg_sukses_hapus()
+{
+  return  ['tipe' => 'info', 'judul' => 'Informasi', 'pesan' => 'Data berhasil dihapus permanen'];
+}
+
+function msg_no_access()
+{
+  return  ['icon' => 'error', 'title' => 'Peringatan', 'text' => 'Anda tidak memiliki akses'];
+}
+
+function random_numbers($digits)
+{
+  $min = pow(10, $digits - 1);
+  $max = pow(10, $digits) - 1;
+  return mt_rand($min, $max);
+}
+
+function alnum($string)
+{
+  return preg_replace("/[^a-zA-Z0-9]+/", "", $string);
+}
+
+
+function random_id()
+{
+  return substr(strtotime(waktu()), -6) . random_numbers(2);
+}
+
+
+function create_thumbs($params)
+{
+  $CI = &get_instance();
+
+  $exp_file_name = explode('.', $params['file_name']);
+  $file_name_thumb = $exp_file_name[0] . '-small.' . $exp_file_name[1];
+  $new_image_small = $params['path'] . '/' . $file_name_thumb;
+
+  // Image resizing config
+  $config = array(
+    // // Image Large
+    // array(
+    //   'image_library' => 'GD2',
+    //   'source_image'  => './assets/images/' . $file_name,
+    //   'maintain_ratio' => FALSE,
+    //   'width'         => 700,
+    //   'height'        => 467,
+    //   'new_image'     => './assets/images/large/' . $file_name
+    // ),
+    // // image Medium
+    // array(
+    //   'image_library' => 'GD2',
+    //   'source_image'  => './assets/images/' . $file_name,
+    //   'maintain_ratio' => FALSE,
+    //   'width'         => 600,
+    //   'height'        => 400,
+    //   'new_image'     => './assets/images/medium/' . $file_name
+    // ),
+    // Image Small
+    array(
+      'image_library' => 'GD2',
+      'source_image'  => $params['path'] . '/' . $params['file_name'],
+      'maintain_ratio' => TRUE,
+      // 'create_thumb' => TRUE,
+      'width'         => 250,
+      // 'height'        => 200,
+      // 'thumb_marker' => '_thumb',
+      'new_image'     => $new_image_small
+    )
+  );
+  // send_json($config);
+  $CI->load->library('image_lib', $config[0]);
+  foreach ($config as $item) {
+    $CI->image_lib->initialize($item);
+    if (!$CI->image_lib->resize()) {
+      return false;
+    }
+    $CI->image_lib->clear();
+  }
+
+  return $file_name_thumb;
+}
+
+
+function date2min($hms)
+{
+
+  // $fromTime = strtotime($hms);
+  // // send_json($fromTime);
+  // $getMins = round(abs($fromTime) / 60, 2);
+
+  // $getMins = date('i', strtotime($hms));
+
+  $time = explode(':', $hms);
+  $getMins = ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
+
+  return $getMins;
+}
+
+
+function get_slug()
+{
+  $CI = &get_instance();
+  $segment =  $CI->uri->segment(1) . '/' . $CI->uri->segment(2);
+
+  $links = array_keys(links_on_table());
+  $links[] = 'fetchData';
+  $links[] = 'saveData';
+  $links[] = 'saveEdit';
+  $links[] = 'insert';
+  $links[] = 'saveRoleAkses';
+  if ($CI->uri->segment(3) != NULL) {
+    $seg3 = $CI->uri->segment(3);
+    if (!in_array($seg3, $links)) {
+      $segment .= "/$seg3";
+    }
+  }
+
+  if ($CI->uri->segment(4) != NULL) {
+    $seg4 = $CI->uri->segment(4);
+    if (!in_array($seg4, $links)) {
+      $segment .= "/$seg4";
+    }
+  }
+
+  $cek = $CI->db->query("SELECT slug FROM ms_menu WHERE slug='$segment' OR controller='$segment'")->row();
+  if ($cek != NULL) {
+    return $cek->slug;
+  }
+}
+
+function get_controller()
+{
+  $CI = &get_instance();
+  $segment =  $CI->uri->segment(1) . '/' . $CI->uri->segment(2);
+
+  $links = array_keys(links_on_table());
+  $links[] = 'fetchData';
+  $links[] = 'saveData';
+  $links[] = 'saveEdit';
+  $links[] = 'insert';
+  $links[] = 'role_akses';
+  if ($CI->uri->segment(3) != NULL) {
+    $seg3 = $CI->uri->segment(3);
+    if (!in_array($seg3, $links)) {
+      $segment .= "/$seg3";
+    }
+  }
+
+  if ($CI->uri->segment(4) != NULL) {
+    $seg4 = $CI->uri->segment(4);
+    if (!in_array($seg4, $links)) {
+      $segment .= "/$seg4";
+    }
+  }
+
+  $cek = $CI->db->query("SELECT controller FROM ms_menu WHERE slug='$segment' OR controller='$segment'")->row();
+  if ($cek != NULL) {
+    return $cek->controller;
+  }
+}
+
+function all_links()
+{
+  $CI = &get_instance();
+  $cek = $CI->db->query("SELECT link, deskripsi, ikon FROM ms_menu_links ORDER BY order_link ASC")->result();
+  $ck = [];
+  foreach ($cek as $c) {
+    $ck[$c->link] = ['ikon' => $c->ikon, 'deskripsi' => $c->deskripsi];
+  }
+  return $ck;
+}
+
+function links_on_table()
+{
+  $links = [
+    'detail' => [
+      'class' => "btn btn-xs btn-info btn-flat",
+      'icon' => '<i class="fa fa-eye"></i>',
+      'title' => 'Detail',
+      'show_title' => 0,
+      'tipe' => 'href',
+    ],
+    'edit' => [
+      'class' => "btn btn-warning btn-xs btn-flat",
+      'icon' => '<i class="fa fa-edit"></i>',
+      'title' => 'Edit',
+      'show_title' => 0,
+      'tipe' => 'href',
+    ],
+    'role_akses' => [
+      'class' => "btn btn-xs btn-primary btn-flat",
+      'icon' => '<i class="fa fa-cogs"></i>',
+      'title' => 'Role Akses',
+      'show_title' => 0,
+      'tipe' => 'href',
+    ],
+    'history' => [
+      'class' => "btn btn-xs btn-primary btn-flat",
+      'icon' => '<i class="fa fa-list"></i>',
+      'title' => 'History',
+      'show_title' => 0,
+      'tipe' => 'href',
+    ],
+    'delete' => [
+      'class'      => "btn btn-xs btn-danger btn-flat",
+      'icon'       => '<i class = "fa fa-trash"></i>',
+      'title'      => 'Hapus',
+      'show_title' => 0,
+      'tipe'       => 'button',
+    ]
+
+  ];
+  return $links;
+}
+
+function link_on_data_details($params, $id_group)
+{
+  $CI = &get_instance();
+  $filter = [
+    'controller' => get_controller()
+  ];
+  $links = links_on_table();
+  $menu = $CI->dm->getMenus($filter)->row();
+  $button = '';
+  $explode_links = explode(',', $menu->links_menu);
+  $get_links = cekAkasesMenuBySlug($id_group, $menu->slug);
+  $explode_links = [];
+  foreach ($get_links as $lks) {
+    if ($id_group == 1) {
+      $explode_links[] = $lks->link;
+    } else {
+      if ($lks->akses == 1) {
+        $explode_links[] = $lks->link;
+      }
+    }
+  }
+  foreach ($links as $key => $lk) {
+    if (in_array($key,  $explode_links)) {
+      $title = $lk['show_title'] == 1 ? $lk['title'] : '';
+      $parameter = preg_replace('/\s+/', '', $params['get']);
+      $url = site_url("$menu->slug/$key?$parameter");
+      if ($lk['tipe'] == 'href') {
+        $button .= '<a data-toggle="tooltip" title="' . $lk['title'] . '" href="' . $url . '" class="' . $lk['class'] . '" data-original-title="' . $title . '">' . $lk['icon'] . ' ' . $title . '</a>';
+      } else {
+        // $params_delete = json_encode(['url' => $url]);
+        // $button .= "<button type=\"button\" class=\"{$lk['class']}\" data-toggle=\"tooltip\" title=\"$title\" onclick='delete_act(this, $params_delete)'> 
+        // {$lk['logo']}
+        // </button>";
+      }
+    }
+  }
+
+  // $edit = '<a data-toggle="tooltip" title="Edit" href="tes" class="btn btn-warning btn-xs btn-flat" data-original-title="Edit"><i class="fa fa-edit"></i></a>';
+  // $edit .= '<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Tooltip on top</button>';
+  // $edit .= '<a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button" data-tooltip="tooltip" title="Toggle">cde</a>';
+  // $edit .= '<button id="mybtn" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip : left">Tooltip : Left</button>';
+  // send_json($button);
+  return $button;
+}
+
+
+function link_on_data_top($id_group)
+{
+  $slug = get_slug();
+  $button = '';
+
+  $buttons['insert'] = '<a href="' . site_url($slug . '/insert') . '"> <button class="btn bg-blue btn-flat"><i class="fa fa-plus"></i> Add New</button></a>';
+  $buttons['upload'] = '<button class="btn btn-info btn-flat" onclick="upload()"><i class="fa fa-upload"></i> Upload</button>';
+  //Cek Insert
+  $links = cekAkasesMenuBySlug($id_group, $slug);
+  foreach ($links as $lk) {
+    if (isset($buttons[$lk->link]) && $lk->akses == 1) {
+      $button .= $buttons[$lk->link];
+    }
+  }
+  return $button;
+}
