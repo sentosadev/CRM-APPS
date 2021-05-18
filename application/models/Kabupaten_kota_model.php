@@ -11,6 +11,11 @@ class Kabupaten_kota_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_name_kabupaten'])) {
+        if ($filter['id_or_name_kabupaten'] != '') {
+          $where .= " AND (kab.id_kabupaten_kota='{$filter['id_or_name_kabupaten']}' OR kab.kabupaten_kota='{$filter['id_or_name_kabupaten']}') ";
+        }
+      }
       if (isset($filter['id_provinsi'])) {
         if ($filter['id_provinsi'] != '') {
           $where .= " AND mu.id_provinsi='{$filter['id_provinsi']}'";

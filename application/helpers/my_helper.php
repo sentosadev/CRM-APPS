@@ -98,6 +98,11 @@ function msg_sukses_update()
   return  ['icon' => 'info', 'title' => 'Informasi', 'text' => 'Data berhasil diupdate'];
 }
 
+function msg_sukses_upload()
+{
+  return  ['icon' => 'success', 'title' => 'Success!', 'text' => 'Upload berhasil'];
+}
+
 function msg_sukses_hapus()
 {
   return  ['tipe' => 'info', 'judul' => 'Informasi', 'pesan' => 'Data berhasil dihapus permanen'];
@@ -208,6 +213,7 @@ function get_slug()
   $links[] = 'saveEdit';
   $links[] = 'insert';
   $links[] = 'saveRoleAkses';
+  $links[] = 'saveDataFileToDB';
   if ($CI->uri->segment(3) != NULL) {
     $seg3 = $CI->uri->segment(3);
     if (!in_array($seg3, $links)) {
@@ -365,7 +371,7 @@ function link_on_data_top($id_group)
   $button = '';
 
   $buttons['insert'] = '<a href="' . site_url($slug . '/insert') . '"> <button class="btn bg-blue btn-flat"><i class="fa fa-plus"></i> Add New</button></a>';
-  $buttons['upload'] = '<button class="btn btn-info btn-flat" onclick="upload()"><i class="fa fa-upload"></i> Upload</button>';
+  $buttons['upload'] = '<button class="btn btn-info btn-flat" onclick="upload(this)"><i class="fa fa-upload"></i> Upload</button>';
   //Cek Insert
   $links = cekAkasesMenuBySlug($id_group, $slug);
   foreach ($links as $lk) {

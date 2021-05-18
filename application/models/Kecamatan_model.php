@@ -11,6 +11,11 @@ class Kecamatan_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_name_kecamatan'])) {
+        if ($filter['id_or_name_kecamatan'] != '') {
+          $where .= " AND (kec.id_kecamatan='{$filter['id_or_name_kecamatan']}' OR kec.kecamatan='{$filter['id_or_name_kecamatan']}')";
+        }
+      }
       if (isset($filter['id_provinsi'])) {
         if ($filter['id_provinsi'] != '') {
           $where .= " AND kab.id_provinsi='{$filter['id_provinsi']}'";
