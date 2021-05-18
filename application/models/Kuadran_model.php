@@ -11,6 +11,11 @@ class Kuadran_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_kuadran'])) {
+        if ($filter['id_or_kuadran'] != '') {
+          $where .= " AND (mu.id_kuadran='{$filter['id_or_kuadran']}' OR mu.kuadran='{$filter['id_or_kuadran']}')";
+        }
+      }
       if (isset($filter['id_kuadran'])) {
         if ($filter['id_kuadran'] != '') {
           $where .= " AND mu.id_kuadran='{$filter['id_kuadran']}'";
