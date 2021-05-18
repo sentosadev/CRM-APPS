@@ -23,18 +23,20 @@
       </div>
       <!-- /.box-header -->
       <div class="box-body">
-        <div class="table-responsive">
-          <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
-            <thead>
-              <th width='5%'>#</th>
-              <th width='15%'>Kode Dealer</th>
-              <th>Nama Dealer</th>
-              <th>Periode Audit</th>
-              <th>Ring</th>
-              <th>Kecamatan</th>
-              <th>Kabupaten</th>
-            </thead>
-          </table>
+        <div class="row">
+          <div class="col-sm-12">
+            <table class='table table-condensed table-bordered table-striped serverside-tables' style='width:100%'>
+              <thead>
+                <th>#</th>
+                <th>Kode Dealer</th>
+                <th>Nama Dealer</th>
+                <th>Periode Audit</th>
+                <th>Ring</th>
+                <th>Kecamatan</th>
+                <th>Kabupaten</th>
+              </thead>
+            </table>
+          </div>
         </div>
         <!-- /.row -->
       </div>
@@ -139,7 +141,7 @@
       var dataTable = $('.serverside-tables').DataTable({
         "processing": true,
         "serverSide": true,
-        "scrollX": true,
+        // "scrollX": true,
         "language": {
           "infoFiltered": "",
           "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
