@@ -37,13 +37,13 @@ class Upload_territory_data_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_territory,mu.kode_dealer,mu.nama_dealer,mu.periode_audit,mu.ring,mu.id_kecamatan,mu.id_kabupaten_kota, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,kec.kecamatan,kab.kabupaten_kota";
+        $select = "mu.id_territory,mu.kode_dealer,mu.nama_dealer,mu.periode_audit,rg.ring,mu.id_kecamatan,mu.id_kabupaten_kota, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,kec.kecamatan,kab.kabupaten_kota,dl.nama_dealer";
       }
     }
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null, 'kode_dealer', 'nama_dealer', 'mu.periode_audit', 'mu.ring', 'kec.kecamatan', 'kab.kabupaten_kota', null];
+      $order_column = [null, 'kode_dealer', 'nama_dealer', 'mu.periode_audit', 'rg.ring', 'kec.kecamatan', 'kab.kabupaten_kota', null];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
@@ -59,6 +59,8 @@ class Upload_territory_data_model extends CI_Model
 
     return $this->db->query("SELECT $select
     FROM upload_territory_data AS mu
+    JOIN ms_ring rg ON rg.id_ring=mu.id_ring
+    JOIN ms_dealer dl ON dl.kode_dealer=mu.kode_dealer
     JOIN ms_maintain_kecamatan kec ON kec.id_kecamatan=mu.id_kecamatan
     JOIN ms_maintain_kabupaten_kota kab ON kab.id_kabupaten_kota=mu.id_kabupaten_kota
     $where

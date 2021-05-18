@@ -11,6 +11,11 @@ class Dealer_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_nama_dealer'])) {
+        if ($filter['id_or_nama_dealer'] != '') {
+          $where .= " AND (mu.kode_dealer='{$filter['id_or_nama_dealer']}' OR mu.nama_dealer='{$filter['id_or_nama_dealer']}')";
+        }
+      }
       if (isset($filter['id_dealer'])) {
         if ($filter['id_dealer'] != '') {
           $where .= " AND mu.id_dealer='{$filter['id_dealer']}'";

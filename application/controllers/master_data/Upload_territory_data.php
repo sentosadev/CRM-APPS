@@ -112,6 +112,8 @@ class Upload_territory_data extends Crm_Controller
     $user = user();
     $this->load->model('Kabupaten_kota_model', 'kab_m');
     $this->load->model('kecamatan_model', 'kec_m');
+    $this->load->model('dealer_model', 'dl_m');
+    $this->load->model('ring_model', 'rg_m');
     $path_file = $this->input->post('path');
     $reader = ReaderFactory::create(Type::XLSX); //set Type file xlsx
     $reader->open($path_file); //open file xlsx
@@ -126,8 +128,28 @@ class Upload_territory_data extends Crm_Controller
           if ($numRow > 0) {
             if ($row[0] == '') break;
 
+            //Cek Dealer
+            $fk = ['id_or_nama_dealer' => $row[0]];
+            $cek = $this->dl_m->getDealer($fk)->row();
+            $kode_dealer = '';
+            if ($cek == NULL) {
+              $error[$numRow][] = 'Dealer tidak ditemukan';
+            } else {
+              $kode_dealer = $cek->kode_dealer;
+            }
+
+            //Cek Ring
+            $fk = ['id_or_nama_ring' => $row[2]];
+            $cek = $this->rg_m->getRing($fk)->row();
+            $id_ring = '';
+            if ($cek == NULL) {
+              $error[$numRow][] = 'Ring tidak ditemukan';
+            } else {
+              $id_ring = $cek->id_ring;
+            }
+
             //Cek Kabupaten
-            $fk = ['id_or_name_kabupaten' => $row[5]];
+            $fk = ['id_or_name_kabupaten' => $row[4]];
             $cek_kab = $this->kab_m->getKabupatenKota($fk)->row();
             $id_kabupaten_kota = '';
             if ($cek_kab == NULL) {
@@ -137,7 +159,7 @@ class Upload_territory_data extends Crm_Controller
             }
 
             //Cek Kecamatan
-            $fk = ['id_or_name_kecamatan' => $row[4]];
+            $fk = ['id_or_name_kecamatan' => $row[3]];
             $cek_kab = $this->kec_m->getKecamatan($fk)->row();
             $id_kecamatan = '';
             if ($cek_kab == NULL) {
@@ -147,10 +169,9 @@ class Upload_territory_data extends Crm_Controller
             }
 
             $data = [
-              'kode_dealer' => $row[0],
-              'nama_dealer' => $row[1],
-              'periode_audit' => $row[2],
-              'ring' => $row[3],
+              'kode_dealer' => $kode_dealer,
+              'periode_audit' => $row[1],
+              'id_ring' => $id_ring,
               'id_kecamatan' => $id_kecamatan,
               'id_kabupaten_kota' => $id_kabupaten_kota,
               'created_at'    => waktu(),

@@ -11,6 +11,11 @@ class Ring_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_nama_ring'])) {
+        if ($filter['id_or_nama_ring'] != '') {
+          $where .= " AND (mu.id_ring='{$filter['id_or_nama_ring']}' OR mu.ring='{$filter['id_or_nama_ring']}')";
+        }
+      }
       if (isset($filter['id_ring'])) {
         if ($filter['id_ring'] != '') {
           $where .= " AND mu.id_ring='{$filter['id_ring']}'";
