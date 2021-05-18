@@ -37,7 +37,7 @@ class Upload_territory_data_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_territory,mu.kode_dealer,mu.nama_dealer,mu.periode_audit,rg.ring,mu.id_kecamatan,mu.id_kabupaten_kota, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,kec.kecamatan,kab.kabupaten_kota,dl.nama_dealer";
+        $select = "mu.id_territory,mu.kode_dealer,mu.periode_audit,rg.ring,mu.id_kecamatan,mu.id_kabupaten_kota, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,kec.kecamatan,kab.kabupaten_kota,dl.nama_dealer";
       }
     }
 
