@@ -45,7 +45,7 @@
     <!-- /.box -->
   </section>
   <script>
-    var path_upload_file = 'uploads/territory/2021/05/Template_upload_territory-data.xlsx';
+    var path_upload_file = '';
     Dropzone.autoDiscover = false;
     var myDropzone = new Dropzone("#my-Dropzone", {
       url: "<?php echo site_url(get_controller() . '/uploadFile') ?>",
