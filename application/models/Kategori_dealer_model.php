@@ -11,6 +11,11 @@ class Kategori_dealer_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_kategori_dealer'])) {
+        if ($filter['id_or_kategori_dealer'] != '') {
+          $where .= " AND (mu.id_kategori_dealer='{$filter['id_or_kategori_dealer']}' OR mu.kategori_dealer='{$filter['id_or_kategori_dealer']}')";
+        }
+      }
       if (isset($filter['id_kategori_dealer'])) {
         if ($filter['id_kategori_dealer'] != '') {
           $where .= " AND mu.id_kategori_dealer='{$filter['id_kategori_dealer']}'";
