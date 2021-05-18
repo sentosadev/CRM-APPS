@@ -106,6 +106,7 @@ class Upload_territory_data extends Crm_Controller
     send_json($response);
   }
 
+
   function saveDataFileToDB()
   {
     $user = user();
@@ -188,5 +189,13 @@ class Upload_territory_data extends Crm_Controller
       }
     }
     send_json($response);
+  }
+
+  public function removeFile()
+  {
+    $file = $this->input->post("file");
+    if ($file && file_exists($this->input->post('path_upload_file'))) {
+      unlink($this->input->post('path_upload_file'));
+    }
   }
 }

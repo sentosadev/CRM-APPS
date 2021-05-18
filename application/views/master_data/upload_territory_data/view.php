@@ -57,12 +57,12 @@
       addRemoveLinks: true,
       removedfile: function(file) {
         var name = file.name;
-
         $.ajax({
           type: "post",
-          url: "<?php echo site_url(get_controller() . '/uploadFile') ?>",
+          url: "<?php echo site_url(get_controller() . '/removeFile') ?>",
           data: {
-            file: name
+            file: name,
+            path_upload_file: path_upload_file
           },
           dataType: 'html'
         });
