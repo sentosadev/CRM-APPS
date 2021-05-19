@@ -8,7 +8,7 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <form action="<?= site_url(get_slug()) . '/uploadFile' ?>" class="dropzone" id="myDropzone" enctype="multipart/form-data">
+      <form action="<?= site_url(get_slug()) . '/uploadFile' ?>" class="dropzone" id="my-Dropzone" enctype="multipart/form-data">
         <div class="dz-message" data-dz-message><span>Drag Drop Atau Browse File* </span></div>
       </form>
     </div>
@@ -49,28 +49,101 @@
   <!-- /.box -->
 </section>
 <script>
-  Dropzone.options.myDropzone = {
-    maxFiles: 1,
-    acceptedFiles: ".xlsx", // use this to restrict file type
-    init: function() {
-      this.on("maxfilesexceeded", function(file) {
-        alert("Only one file is allowed");
-      });
-    }
-  };
+  var path_upload_file = 'uploads/leads/2021/05/Template_upload_leads-Dev_New2020(2).xlsx';
+  Dropzone.autoDiscover = false;
+  var myDropzone = new Dropzone("#my-Dropzone", {
+    url: "<?php echo site_url('defaults/uploadFile') ?>",
+    success: function(file, response) {
+      var obj = jQuery.parseJSON(response)
+      path_upload_file = obj.path;
+    },
+    // acceptedFiles: "image/*",
+    addRemoveLinks: true,
+    removedfile: function(file) {
+      var name = file.name;
 
-  function upload() {
+      $.ajax({
+        type: "post",
+        url: "<?php echo site_url('defaults/uploadFile') ?>",
+        data: {
+          file: name
+        },
+        dataType: 'html'
+      });
+
+      // remove the thumbnail
+      var previewElement;
+      return (previewElement = file.previewElement) != null ? (previewElement.parentNode.removeChild(file.previewElement)) : (void 0);
+    },
+
+  });
+
+  function upload(el) {
+    if (path_upload_file == '') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Peringatan',
+        text: 'Silahkan pilih file terlebih dahulu',
+      })
+      return false;
+    }
     Swal.fire({
-      icon: 'success',
-      title: 'Success!',
-      text: 'Upload berhasil',
+      title: 'Apakah Anda Yakin ?',
+      showCancelButton: true,
+      confirmButtonText: 'Simpan',
+      cancelButtonText: 'Batal',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        values = {
+          path: path_upload_file
+        }
+        $.ajax({
+          beforeSend: function() {
+            $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+            $(el).attr('disabled', true);
+          },
+          enctype: 'multipart/form-data',
+          url: '<?= site_url('defaults/saveDataFileToDB') ?>',
+          type: "POST",
+          data: values,
+          // processData: false,
+          // contentType: false,
+          // cache: false,
+          dataType: 'JSON',
+          success: function(response) {
+            if (response.status == 1) {
+              window.location = response.url;
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Peringatan',
+                text: response.pesan,
+              })
+              $(el).attr('disabled', false);
+            }
+            $(el).html('<i class="fa fa-upload"></i> Upload');
+          },
+          error: function() {
+            Swal.fire({
+              icon: 'error',
+              title: 'Peringatan',
+              text: 'Telah terjadi kesalahan !',
+            })
+            $(el).html('<i class="fa fa-upload"></i> Upload');
+            $(el).attr('disabled', false);
+          }
+        });
+      } else if (result.isDenied) {
+        // Swal.fire('Changes are not saved', '', 'info')
+      }
     })
   }
   $(document).ready(function() {
     var dataTable = $('.serverside-tables').DataTable({
       "processing": true,
       "serverSide": true,
-      "scrollX": true,
+      // "scrollX": true,
       "language": {
         "infoFiltered": "",
         "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",

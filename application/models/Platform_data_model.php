@@ -11,6 +11,11 @@ class Platform_data_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_platform_data'])) {
+        if ($filter['id_or_platform_data'] != '') {
+          $where .= " AND (mu.id_platform_data='{$filter['id_or_platform_data']}' OR mu.platform_data='{$filter['id_or_platform_data']}')";
+        }
+      }
       if (isset($filter['id_platform_data'])) {
         if ($filter['id_platform_data'] != '') {
           $where .= " AND mu.id_platform_data='{$filter['id_platform_data']}'";

@@ -11,6 +11,11 @@ class Source_leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['id_or_source_leads'])) {
+        if ($filter['id_or_source_leads'] != '') {
+          $where .= " AND (mu.id_source_leads='{$filter['id_or_source_leads']}' OR mu.source_leads='{$filter['id_or_source_leads']}')";
+        }
+      }
       if (isset($filter['id_source_leads'])) {
         if ($filter['id_source_leads'] != '') {
           $where .= " AND mu.id_source_leads='{$filter['id_source_leads']}'";
