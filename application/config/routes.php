@@ -65,3 +65,9 @@ foreach ($result as $rs) {
     $route[$rs->slug . '/' . $exp] = $rs->controller . '/' . $exp;
   }
 }
+
+$query = $db->query("SELECT slug, controller FROM ms_api_routes WHERE aktif=1");
+$result = $query->result();
+foreach ($result as $rs) {
+  $route[$rs->slug] = $rs->controller;
+}

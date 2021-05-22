@@ -131,6 +131,17 @@ function random_id()
   return substr(strtotime(waktu()), -6) . random_numbers(2);
 }
 
+function random_hex($length)
+{
+  $data = 'ABCDEF1234567890';
+  $string = '';
+  for ($i = 0; $i < $length; $i++) {
+    $pos = rand(0, strlen($data) - 1);
+    $string .= $data{
+      $pos};
+  }
+  return $string;
+}
 
 function create_thumbs($params)
 {
@@ -380,4 +391,9 @@ function link_on_data_top($id_group)
     }
   }
   return $button;
+}
+
+function clear_removed_html($value)
+{
+  return str_replace('[removed]', '', $value);
 }

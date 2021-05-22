@@ -15,3 +15,143 @@ function base_url_sql($field)
 {
   return "CONCAT('" . base_url() . "',$field)";
 }
+
+function validate_datetime($datetime, $format = "Y-m-d H:i:s")
+{
+  return (DateTime::createFromFormat($format, $datetime) !== false);
+}
+
+function get_client_ip()
+{
+  $ipaddress = '';
+  if (isset($_SERVER['HTTP_CLIENT_IP']))
+    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+  else if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+  else if (isset($_SERVER['HTTP_X_FORWARDED']))
+    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+  else if (isset($_SERVER['HTTP_FORWARDED_FOR']))
+    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+  else if (isset($_SERVER['HTTP_FORWARDED']))
+    $ipaddress = $_SERVER['HTTP_FORWARDED'];
+  else if (isset($_SERVER['REMOTE_ADDR']))
+    $ipaddress = $_SERVER['REMOTE_ADDR'];
+  else
+    $ipaddress = 'UNKNOWN';
+  return $ipaddress;
+}
+
+function request_validation($action = NULL)
+{
+  header('Content-Type:application/json');
+  $CI = &get_instance();
+
+  # ambil waktu server penerima (receiver)
+  // sleep(11); # contoh command sleep untuk delay 11 detik di server penerima
+  $curr_unix_time = time(); # ambil waktu saat ini dalam bentuk Unix Timestamp UTC (tidak terpengaruh zona waktu)
+  // $curr_unix_time = 1567645682; # contoh hasil fungsi time() untuk Thursday, 05-Sep-19 01:08:02 UTC (GMT)
+  $token_exp_secs = 10; # atur batas waktu token untuk keperluan validasi
+
+  # atur response default jika validasi gagal
+  $res = array(
+    'status' => 0,
+    'message' => array('Invalid credential'),
+    'data' => NULL
+  );
+
+  # ambil request header yang dikirimkan oleh server pengirim
+  $header_token = isset($_SERVER['HTTP_CRM_API_TOKEN']) ? $_SERVER['HTTP_CRM_API_TOKEN'] : NULL;
+  $header_api_key = isset($_SERVER['HTTP_CRM_API_KEY']) ? $_SERVER['HTTP_CRM_API_KEY'] : NULL;
+  $header_request_time = isset($_SERVER['HTTP_X_REQUEST_TIME']) ? $_SERVER['HTTP_X_REQUEST_TIME'] : NULL;
+
+  # secret_key diambil dari database berdasarkan $header_api_key yang dikirimkan oleh server pengirim (DB 3/6)
+  # set secret key defaultnya string kosong
+  $secret_key = '';
+  # cari secret key dari database berdasarkan api key dan key yang aktif
+  $query = $CI->db->query("SELECT secret_key FROM ms_api_secret_key WHERE api_key = '$header_api_key' AND aktif = 1");
+
+  # jika api key ditemukan dan aktif
+  if ($query->num_rows() > 0) {
+    $credential = $query->row();
+    $secret_key = $credential->secret_key;
+  }
+
+  //Validasi Selisih Waktu
+  if ($curr_unix_time - $header_request_time <= $token_exp_secs) {
+    # ambil request body yang berbentuk JSON string (Post Body)
+    // $post_raw_json = file_get_contents('php://input');
+    $post_raw_json = $CI->security->xss_clean($CI->input->raw_input_stream);
+    # decode post body dari JSON string ke Associative Array
+    $post_array = json_decode($post_raw_json, true);
+    // send_json($post_array);
+    $hash_token = hash('sha256', $header_api_key . $secret_key . $header_request_time);
+    // echo $hash_token;
+    //Validasi Token
+    if ($header_token === $hash_token && $secret_key != '') {
+      $res = array(
+        'status'         => 1,
+        'message'        => array('success_msg' => 'Success Valid Credential'),
+        'post'           => $post_array,
+        'data'           => null
+      );
+    } else {
+      if ($secret_key == '') {
+        $res = array(
+          'status' => 0,
+          'message' => array('Secret Key Not Found'),
+          'data' => null
+        );
+      } else {
+        $res = array(
+          'status' => 0,
+          'message' => array('Invalid Token'),
+          'data' => null
+        );
+      }
+    }
+  } else {
+    # token kadaluarsa
+    $res = array(
+      'status' => 0,
+      'message' => array('Token expired'),
+      'data' => NULL
+    );
+  }
+
+  # Cek apakah ada action
+  if ($action == 'add') {
+    if ($curr_unix_time - $header_request_time <= $token_exp_secs) {
+      if (isset($credential)) {
+        $res = [
+          'status' => 1,
+          'post' => isset($post_array) ? $post_array : NULL,
+        ];
+      } else {
+        $res = array(
+          'status' => 0,
+          'message' => array('Invalid credential'),
+          'data' => NULL
+        );
+      }
+    } else {
+      $res = array(
+        'status' => 0,
+        'message' => array('Token expired 2'),
+        'data' => NULL
+      );
+    }
+  }
+
+  $res['activity'] = [
+    'endpoint'           => isset($_SERVER['SCRIPT_URI']) ? $_SERVER['SCRIPT_URI'] : $_SERVER['REQUEST_URI'],
+    'post_data'          => isset($post_raw_json) ? $post_raw_json : 0,
+    'ip_address'         => get_client_ip(),
+    'api_key'            => $header_api_key == NULL ? 0 : $header_api_key,
+    // 'request_time'    => $_SERVER['HTTP_X_REQUEST_TIME'],
+    'request_time'       => $_SERVER['REQUEST_TIME'],
+    'http_response_code' => $_SERVER['REDIRECT_STATUS'],
+    'status'             => $res['status'],
+    'message'            => $res['status'] == 0 ? $res['message'] : NULL
+  ];
+  return $res;
+}
