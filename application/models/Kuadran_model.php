@@ -11,31 +11,33 @@ class Kuadran_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_kuadran'])) {
         if ($filter['id_or_kuadran'] != '') {
-          $where .= " AND (mu.id_kuadran='{$filter['id_or_kuadran']}' OR mu.kuadran='{$filter['id_or_kuadran']}')";
+          $where .= " AND (mu.id_kuadran='{$this->db->escape_str($filter['id_or_kuadran'])}' OR mu.kuadran='{$this->db->escape_str($filter['id_or_kuadran'])}')";
         }
       }
       if (isset($filter['id_kuadran'])) {
         if ($filter['id_kuadran'] != '') {
-          $where .= " AND mu.id_kuadran='{$filter['id_kuadran']}'";
+          $where .= " AND mu.id_kuadran='{$this->db->escape_str($filter['id_kuadran'])}'";
         }
       }
 
       if (isset($filter['kuadran'])) {
         if ($filter['kuadran'] != '') {
-          $where .= " AND mu.kuadran='{$filter['kuadran']}'";
+          $where .= " AND mu.kuadran='{$this->db->escape_str($filter['kuadran'])}'";
         }
       }
 
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_kuadran LIKE'%{$filter['search']}%'
                             OR mu.kuadran LIKE'%{$filter['search']}%'
           )";

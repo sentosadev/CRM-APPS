@@ -17,6 +17,7 @@ class Default_model extends CI_Model
     $user = user();
 
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['level'])) {
         $where .= " AND level ={$filter['level']} ";
       }

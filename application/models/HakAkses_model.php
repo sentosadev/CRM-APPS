@@ -13,6 +13,7 @@ class HakAkses_model extends CI_Model
     $order_column = array('id_group', 'nama_group', null);
     $set_filter = "WHERE aktif=1 ";
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if ($filter['id_group'] != '') {
         $set_filter .= " AND mu.id LIKE '%{$filter['id_group']}%'";
       }
@@ -41,6 +42,7 @@ class HakAkses_model extends CI_Model
   {
     $where = 'WHERE 1=1';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_user'])) {
         $where .= " AND mu.id='{$filter['id_user']}'";
       }

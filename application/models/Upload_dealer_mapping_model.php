@@ -11,6 +11,7 @@ class Upload_dealer_mapping_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_dealer_mapping'])) {
         if ($filter['id_dealer_mapping'] != '') {
           $where .= " AND mu.id_dealer_mapping='{$filter['id_dealer_mapping']}'";
@@ -24,6 +25,7 @@ class Upload_dealer_mapping_model extends CI_Model
       }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_dealer_mapping LIKE'%{$filter['search']}%'
                             OR mu.kode_dealer LIKE'%{$filter['search']}%'
                             OR mu.periode_audit LIKE'%{$filter['search']}%'

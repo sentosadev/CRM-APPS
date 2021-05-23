@@ -11,24 +11,26 @@ class User_groups_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_group'])) {
         if ($filter['id_group'] != '') {
-          $where .= " AND mu.id_group='{$filter['id_group']}'";
+          $where .= " AND mu.id_group='{$this->db->escape_str($filter['id_group'])}'";
         }
       }
       if (isset($filter['kode_group'])) {
         if ($filter['kode_group'] != '') {
-          $where .= " AND mu.kode_group='{$filter['kode_group']}'";
+          $where .= " AND mu.kode_group='{$this->db->escape_str($filter['kode_group'])}'";
         }
       }
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_group LIKE'%{$filter['search']}%'
                             OR mu.kode_group LIKE'%{$filter['search']}%'
                             OR mu.nama_group LIKE'%{$filter['search']}%'
@@ -55,6 +57,8 @@ class User_groups_model extends CI_Model
         $order_clm  = $order_column[$order['0']['column']];
         $order_by   = $order['0']['dir'];
         $order_data = " ORDER BY $order_clm $order_by ";
+      } else {
+        $order_data = " ORDER BY mu.created_at DESC ";
       }
     }
 

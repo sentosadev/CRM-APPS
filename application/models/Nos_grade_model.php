@@ -11,31 +11,33 @@ class Nos_grade_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_nos_grade'])) {
         if ($filter['id_or_nos_grade'] != '') {
-          $where .= " AND (mu.id_nos_grade='{$filter['id_or_nos_grade']}' OR mu.nos_grade='{$filter['id_or_nos_grade']}')";
+          $where .= " AND (mu.id_nos_grade='{$this->db->escape_str($filter['id_or_nos_grade'])}' OR mu.nos_grade='{$this->db->escape_str($filter['id_or_nos_grade'])}')";
         }
       }
       if (isset($filter['id_nos_grade'])) {
         if ($filter['id_nos_grade'] != '') {
-          $where .= " AND mu.id_nos_grade='{$filter['id_nos_grade']}'";
+          $where .= " AND mu.id_nos_grade='{$this->db->escape_str($filter['id_nos_grade'])}'";
         }
       }
 
       if (isset($filter['nos_grade'])) {
         if ($filter['nos_grade'] != '') {
-          $where .= " AND mu.nos_grade='{$filter['nos_grade']}'";
+          $where .= " AND mu.nos_grade='{$this->db->escape_str($filter['nos_grade'])}'";
         }
       }
 
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_nos_grade LIKE'%{$filter['search']}%'
                             OR mu.nos_grade LIKE'%{$filter['search']}%'
           )";

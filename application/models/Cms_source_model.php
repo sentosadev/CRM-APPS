@@ -11,24 +11,26 @@ class Cms_source_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_cms_source'])) {
         if ($filter['id_cms_source'] != '') {
-          $where .= " AND mu.id_cms_source='{$filter['id_cms_source']}'";
+          $where .= " AND mu.id_cms_source='{$this->db->escape_str($filter['id_cms_source'])}'";
         }
       }
       if (isset($filter['kode_cms_source'])) {
         if ($filter['kode_cms_source'] != '') {
-          $where .= " AND mu.kode_cms_source='{$filter['kode_cms_source']}'";
+          $where .= " AND mu.kode_cms_source='{$this->db->escape_str($filter['kode_cms_source'])}'";
         }
       }
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_crm_source LIKE'%{$filter['search']}%'
                             OR mu.kode_crm_source LIKE'%{$filter['search']}%'
                             OR mu.deskripsi_crm_source LIKE'%{$filter['search']}%'

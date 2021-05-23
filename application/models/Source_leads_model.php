@@ -11,6 +11,7 @@ class Source_leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_source_leads'])) {
         if ($filter['id_or_source_leads'] != '') {
           $where .= " AND (mu.id_source_leads='{$filter['id_or_source_leads']}' OR mu.source_leads='{$filter['id_or_source_leads']}')";
@@ -24,11 +25,12 @@ class Source_leads_model extends CI_Model
 
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_source_leads LIKE'%{$filter['search']}%'
                             OR mu.source_leads LIKE'%{$filter['search']}%'
           )";

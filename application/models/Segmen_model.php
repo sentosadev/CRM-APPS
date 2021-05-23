@@ -11,6 +11,7 @@ class segmen_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_segmen'])) {
         if ($filter['id_segmen'] != '') {
           $where .= " AND mu.id_segmen='{$filter['id_segmen']}'";
@@ -23,12 +24,13 @@ class segmen_model extends CI_Model
       }
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_segmen LIKE'%{$filter['search']}%'
                             OR mu.kode_segmen LIKE'%{$filter['search']}%'
                             OR mu.deskripsi_segmen LIKE'%{$filter['search']}%'

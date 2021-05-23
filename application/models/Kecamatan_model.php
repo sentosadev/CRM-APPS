@@ -11,55 +11,57 @@ class Kecamatan_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_name_kecamatan'])) {
         if ($filter['id_or_name_kecamatan'] != '') {
-          $where .= " AND (kec.id_kecamatan='{$filter['id_or_name_kecamatan']}' OR kec.kecamatan='{$filter['id_or_name_kecamatan']}')";
+          $where .= " AND (kec.id_kecamatan='{$this->db->escape_str($filter['id_or_name_kecamatan'])}' OR kec.kecamatan='{$this->db->escape_str($filter['id_or_name_kecamatan'])}')";
         }
       }
       if (isset($filter['id_provinsi'])) {
         if ($filter['id_provinsi'] != '') {
-          $where .= " AND kab.id_provinsi='{$filter['id_provinsi']}'";
+          $where .= " AND kab.id_provinsi='{$this->db->escape_str($filter['id_provinsi'])}'";
         }
       }
 
       if (isset($filter['provinsi'])) {
         if ($filter['provinsi'] != '') {
-          $where .= " AND prov.provinsi='{$filter['provinsi']}'";
+          $where .= " AND prov.provinsi='{$this->db->escape_str($filter['provinsi'])}'";
         }
       }
 
       if (isset($filter['id_kabupaten_kota'])) {
         if ($filter['id_kabupaten_kota'] != '') {
-          $where .= " AND kab.id_kabupaten_kota='{$filter['id_kabupaten_kota']}'";
+          $where .= " AND kab.id_kabupaten_kota='{$this->db->escape_str($filter['id_kabupaten_kota'])}'";
         }
       }
 
       if (isset($filter['kabupaten_kota'])) {
         if ($filter['kabupaten_kota'] != '') {
-          $where .= " AND kab.kabupaten_kota='{$filter['kabupaten_kota']}'";
+          $where .= " AND kab.kabupaten_kota='{$this->db->escape_str($filter['kabupaten_kota'])}'";
         }
       }
 
       if (isset($filter['id_kecamatan'])) {
         if ($filter['id_kecamatan'] != '') {
-          $where .= " AND kec.id_kecamatan='{$filter['id_kecamatan']}'";
+          $where .= " AND kec.id_kecamatan='{$this->db->escape_str($filter['id_kecamatan'])}'";
         }
       }
 
       if (isset($filter['kecamatan'])) {
         if ($filter['kecamatan'] != '') {
-          $where .= " AND kec.kecamatan='{$filter['kecamatan']}'";
+          $where .= " AND kec.kecamatan='{$this->db->escape_str($filter['kecamatan'])}'";
         }
       }
 
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND kec.aktif='{$filter['aktif']}'";
+          $where .= " AND kec.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( kec.id_provinsi LIKE'%{$filter['search']}%'
                             OR kec.provinsi LIKE'%{$filter['search']}%'
                             OR kab.kabupaten_kota LIKE'%{$filter['search']}%'

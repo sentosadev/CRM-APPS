@@ -11,6 +11,7 @@ class User_groups_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_group'])) {
         if ($filter['id_group'] != '') {
           $where .= " AND mu.id_group='{$filter['id_group']}'";
@@ -23,7 +24,7 @@ class User_groups_model extends CI_Model
       }
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
 

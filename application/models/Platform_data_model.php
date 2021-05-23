@@ -11,6 +11,7 @@ class Platform_data_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_platform_data'])) {
         if ($filter['id_or_platform_data'] != '') {
           $where .= " AND (mu.id_platform_data='{$filter['id_or_platform_data']}' OR mu.platform_data='{$filter['id_or_platform_data']}')";
@@ -24,11 +25,12 @@ class Platform_data_model extends CI_Model
 
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
-          $where .= " AND mu.aktif='{$filter['aktif']}'";
+          $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_platform_data LIKE'%{$filter['search']}%'
                             OR mu.platform_data LIKE'%{$filter['search']}%'
           )";

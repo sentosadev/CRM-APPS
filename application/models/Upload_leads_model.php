@@ -11,19 +11,21 @@ class Upload_leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_leads_int'])) {
         if ($filter['id_leads_int'] != '') {
-          $where .= " AND mu.id_leads_int='{$filter['id_leads_int']}'";
+          $where .= " AND mu.id_leads_int='{$this->db->escape_str($filter['id_leads_int'])}'";
         }
       }
 
       if (isset($filter['status'])) {
         if ($filter['status'] != '') {
-          $where .= " AND mu.status='{$filter['status']}'";
+          $where .= " AND mu.status='{$this->db->escape_str($filter['status'])}'";
         }
       }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_leads_int LIKE'%{$filter['search']}%'
                             OR mu.kode_md LIKE'%{$filter['search']}%'
                             OR mu.nama LIKE'%{$filter['search']}%'

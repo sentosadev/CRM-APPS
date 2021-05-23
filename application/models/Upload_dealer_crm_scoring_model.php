@@ -11,6 +11,7 @@ class Upload_dealer_crm_scoring_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_upload_dealer_crm_scoring'])) {
         if ($filter['id_upload_dealer_crm_scoring'] != '') {
           $where .= " AND mu.id_upload_dealer_crm_scoring='{$filter['id_upload_dealer_crm_scoring']}'";
@@ -24,6 +25,7 @@ class Upload_dealer_crm_scoring_model extends CI_Model
       }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_upload_dealer_crm_scoring LIKE'%{$filter['search']}%'
                             OR mu.kode_dealer LIKE'%{$filter['search']}%'
                             OR mu.periode_audit LIKE'%{$filter['search']}%'

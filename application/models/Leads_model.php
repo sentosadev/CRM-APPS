@@ -11,6 +11,7 @@ class Leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['nama'])) {
         if ($filter['nama'] != '') {
           $where .= " AND stl.nama='{$this->db->escape_str($filter['nama'])}'";

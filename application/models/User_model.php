@@ -11,6 +11,7 @@ class User_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = 'mu.id_user,mu.id_group,email,username,nama_lengkap,no_hp,img_small,img_big,mu.created,mu.aktif,mu.created_by,mu.updated_at,mu.updated_by,nama_group';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_user'])) {
         if ($filter['id_user'] != '') {
           $where .= " AND mu.id_user='{$filter['id_user']}'";
@@ -28,6 +29,7 @@ class User_model extends CI_Model
       }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND (mu.username LIKE '%{$filter['search']}%'
                            OR mu.nama_lengkap LIKE '%{$filter['search']}%'
                            OR mu.email LIKE '%{$filter['search']}%'

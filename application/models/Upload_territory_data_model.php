@@ -11,6 +11,7 @@ class Upload_territory_data_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_territory'])) {
         if ($filter['id_territory'] != '') {
           $where .= " AND mu.id_territory='{$filter['id_territory']}'";
@@ -24,6 +25,7 @@ class Upload_territory_data_model extends CI_Model
       }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_territory LIKE'%{$filter['search']}%'
                             OR mu.kode_dealer LIKE'%{$filter['search']}%'
                             OR mu.nama_dealer LIKE'%{$filter['search']}%'
