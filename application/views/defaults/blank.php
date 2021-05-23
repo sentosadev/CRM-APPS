@@ -49,7 +49,7 @@
   <!-- /.box -->
 </section>
 <script>
-  var path_upload_file = 'uploads/leads/2021/05/Template_upload_leads-Dev_New2020(2).xlsx';
+  var path_upload_file = '';
   Dropzone.autoDiscover = false;
   var myDropzone = new Dropzone("#my-Dropzone", {
     url: "<?php echo site_url('defaults/uploadFile') ?>",
@@ -82,8 +82,12 @@
     if (path_upload_file == '') {
       Swal.fire({
         icon: 'error',
-        title: 'Peringatan',
-        text: 'Silahkan pilih file terlebih dahulu',
+        title: '<font color="white">Peringatan</font>',
+        html: '<font color="white">Silahkan pilih file terlebih dahulu</font>',
+        background: '#dd4b39',
+        confirmButtonColor: '#cc3422',
+        confirmButtonText: 'Tutup',
+        iconColor: 'white'
       })
       return false;
     }

@@ -78,8 +78,12 @@
       if (path_upload_file == '') {
         Swal.fire({
           icon: 'error',
-          title: 'Peringatan',
-          text: 'Silahkan pilih file terlebih dahulu',
+          title: '<font color="white">Peringatan</font>',
+          html: '<font color="white">Silahkan pilih file terlebih dahulu</font>',
+          background: '#dd4b39',
+          confirmButtonColor: '#cc3422',
+          confirmButtonText: 'Tutup',
+          iconColor: 'white'
         })
         return false;
       }
@@ -113,8 +117,12 @@
               } else {
                 Swal.fire({
                   icon: 'error',
-                  title: 'Peringatan',
-                  text: response.pesan,
+                  title: '<font color="white">Peringatan</font>',
+                  html: '<font color="white">' + response.pesan + '</font>',
+                  background: '#dd4b39',
+                  confirmButtonColor: '#cc3422',
+                  confirmButtonText: 'Tutup',
+                  iconColor: 'white'
                 })
                 $(el).attr('disabled', false);
               }
@@ -123,8 +131,12 @@
             error: function() {
               Swal.fire({
                 icon: 'error',
-                title: 'Peringatan',
-                text: 'Telah terjadi kesalahan !',
+                title: '<font color="white">Peringatan</font>',
+                html: '<font color="white">Telah terjadi kesalahan</font>',
+                background: '#dd4b39',
+                confirmButtonColor: '#cc3422',
+                confirmButtonText: 'Tutup',
+                iconColor: 'white'
               })
               $(el).html('<i class="fa fa-upload"></i> Upload');
               $(el).attr('disabled', false);

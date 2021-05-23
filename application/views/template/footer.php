@@ -126,7 +126,6 @@
    })
    $(document).ready(function() {
      let active_url = '<?= site_url(get_slug()) ?>';
-     console.log(active_url);
      $("a[href='" + active_url + "']").parents('li').addClass('active');
    })
    $(document).ready(function() {

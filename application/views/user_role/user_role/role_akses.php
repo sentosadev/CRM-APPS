@@ -168,8 +168,12 @@
                 } else {
                   Swal.fire({
                     icon: 'error',
-                    title: 'Peringatan',
-                    text: response.pesan,
+                    title: '<font color="white">Peringatan</font>',
+                    html: '<font color="white">' + response.pesan + '</font>',
+                    background: '#dd4b39',
+                    confirmButtonColor: '#cc3422',
+                    confirmButtonText: 'Tutup',
+                    iconColor: 'white'
                   })
                   $('#submitButton').attr('disabled', false);
                 }
@@ -178,8 +182,12 @@
               error: function() {
                 Swal.fire({
                   icon: 'error',
-                  title: 'Peringatan',
-                  text: 'Telah terjadi kesalahan !',
+                  title: '<font color="white">Peringatan</font>',
+                  html: '<font color="white">Telah terjadi kesalahan !</font>',
+                  background: '#dd4b39',
+                  confirmButtonColor: '#cc3422',
+                  confirmButtonText: 'Tutup',
+                  iconColor: 'white'
                 })
                 $('#submitButton').html('<i class="fa fa-save"></i> Save All');
                 $('#submitButton').attr('disabled', false);
@@ -192,8 +200,12 @@
       } else {
         Swal.fire({
           icon: 'error',
-          title: 'Peringatan',
-          text: 'Silahkan lengkapi field yang wajib diisi',
+          title: '<font color="white">Peringatan</font>',
+          html: '<font color="white">Silahkan lengkapi field yang wajib diisi</font>',
+          background: '#dd4b39',
+          confirmButtonColor: '#cc3422',
+          confirmButtonText: 'Tutup',
+          iconColor: 'white'
         })
       }
     })
