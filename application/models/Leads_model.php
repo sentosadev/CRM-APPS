@@ -74,6 +74,79 @@ class Leads_model extends CI_Model
     $limit
     ");
   }
+  function getLeads($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    $select = '';
+    if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
+      if (isset($filter['nama'])) {
+        if ($filter['nama'] != '') {
+          $where .= " AND stl.nama='{$this->db->escape_str($filter['nama'])}'";
+        }
+      }
+      if (isset($filter['sourceRefID'])) {
+        if ($filter['sourceRefID'] != '') {
+          $where .= " AND stl.sourceRefID='{$this->db->escape_str($filter['sourceRefID'])}'";
+        }
+      }
+      if (isset($filter['noHP'])) {
+        if ($filter['noHP'] != '') {
+          $where .= " AND stl.noHP='{$this->db->escape_str($filter['noHP'])}'";
+        }
+      }
+      if (isset($filter['status'])) {
+        if ($filter['status'] != '') {
+          $where .= " AND stl.status='{$this->db->escape_str($filter['status'])}'";
+        }
+      }
+      if (isset($filter['search'])) {
+        if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
+          $where .= " AND ( stl.id_leads_int LIKE'%{$filter['search']}%'
+                            OR stl.kode_md LIKE'%{$filter['search']}%'
+                            OR stl.nama LIKE'%{$filter['search']}%'
+                            OR stl.no_hp LIKE'%{$filter['search']}%'
+                            OR stl.no_telp LIKE'%{$filter['search']}%'
+                            OR stl.email LIKE'%{$filter['search']}%'
+                            OR kab.kabupaten_kota LIKE'%{$filter['search']}%'
+          )";
+        }
+      }
+      if (isset($filter['select'])) {
+        if ($filter['select'] == 'login_mobile') {
+          $select = "";
+        } else {
+          $select = $filter['select'];
+        }
+      } else {
+        $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,kabupaten,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest,sourceData,platformData,noTelp,assignedDealer,sourceRefID,provinsi,kelurahan,kecamatan,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,created_at";
+      }
+    }
+
+    $order_data = '';
+    if (isset($filter['order'])) {
+      $order_column = [null];
+      $order = $filter['order'];
+      if ($order != '') {
+        $order_clm  = $order_column[$order['0']['column']];
+        $order_by   = $order['0']['dir'];
+        $order_data = " ORDER BY $order_clm $order_by ";
+      }
+    }
+
+    $limit = '';
+    if (isset($filter['limit'])) {
+      $limit = $filter['limit'];
+    }
+
+    return $this->db->query("SELECT $select
+    FROM leads AS stl
+    $where
+    $order_data
+    $limit
+    ");
+  }
 
   function getStagingTableVSMainTable($filter)
   {

@@ -39,6 +39,13 @@ class Lead extends CI_Controller
         $reject[$noHP] = 'Nama Wajib Diisi';
       }
 
+      //Cek sourceRefID
+      if ($pst['sourceRefID'] != '') {
+        $fl = ['sourceRefID' => $pst['sourceRefID']];
+        $cek = $this->ld_m->getLeads($fl)->num_rows();
+        $reject[$noHP] = 'Source Ref ID sudah ada';
+      }
+
       if (in_array($noHP, array_keys($reject))) {
         $list_leads[] = [
           'noHP' => $noHP,
