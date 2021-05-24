@@ -41,6 +41,11 @@ function get_client_ip()
   return $ipaddress;
 }
 
+function get_user_agent()
+{
+  return $_SERVER['HTTP_USER_AGENT'];
+}
+
 function request_validation($action = NULL)
 {
   header('Content-Type:application/json');
@@ -154,4 +159,26 @@ function request_validation($action = NULL)
     'message'            => $res['status'] == 0 ? $res['message'] : NULL
   ];
   return $res;
+}
+
+function insert_api_log($activity, $status, $message, $data)
+{
+  $CI = &get_instance();
+  $insert = [
+    'api_key' => $activity['api_key'],
+    'endpoint' => $activity['endpoint'],
+    'post_data' => $activity['post_data'],
+    'user_agent' => get_user_agent(),
+    'sender' => $activity['sender'],
+    'receiver' => $activity['receiver'],
+    'method' => $activity['method'],
+    'ip_address' => $activity['ip_address'],
+    'request_time' => $activity['request_time'],
+    'http_response_code' => $activity['http_response_code'],
+    'status' => $status,
+    'message' => $message,
+    'response_data' => json_encode($data),
+
+  ];
+  $CI->db->insert('ms_api_access_log', $insert);
 }

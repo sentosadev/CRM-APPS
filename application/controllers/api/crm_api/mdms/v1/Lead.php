@@ -102,9 +102,8 @@ class Lead extends CI_Controller
     $data = [
       'batchID' => $batchID,
     ];
-    // send_json($reject);
-    // send_json(count($validasi['post']['leads']) . ',' . count($reject));
-    //Cek Response Leads
+
+    //Set Response Leads
     if (count($reject) == 0) {
       $status = 1;
       $message = null;
@@ -125,6 +124,11 @@ class Lead extends CI_Controller
       'message' => $message,
       'data' => $data
     ];
+
+    $validasi['activity']['method'] = 'POST';
+    $validasi['activity']['sender'] = 'VE';
+    $validasi['activity']['receiver'] = 'MDMS';
+    insert_api_log($validasi['activity'], $status, $message, $data);
     send_json($result);
   }
 
@@ -177,10 +181,9 @@ class Lead extends CI_Controller
     }
   }
 
-  function schedulerLeadsTransactionTable($time)
+  function schedulerLeadsTransactionTable()
   {
     $scheduler = new Scheduler();
-
     $scheduler->call(function () {
       $this->_insertToMainTable();
       //Create Cron Log
@@ -189,6 +192,5 @@ class Lead extends CI_Controller
     })->everyMinute(2);
 
     $scheduler->run();
-    echo $time;
   }
 }
