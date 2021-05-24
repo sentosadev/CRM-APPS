@@ -43,7 +43,9 @@ class Lead extends CI_Controller
       if ($pst['sourceRefID'] != '') {
         $fl = ['sourceRefID' => $pst['sourceRefID']];
         $cek = $this->ld_m->getLeads($fl)->num_rows();
-        $reject[$noHP] = 'Source Ref ID sudah ada';
+        if ($cek > 0) {
+          $reject[$noHP] = 'Source Ref ID sudah ada';
+        }
       }
 
       if (in_array($noHP, array_keys($reject))) {
