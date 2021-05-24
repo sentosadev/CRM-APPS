@@ -17,6 +17,11 @@ class Upload_leads_model extends CI_Model
           $where .= " AND mu.id_leads_int='{$this->db->escape_str($filter['id_leads_int'])}'";
         }
       }
+      if (isset($filter['is_send_to_ve'])) {
+        if ($filter['is_send_to_ve'] != '') {
+          $where .= " AND mu.is_send_to_ve={$this->db->escape_str($filter['is_send_to_ve'])}";
+        }
+      }
       $filter = $this->db->escape_str($filter);
       if (isset($filter['event_code_invitation'])) {
         if ($filter['event_code_invitation'] != '') {
@@ -49,7 +54,7 @@ class Upload_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota";
+        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,is_send_to_ve";
       }
     }
 

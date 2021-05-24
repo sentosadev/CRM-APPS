@@ -182,3 +182,53 @@ function insert_api_log($activity, $status, $message, $data)
   ];
   $CI->db->insert('ms_api_access_log', $insert);
 }
+
+
+function curlPost($url, $data = NULL, $headers = NULL)
+{
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+  if (!empty($data)) {
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+  }
+
+  if (!empty($headers)) {
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  }
+
+  $response = curl_exec($ch);
+
+  if (curl_error($ch)) {
+    trigger_error('Curl Error:' . curl_error($ch));
+  }
+
+  curl_close($ch);
+  return $response;
+}
+
+function api_routes_by_code($api_code)
+{
+  $filter = ['api_code' => $api_code];
+  $data = api_routes($filter)->row();
+  if ($data != NULL) {
+    return $data;
+  }
+}
+
+function api_routes($filter)
+{
+  $CI = &get_instance();
+  $where = "WHERE 1=1 ";
+  if (isset($filter['api_code'])) {
+    $filter = $CI->db->escape_str($filter);
+    $where .= " AND api_code='{$filter['api_code']}' ";
+  }
+  return $CI->db->query("SELECT id_api_routes,slug,controller,api_name,aktif,api_code,external_url FROM  ms_api_routes $where");
+}
+
+function api_key()
+{
+  $CI = &get_instance();
+  return $CI->db->query("SELECT api_key, secret_key, sender, receiver from ms_api_secret_key WHERE aktif=1")->row();
+}

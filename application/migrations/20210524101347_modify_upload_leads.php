@@ -12,7 +12,9 @@ class Migration_Modify_upload_leads extends CI_Migration
 
     {
         $fields = array(
-            'event_code_invitation' => array('type' => 'VARCHAR', 'constraint' => 30, 'null' => false, 'unique' => true)
+            'event_code_invitation' => array('type' => 'VARCHAR', 'constraint' => 30, 'null' => false, 'unique' => true),
+            'is_send_to_ve' => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 0],
+            'send_to_ve_at' => ['type' => 'DATETIME']
         );
         $this->dbforge->add_column('upload_leads', $fields);
     }
@@ -23,5 +25,6 @@ class Migration_Modify_upload_leads extends CI_Migration
 
     {
         $this->dbforge->drop_column('upload_leads', 'event_code_invitation');
+        $this->dbforge->drop_column('upload_leads', 'is_send_to_ve');
     }
 }
