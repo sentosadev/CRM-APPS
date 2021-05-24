@@ -17,6 +17,12 @@ class Upload_leads_model extends CI_Model
           $where .= " AND mu.id_leads_int='{$this->db->escape_str($filter['id_leads_int'])}'";
         }
       }
+      $filter = $this->db->escape_str($filter);
+      if (isset($filter['event_code_invitation'])) {
+        if ($filter['event_code_invitation'] != '') {
+          $where .= " AND mu.event_code_invitation='{$this->db->escape_str($filter['event_code_invitation'])}'";
+        }
+      }
 
       if (isset($filter['status'])) {
         if ($filter['status'] != '') {
@@ -43,13 +49,13 @@ class Upload_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_leads_int,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota";
+        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota";
       }
     }
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null, 'kode_md', 'nama_dealer', 'mu.periode_audit', 'mu.dealer_score', null];
+      $order_column = [null, 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', null];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];

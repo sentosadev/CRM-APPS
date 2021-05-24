@@ -12,6 +12,7 @@ use Box\Spout\Common\Type;
 class Defaults extends Crm_Controller
 {
   var $title  = "Upload Leads";
+  var $event_code_invitation = [];
 
   public function __construct()
   {
@@ -44,6 +45,7 @@ class Defaults extends Crm_Controller
 
       $sub_array   = array();
       $sub_array[] = $no;
+      $sub_array[] = $rs->event_code_invitation;
       $sub_array[] = $rs->deskripsi_event;
       $sub_array[] = $rs->kode_md;
       $sub_array[] = $rs->nama;
@@ -117,6 +119,22 @@ class Defaults extends Crm_Controller
     send_json($response);
   }
 
+  function _cekDuplikatEventCodeInvitation($code)
+  {
+    $fc = ['event_code_invitation' => $code];
+    $cek = $this->udm_m->getLeads($fc);
+    $status = false;
+    if ($cek->num_rows() > 0) {
+      $status = true;
+    } else {
+      if (in_array($code, $this->event_code_invitation)) {
+        $status = true;
+      }
+    }
+    $this->event_code_invitation[] = $code;
+    return $status;
+  }
+
   function saveDataFileToDB()
   {
     $user = user();
@@ -137,45 +155,53 @@ class Defaults extends Crm_Controller
         foreach ($sheet->getRowIterator() as $row) {
           if ($numRow > 1) {
             if ($row[0] == '') break;
-
+            $baris = $numRow - 1;
             //Cek Kabupaten
-            $fk = ['id_or_name_kabupaten' => $row[5]];
+            $fk = ['id_or_name_kabupaten' => $row[7]];
             $cek_kab = $this->kab_m->getKabupatenKota($fk)->row();
             $id_kabupaten_kota = '';
             if ($cek_kab == NULL) {
-              $error[$numRow][] = 'Kabupaten tidak ditemukan';
+              $error[$baris][] = 'Kabupaten tidak ditemukan';
             } else {
               $id_kabupaten_kota = $cek_kab->id_kabupaten_kota;
             }
 
             //Cek Source Leads
-            $fk = ['id_or_source_leads' => $row[6]];
+            $fk = ['id_or_source_leads' => $row[8]];
             $cek_sl = $this->sl_m->getSourceLeads($fk)->row();
             $id_source_leads = '';
             if ($cek_sl == NULL) {
-              $error[$numRow][] = 'Source Data tidak ditemukan';
+              $error[$baris][] = 'Source Data tidak ditemukan';
             } else {
               $id_source_leads = $cek_sl->id_source_leads;
             }
 
             //Cek Platform Data
-            $fk = ['id_or_platform_data' => $row[7]];
+            $fk = ['id_or_platform_data' => $row[9]];
             // send_json($fk);
             $cek_pd = $this->pd_m->getPlatformData($fk)->row();
             $id_platform_data = '';
             if ($cek_pd == NULL) {
-              $error[$numRow][] = 'Platform data tidak ditemukan';
+              $error[$baris][] = 'Platform data tidak ditemukan';
             } else {
               $id_platform_data = $cek_pd->id_platform_data;
             }
 
+
+            // Cek event_code_invitation
+            $cek_duplikat = $this->_cekDuplikatEventCodeInvitation($row[0]);
+            if ($cek_duplikat == true) {
+              $error[$baris][] = 'Duplikat event Code Invitation';
+            }
+
             $data = [
-              'deskripsi_event' => $row[0],
-              'kode_md' => $row[1],
-              'nama' => $row[2],
-              'no_hp' => $row[3],
-              'no_telp' => $row[4],
-              'email' => $row[5],
+              'event_code_invitation' => $row[0],
+              'deskripsi_event' => $row[1],
+              'kode_md' => $row[2],
+              'nama' => $row[3],
+              'no_hp' => $row[4],
+              'no_telp' => $row[5],
+              'email' => $row[6],
               'id_kabupaten_kota' => $id_kabupaten_kota,
               'id_source_leads' => $id_source_leads,
               'id_platform_data' => $id_platform_data,
@@ -216,5 +242,13 @@ class Defaults extends Crm_Controller
       }
     }
     send_json($response);
+  }
+
+  public function removeFile()
+  {
+    $file = $this->input->post("file");
+    if ($file && file_exists($this->input->post('path_upload_file'))) {
+      unlink($this->input->post('path_upload_file'));
+    }
   }
 }

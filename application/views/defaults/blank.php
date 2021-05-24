@@ -27,6 +27,7 @@
         <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
           <thead>
             <th width='5%'>#</th>
+            <th>Event Code Invitation</th>
             <th>Deskripsi Event</th>
             <th>Kode MD</th>
             <th>Nama</th>
@@ -64,9 +65,10 @@
 
       $.ajax({
         type: "post",
-        url: "<?php echo site_url('defaults/uploadFile') ?>",
+        url: "<?php echo site_url('defaults/removeFile') ?>",
         data: {
-          file: name
+          file: name,
+          path_upload_file: path_upload_file
         },
         dataType: 'html'
       });
@@ -121,8 +123,12 @@
             } else {
               Swal.fire({
                 icon: 'error',
-                title: 'Peringatan',
-                text: response.pesan,
+                title: '<font color="white">Peringatan</font>',
+                html: '<font color="white">' + response.pesan + '</font>',
+                background: '#dd4b39',
+                confirmButtonColor: '#cc3422',
+                confirmButtonText: 'Tutup',
+                iconColor: 'white'
               })
               $(el).attr('disabled', false);
             }
@@ -131,8 +137,12 @@
           error: function() {
             Swal.fire({
               icon: 'error',
-              title: 'Peringatan',
-              text: 'Telah terjadi kesalahan !',
+              title: '<font color="white">Peringatan</font>',
+              html: '<font color="white">Telah terjadi kesalahan !</font>',
+              background: '#dd4b39',
+              confirmButtonColor: '#cc3422',
+              confirmButtonText: 'Tutup',
+              iconColor: 'white'
             })
             $(el).html('<i class="fa fa-upload"></i> Upload');
             $(el).attr('disabled', false);
@@ -167,7 +177,7 @@
         },
       },
       "columnDefs": [{
-          "targets": [0, 1, 2, 3, 4, 5],
+          "targets": [0],
           "orderable": false
         },
         // {
