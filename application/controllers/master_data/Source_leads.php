@@ -83,14 +83,27 @@ class Source_leads extends Crm_Controller
     $user = user();
     $post     = $this->input->post();
 
+    //Cek id_source_leads
+    $id_source_leads = $post['id_source_leads'];
+    $filter   = ['id_source_leads' => $id_source_leads];
+    $cek = $this->scl->getSourceLeads($filter);
+    if ($cek->num_rows() > 0) {
+      $result = [
+        'status' => 0,
+        'pesan' => 'ID source leads sudah ada'
+      ];
+      send_json($result);
+    }
+
     $insert = [
+      'id_source_leads' => $post['id_source_leads'],
       'source_leads' => $post['source_leads'],
       'aktif'      => isset($_POST['aktif']) ? 1 : 0,
       'created_at'    => waktu(),
       'created_by' => $user->id_user,
     ];
 
-    $tes = ['insert' => $insert];
+    // $tes = ['insert' => $insert];
     // send_json($tes);
     $this->db->trans_begin();
     $this->db->insert('ms_source_leads', $insert);
@@ -127,7 +140,7 @@ class Source_leads extends Crm_Controller
   {
     $user = user();
     $post     = $this->input->post();
-    $fg = ['id_source_leads' => $post['id_source_leads']];
+    $fg = ['id_source_leads' => $post['id_source_leads_old']];
     $gr = $this->scl->getSourceLeads($fg)->row();
 
     //Cek Data
@@ -139,14 +152,29 @@ class Source_leads extends Crm_Controller
       send_json($result);
     }
 
+    //Cek id_source_leads
+    $id_source_leads = $post['id_source_leads'];
+    if ($gr->id_source_leads != $id_source_leads) {
+      $filter   = ['id_source_leads' => $id_source_leads];
+      $cek = $this->scl->getSourceLeads($filter);
+      if ($cek->num_rows() > 0) {
+        $result = [
+          'status' => 0,
+          'pesan' => 'ID source leads sudah ada'
+        ];
+        send_json($result);
+      }
+    }
+
     $update = [
+      'id_source_leads' => $post['id_source_leads'],
       'source_leads' => $post['source_leads'],
       'aktif'      => isset($_POST['aktif']) ? 1 : 0,
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
     ];
 
-    // $tes = ['update' => $update];
+    // $tes = ['update' => $update, 'data' => $gr];
     // send_json($tes);
     $this->db->trans_begin();
     $this->db->update('ms_source_leads', $update, $fg);

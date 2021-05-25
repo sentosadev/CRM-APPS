@@ -17,7 +17,7 @@
               <label class="col-sm-2 control-label">ID Source Leads <span class='required'>*</span></label>
               <div class="form-input">
                 <div class="col-sm-4">
-                  <input type="text" class="form-control" disabled value='<?= $row->id_source_leads ?>'>
+                  <input type="text" class="form-control" name='id_source_leads' value='<?= $row->id_source_leads ?>'>
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@
         }
       })
       var values = new FormData($('#form_')[0]);
-      values.append('id_source_leads', <?= $row->id_source_leads ?>);
+      values.append('id_source_leads_old', <?= $row->id_source_leads ?>);
       if ($('#form_').valid()) // check if form is valid
       {
         Swal.fire({

@@ -14,6 +14,14 @@
         <form class="form-horizontal" id="form_">
           <div class="box-body">
             <div class="form-group">
+              <label class="col-sm-2 control-label">ID Source Leads <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='id_source_leads'>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-2 control-label">Source Leads <span class='required'>*</span></label>
               <div class="form-input">
                 <div class="col-sm-4">
