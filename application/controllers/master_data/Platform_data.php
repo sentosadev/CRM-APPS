@@ -83,7 +83,20 @@ class Platform_data extends Crm_Controller
     $user = user();
     $post     = $this->input->post();
 
+    //Cek id_platform_data
+    $id_platform_data = $post['id_platform_data'];
+    $filter   = ['id_platform_data' => $id_platform_data];
+    $cek = $this->scl->getPlatformData($filter);
+    if ($cek->num_rows() > 0) {
+      $result = [
+        'status' => 0,
+        'pesan' => 'ID platform data sudah ada'
+      ];
+      send_json($result);
+    }
+
     $insert = [
+      'id_platform_data' => $post['id_platform_data'],
       'platform_data' => $post['platform_data'],
       'aktif'      => isset($_POST['aktif']) ? 1 : 0,
       'created_at'    => waktu(),
@@ -127,7 +140,7 @@ class Platform_data extends Crm_Controller
   {
     $user = user();
     $post     = $this->input->post();
-    $fg = ['id_platform_data' => $post['id_platform_data']];
+    $fg = ['id_platform_data' => $post['id_platform_data_old']];
     $gr = $this->scl->getPlatformData($fg)->row();
 
     //Cek Data
@@ -139,7 +152,22 @@ class Platform_data extends Crm_Controller
       send_json($result);
     }
 
+    //Cek id_platform_data
+    $id_platform_data = $post['id_platform_data'];
+    if ($gr->id_platform_data != $id_platform_data) {
+      $filter   = ['id_platform_data' => $id_platform_data];
+      $cek = $this->scl->getPlatformData($filter);
+      if ($cek->num_rows() > 0) {
+        $result = [
+          'status' => 0,
+          'pesan' => 'ID platform data sudah ada'
+        ];
+        send_json($result);
+      }
+    }
+
     $update = [
+      'id_platform_data' => $post['id_platform_data'],
       'platform_data' => $post['platform_data'],
       'aktif'      => isset($_POST['aktif']) ? 1 : 0,
       'updated_at'    => waktu(),

@@ -17,7 +17,7 @@
               <label class="col-sm-2 control-label">ID Platform Data <span class='required'>*</span></label>
               <div class="form-input">
                 <div class="col-sm-4">
-                  <input type="text" class="form-control" disabled value='<?= $row->id_platform_data ?>'>
+                  <input type="text" class="form-control" name='id_platform_data' value='<?= $row->id_platform_data ?>'>
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@
         }
       })
       var values = new FormData($('#form_')[0]);
-      values.append('id_platform_data', <?= $row->id_platform_data ?>);
+      values.append('id_platform_data_old', <?= $row->id_platform_data ?>);
       if ($('#form_').valid()) // check if form is valid
       {
         Swal.fire({

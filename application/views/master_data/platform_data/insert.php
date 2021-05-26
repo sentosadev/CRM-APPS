@@ -14,6 +14,14 @@
         <form class="form-horizontal" id="form_">
           <div class="box-body">
             <div class="form-group">
+              <label class="col-sm-2 control-label">ID Platform Data <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='id_platform_data'>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-2 control-label">Platform Data <span class='required'>*</span></label>
               <div class="form-input">
                 <div class="col-sm-4">
