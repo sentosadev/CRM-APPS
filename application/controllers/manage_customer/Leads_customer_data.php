@@ -8,7 +8,7 @@ class Leads_customer_data extends Crm_Controller
   {
     parent::__construct();
     if (!logged_in()) redirect('auth/login');
-    $this->load->model('Kelurahan_model', 'tp_m');
+    $this->load->model('leads_model', 'ld_m');
   }
 
   public function index()
@@ -24,61 +24,38 @@ class Leads_customer_data extends Crm_Controller
     $data = array();
     $user = user();
     $no = $this->input->post('start') + 1;
-    // foreach ($fetch_data as $rs) {
-    $params      = [
-      'get'   => "id = "
-    ];
-    $aktif = '';
-    // if ($rs->aktif == 1) {
-    //   $aktif = '<i class="fa fa-check"></i>';
-    // }
+    foreach ($fetch_data as $rs) {
+      $params      = [
+        'get'   => "id = $rs->leads_id"
+      ];
+      $aktif = '';
+      // if ($rs->aktif == 1) {
+      //   $aktif = '<i class="fa fa-check"></i>';
+      // }
 
-    $sub_array   = array();
-    $sub_array[] = $no;
-    $sub_array[] = 'J10/02122020/000001';
-    $sub_array[] = 'Demo ABC';
-    $sub_array[] = '00888';
-    $sub_array[] = 'Not-Assigned</br><button class="btn btn-primary btn-xs" onclick="showAssign()">Assign</button>';
-    $sub_array[] = '11 Nov 2020 15:14:15';
-    $sub_array[] = 'H1-AHM';
-    $sub_array[] = 'Facebook';
-    $sub_array[] = 'launching New Scoopy';
-    $sub_array[] = '11 Nov 2020 - 21 Des 2020';
-    $sub_array[] = 'Contacted';
-    $sub_array[] = 'Ya';
-    $sub_array[] = 'Not Deal';
-    $sub_array[] = '2';
-    $sub_array[] = '11 Nov 2020 15:14:15';
-    $sub_array[] = '21 Nov 2020 15:14:15';
-    $sub_array[] = 'Overdue';
-    $sub_array[] = 'Overdue';
-    $sub_array[] = link_on_data_details($params, $user->id_group);
-    // $sub_array[] = link_on_data_details($params, $user->id_user);
-    $data[]      = $sub_array;
-    $sub_array   = array();
-    $sub_array[] = $no;
-    $sub_array[] = 'J10/02122020/000001';
-    $sub_array[] = 'Demo ABC';
-    $sub_array[] = '00888';
-    $sub_array[] = '12345</br><button class="btn btn-primary btn-xs">Reassign</button>';
-    $sub_array[] = '11 Nov 2020 15:14:15';
-    $sub_array[] = 'H1-AHM';
-    $sub_array[] = 'Facebook';
-    $sub_array[] = 'launching New Scoopy';
-    $sub_array[] = '11 Nov 2020 - 21 Des 2020';
-    $sub_array[] = 'Contacted';
-    $sub_array[] = 'Ya';
-    $sub_array[] = 'Not Deal';
-    $sub_array[] = '2';
-    $sub_array[] = '11 Nov 2020 15:14:15';
-    $sub_array[] = '21 Nov 2020 15:14:15';
-    $sub_array[] = 'Overdue';
-    $sub_array[] = 'Overdue';
-    $sub_array[] = link_on_data_details($params, $user->id_group);
-    // $sub_array[] = link_on_data_details($params, $user->id_user);
-    $data[]      = $sub_array;
-    $no++;
-    // }
+      $sub_array   = array();
+      $sub_array[] = $no;
+      $sub_array[] = $rs->leads_id;
+      $sub_array[] = $rs->nama;
+      $sub_array[] = $rs->assignedDealer;
+      $sub_array[] = 'Not-Assigned</br><button class="btn btn-primary btn-xs" onclick="showAssign()">Assign</button>';
+      $sub_array[] = $rs->tanggalAssignDealer;
+      $sub_array[] = $rs->deskripsiPlatformData;
+      $sub_array[] = $rs->deskripsiSourceData;
+      $sub_array[] = $rs->deskripsiEvent;
+      $sub_array[] = '-';
+      $sub_array[] = $rs->deskripsiStatusKontakFU;
+      $sub_array[] = '-';
+      $sub_array[] = $rs->deskripsiHasilStatusFollowUp;
+      $sub_array[] = $rs->jumlahFollowUp;
+      $sub_array[] = $rs->tanggalNextFU;
+      $sub_array[] = $rs->updated_at;
+      $sub_array[] = 'Overdue';
+      $sub_array[] = 'Overdue';
+      $sub_array[] = link_on_data_details($params, $user->id_group);
+      $data[]      = $sub_array;
+      $no++;
+    }
     $output = array(
       "draw"            => intval($_POST["draw"]),
       "recordsFiltered" => $this->_makeQuery(true),
@@ -102,9 +79,9 @@ class Leads_customer_data extends Crm_Controller
       'deleted' => false
     ];
     if ($recordsFiltered == true) {
-      return $this->tp_m->getKelurahan($filter)->num_rows();
+      return $this->ld_m->getLeads($filter)->num_rows();
     } else {
-      return $this->tp_m->getKelurahan($filter)->result();
+      return $this->ld_m->getLeads($filter)->result();
     }
   }
 
@@ -165,10 +142,11 @@ class Leads_customer_data extends Crm_Controller
   {
     $data['title'] = $this->title;
     $data['file']  = 'edit';
-    $filter['id_kelurahan']  = $this->input->get('id');
-    $row = $this->tp_m->getKelurahan($filter)->row();
+    $filter['leads_id']  = $this->input->get('id');
+    $row = $this->ld_m->getLeads($filter)->row();
     if ($row != NULL) {
       $data['row'] = $row;
+      // send_json($data);
       $this->template_portal($data);
     } else {
       $this->session->set_flashdata(msg_not_found());
@@ -176,13 +154,11 @@ class Leads_customer_data extends Crm_Controller
     }
   }
 
-  public function saveEdit()
+  public function saveEditRegistrasi()
   {
     $user = user();
-    $post     = $this->input->post();
-    $fg = ['id_kelurahan' => $post['id_kelurahan_old']];
-    $gr = $this->tp_m->getKelurahan($fg)->row();
-    // send_json($gr);
+    $fg = ['leads_id' => $this->input->post('leads_id', true)];
+    $gr = $this->ld_m->getLeads($fg)->row();
     //Cek Data
     if ($gr == NULL) {
       $result = [
@@ -192,27 +168,24 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
-    //Cek id_kelurahan
-    $id_kelurahan = $post['id_kelurahan'];
-    if ($gr->id_kelurahan != $id_kelurahan) {
-      $filter   = ['id_kelurahan' => $id_kelurahan];
-      $cek = $this->tp_m->getKelurahan($filter);
-      if ($cek->num_rows() > 0) {
-        $result = [
-          'status' => 0,
-          'pesan' => "ID Kelurahan : $id_kelurahan sudah ada"
-        ];
-        send_json($result);
-      }
-    }
-
     $update = [
-      'id_kelurahan' => $post['id_kelurahan'],
-      'id_kecamatan' => $post['id_kecamatan'],
-      'id_provinsi' => $post['id_provinsi'],
-      'id_kabupaten_kota' => $post['id_kabupaten_kota'],
-      'kelurahan' => $post['kelurahan'],
-      'aktif'      => isset($_POST['aktif']) ? 1 : 0,
+      'tanggalRegistrasi' => convert_datetime($this->input->post('tanggalRegistrasi', true)),
+      'customerId' => $this->input->post('customerId', true),
+      'kategoriModulLeads' => $this->input->post('kategoriModulLeads', true),
+      'deskripsiEvent' => $this->input->post('deskripsiEvent', true),
+      'tanggalVisitBooth' => convert_datetime($this->input->post('tanggalVisitBooth', true)),
+      'nama' => $this->input->post('nama', true),
+      'segmenProduk' => $this->input->post('segmenProduk', true),
+      'noHP' => convert_no_hp($this->input->post('noHP', true)),
+      'tanggalDownloadBrosur' => convert_datetime($this->input->post('tanggalDownloadBrosur', true)),
+      'noTelp' => convert_no_telp($this->input->post('noHP', true)),
+      'seriesBrosur' => $this->input->post('seriesBrosur', true),
+      'email' => $this->input->post('email', true),
+      'tanggalWishlist' => convert_datetime($this->input->post('tanggalWishlist', true)),
+      'email' => $this->input->post('email', true),
+      'kabupaten' => $this->input->post('kabupaten', true),
+      'seriesWishlist' => $this->input->post('seriesWishlist', true),
+      'eventCodeInvitation' => $this->input->post('eventCodeInvitation', true),
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
     ];
@@ -220,7 +193,7 @@ class Leads_customer_data extends Crm_Controller
     $tes = ['update' => $update];
     // send_json($tes);
     $this->db->trans_begin();
-    $this->db->update('ms_maintain_kelurahan', $update, $fg);
+    $this->db->update('leads', $update, $fg);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
@@ -228,9 +201,48 @@ class Leads_customer_data extends Crm_Controller
       $this->db->trans_commit();
       $response = [
         'status' => 1,
-        'url' => site_url(get_slug())
       ];
-      $this->session->set_flashdata(msg_sukses_update());
+    }
+    send_json($response);
+  }
+  public function saveEditPengajuanKontakSales()
+  {
+    $user = user();
+    $fg = ['leads_id' => $this->input->post('leads_id', true)];
+    $gr = $this->ld_m->getLeads($fg)->row();
+    //Cek Data
+    if ($gr == NULL) {
+      $result = [
+        'status' => 0,
+        'pesan' => 'Data tidak ditemukan '
+      ];
+      send_json($result);
+    }
+
+    $update = [
+      'tanggalPengajuan' => convert_datetime($this->input->post('tanggalPengajuan', true)),
+      'tanggalKontakSales' => convert_datetime($this->input->post('tanggalKontakSales', true)),
+      'noHpPengajuan' => convert_no_hp($this->input->post('noHpPengajuan', true)),
+      'namaPengajuan' => $this->input->post('namaPengajuan', true),
+      'kabupatenPengajuan' => $this->input->post('kabupatenPengajuan', true),
+      'kodeTypeUnit' => $this->input->post('kodeTypeUnit', true),
+      'kodeWarnaUnit' => $this->input->post('kodeWarnaUnit', true),
+      'updated_at'    => waktu(),
+      'updated_by' => $user->id_user,
+    ];
+
+    $tes = ['update' => $update];
+    // send_json($tes);
+    $this->db->trans_begin();
+    $this->db->update('leads', $update, $fg);
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+      $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
+    } else {
+      $this->db->trans_commit();
+      $response = [
+        'status' => 1,
+      ];
     }
     send_json($response);
   }

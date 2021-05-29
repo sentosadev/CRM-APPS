@@ -31,8 +31,6 @@
  <!-- date-range-picker -->
  <script src="<?= base_url('assets/') ?>components/moment/min/moment.min.js"></script>
  <script src="<?= base_url('assets/') ?>components/bootstrap-daterangepicker/daterangepicker.js"></script>
- <!-- bootstrap datepicker -->
- <script src="<?= base_url('assets/') ?>components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
  <!-- bootstrap time picker -->
  <script src="<?= base_url('assets/') ?>plugins/timepicker/bootstrap-timepicker.min.js"></script>
  <script src="<?= base_url('assets/') ?>components/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -71,35 +69,40 @@
      //Date range picker
      $('#reservation').daterangepicker()
      //Date range picker with time picker
-     $('#reservationtime').daterangepicker({
+     $('.datetimepicker').daterangepicker({
        timePicker: true,
-       timePickerIncrement: 30,
+       timePickerIncrement: 1,
+       singleDatePicker: true,
+       timePicker24Hour: true,
+       timePickerSeconds: true,
+       isInvalidDate: false,
+       autoUpdateInput: false,
        locale: {
-         format: 'MM/DD/YYYY hh:mm A'
-       }
-     })
-     //Date range as a button
-     $('#daterange-btn').daterangepicker({
-         ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-         },
-         startDate: moment().subtract(29, 'days'),
-         endDate: moment()
+         cancelLabel: 'Clear',
+         format: 'DD MMMM YYYY HH:mm:ss',
+         //  monthNames: [
+         //    "Januari",
+         //    "Februari",
+         //    "Maret",
+         //    "April",
+         //    "Mei",
+         //    "Juni",
+         //    "Jul",
+         //    "Agustus",
+         //    "September",
+         //    "Oktober",
+         //    "November",
+         //    "Desember"
+         //  ]
        },
-       function(start, end) {
-         $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-       }
-     )
 
-     //Date picker
-     $('#datepicker').datepicker({
-       autoclose: true
      })
+     $('.datetimepicker').on('apply.daterangepicker', function(ev, picker) {
+       $(this).val(picker.startDate.format('DD MMMM YYYY HH:mm:ss'));
+     });
+     $('.datetimepicker').on('cancel.daterangepicker', function(ev, picker) {
+       $(this).val('');
+     });
 
      //iCheck for checkbox and radio inputs
      $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({

@@ -397,3 +397,35 @@ function clear_removed_html($value)
 {
   return str_replace('[removed]', '', $value);
 }
+
+function convert_datetime($val)
+{
+  $explode = explode(' ', $val);
+  if (count($explode) > 1) {
+    $explode[1] = sprintf('%02s', date_parse($explode[1])['month']);
+    return $explode[2] . '-' . $explode[1] . '-' . $explode[0] . ' ' . $explode[3];
+  } else {
+    return $val;
+  }
+}
+
+function convert_no_hp($val)
+{
+  if (substr($val, 0, 1) == '+') {
+    $val = '0' . substr($val, 3, 30);
+  }
+  return $val;
+}
+function convert_no_telp($val)
+{
+  if (substr($val, 0, 1) == '+') {
+    $val = '0' . substr($val, 2, 30);
+  }
+  return $val;
+}
+
+
+function sql_convert_date($field)
+{
+  return "DATE_FORMAT($field,'%d %M %Y %H:%i:%s')";
+}

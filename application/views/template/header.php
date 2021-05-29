@@ -15,8 +15,6 @@
   <link rel="stylesheet" href="<?= base_url('assets/') ?>components/Ionicons/css/ionicons.min.css">
   <!-- daterange picker -->
   <link rel="stylesheet" href="<?= base_url('assets/') ?>components/bootstrap-daterangepicker/daterangepicker.css">
-  <!-- bootstrap datepicker -->
-  <link rel="stylesheet" href="<?= base_url('assets/') ?>components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <!-- iCheck for checkboxes and radio inputs -->
   <link rel="stylesheet" href="<?= base_url('assets/') ?>plugins/iCheck/all.css">
   <!-- Bootstrap Color Picker -->

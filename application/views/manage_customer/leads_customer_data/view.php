@@ -31,11 +31,7 @@
                   <label class="col-sm-2 control-label">Leads ID</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='leads_id' multiple>
                       </select>
                     </div>
                   </div>
@@ -49,22 +45,14 @@
                   <label class="col-sm-2 control-label">Warna</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id="id_warna" multiple>
                       </select>
                     </div>
                   </div>
                   <label class="col-sm-2 control-label">Status FU</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='id_status_fu' multiple>
                       </select>
                     </div>
                   </div>
@@ -121,11 +109,7 @@
                   <label class="col-sm-2 control-label">Platform Data</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='id_platform_data' multiple>
                       </select>
                     </div>
                   </div>
@@ -140,22 +124,14 @@
                   <label class="col-sm-2 control-label">Source Leads</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='id_source_leads' multiple>
                       </select>
                     </div>
                   </div>
                   <label class="col-sm-2 control-label">Tipe Motor</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='id_tipe' multiple>
                       </select>
                     </div>
                   </div>
@@ -229,6 +205,11 @@
   </div>
   <!-- /.box -->
 </section>
+<?php $data['data'] = ['selectLeadsId', 'selectStatusFU', 'selectPlatformData', 'selectSourceLeads'];
+$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
+
+<?php $data['data'] = ['selectWarna', 'selectTipe'];
+$this->load->view('additionals/dropdown_series_tipe', $data); ?>
 <script>
   function upload() {
     Swal.fire({

@@ -37,8 +37,8 @@ class Platform_data_model extends CI_Model
         }
       }
       if (isset($filter['select'])) {
-        if ($filter['select'] == 'login_mobile') {
-          $select = "";
+        if ($filter['select'] == 'dropdown') {
+          $select = "id_platform_data id, CONCAT(id_platform_data,' - ',platform_data) text";
         } else {
           $select = $filter['select'];
         }

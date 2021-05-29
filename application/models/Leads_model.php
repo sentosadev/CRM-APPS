@@ -30,8 +30,7 @@ class Leads_model extends CI_Model
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
-          $where .= " AND ( stl.id_leads_int LIKE'%{$filter['search']}%'
-                            OR stl.kode_md LIKE'%{$filter['search']}%'
+          $where .= " AND ( stl.kode_md LIKE'%{$filter['search']}%'
                             OR stl.nama LIKE'%{$filter['search']}%'
                             OR stl.no_hp LIKE'%{$filter['search']}%'
                             OR stl.no_telp LIKE'%{$filter['search']}%'
@@ -80,6 +79,11 @@ class Leads_model extends CI_Model
     $select = '';
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
+      if (isset($filter['leads_id'])) {
+        if ($filter['leads_id'] != '') {
+          $where .= " AND stl.leads_id='{$this->db->escape_str($filter['leads_id'])}'";
+        }
+      }
       if (isset($filter['nama'])) {
         if ($filter['nama'] != '') {
           $where .= " AND stl.nama='{$this->db->escape_str($filter['nama'])}'";
@@ -103,24 +107,33 @@ class Leads_model extends CI_Model
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
-          $where .= " AND ( stl.id_leads_int LIKE'%{$filter['search']}%'
-                            OR stl.kode_md LIKE'%{$filter['search']}%'
-                            OR stl.nama LIKE'%{$filter['search']}%'
-                            OR stl.no_hp LIKE'%{$filter['search']}%'
-                            OR stl.no_telp LIKE'%{$filter['search']}%'
-                            OR stl.email LIKE'%{$filter['search']}%'
-                            OR kab.kabupaten_kota LIKE'%{$filter['search']}%'
+          $where .= " AND ( stl.leads_id LIKE'%{$filter['search']}%'
           )";
         }
       }
       if (isset($filter['select'])) {
-        if ($filter['select'] == 'login_mobile') {
-          $select = "";
+        if ($filter['select'] == 'dropdown') {
+          $select = "leads_id id, leads_id text";
         } else {
           $select = $filter['select'];
         }
       } else {
-        $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,kabupaten,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest,sourceData,platformData,noTelp,assignedDealer,sourceRefID,provinsi,kelurahan,kecamatan,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,created_at";
+
+        $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,kabupaten,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest,
+        CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,sourceData,
+        CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,platformData,
+        noTelp,assignedDealer,sourceRefID,provinsi,kelurahan,kecamatan,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,tanggalAssignDealer,alasanTidakKeDealerSebelumnya,followUpID,tanggalFollowUp,
+        CASE WHEN msf.id_status_fu IS NULL THEN kodeStatusKontakFU ELSE msf.deskripsi_status_fu END deskripsiStatusKontakFU,kodeStatusKontakFU,
+        '' deskripsiHasilStatusFollowUp,
+        0 jumlahFollowUp,
+        kodeHasilStatusFollowUp,alasanNotProspectNotDeal,keteranganLainnyaNotProspectNotDeal,tanggalNextFU,statusProspect,keteranganNextFU,kodeTypeUnitProspect,kodeWarnaUnitProspect,picFollowUpMD,ontimeSLA1,picFollowUpD,ontimeSLA2,idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit,
+        " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
+        " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
+        " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
+        " . sql_convert_date('tanggalDownloadBrosur') . " tanggalDownloadBrosurEng,
+        " . sql_convert_date('tanggalPengajuan') . " tanggalPengajuanEng,
+        " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng
+        ";
       }
     }
 
@@ -142,6 +155,11 @@ class Leads_model extends CI_Model
 
     return $this->db->query("SELECT $select
     FROM leads AS stl
+    LEFT JOIN ms_source_leads msl ON msl.id_source_leads=stl.sourceData
+    LEFT JOIN ms_platform_data mpd ON mpd.id_platform_data=stl.platformData
+    LEFT JOIN ms_status_fu msf ON msf.id_status_fu=stl.kodeStatusKontakFU
+    LEFT JOIN ms_maintain_tipe tpu ON tpu.kode_tipe=stl.kodeTypeUnit
+    LEFT JOIN ms_maintain_warna twu ON twu.kode_warna=stl.kodeWarnaUnit
     $where
     $order_data
     $limit
