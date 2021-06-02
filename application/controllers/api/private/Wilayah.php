@@ -51,10 +51,28 @@ class Wilayah extends CI_Controller
       'select' => 'dropdown',
       'aktif' => 1
     ];
-    if ($this->input->post('id_kabupaten_kota') != NULL) {
+    if ($this->input->post('id_kabupaten_kota') != NULL or $this->input->post('id_kabupaten_kota') != '') {
       $filter['id_kabupaten_kota'] = $this->input->post('id_kabupaten_kota');
     }
     $response = $this->ms->getKecamatan($filter)->result();
+    send_json($response);
+  }
+  function selectKelurahan()
+  {
+    $this->load->model('kelurahan_model', 'ms');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = [
+      'search' => $search,
+      'select' => 'dropdown',
+      'aktif' => 1
+    ];
+    if ($this->input->post('id_kecamatan') != NULL or $this->input->post('id_kecamatan') != '') {
+      $filter['id_kecamatan'] = $this->input->post('id_kecamatan');
+    }
+    $response = $this->ms->getKelurahan($filter)->result();
     send_json($response);
   }
 }

@@ -110,3 +110,297 @@ if (in_array('selectSourceLeads', $data)) { ?>
     });
   </script>
 <?php } ?>
+
+
+<?php
+if (in_array('selectPekerjaan', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#kodePekerjaan").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectPekerjaan') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectPendidikan', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#idPendidikan").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectPendidikan') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectAgama', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#idAgama").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectAgama') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+
+<?php
+if (in_array('selectDealerSebelumnya', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#kodeDealerSebelumnya").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectDealer') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectLeasingSebelumnya', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#kodeLeasingSebelumnya").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectLeasing') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+
+<?php
+if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#id_media_kontak_fu_<?= $i ?>").select2({
+          // minimumInputLength: 2,
+          ajax: {
+            url: "<?= site_url('api/private/leads_customer_data/selectMediaKomunikasiFolUp') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+    </script>
+<?php }
+} ?>
+
+<?php
+if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#id_status_fu_<?= $i ?>").select2({
+          // minimumInputLength: 2,
+          ajax: {
+            url: "<?= site_url('api/private/leads_customer_data/selectStatusFU') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+    </script>
+<?php }
+} ?>
+
+
+<?php
+if (in_array('selectKategoriStatusKomunikasiMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#id_kategori_status_komunikasi_<?= $i ?>").select2({
+          // minimumInputLength: 2,
+          ajax: {
+            url: "<?= site_url('api/private/leads_customer_data/selectKategoriStatusKomunikasi') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+    </script>
+<?php }
+} ?>
+
+<?php
+if (in_array('selectHasilKomunikasiMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#id_hasil_komunikasi_<?= $i ?>").select2({
+          // minimumInputLength: 2,
+          ajax: {
+            url: "<?= site_url('api/private/leads_customer_data/selectHasilKomunikasi') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+    </script>
+<?php }
+} ?>
+
+<?php
+if (in_array('selectAlasanFuNotInterestMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#id_alasan_fu_not_interest_<?= $i ?>").select2({
+          // minimumInputLength: 2,
+          ajax: {
+            url: "<?= site_url('api/private/leads_customer_data/selectAlasanFuNotInterest') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+    </script>
+<?php }
+} ?>

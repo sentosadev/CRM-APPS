@@ -49,7 +49,7 @@ class Dealer_model extends CI_Model
       }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
-          $select = "";
+          $select = "kode_dealer id,nama_dealer text";
         } else {
           $select = $filter['select'];
         }

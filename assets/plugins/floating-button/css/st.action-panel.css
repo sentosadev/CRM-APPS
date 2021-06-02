@@ -1,0 +1,146 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:300,400);
+
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
+
+.st-actionContainer {
+  z-index: 9999;
+  position: fixed;
+  display: inline-block;
+}
+
+.right-bottom {
+  bottom: 2em;
+  right: 2em;
+  float: right !important;
+}
+
+.left-bottom {
+  bottom: 2em;
+  left: 2em;
+  float: left !important;
+}
+
+div.st-actionContainer li {
+  list-style: none;
+}
+
+.st-panel {
+  width: 240px;
+  margin-bottom: 7%;
+  background-color: #fff;
+  color: black;
+  border: 2px solid #3c8dbc;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 5px;
+  display: none;
+}
+
+div.st-panel {
+  font-family: Roboto;
+  font-size: 15px;
+}
+
+.st-panel-header {
+  background-color: #3c8dbc;
+  color: white;
+  padding: 7px;
+}
+
+.st-panel-contents {
+  padding: 5px;
+  font-size: 12px;
+}
+
+.st-button-main {
+  font-size: 16px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  display: table;
+}
+
+.st-button-main > i {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.st-btn-container {
+  background: #3c8dbc;
+  width: 240px;
+  height: 40px;
+  /* border-radius:100%; */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.rotateForward {
+  /* animation-name: rotateF;
+  animation-duration: 0.65s;
+  animation-iteration-count: 1; */
+}
+.st-panel-contents .table-bordered {
+  border: 1px solid #5bc0fb;
+  margin-top: 15px;
+}
+.st-panel-contents .table-bordered > thead > tr > th {
+  border: 1px solid #5bc0fb;
+}
+.st-panel-contents .table-bordered > tbody > tr > td {
+  border: 1px solid #5bc0fb;
+}
+@keyframes rotateF {
+  from {
+    transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.rotateBackward {
+  /* animation-name: rotateB;
+  animation-duration: 0.65s;
+  animation-iteration-count: 1; */
+}
+
+@keyframes rotateB {
+  from {
+    transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+  }
+}
+
+/*option grid in panel*/
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.gridChild {
+  flex: 0 0 33.33%;
+  height: 50px;
+  background-color: #999;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  line-height: 50px;
+}
+
+.gridChild:hover {
+  background-color: #eee;
+  color: black;
+}

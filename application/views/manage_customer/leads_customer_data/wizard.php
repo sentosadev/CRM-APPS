@@ -51,9 +51,9 @@
       width: 4rem;
       height: 4rem;
       color: #fff;
-      border: 2px solid #adb5bd;
+      border: 2px solid #cccccc;
       border-radius: 100%;
-      background-color: #adb5bd;
+      background-color: #cccccc;
       font-weight: 600;
 
     }
@@ -67,12 +67,12 @@
       width: calc(34rem + 1rem - 4rem);
       height: 2px;
       transform: translate(-100%, -50%);
-      color: #adb5bd;
+      color: #cccccc;
       background-color: currentColor
     }
 
     .step-text {
-      color: #adb5bd;
+      color: #cccccc;
       word-break: break-all;
       margin-top: .25em;
       font-weight: 600;

@@ -17,6 +17,7 @@ class Migration_Create_users extends CI_Migration
             'email' => ['type' => 'VARCHAR', 'constraint' => '100'],
             'username' => ['type' => 'VARCHAR', 'constraint' => '50'],
             'password' => ['type' => 'VARCHAR', 'constraint' => '200'],
+            'grant_type' => ['type' => 'VARCHAR', 'constraint' => '200'],
             'nama_lengkap' => ['type' => 'VARCHAR', 'constraint' => '80'],
             'no_hp' => ['type' => 'VARCHAR', 'constraint' => '20'],
             'img_small' => ['type' => 'VARCHAR', 'constraint' => '300'],

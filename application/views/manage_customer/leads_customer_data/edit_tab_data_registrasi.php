@@ -48,7 +48,7 @@
       <label class="col-sm-2 control-label">Nama</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='nama' required value='<?= $row->nama ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" id='nama' name='nama' required value='<?= $row->nama ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Segmen Produk</label>

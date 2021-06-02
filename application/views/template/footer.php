@@ -104,6 +104,24 @@
        $(this).val('');
      });
 
+     //Date range picker with time picker
+     $('.datepicker').daterangepicker({
+      //  timePicker: false,
+       singleDatePicker: true,
+       isInvalidDate: false,
+       autoUpdateInput: false,
+       locale: {
+         cancelLabel: 'Clear',
+         format: 'YYYY-MM-DD',
+       },
+     })
+     $('.datepicker').on('apply.daterangepicker', function(ev, picker) {
+       $(this).val(picker.startDate.format('YYYY-MM-DD'));
+     });
+     $('.datepicker').on('cancel.daterangepicker', function(ev, picker) {
+       $(this).val('');
+     });
+
      //iCheck for checkbox and radio inputs
      $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
        checkboxClass: 'icheckbox_minimal-blue',

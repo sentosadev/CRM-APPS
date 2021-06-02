@@ -1,0 +1,274 @@
+<div class="tab-pane" id="data_pendukung_probing_1">
+  <?php $data = ['set_active' => [1, 2, 3]];
+  $this->load->view('manage_customer/leads_customer_data/wizard', $data); ?>
+  <form id="form_data_pendukung_probing_1" class='form-horizontal'>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Platform Data</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_platform_data" class='form-control' name='platformData'>
+            <option value='<?= $row->platformData ?>'><?= $row->deskripsiPlatformData ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Provinsi</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_provinsi" class='form-control' name='provinsi'>
+            <option value='<?= $row->provinsi ?>'><?= $row->deskripsiProvinsi ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Source Data</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_source_leads" class='form-control' name='sourceData'>
+            <option value='<?= $row->sourceData ?>'><?= $row->deskripsiSourceData ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Keterangan Preferensi Dealer Lain</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='keteranganPreferensiDealerLain' required value='<?= $row->keteranganPreferensiDealerLain ?>'>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Kategori Konsumen</label>
+      <div class="form-input">
+        <div class="col-sm-1">
+          <input type="radio" name="kategoriKonsumen" value="vip" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->kategoriKonsumen == 'vip' ? 'checked' : '' ?>> VIP
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" name="kategoriKonsumen" value="reguler" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->kategoriKonsumen == 'reguler' ? 'checked' : '' ?>> Reguler
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Alasan Pindah Dealer</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='alasanPindahDealer' required value='<?= $row->alasanPindahDealer ?>'>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Nama Dealer Sebelumnya</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="kodeDealerSebelumnya" class='form-control' name='kodeDealerSebelumnya'>
+            <option value='<?= $row->kodeDealerSebelumnya ?>'><?= $row->namaDealerSebelumnya ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Gender</label>
+      <div class="form-input">
+        <div class="col-sm-1">
+          <input type="radio" name="gender" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->gender == '1' ? 'checked' : '' ?>> Pria
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" name="gender" value="0" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->gender == '0' ? 'checked' : '' ?>> Wanita
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Nama Leasing Sebelumnya</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="kodeLeasingSebelumnya" name="kodeLeasingSebelumnya" class='form-control' name='kodeLeasingSebelumnya'>
+            <option value='<?= $row->kodeLeasingSebelumnya ?>'><?= $row->namaLeasingSebelumnya ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">No. KTP</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='noKtp' required value='<?= $row->noKtp ?>'>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Tanggal Pembelian Terakhir</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control datepicker" name='tanggalPembelianTerakhir' required value='<?= $row->tanggalPembelianTerakhir ?>'>
+
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaan'>
+            <option value='<?= $row->kodePekerjaan ?>'><?= $row->deskripsiPekerjaan ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Desk. Tipe Unit Pembelian Terakhir</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='deskripsiTipeUnitPembelianTerakhir' required value='<?= $row->deskripsiTipeUnitPembelianTerakhir ?>'>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Promo Yang Diminati Customer</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" id='promoYangDiminatiCustomer' name='promoYangDiminatiCustomer' required value='<?= $row->promoYangDiminatiCustomer ?>'>
+
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Kategori Preferensi Dealer</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='kategoriPreferensiDealer' required value='<?= $row->kategoriPreferensiDealer ?>'>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Pendidikan</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="idPendidikan" class='form-control' name='idPendidikan'>
+            <option value='<?= $row->idPendidikan ?>'><?= $row->deskripsiPendidikan ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Nama Dealer Preferensi Customer</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='namaDealerPreferensiCustomer' required value='<?= $row->namaDealerPreferensiCustomer ?>'>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Agama</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="idAgama" class='form-control' name='idAgama'>
+            <option value='<?= $row->idAgama ?>'><?= $row->deskripsiAgama ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Kecamatan Domisili</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_kecamatan" class='form-control' name='kecamatan'>
+            <option value='<?= $row->kecamatan ?>'><?= $row->deskripsiKecamatanDomisili ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Tanggal Rencana Pembelian</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control datepicker" name='tanggalRencanaPembelian' required value='<?= $row->tanggalRencanaPembelian ?>'>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Kelurahan</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_kelurahan" class='form-control' name='kelurahan'>
+            <option value='<?= $row->kelurahan ?>'><?= $row->deskripsiKelurahanDomisili ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Kategori Prospect</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='kategoriProspect' required value='<?= $row->kategoriProspect ?>'>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Kecamatan Kantor</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_kecamatan2" class='form-control' name='idKecamatanKantor'>
+            <option value='<?= $row->idKecamatanKantor ?>'><?= $row->deskripsiKecamatanKantor ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Nama Community</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='namaCommunity' required value='<?= $row->namaCommunity ?>'>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" style='padding-top:20px'>
+      <div class="col-sm-6">
+        <button type="button" id="backTo_pengajuan_kontak_sales" class="btn btn-primary btn-flat" onclick="saveDataPendukung('pengajuan_kontak_sales')"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
+      </div>
+      <div class="col-sm-6" align="right">
+        <button onclick="saveDataPendukung('data_follow_up_1')" type="button" id="nextTo_data_follow_up_1" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
+      </div>
+    </div>
+  </form>
+</div>
+<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerSebelumnya', 'selectLeasingSebelumnya'];
+$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
+<?php $data['data'] = ['selectProvinsi', 'selectKecamatan', 'selectKecamatan2', 'selectKelurahan'];
+$this->load->view('additionals/dropdown_wilayah', $data); ?>
+<script>
+  function saveDataPendukung(tabs) {
+    if (tabs == 'pengajuan_kontak_sales') {
+      var set_id = "#backTo_pengajuan_kontak_sales";
+      var default_name_button = '<i class = "fa fa-backward"></i> Halaman Sebelumnya';
+    } else if (tabs == 'data_follow_up_1') {
+      var set_id = "#nextTo_data_follow_up_1";
+      var default_name_button = '<i class = "fa fa-forward"></i> Halaman Berikutnya';
+    }
+    var val_form_data_pendukung_probing_1 = new FormData($('#form_data_pendukung_probing_1')[0]);
+    val_form_data_pendukung_probing_1.append('leads_id', '<?= $row->leads_id ?>');
+
+    $.ajax({
+      beforeSend: function() {
+        $(set_id).html('<i class="fa fa-spinner fa-spin"></i> Process');
+        $(set_id).attr('disabled', true);
+      },
+      enctype: 'multipart/form-data',
+      url: '<?= site_url(get_controller() . '/saveEditPendukungProbing_1') ?>',
+      type: "POST",
+      data: val_form_data_pendukung_probing_1,
+      processData: false,
+      contentType: false,
+      // cache: false,
+      dataType: 'JSON',
+      success: function(response) {
+        if (response.status == 1) {
+          changeTabs(tabs);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: '<font color="white">Peringatan</font>',
+            html: '<font color="white">' + response.pesan + '</font>',
+            background: '#dd4b39',
+            confirmButtonColor: '#cc3422',
+            confirmButtonText: 'Tutup',
+            iconColor: 'white'
+          })
+        }
+        $(set_id).attr('disabled', false);
+        $(set_id).html(default_name_button);
+      },
+      error: function() {
+        Swal.fire({
+          icon: 'error',
+          title: '<font color="white">Peringatan</font>',
+          html: '<font color="white">Telah terjadi kesalahan !</font>',
+          background: '#dd4b39',
+          confirmButtonColor: '#cc3422',
+          confirmButtonText: 'Tutup',
+          iconColor: 'white'
+        })
+        $(set_id).html(default_name_button);
+        $(set_id).attr('disabled', false);
+      }
+    });
+  }
+</script>

@@ -25,58 +25,87 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">No. HP Pengajuan</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="text" class="form-control" name='noHpPengajuan' required value='<?= $row->noHpPengajuan ?>' <?= $disabled ?>>
+      <div class="col-sm-6 col-md-6">
+        <div class="form-group">
+          <label class="col-sm-4 control-label">No. HP Pengajuan</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name='noHpPengajuan' required value='<?= $row->noHpPengajuan ?>' <?= $disabled ?>>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Kota/Kabupaten Pengajuan</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name='kabupatenPengajuan' required value='<?= $row->kabupatenPengajuan ?>' <?= $disabled ?>>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <select style='width:100%' id="id_tipe" class='form-control' name='kodeTypeUnit'>
+                <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <select style="width:100%" id="id_warna" class='form-control' name='kodeWarnaUnit'>
+                <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Minat Riding Test</label>
+          <div class="form-input">
+            <div class="col-sm-1">
+              <input type="radio" name="minatRidingTest" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 1 ? 'checked' : '' ?>> Ya
+            </div>
+            <div class="col-sm-1">
+              <input type="radio" name="minatRidingTest" value="0" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 0 ? 'checked' : '' ?>> Tidak
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Kota/Kabupaten Pengajuan</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="text" class="form-control" name='kabupatenPengajuan' required value='<?= $row->kabupatenPengajuan ?>' <?= $disabled ?>>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Kode & Tipe Motor Diminati</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="id_tipe" class='form-control' name='kodeTypeUnit'>
-            <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Kode & Warna Motor Diminati</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style="width:100%" id="id_warna" class='form-control' name='kodeWarnaUnit'>
-            <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Minat Riding Test</label>
-      <div class="form-input">
-        <div class="col-sm-1">
-          <input type="radio" name="minatRidingTest" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 1 ? 'checked' : '' ?>> Ya
-        </div>
-        <div class="col-sm-1">
-          <input type="radio" name="minatRidingTest" value="0" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 0 ? 'checked' : '' ?>> Tidak
+      <div class="col-sm-6 col-md-6">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">
+              Tabel History Interaksi
+            </h3>
+            <div class="box-tools pull-right">
+              <button type="button" id="showModalHistoryInteraksi" class="btn btn-primary btn-flat btn-xs">View All</button>
+            </div>
+          </div>
+          <div class="box-body">
+            <div class="table-responsive">
+              <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
+                <thead>
+                  <th>Kode Unit + Warna Motor</th>
+                  <th>Tgl. Riding Test</th>
+                  <th>Source Data</th>
+                  <th>Keterangan</th>
+                  <th>Customer Action Date</th>
+                </thead>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="form-group" style='padding-top:20px'>
       <div class="col-sm-6">
-        <button type="button" id="backTo_data_registrasi" class="btn btn-primary btn-flat" onclick="saveDataPendukung('data_registrasi')"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
+        <button type="button" id="backTo_data_registrasi" class="btn btn-primary btn-flat" onclick="saveDataPengajuanKontakSales('data_registrasi')"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
       </div>
       <div class="col-sm-6" align="right">
-        <button type="button" id="nextTo_data_pendukung_probing_1" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
+        <button type="button" id="nextTo_data_pendukung_probing_1" class="btn btn-primary btn-flat" onclick="saveDataPengajuanKontakSales('data_pendukung_probing_1')"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
       </div>
     </div>
   </form>
@@ -84,7 +113,8 @@
 <?php $data['data'] = ['selectTipe', 'selectWarna'];
 $this->load->view('additionals/dropdown_series_tipe', $data); ?>
 <script>
-  function saveDataPendukung(tabs) {
+  function saveDataPengajuanKontakSales(tabs) {
+    console.log(tabs);
     if (tabs == 'data_registrasi') {
       var set_id = "#backTo_data_registrasi";
       var default_name_button = '<i class = "fa fa-backward"></i> Halaman Sebelumnya';
