@@ -257,6 +257,16 @@ class Leads_model extends CI_Model
           $where .= " AND lfu.followUpKe='{$this->db->escape_str($filter['followUpKe'])}'";
         }
       }
+      if (isset($filter['created_by_null'])) {
+        if ($filter['created_by_null'] != '') {
+          $where .= " AND (lfu.created_by IS NULL OR lfu.created_by='')";
+        }
+      }
+      if (isset($filter['status_null'])) {
+        if ($filter['status_null'] != '') {
+          $where .= " AND (lfu.status IS NULL OR lfu.status='')";
+        }
+      }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
@@ -268,7 +278,7 @@ class Leads_model extends CI_Model
         $select = "lfu.id_int,lfu.leads_id,lfu.followUpKe,lfu.pic,
         CASE WHEN lfu.tglFollowUp='0000-00-00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.id_kategori_status_komunikasi,lfu.id_hasil_komunikasi,lfu.id_alasan_fu_not_interest,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,ksts.kategori_status_komunikasi,hks.hasil_komunikasi,als.alasan_fu_not_interest";
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.id_kategori_status_komunikasi,lfu.id_hasil_komunikasi,lfu.id_alasan_fu_not_interest,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,ksts.kategori_status_komunikasi,hks.hasil_komunikasi,als.alasan_fu_not_interest,lfu.status";
       }
     }
 

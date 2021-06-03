@@ -148,7 +148,12 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
           <button type="button" id="backTo_<?= $back ?>" class="btn btn-primary btn-flat" onclick="saveDataFollowUp(this,'<?= $back ?>','back',<?= $i ?>)"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
         </div>
         <div class="col-sm-6" align="right">
-          <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i + 1 ?>','next',<?= $i ?>)" type="button" id="nextTo_data_pendukung_probing_2" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
+          <?php if ($i < $tot_tab_fol) { ?>
+            <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i + 1 ?>','next',<?= $i ?>)" type="button" id="#backTo_data_pendukung_probing_1" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
+          <?php } else { ?>
+            <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
+            <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
+          <?php } ?>
         </div>
       </div>
     </form>
@@ -161,19 +166,20 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
 <script>
   function saveDataFollowUp(el, tabs, position, fu) {
     if (position == 'back') {
-      var set_id = "#backTo_<?= $back ?>";
       var default_name_button = '<i class = "fa fa-backward"></i> Halaman Sebelumnya';
-    } else {
-      var set_id = "#nextTo_data_follow_up_<?= $i + 1 ?>";
+    } else if (position == 'back') {
       var default_name_button = '<i class = "fa fa-forward"></i> Halaman Berikutnya';
+    } else {
+      var default_name_button = 'Simpan Follow Up';
+
     }
     var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
     val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
 
     $.ajax({
       beforeSend: function() {
-        $(set_id).html('<i class="fa fa-spinner fa-spin"></i> Process');
-        $(set_id).attr('disabled', true);
+        $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+        $(el).attr('disabled', true);
       },
       enctype: 'multipart/form-data',
       url: '<?= site_url(get_controller() . '/saveEditFollowUp') ?>',
@@ -197,8 +203,8 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
             iconColor: 'white'
           })
         }
-        $(set_id).attr('disabled', false);
-        $(set_id).html(default_name_button);
+        $(el).attr('disabled', false);
+        $(el).html(default_name_button);
       },
       error: function() {
         Swal.fire({
@@ -210,9 +216,74 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
           confirmButtonText: 'Tutup',
           iconColor: 'white'
         })
-        $(set_id).html(default_name_button);
-        $(set_id).attr('disabled', false);
+        $(el).html(default_name_button);
+        $(el).attr('disabled', false);
       }
     });
+  }
+
+
+  function tambahDataFollowUp(el, fu, tabs_no) {
+    Swal.fire({
+      title: 'Apakah Anda Yakin Menambah Follow Up Baru ?',
+      showCancelButton: true,
+      confirmButtonText: 'Ya',
+      cancelButtonText: 'Batal',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        values = {
+          fol: fu,
+          leads_id: "<?= $row->leads_id ?>",
+          tabs: 'data_follow_up_' + tabs_no
+        }
+        $.ajax({
+          beforeSend: function() {
+            $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+            $(el).attr('disabled', true);
+          },
+          enctype: 'multipart/form-data',
+          url: '<?= site_url(get_controller() . '/tambahDataFollowUp') ?>',
+          type: "POST",
+          data: values,
+          // processData: false,
+          // contentType: false,
+          cache: false,
+          dataType: 'JSON',
+          success: function(response) {
+            if (response.status == 1) {
+              location.reload(true);
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: '<font color="white">Peringatan</font>',
+                html: '<font color="white">' + response.pesan + '</font>',
+                background: '#dd4b39',
+                confirmButtonColor: '#cc3422',
+                confirmButtonText: 'Tutup',
+                iconColor: 'white'
+              })
+              $(el).attr('disabled', false);
+            }
+            $(el).html('Tambah Folllow Up ' + fu);
+          },
+          error: function() {
+            Swal.fire({
+              icon: 'error',
+              title: '<font color="white">Peringatan</font>',
+              html: '<font color="white">Telah terjadi kesalahan !</font>',
+              background: '#dd4b39',
+              confirmButtonColor: '#cc3422',
+              confirmButtonText: 'Tutup',
+              iconColor: 'white'
+            })
+            $(el).html('Tambah Folllow Up ' + fu);
+            $(el).attr('disabled', false);
+          }
+        });
+      } else if (result.isDenied) {
+        // Swal.fire('Changes are not saved', '', 'info')
+      }
+    })
   }
 </script>

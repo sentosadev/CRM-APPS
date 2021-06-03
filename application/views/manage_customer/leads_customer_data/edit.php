@@ -78,7 +78,11 @@
         openDuration: 250,
         closeDuration: 150
       });
-      changeTabs('data_follow_up_1') //Testing Menuju Tab Tertentu
+      let flash = <?= json_encode($this->session->flashdata()) ?>;
+      if (flash.tabs != undefined) {
+        changeTabs(flash.tabs) //Testing Menuju Tab Tertentu
+      }
+      // changeTabs('data_follow_up_1') //Testing Menuju Tab Tertentu
     });
 
     function changeTabs(tabs) {
@@ -86,7 +90,6 @@
       // document.body.scrollTop = 0; // For Safari
       // document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
       title = "Nama Customer : " + $('#nama').val() + "<br>" + "Kode Motor : " + $('#id_tipe').val() + "<br>" + "Tipe Motor : " + $('#id_warna').val() + "<br>" + "Riding Test : " + "<br>" + "Promo Diminati : " + $('#promoYangDiminatiCustomer').val();
-      console.log(title);
       $('#tooltipInformasiCustomer').removeAttr('title');
       $('#tooltipInformasiCustomer').attr('title', title);
       $('#tooltipInformasiCustomer').attr('data-original-title', title);

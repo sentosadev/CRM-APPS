@@ -323,8 +323,10 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
-    for ($i = 1; $i <= count($this->input->post('folup')); $i++) {
+    // for ($i = 1; $i <= count($this->input->post('folup')); $i++) {
+    foreach ($this->input->post('folup', true) as $i) {
       $fg['followUpKe'] = $i;
+      $fg['created_by_null'] = true;
       $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
       if ($cek == NULL) {
         $ins_fol_up[] = [
@@ -428,6 +430,55 @@ class Leads_customer_data extends Crm_Controller
       ];
     } else {
       $response = ['status' => 0];
+    }
+    send_json($response);
+  }
+
+  function tambahDataFollowUp()
+  {
+    $followUpKe = $this->input->post('fol', true);
+
+    $ins_fol_up = [
+      'leads_id' => $this->input->post('leads_id', true),
+      'followUpKe' => $followUpKe,
+    ];
+    if ($followUpKe > 1) {
+      $fol_sebelumnya = $followUpKe - 1;
+      $fc = [
+        'leads_id' => $this->input->post('leads_id'),
+        'followUpKe' => $fol_sebelumnya,
+        'status_null' => true
+      ];
+      $cek_fol_sebelumnya = $this->ld_m->getLeadsFollowUp($fc)->row();
+      if ($cek_fol_sebelumnya != NULL) {
+        $response = ['status' => 0, 'pesan' => 'Follow Up Ke-' . $fol_sebelumnya . ' belum selesai'];
+        // send_json($response);
+      }
+    }
+    $this->db->trans_begin();
+    if (isset($ins_fol_up)) {
+      $this->db->insert('leads_follow_up', $ins_fol_up);
+    }
+    if (isset($upd_fol_up)) {
+      foreach ($upd_fol_up as $upd) {
+        $cond = [
+          'followUpKe' => $upd['followUpKe'],
+          'leads_id' => $upd['leads_id'],
+        ];
+        unset($upd['followUpKe']);
+        unset($upd['leads_id']);
+        $this->db->update('leads_follow_up', $upd, $cond);
+      }
+    }
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+      $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
+    } else {
+      $this->db->trans_commit();
+      $this->session->set_flashdata(['tabs' => $this->input->post('tabs')]);
+      $response = [
+        'status' => 1,
+      ];
     }
     send_json($response);
   }
