@@ -324,46 +324,48 @@ class Leads_customer_data extends Crm_Controller
     }
 
     // for ($i = 1; $i <= count($this->input->post('folup')); $i++) {
-    foreach ($this->input->post('folup', true) as $i) {
-      $fg['followUpKe'] = $i;
-      $fg['created_by_null'] = true;
-      $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
-      if ($cek == NULL) {
-        $ins_fol_up[] = [
-          'followUpKe' => $i,
-          'leads_id' => $this->input->post('leads_id', true),
-          'id_alasan_fu_not_interest' => $this->input->post('id_alasan_fu_not_interest_' . $i, true),
-          'id_hasil_komunikasi' => $this->input->post('id_hasil_komunikasi_' . $i, true),
-          'id_kategori_status_komunikasi' => $this->input->post('id_kategori_status_komunikasi_' . $i, true),
-          'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
-          'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
-          'keteranganAlasanLainnya' => $this->input->post('keteranganAlasanLainnya_' . $i, true),
-          'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
-          'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
-          'pic' => $this->input->post('pic_' . $i, true),
-          'tglFollowUp' => $this->input->post('tglFollowUp_' . $i, true),
-          'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
-          'created_at'    => waktu(),
-          'created_by' => $user->id_user,
-        ];
-      } else {
-        $upd_fol_up[] = [
-          'leads_id' => $this->input->post('leads_id', true),
-          'followUpKe' => $i,
-          'id_alasan_fu_not_interest' => $this->input->post('id_alasan_fu_not_interest_' . $i, true),
-          'id_hasil_komunikasi' => $this->input->post('id_hasil_komunikasi_' . $i, true),
-          'id_kategori_status_komunikasi' => $this->input->post('id_kategori_status_komunikasi_' . $i, true),
-          'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
-          'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
-          'keteranganAlasanLainnya' => $this->input->post('keteranganAlasanLainnya_' . $i, true),
-          'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
-          'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
-          'pic' => $this->input->post('pic_' . $i, true),
-          'tglFollowUp' => $this->input->post('tglFollowUp_' . $i, true),
-          'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
-          'updated_at'    => waktu(),
-          'updated_by' => $user->id_user,
-        ];
+    if ($this->input->post('folup', true) != NULL) {
+      foreach ($this->input->post('folup', true) as $i) {
+        $fg['followUpKe'] = $i;
+        $fg['created_by_null'] = true;
+        $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
+        if ($cek == NULL) {
+          $ins_fol_up[] = [
+            'followUpKe' => $i,
+            'leads_id' => $this->input->post('leads_id', true),
+            'id_alasan_fu_not_interest' => $this->input->post('id_alasan_fu_not_interest_' . $i, true),
+            'id_hasil_komunikasi' => $this->input->post('id_hasil_komunikasi_' . $i, true),
+            'id_kategori_status_komunikasi' => $this->input->post('id_kategori_status_komunikasi_' . $i, true),
+            'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
+            'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
+            'keteranganAlasanLainnya' => $this->input->post('keteranganAlasanLainnya_' . $i, true),
+            'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
+            'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
+            'pic' => $this->input->post('pic_' . $i, true),
+            'tglFollowUp' => $this->input->post('tglFollowUp_' . $i, true),
+            'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
+            'created_at'    => waktu(),
+            'created_by' => $user->id_user,
+          ];
+        } else {
+          $upd_fol_up[] = [
+            'leads_id' => $this->input->post('leads_id', true),
+            'followUpKe' => $i,
+            'id_alasan_fu_not_interest' => $this->input->post('id_alasan_fu_not_interest_' . $i, true),
+            'id_hasil_komunikasi' => $this->input->post('id_hasil_komunikasi_' . $i, true),
+            'id_kategori_status_komunikasi' => $this->input->post('id_kategori_status_komunikasi_' . $i, true),
+            'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
+            'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
+            'keteranganAlasanLainnya' => $this->input->post('keteranganAlasanLainnya_' . $i, true),
+            'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
+            'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
+            'pic' => $this->input->post('pic_' . $i, true),
+            'tglFollowUp' => $this->input->post('tglFollowUp_' . $i, true),
+            'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
+            'updated_at'    => waktu(),
+            'updated_by' => $user->id_user,
+          ];
+        }
       }
     }
 
