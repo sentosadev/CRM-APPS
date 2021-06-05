@@ -729,6 +729,7 @@ class Leads_customer_data extends Crm_Controller
       'order'  => isset($_POST['order']) ? $_POST['order'] : '',
       'search' => $this->input->post('search')['value'],
       'order_column' => 'view',
+      'leads_id' => $this->input->post('leads_id', true)
     ];
     if ($recordsFiltered == true) {
       return $this->ld_m->getLeadsHistoryAssignedDealer($filter)->num_rows();

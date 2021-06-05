@@ -308,6 +308,9 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           // // { "targets":[2,4,5], "searchable": false } 
         ],
       });
+    } else {
+      $('#tbl_assign_dealer').DataTable().ajax.reload();
+
     }
     load_data_assign_dealer++;
   }
@@ -381,6 +384,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           type: "POST",
           dataSrc: "data",
           data: function(d) {
+            d.leads_id = leads_id;
             return d;
           },
         },
@@ -401,6 +405,10 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           // // { "targets":[2,4,5], "searchable": false } 
         ],
       });
+    } else {
+      console.log('s')
+      $('#tbl_dispatch_history').DataTable().ajax.reload();
+      $('#tbl_reassign_dealer').DataTable().ajax.reload();
     }
     load_data_reassign_dealer++;
   }
