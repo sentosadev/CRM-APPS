@@ -210,14 +210,10 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
 
 <?php $data['data'] = ['selectWarna', 'selectTipe'];
 $this->load->view('additionals/dropdown_series_tipe', $data); ?>
+
+<?php $this->load->view('manage_customer/leads_customer_data/modal_assign_reassign'); ?>
+
 <script>
-  function upload() {
-    Swal.fire({
-      icon: 'success',
-      title: 'Success!',
-      text: 'Upload berhasil',
-    })
-  }
   $(document).ready(function() {
     var dataTable = $('.serverside-tables').DataTable({
       "processing": true,
@@ -259,4 +255,153 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
       ],
     });
   });
+
+  var load_data_assign_dealer = 0;
+
+  var leads_id = '';
+
+  function showAssign(ld_id) {
+    leads_id = ld_id;
+    $('#modalAssign').modal('show');
+    if (load_data_assign_dealer == 0) {
+      var dataTable = $('#tbl_assign_dealer').DataTable({
+        "searchable": false,
+        "processing": true,
+        "serverSide": true,
+        "language": {
+          "infoFiltered": "",
+          "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
+        },
+        "order": [],
+        "lengthMenu": [
+          [10, 25, 50, 75, 100],
+          [10, 25, 50, 75, 100]
+        ],
+        "ajax": {
+          url: "<?php echo site_url(get_controller() . '/fetchAssignDealer'); ?>",
+          type: "POST",
+          dataSrc: "data",
+          data: function(d) {
+            d.territory_data = $("#territory_data").prop("checked");
+            d.dealer_mapping = $("#dealer_mapping").prop("checked");
+            d.nos_score = $("#nos_score").prop("checked");
+            d.dealer_crm_score = $("#dealer_crm_score").prop("checked");
+            d.workload_dealer = $("#workload_dealer").prop("checked");
+            d.threshold_per_salespeople = $("#threshold_per_salespeople").val();
+            return d;
+          },
+        },
+        "columnDefs": [{
+            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            "orderable": false
+          },
+          {
+            "targets": [8],
+            "className": 'text-center'
+          },
+          // {
+          //   "targets": [3],
+          //   "className": 'text-right'
+          // },
+          // // { "targets":[0],"checkboxes":{'selectRow':true}}
+          // { "targets":[4],"className":'text-right'}, 
+          // // { "targets":[2,4,5], "searchable": false } 
+        ],
+      });
+    }
+    load_data_assign_dealer++;
+  }
+
+  var load_data_reassign_dealer = '';
+
+  function showReAssign(ld_id) {
+    leads_id = ld_id;
+    $('#modalReAssign').modal('show');
+    if (load_data_reassign_dealer == 0) {
+      var dataTable = $('#tbl_reassign_dealer').DataTable({
+        "searchable": false,
+        "processing": true,
+        "serverSide": true,
+        "language": {
+          "infoFiltered": "",
+          "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
+        },
+        "order": [],
+        "lengthMenu": [
+          [10, 25, 50, 75, 100],
+          [10, 25, 50, 75, 100]
+        ],
+        "ajax": {
+          url: "<?php echo site_url(get_controller() . '/fetchReAssignDealer'); ?>",
+          type: "POST",
+          dataSrc: "data",
+          data: function(d) {
+            d.territory_data = $("#reassign_territory_data").prop("checked");
+            d.dealer_mapping = $("#reassign_dealer_mapping").prop("checked");
+            d.nos_score = $("#reassign_nos_score").prop("checked");
+            d.dealer_crm_score = $("#reassign_dealer_crm_score").prop("checked");
+            d.workload_dealer = $("#reassign_workload_dealer").prop("checked");
+            d.threshold_per_salespeople = $("#reassign_threshold_per_salespeople").val();
+            return d;
+          },
+        },
+        "columnDefs": [{
+            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            "orderable": false
+          },
+          {
+            "targets": [8],
+            "className": 'text-center'
+          },
+          // {
+          //   "targets": [3],
+          //   "className": 'text-right'
+          // },
+          // // { "targets":[0],"checkboxes":{'selectRow':true}}
+          // { "targets":[4],"className":'text-right'}, 
+          // // { "targets":[2,4,5], "searchable": false } 
+        ],
+      });
+
+      var dataTable = $('#tbl_dispatch_history').DataTable({
+        "searchable": false,
+        "processing": true,
+        "serverSide": true,
+        "language": {
+          "infoFiltered": "",
+          "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
+        },
+        "order": [],
+        "lengthMenu": [
+          [10, 25, 50, 75, 100],
+          [10, 25, 50, 75, 100]
+        ],
+        "ajax": {
+          url: "<?php echo site_url(get_controller() . '/fetchDispatchHistory'); ?>",
+          type: "POST",
+          dataSrc: "data",
+          data: function(d) {
+            return d;
+          },
+        },
+        "columnDefs": [{
+            "targets": [0, 1, 2, 3, 4, 5, 6],
+            "orderable": false
+          },
+          {
+            "targets": [6],
+            "className": 'text-center'
+          },
+          // {
+          //   "targets": [3],
+          //   "className": 'text-right'
+          // },
+          // // { "targets":[0],"checkboxes":{'selectRow':true}}
+          // { "targets":[4],"className":'text-right'}, 
+          // // { "targets":[2,4,5], "searchable": false } 
+        ],
+      });
+    }
+    load_data_reassign_dealer++;
+  }
 </script>

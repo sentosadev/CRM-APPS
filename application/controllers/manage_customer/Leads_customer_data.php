@@ -9,6 +9,7 @@ class Leads_customer_data extends Crm_Controller
     parent::__construct();
     if (!logged_in()) redirect('auth/login');
     $this->load->model('leads_model', 'ld_m');
+    $this->load->model('Dealer_model', 'dealer_m');
   }
 
   public function index()
@@ -33,12 +34,17 @@ class Leads_customer_data extends Crm_Controller
       //   $aktif = '<i class="fa fa-check"></i>';
       // }
 
+      if ((string)$rs->assignedDealer == '') {
+        $btnAssign = 'Not-Assigned</br><button class="btn btn-primary btn-xs" onclick="showAssign(\'' . $rs->leads_id . '\')">Assign</button>';
+      } else {
+        $btnAssign = $rs->assignedDealer . '</br><button class="btn btn-primary btn-xs" onclick="showReAssign(\'' . $rs->leads_id . '\')">Reassign</button>';
+      }
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->leads_id;
       $sub_array[] = $rs->nama;
-      $sub_array[] = $rs->assignedDealer;
-      $sub_array[] = 'Not-Assigned</br><button class="btn btn-primary btn-xs" onclick="showAssign()">Assign</button>';
+      $sub_array[] = $rs->kodeDealerSebelumnya;
+      $sub_array[] = $btnAssign;
       $sub_array[] = $rs->tanggalAssignDealer;
       $sub_array[] = $rs->deskripsiPlatformData;
       $sub_array[] = $rs->deskripsiSourceData;
@@ -207,6 +213,7 @@ class Leads_customer_data extends Crm_Controller
     }
     send_json($response);
   }
+
   public function saveEditPengajuanKontakSales()
   {
     $user = user();
@@ -249,6 +256,7 @@ class Leads_customer_data extends Crm_Controller
     }
     send_json($response);
   }
+
   public function saveEditPendukungProbing_1()
   {
     $user = user();
@@ -483,5 +491,249 @@ class Leads_customer_data extends Crm_Controller
       ];
     }
     send_json($response);
+  }
+
+  public function fetchAssignDealer()
+  {
+    $fetch_data = $this->_makeQueryAssignDealer();
+    $data = array();
+    $user = user();
+    $no = $this->input->post('start') + 1;
+    foreach ($fetch_data as $rs) {
+      $sub_array   = array();
+      $sub_array[] = $no;
+      $sub_array[] = $rs->kode_dealer;
+      $sub_array[] = $rs->nama_dealer;
+      $sub_array[] = $rs->territory_data;
+      $sub_array[] = $rs->channel_mapping;
+      $sub_array[] = $rs->nos_score;
+      $sub_array[] = $rs->crm_score;
+      $sub_array[] = $rs->work_load;
+      $sub_array[] = '<button class="btn btn-primary btn-xs btnAssignDealer" onclick="setAssignDealer(this,\'' . $rs->kode_dealer . '\')">Assign</button>';
+      $data[]      = $sub_array;
+      $no++;
+    }
+    $output = array(
+      "draw"            => intval($_POST["draw"]),
+      "recordsFiltered" => $this->_makeQueryAssignDealer(true),
+      "data"            => $data
+    );
+    echo json_encode($output);
+  }
+
+  function _makeQueryAssignDealer($recordsFiltered = false)
+  {
+    $start  = $this->input->post('start');
+    $length = $this->input->post('length');
+    $limit  = "LIMIT $start, $length";
+    if ($recordsFiltered == true) $limit = '';
+
+    $filter = [
+      'limit'  => $limit,
+      'order'  => isset($_POST['order']) ? $_POST['order'] : '',
+      'search' => $this->input->post('search')['value'],
+      'order_column' => 'view',
+    ];
+    if ($recordsFiltered == true) {
+      return $this->dealer_m->getDealerForAssigned($filter)->num_rows();
+    } else {
+      return $this->dealer_m->getDealerForAssigned($filter)->result();
+    }
+  }
+
+  public function saveAssignDealer()
+  {
+    $user = user();
+    $fg = ['kode_dealer' => $this->input->post('assignedDealer', true)];
+    $gr = $this->dealer_m->getDealerForAssigned($fg)->row();
+
+    //Cek Data
+    if ($gr == NULL) {
+      $result = [
+        'status' => 0,
+        'pesan' => 'Kode dealer tidak ditemukan '
+      ];
+      send_json($result);
+    }
+
+    $update = [
+      'assignedDealer'        => $this->input->post('assignedDealer', true),
+      'tanggalAssignDealer' => waktu(),
+      'assignedDealerBy' => $user->id_user,
+    ];
+
+    $tes = ['update' => $update];
+    // send_json($tes);
+    $this->db->trans_begin();
+    $this->db->update('leads', $update, ['leads_id' => $this->input->post('leads_id', true)]);
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+      $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
+    } else {
+      $this->db->trans_commit();
+      $response = [
+        'status' => 1,
+        'url' => site_url(get_slug())
+      ];
+      $msg = ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Berhasil melakukan assign dealer'];
+      $this->session->set_flashdata($msg);
+    }
+    send_json($response);
+  }
+  public function fetchReAssignDealer()
+  {
+    $fetch_data = $this->_makeQueryReAssignDealer();
+    $data = array();
+    $user = user();
+    $no = $this->input->post('start') + 1;
+    foreach ($fetch_data as $rs) {
+      $sub_array   = array();
+      $sub_array[] = $no;
+      $sub_array[] = $rs->kode_dealer;
+      $sub_array[] = $rs->nama_dealer;
+      $sub_array[] = $rs->territory_data;
+      $sub_array[] = $rs->channel_mapping;
+      $sub_array[] = $rs->nos_score;
+      $sub_array[] = $rs->crm_score;
+      $sub_array[] = $rs->work_load;
+      $sub_array[] = '<button class="btn btn-primary btn-xs btnReAssignDealer" onclick="setReAssignDealer(this,\'' . $rs->kode_dealer . '\')">Assign</button>';
+      $data[]      = $sub_array;
+      $no++;
+    }
+    $output = array(
+      "draw"            => intval($_POST["draw"]),
+      "recordsFiltered" => $this->_makeQueryReAssignDealer(true),
+      "data"            => $data
+    );
+    echo json_encode($output);
+  }
+
+  function _makeQueryReAssignDealer($recordsFiltered = false)
+  {
+    $start  = $this->input->post('start');
+    $length = $this->input->post('length');
+    $limit  = "LIMIT $start, $length";
+    if ($recordsFiltered == true) $limit = '';
+
+    $filter = [
+      'limit'  => $limit,
+      'order'  => isset($_POST['order']) ? $_POST['order'] : '',
+      'search' => $this->input->post('search')['value'],
+      'order_column' => 'view',
+    ];
+    if ($recordsFiltered == true) {
+      return $this->dealer_m->getDealerForAssigned($filter)->num_rows();
+    } else {
+      return $this->dealer_m->getDealerForAssigned($filter)->result();
+    }
+  }
+
+  public function saveReAssignDealer()
+  {
+    $user = user();
+    $f_asg = ['leads_id' => $this->input->post('leads_id', true)];
+    $lead = $this->ld_m->getLeads($f_asg)->row();
+
+    $fg = ['kode_dealer' => $this->input->post('assignedDealer', true)];
+    $gr = $this->dealer_m->getDealerForAssigned($fg)->row();
+    //Cek Data Dealer
+    if ($gr == NULL) {
+      $result = [
+        'status' => 0,
+        'pesan' => 'Kode dealer tidak ditemukan '
+      ];
+      send_json($result);
+    }
+    if ($lead->assignedDealer == $gr->kode_dealer) {
+      $result = [
+        'status' => 0,
+        'pesan' => 'Dealer yang dipilih sama dengan Assigned Dealer sebelumnya'
+      ];
+      send_json($result);
+    }
+
+    $update = [
+      'kodeDealerSebelumnya' => $lead->assignedDealer,
+      'assignedDealer'       => $this->input->post('assignedDealer', true),
+      'tanggalAssignDealer'  => waktu(),
+      'assignedDealerBy'     => $user->id_user,
+    ];
+
+    // Insert History Assigned Dealer
+    $insert = [
+      'leads_id'             => $this->input->post('leads_id', true),
+      'assignedKe'           => $this->ld_m->getLeadsHistoryAssignedDealer($f_asg)->num_rows() + 1,
+      'assignedDealer'       => $lead->assignedDealer,
+      'tanggalAssignDealer'  => $lead->tanggalAssignDealer,
+      'assignedDealerBy'     => $lead->assignedDealerBy,
+      'created_at'           => waktu(),
+      'created_by'           => $user->id_user,
+      'alasanReAssignDealer' => $this->input->post('alasanReAssignDealer', true),
+    ];
+
+    $tes = ['update' => $update, 'insert' => $insert];
+    send_json($tes);
+    $this->db->trans_begin();
+    $this->db->update('leads', $update, $f_asg);
+    $this->db->insert('leads_history_assigned_dealer', $insert);
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+      $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
+    } else {
+      $this->db->trans_commit();
+      $response = [
+        'status' => 1,
+        'url' => site_url(get_slug())
+      ];
+      $msg = ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Berhasil melakukan reassign dealer untuk Leads ID : ' . $this->input->post('leads_id', true)];
+      $this->session->set_flashdata($msg);
+    }
+    send_json($response);
+  }
+
+  public function fetchDispatchHistory()
+  {
+    $fetch_data = $this->_makeQueryDispatchHistory();
+    $data = array();
+    $user = user();
+    $no = $this->input->post('start') + 1;
+    foreach ($fetch_data as $rs) {
+      $sub_array   = array();
+      $sub_array[] = $no;
+      $sub_array[] = $rs->nama_dealer;
+      $sub_array[] = $rs->tanggalAssignDealer;
+      $sub_array[] = $rs->created_at;
+      $sub_array[] = '';
+      $sub_array[] = '';
+      $sub_array[] = '';
+      $data[]      = $sub_array;
+      $no++;
+    }
+    $output = array(
+      "draw"            => intval($_POST["draw"]),
+      "recordsFiltered" => $this->_makeQueryDispatchHistory(true),
+      "data"            => $data
+    );
+    echo json_encode($output);
+  }
+
+  function _makeQueryDispatchHistory($recordsFiltered = false)
+  {
+    $start  = $this->input->post('start');
+    $length = $this->input->post('length');
+    $limit  = "LIMIT $start, $length";
+    if ($recordsFiltered == true) $limit = '';
+
+    $filter = [
+      'limit'  => $limit,
+      'order'  => isset($_POST['order']) ? $_POST['order'] : '',
+      'search' => $this->input->post('search')['value'],
+      'order_column' => 'view',
+    ];
+    if ($recordsFiltered == true) {
+      return $this->ld_m->getLeadsHistoryAssignedDealer($filter)->num_rows();
+    } else {
+      return $this->ld_m->getLeadsHistoryAssignedDealer($filter)->result();
+    }
   }
 }
