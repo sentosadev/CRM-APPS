@@ -35,16 +35,24 @@ class Leads_customer_data extends Crm_Controller
       // }
 
       if ((string)$rs->assignedDealer == '') {
-        $btnAssign = 'Not-Assigned</br><button class="btn btn-primary btn-xs" onclick="showAssign(\'' . $rs->leads_id . '\')">Assign</button>';
+        $btnAssign = 'Not-Assigned</br>';
       } else {
-        $btnAssign = $rs->assignedDealer . '</br><button class="btn btn-primary btn-xs" onclick="showReAssign(\'' . $rs->leads_id . '\')">Reassign</button>';
+        $btnAssign = $rs->assignedDealer . '</br>';
       }
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->leads_id;
       $sub_array[] = $rs->nama;
       $sub_array[] = $rs->kodeDealerSebelumnya;
-      $sub_array[] = $btnAssign;
+      $skip_if = [
+        'assign' => [
+          [$rs->assignedDealer, '!=', '']
+        ],
+        'reassign' => [
+          [$rs->assignedDealer, '==', '']
+        ]
+      ];
+      $sub_array[] = $btnAssign . link_assign_reassign($rs->leads_id, $user->id_group, $skip_if);
       $sub_array[] = $rs->tanggalAssignDealer;
       $sub_array[] = $rs->deskripsiPlatformData;
       $sub_array[] = $rs->deskripsiSourceData;

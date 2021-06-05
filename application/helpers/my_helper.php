@@ -330,7 +330,7 @@ function links_on_table()
   return $links;
 }
 
-function link_on_data_details($params, $id_group)
+function link_on_data_details($params, $id_group, $skip_if = NULL)
 {
   $CI = &get_instance();
   $filter = [
@@ -372,6 +372,69 @@ function link_on_data_details($params, $id_group)
   // $edit .= '<a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button" data-tooltip="tooltip" title="Toggle">cde</a>';
   // $edit .= '<button id="mybtn" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip : left">Tooltip : Left</button>';
   // send_json($button);
+  return $button;
+}
+function link_assign_reassign($leads_id, $id_group, $skip_if = NULL)
+{
+  $CI = &get_instance();
+  $filter = [
+    'controller' => get_controller()
+  ];
+  $links = [
+    'assign' => [
+      'class' => "btn btn-primary btn-xs btn-flat",
+      'icon' => '',
+      'title' => 'Assign',
+      'onclick' => "showAssign('leads_id')"
+    ],
+    'reassign' => [
+      'class' => "btn btn-primary btn-xs btn-flat",
+      'icon' => '',
+      'title' => 'Reassign',
+      'onclick' => "showReAssign('leads_id')"
+    ],
+  ];
+  $menu = $CI->dm->getMenus($filter)->row();
+  $button = '';
+  $explode_links = explode(',', $menu->links_menu);
+  $get_links = cekAkasesMenuBySlug($id_group, $menu->slug);
+  $explode_links = [];
+  foreach ($get_links as $lks) {
+    if ($id_group == 1) {
+      $explode_links[] = $lks->link;
+    } else {
+      if ($lks->akses == 1) {
+        $explode_links[] = $lks->link;
+      }
+    }
+  }
+  foreach ($links as $key => $lk) {
+    if (in_array($key,  $explode_links)) {
+      $skip = 0;
+      if ($skip_if != NULL) {
+        if (isset($skip_if[$key])) {
+          $cond_skip = $skip_if[$key];
+          foreach ($cond_skip as $ks => $vs) {
+            if ($vs[1] == '==') {
+              if ($vs[0] == $vs[2]) {
+                $skip++;
+              }
+            } elseif ($vs[1] == '!=') {
+              if ($vs[0] != $vs[2]) {
+                $skip++;
+              }
+            }
+          }
+        }
+      }
+      if ($skip == 0) {
+        $onclick = str_replace('leads_id', $leads_id, $lk['onclick']);
+        $button .= "<button type=\"button\" class=\"{$lk['class']}\" onclick=\"$onclick\">
+          {$lk['title']}
+        </button>";
+      }
+    }
+  }
   return $button;
 }
 
