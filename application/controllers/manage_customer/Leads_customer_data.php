@@ -108,6 +108,7 @@ class Leads_customer_data extends Crm_Controller
     if ($row != NULL) {
       $data['row'] = $row;
       $filter['response'] = true;
+      $filter['assignedDealer'] = $row->assignedDealer;
       $data['list_follow_up'] = $this->ld_m->getLeadsFollowUp($filter);
       // send_json($data);
       $this->template_portal($data);
@@ -424,10 +425,14 @@ class Leads_customer_data extends Crm_Controller
   {
     $data['title'] = $this->title;
     $data['file']  = 'detail';
-    $filter['id_kelurahan']  = $this->input->get('id');
-    $row = $this->tp_m->getKelurahan($filter)->row();
+    $filter['leads_id']  = $this->input->get('id');
+    $row = $this->ld_m->getLeads($filter)->row();
     if ($row != NULL) {
       $data['row'] = $row;
+      $filter['response'] = true;
+      $filter['assignedDealer'] = $row->assignedDealer;
+      $data['list_follow_up'] = $this->ld_m->getLeadsFollowUp($filter);
+      // send_json($data);
       $this->template_portal($data);
     } else {
       $this->session->set_flashdata(msg_not_found());
@@ -459,10 +464,12 @@ class Leads_customer_data extends Crm_Controller
   function tambahDataFollowUp()
   {
     $followUpKe = $this->input->post('fol', true);
-
+    $leads_id = $this->input->post('leads_id', true);
+    $get_lead = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
     $ins_fol_up = [
-      'leads_id' => $this->input->post('leads_id', true),
+      'leads_id' => $leads_id,
       'followUpKe' => $followUpKe,
+      'assignedDealer' => $get_lead->assignedDealer,
     ];
     if ($followUpKe > 1) {
       $fol_sebelumnya = $followUpKe - 1;
@@ -474,9 +481,9 @@ class Leads_customer_data extends Crm_Controller
       $cek_fol_sebelumnya = $this->ld_m->getLeadsFollowUp($fc)->row();
       if ($cek_fol_sebelumnya != NULL) {
         $response = ['status' => 0, 'pesan' => 'Follow Up Ke-' . $fol_sebelumnya . ' belum selesai'];
-        // send_json($response);
       }
     }
+    // send_json($ins_fol_up);
     $this->db->trans_begin();
     if (isset($ins_fol_up)) {
       $this->db->insert('leads_follow_up', $ins_fol_up);
@@ -684,7 +691,7 @@ class Leads_customer_data extends Crm_Controller
     ];
 
     $tes = ['update' => $update, 'insert' => $insert];
-    send_json($tes);
+    // send_json($tes);
     $this->db->trans_begin();
     $this->db->update('leads', $update, $f_asg);
     $this->db->insert('leads_history_assigned_dealer', $insert);
