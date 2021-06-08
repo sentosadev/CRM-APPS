@@ -136,6 +136,26 @@ if (in_array('selectPekerjaan', $data)) { ?>
           cache: true
         }
       });
+      $("#kodePekerjaan2").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectPekerjaan') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
     });
   </script>
 <?php } ?>
@@ -404,3 +424,87 @@ if (in_array('selectAlasanFuNotInterestMulti', $data)) {
     </script>
 <?php }
 } ?>
+
+<?php
+if (in_array('selectJenisMotorYangDimilikiSekarang', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#idJenisMotorYangDimilikiSekarang").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectJenisMotorYangDimilikiSekarang') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectMerkMotorYangDimilikiSekarang', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#idMerkMotorYangDimilikiSekarang").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectMerkMotorYangDimilikiSekarang') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectSumberProspek', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#idSumberProspek").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectSumberProspek') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>

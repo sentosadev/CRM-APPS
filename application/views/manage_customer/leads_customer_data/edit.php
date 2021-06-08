@@ -74,31 +74,33 @@
   </div>
   <script>
     $(document).ready(function() {
+      $('jenisCustomer').val('<?= $row->jenisCustomer ?>');
       $('st-actionContainer').launchBtn({
         openDuration: 250,
         closeDuration: 150
       });
       let flash = <?= json_encode($this->session->flashdata()) ?>;
       if (flash.tabs != undefined) {
-        changeTabs(flash.tabs) //Testing Menuju Tab Tertentu
+        changeTabs(flash.tabs) //Menuju Tab Tertentu
       }
-      // changeTabs('data_follow_up_1') //Testing Menuju Tab Tertentu
+      // changeTabs('data_pendukung_probing_1') //Testing Menuju Tab Tertentu
     });
 
     function changeTabs(tabs) {
       $('[href="#' + tabs + '"]').tab('show');
-      // document.body.scrollTop = 0; // For Safari
-      // document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
       title = "Nama Customer : " + $('#nama').val() + "<br>" + "Kode Motor : " + $('#id_tipe').val() + "<br>" + "Tipe Motor : " + $('#id_warna').val() + "<br>" + "Riding Test : " + "<br>" + "Promo Diminati : " + $('#promoYangDiminatiCustomer').val();
-      $('#tooltipInformasiCustomer').removeAttr('title');
-      $('#tooltipInformasiCustomer').attr('title', title);
-      $('#tooltipInformasiCustomer').attr('data-original-title', title);
+      $('.tooltipInformasiCustomer').removeAttr('title');
+      $('.tooltipInformasiCustomer').attr('data-original-title', title);
     }
 
     $("#kodePekerjaan").on("change", function() {
       var values = {
         id: $(this).val()
       }
+      $('#fug_script_guide').html('');
+      $('#fug_golden_time').html('');
       $.ajax({
         beforeSend: function() {
           $('#btnFollowUpGuidance').html('<i class="fa fa-spinner fa-spin"></i>');

@@ -106,7 +106,7 @@
 
      //Date range picker with time picker
      $('.datepicker').daterangepicker({
-      //  timePicker: false,
+       //  timePicker: false,
        singleDatePicker: true,
        isInvalidDate: false,
        autoUpdateInput: false,

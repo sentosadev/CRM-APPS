@@ -96,7 +96,7 @@
 
         </div>
       </div>
-      <label class="col-sm-2 control-label">Deskripsi Pekerjaan</label>
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (Saat Ini)</label>
       <div class="form-input">
         <div class="col-sm-4">
           <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaan'>
@@ -200,6 +200,147 @@
         </div>
       </div>
     </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Jenis Motor yg dimiliki sekarang</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="idJenisMotorYangDimilikiSekarang" class='form-control' name='idJenisMotorYangDimilikiSekarang'>
+            <option value='<?= $row->idJenisMotorYangDimilikiSekarang ?>'><?= $row->jenisMotorYangDimilikiSekarang ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Merk Motor yg dimiliki sekarang</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="idMerkMotorYangDimilikiSekarang" class='form-control' name='idMerkMotorYangDimilikiSekarang'>
+            <option value='<?= $row->idMerkMotorYangDimilikiSekarang ?>'><?= $row->merkMotorYangDimilikiSekarang ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Yang Menggunakan Sepeda Motor</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="yangMenggunakanSepedaMotor" class='form-control' name='yangMenggunakanSepedaMotor'>
+            <option></option>
+            <?php $list = ['Saya Sendiri', 'Anak', 'Pasangan Suami/Istri'];
+            foreach ($list as $val) { ?>
+              <option value='<?= $val ?>' <?= $val == $row->yangMenggunakanSepedaMotor ? 'selected' : '' ?>><?= $val ?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Status Prospek</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="statusProspek" class='form-control' name='statusProspek'>
+            <option></option>
+            <?php $list = ['Low', 'Hot', 'Not Deal', 'Deal'];
+            foreach ($list as $val) { ?>
+              <option value='<?= $val ?>' <?= $val == $row->statusProspek ? 'selected' : '' ?>><?= $val ?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Longitude</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="number" class="form-control" name='longitude' required value='<?= $row->longitude ?>'>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Latitude</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="number" class="form-control" id='latitude' name='latitude' required value='<?= $row->latitude ?>'>
+
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">No. KK</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="number" class="form-control" name='noKK' required value='<?= $row->noKK ?>'>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">No. NPWP</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="number" class="form-control" id='npwp' name='npwp' required value='<?= $row->npwp ?>'>
+
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Jenis Customer</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="jenisCustomer" class='form-control' name='jenisCustomer'>
+            <option value=""></option>
+            <?php $list = ['regular' => 'Regular', 'group_customer' => 'Group Customer'];
+            foreach ($list as $key => $val) { ?>
+              <option value='<?= $key ?>' <?= $key == $row->jenisCustomer ? 'selected' : '' ?>><?= $val ?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Sumber Prospek</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="idSumberProspek" class='form-control' name='idSumberProspek'>
+            <option value='<?= $row->idSumberProspek ?>'><?= $row->sumberProspek ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Jenis Kewarganegaraan</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="jenisKewarganegaraan" class='form-control' name='jenisKewarganegaraan'>
+            <option value=""></option>
+            <?php $list = ['WNA' => 'WNA', 'WNI' => 'WNI'];
+            foreach ($list as $key => $val) { ?>
+              <option value='<?= $key ?>' <?= $key == $row->jenisKewarganegaraan ? 'selected' : '' ?>><?= $val ?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Rencana Pembayaran</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="rencanaPembayaran" class='form-control' name='rencanaPembayaran'>
+            <option value=""></option>
+            <?php $list = ['cash' => 'Cash', 'kredit' => 'Kredit'];
+            foreach ($list as $key => $val) { ?>
+              <option value='<?= $key ?>' <?= $key == $row->rencanaPembayaran ? 'selected' : '' ?>><?= $val ?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP)</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="kodePekerjaan2" class='form-control' name='kodePekerjaanKtp'>
+            <option value='<?= $row->kodePekerjaanKtp ?>'><?= $row->deskripsiPekerjaanKtp ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Prioritas Prospect Customer</label>
+      <div class="form-input">
+        <div class="col-sm-1">
+          <input type="radio" name="prioritasProspekCustomer" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->prioritasProspekCustomer == '1' ? 'checked' : '' ?>> Ya
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" name="prioritasProspekCustomer" value="0" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->prioritasProspekCustomer == '0' ? 'checked' : '' ?>> Tidak
+        </div>
+      </div>
+    </div>
     <div class="form-group" style='padding-top:20px'>
       <div class="col-sm-6">
         <button type="button" id="backTo_pengajuan_kontak_sales" class="btn btn-primary btn-flat" onclick="saveDataPendukung('pengajuan_kontak_sales')"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
@@ -210,7 +351,7 @@
     </div>
   </form>
 </div>
-<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerSebelumnya', 'selectLeasingSebelumnya'];
+<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerSebelumnya', 'selectLeasingSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 <?php $data['data'] = ['selectProvinsi', 'selectKecamatan', 'selectKecamatan2', 'selectKelurahan'];
 $this->load->view('additionals/dropdown_wilayah', $data); ?>

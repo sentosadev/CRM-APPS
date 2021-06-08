@@ -62,7 +62,7 @@ class Leads_customer_data extends CI_Controller
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getPekerjaan($filter)->result();
+    $response = $this->lm->getPekerjaanFromOtherDB($filter)->result();
     send_json($response);
   }
   function selectPendidikan()
@@ -73,7 +73,7 @@ class Leads_customer_data extends CI_Controller
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getPendidikan($filter)->result();
+    $response = $this->lm->getPendidikanFromOtherDB($filter)->result();
     send_json($response);
   }
   function selectAgama()
@@ -84,7 +84,7 @@ class Leads_customer_data extends CI_Controller
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getAgama($filter)->result();
+    $response = $this->lm->getAgamaFromOtherDB($filter)->result();
     send_json($response);
   }
   function selectDealer()
@@ -106,7 +106,7 @@ class Leads_customer_data extends CI_Controller
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getLeasing($filter)->result();
+    $response = $this->lm->getLeasingFromOtherDB($filter)->result();
     send_json($response);
   }
   function selectMediaKomunikasiFolUp()
@@ -144,6 +144,7 @@ class Leads_customer_data extends CI_Controller
     $response = $this->lm->getHasilKomunikasi($filter)->result();
     send_json($response);
   }
+
   function selectAlasanFuNotInterest()
   {
     $this->load->model('alasan_fu_not_interest_model', 'lm');
@@ -153,6 +154,42 @@ class Leads_customer_data extends CI_Controller
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
     $response = $this->lm->getAlasanFuNotInterest($filter)->result();
+    send_json($response);
+  }
+
+  function selectJenisMotorYangDimilikiSekarang()
+  {
+    $this->load->model('jenis_motor_yang_dimiliki_sekarang_model', 'lm');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    $response = $this->lm->getJenisMotorYangDimilikiSekarangFromOtherDB($filter)->result();
+    send_json($response);
+  }
+
+  function selectMerkMotorYangDimilikiSekarang()
+  {
+    $this->load->model('merk_motor_yang_dimiliki_sekarang_model', 'lm');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    $response = $this->lm->getMerkMotorYangDimilikiSekarangFromOtherDB($filter)->result();
+    send_json($response);
+  }
+
+  function selectSumberProspek()
+  {
+    $this->load->model('sumber_prospek_model', 'lm');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    $response = $this->lm->getSumberProspekFromOtherDB($filter)->result();
     send_json($response);
   }
 }

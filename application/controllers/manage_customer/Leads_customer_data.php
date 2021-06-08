@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Leads_customer_data extends Crm_Controller
 {
   var $title  = "Leads Customer Data";
-
+  var $db2 = '';
   public function __construct()
   {
     parent::__construct();
@@ -99,59 +99,6 @@ class Leads_customer_data extends Crm_Controller
     }
   }
 
-  public function insert()
-  {
-    $data['title'] = $this->title;
-    $data['file']  = 'insert';
-    $this->template_portal($data);
-  }
-
-  public function saveData()
-  {
-    $user = user();
-    $post     = $this->input->post();
-
-    //Cek id_kelurahan
-    $id_kelurahan = $post['id_kelurahan'];
-    $filter   = ['id_kelurahan' => $id_kelurahan];
-    $cek = $this->tp_m->getKelurahan($filter);
-    if ($cek->num_rows() > 0) {
-      $result = [
-        'status' => 0,
-        'pesan' => 'ID Kelurahan : ' . $id_kelurahan . ' sudah ada'
-      ];
-      send_json($result);
-    }
-
-    $insert = [
-      'id_kelurahan' => $post['id_kelurahan'],
-      'id_kecamatan' => $post['id_kecamatan'],
-      'id_kabupaten_kota' => $post['id_kabupaten_kota'],
-      'id_provinsi' => $post['id_provinsi'],
-      'kelurahan' => $post['kelurahan'],
-      'aktif'      => isset($_POST['aktif']) ? 1 : 0,
-      'created_at'    => waktu(),
-      'created_by' => $user->id_user,
-    ];
-
-    $tes = ['insert' => $insert];
-    // send_json($tes);
-    $this->db->trans_begin();
-    $this->db->insert('ms_maintain_kelurahan', $insert);
-    if ($this->db->trans_status() === FALSE) {
-      $this->db->trans_rollback();
-      $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
-    } else {
-      $this->db->trans_commit();
-      $response = [
-        'status' => 1,
-        'url' => site_url(get_slug())
-      ];
-      $this->session->set_flashdata(msg_sukses_simpan());
-    }
-    send_json($response);
-  }
-
   public function edit()
   {
     $data['title'] = $this->title;
@@ -162,7 +109,7 @@ class Leads_customer_data extends Crm_Controller
       $data['row'] = $row;
       $filter['response'] = true;
       $data['list_follow_up'] = $this->ld_m->getLeadsFollowUp($filter);
-      // send_json($data['list_follow_up']);
+      // send_json($data);
       $this->template_portal($data);
     } else {
       $this->session->set_flashdata(msg_not_found());
@@ -204,6 +151,7 @@ class Leads_customer_data extends Crm_Controller
       'eventCodeInvitation' => $this->input->post('eventCodeInvitation', true),
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
+      'statusNoHp' => $this->input->post('statusNoHp', true),
     ];
 
     $tes = ['update' => $update];
@@ -270,6 +218,13 @@ class Leads_customer_data extends Crm_Controller
     $user = user();
     $fg = ['leads_id' => $this->input->post('leads_id', true)];
     $gr = $this->ld_m->getLeads($fg)->row();
+    $this->load->model('pekerjaan_model', 'pkj');
+    $this->load->model('pendidikan_model', 'pdk');
+    $this->load->model('leasing_model', 'lsg');
+    $this->load->model('agama_model', 'agm');
+    $this->load->model('Jenis_motor_yang_dimiliki_sekarang_model', 'jmds');
+    $this->load->model('Merk_motor_yang_dimiliki_sekarang_model', 'mmds');
+    $this->load->model('sumber_prospek_model', 'sprm');
     //Cek Data
     if ($gr == NULL) {
       $result = [
@@ -279,7 +234,19 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
-    // send_json($this->input->post());
+
+    //Get Jenis Motor Yang Dimiliki Sekarang
+    $idJenisMotorYangDimilikiSekarang = $this->input->post('idJenisMotorYangDimilikiSekarang', true);
+    $jmds = $this->jmds->getJenisMotorYangDimilikiSekarangFromOtherDB(['id_jenis_sebelumnya' => $idJenisMotorYangDimilikiSekarang])->row();
+
+    //Get idMerkMotorYangDimilikiSekarang
+    $idMerkMotorYangDimilikiSekarang = $this->input->post('idMerkMotorYangDimilikiSekarang', true);
+    $mmds = $this->mmds->getMerkMotorYangDimilikiSekarangFromOtherDB(['id_merk_sebelumnya' => $idMerkMotorYangDimilikiSekarang])->row();
+
+    //Get idSumberProspek
+    $idSumberProspek = $this->input->post('idSumberProspek', true);
+    $sprm = $this->sprm->getSumberProspekFromOtherDB(['id' => $idSumberProspek])->row();
+
     $update = [
       'alasanPindahDealer' => $this->input->post('alasanPindahDealer', true),
       'deskripsiTipeUnitPembelianTerakhir' => $this->input->post('deskripsiTipeUnitPembelianTerakhir', true),
@@ -294,6 +261,7 @@ class Leads_customer_data extends Crm_Controller
       'kodeDealerSebelumnya' => $this->input->post('kodeDealerSebelumnya', true),
       'kodeLeasingSebelumnya' => $this->input->post('kodeLeasingSebelumnya', true),
       'kodePekerjaan' => $this->input->post('kodePekerjaan', true),
+      'kodePekerjaanKtp' => $this->input->post('kodePekerjaanKtp', true),
       'namaCommunity' => $this->input->post('namaCommunity', true),
       'namaDealerPreferensiCustomer' => $this->input->post('namaDealerPreferensiCustomer', true),
       'noKtp' => $this->input->post('noKtp', true),
@@ -307,11 +275,46 @@ class Leads_customer_data extends Crm_Controller
       'tanggalRencanaPembelian' => convert_datetime($this->input->post('tanggalRencanaPembelian', true)),
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
+      'idJenisMotorYangDimilikiSekarang' => $idJenisMotorYangDimilikiSekarang,
+      'jenisMotorYangDimilikiSekarang' => $jmds == NULL ? NULL : $jmds->jenis_sebelumnya,
+      'idMerkMotorYangDimilikiSekarang' => $idMerkMotorYangDimilikiSekarang,
+      'merkMotorYangDimilikiSekarang' => $mmds == NULL ? NULL : $mmds->merk_sebelumnya,
+      'yangMenggunakanSepedaMotor' => $this->input->post('yangMenggunakanSepedaMotor', true),
+      'statusProspek' => $this->input->post('statusProspek', true),
+      'longitude' => (float)$this->input->post('longitude', true),
+      'latitude' => (float)$this->input->post('latitude', true),
+      'noKK' => $this->input->post('noKK', true),
+      'npwp' => $this->input->post('npwp', true),
+      'jenisCustomer' => $this->input->post('jenisCustomer', true),
+      'idSumberProspek' => $idSumberProspek,
+      'sumberProspek' => $sprm == NULL ? NULL : $sprm->description,
+      'jenisKewarganegaraan' => $this->input->post('jenisKewarganegaraan', true),
+      'rencanaPembayaran' => $this->input->post('rencanaPembayaran', true),
+      'prioritasProspekCustomer' => $this->input->post('prioritasProspekCustomer', true),
     ];
 
-    $tes = ['update' => $update];
+    //Sinkron Tabel Pendidikan
+    $arr_id_pendidikan = [$this->input->post('idPendidikan', true)];
+
+    //Sinkron Tabel pekerjaan
+    $arr_kode_pekerjaan = [$this->input->post('kodePekerjaan', true), $this->input->post('kodePekerjaanKtp', true)];
+
+    //Sinkron Tabel Leasing
+    $arr_kode_leasing = [$this->input->post('kodeLeasingSebelumnya', true)];
+
+    //Sinkron Tabel Agama
+    $arr_kode_agama = [$this->input->post('idAgama', true)];
+
+    $tes = [
+      'update' => $update
+    ];
     // send_json($tes);
+
     $this->db->trans_begin();
+    $this->pdk->sinkronTabelPendidikan($arr_id_pendidikan, $user);
+    $this->pkj->sinkronTabelPekerjaan($arr_kode_pekerjaan, $user);
+    $this->lsg->sinkronTabelLeasing($arr_kode_leasing, $user);
+    $this->agm->sinkronTabelAgama($arr_kode_agama, $user);
     $this->db->update('leads', $update, $fg);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
@@ -436,18 +439,19 @@ class Leads_customer_data extends Crm_Controller
   {
     $fc = ['kode_pekerjaan' => $this->input->post('id')];
     $this->load->model('pekerjaan_model', 'pkj');
-    $cek = $this->pkj->getPekerjaan($fc)->row();
-    if ($cek != NULL) {
+    $cek = $this->pkj->getPekerjaanFromOtherDB($fc)->row();
+    $cek_on_crm = $this->pkj->getPekerjaan($fc)->row();
+    if ($cek_on_crm != NULL) {
       $response =  [
         'status' => 1,
         'data' => [
           'pekerjaan' => $cek->pekerjaan,
-          'golden_time' => $cek->golden_time,
-          'script_guide' => $cek->script_guide,
+          'golden_time' => $cek_on_crm->golden_time,
+          'script_guide' => $cek_on_crm->script_guide,
         ]
       ];
     } else {
-      $response = ['status' => 0];
+      $response = ['status' => 1, 'data' => ['pekerjaan' => $cek->pekerjaan]];
     }
     send_json($response);
   }
@@ -744,5 +748,16 @@ class Leads_customer_data extends Crm_Controller
     } else {
       return $this->ld_m->getLeadsHistoryAssignedDealer($filter)->result();
     }
+  }
+
+  function tesdb()
+  {
+    $db2 = $this->load->database('sinsen_live', true);
+    $db = $db2->database;
+    $tes = $db->query("SELECT * FROM ms_pekerjaan pkjs
+     limit 5")->result();
+    send_json($tes);
+
+    // send_json($res);
   }
 }

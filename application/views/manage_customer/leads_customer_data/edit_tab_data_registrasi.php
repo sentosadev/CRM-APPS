@@ -121,6 +121,18 @@
           <input type="text" class="form-control" name='eventCodeInvitation' required value='<?= $row->eventCodeInvitation ?>' <?= $disabled ?>>
         </div>
       </div>
+      <label class="col-sm-2 control-label">Status No. Handphone</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="statusNoHp" class='form-control' name='statusNoHp'>
+            <option value=""></option>
+            <?php $list = ['1' => 'Pra Bayar(Isi Ulang)', '2' => 'Pasca Bayar/Billing/Tagihan'];
+            foreach ($list as $key => $val) { ?>
+              <option value='<?= $key ?>' <?= $key == $row->statusNoHp ? 'selected' : '' ?>><?= $val ?></option>
+            <?php } ?>
+          </select>
+        </div>
+      </div>
     </div>
   </form>
   <div class="form-group">
