@@ -20,7 +20,7 @@
       <label class="col-sm-2 control-label">Customer ID</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='customerId' required value='<?= $row->customerId ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='customerId' required value='<?= $row->customerId ?>' disabled>
         </div>
       </div>
       <label class="col-sm-2 control-label">Kategori Modul Leads</label>

@@ -218,6 +218,7 @@ class Leads_model extends CI_Model
     }
     return strtoupper($new_kode);
   }
+
   function getLeadsID()
   {
     $dmy = gmdate("dmY", time() + 60 * 60 * 7);
@@ -387,5 +388,31 @@ class Leads_model extends CI_Model
     $limit
     ");
     return $dt_result;
+  }
+
+  function getCustomerID()
+  {
+    $dmy = gmdate("dmY", time() + 60 * 60 * 7);
+    $ymd = tanggal();
+    $get_data  = $this->db->query("SELECT RIGHT(customerId,3) customerId 
+                  FROM leads WHERE LEFT(created_at,10)='$ymd'
+                  ORDER BY created_at DESC LIMIT 0,1");
+    if ($get_data->num_rows() > 0) {
+      $row = $get_data->row();
+      $new_kode = 'CUST/' . $dmy . '/' . sprintf("%'.03d", $row->customerId + 1);
+      $i = 0;
+      while ($i < 1) {
+        $cek = $this->db->get_where('leads', ['customerId' => $new_kode])->num_rows();
+        if ($cek > 0) {
+          $new_kode   = 'CUST/' . $dmy . '/' . sprintf("%'.03d", substr($new_kode, -3) + 1);
+          $i = 0;
+        } else {
+          $i++;
+        }
+      }
+    } else {
+      $new_kode   = 'CUST/' . $dmy . '/001';
+    }
+    return strtoupper($new_kode);
   }
 }

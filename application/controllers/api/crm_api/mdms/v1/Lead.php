@@ -149,6 +149,7 @@ class Lead extends CI_Controller
     foreach ($data as $pst) {
       $insert = [
         'leads_id' => $this->ld_m->getLeadsID(),
+        'customerId' => $this->ld_m->getCustomerID(),
         'batchID' => $pst['batchID'],
         'nama' => clear_removed_html($pst['nama']),
         'noHP' => clear_removed_html($pst['noHP']),
@@ -193,6 +194,7 @@ class Lead extends CI_Controller
   function schedulerLeadsTransactionTable()
   {
     $scheduler = new Scheduler();
+    $this->_insertToMainTable();
     $scheduler->call(function () {
       $this->_insertToMainTable();
       //Create Cron Log
