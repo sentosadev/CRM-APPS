@@ -242,6 +242,7 @@ class Leads_customer_data extends Crm_Controller
     $this->load->model('Jenis_motor_yang_dimiliki_sekarang_model', 'jmds');
     $this->load->model('Merk_motor_yang_dimiliki_sekarang_model', 'mmds');
     $this->load->model('sumber_prospek_model', 'sprm');
+    $this->load->model('kelurahan_model', 'kel');
     //Cek Data
     if ($gr == NULL) {
       $result = [
@@ -331,6 +332,9 @@ class Leads_customer_data extends Crm_Controller
     //Sinkron Tabel Agama
     $arr_kode_agama = [$this->input->post('idAgama', true)];
 
+    //Sinkron Tabel Kelurahan
+    $arr_id_kelurahan = [$this->input->post('kelurahan', true)];
+
     $tes = [
       'update' => $update
     ];
@@ -341,6 +345,7 @@ class Leads_customer_data extends Crm_Controller
     $this->pkj->sinkronTabelPekerjaan($arr_kode_pekerjaan, $user);
     $this->lsg->sinkronTabelLeasing($arr_kode_leasing, $user);
     $this->agm->sinkronTabelAgama($arr_kode_agama, $user);
+    $this->kel->sinkronTabelKelurahan($arr_id_kelurahan, $user);
     $this->db->update('leads', $update, $fg);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();

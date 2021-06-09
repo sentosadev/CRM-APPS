@@ -220,4 +220,45 @@ class Kelurahan_model extends CI_Model
     $limit
     ");
   }
+
+  function sinkronTabelKelurahan($arr_id_kelurahan, $user)
+  {
+    //Cek Kode kelurahan
+    // send_json($arr_id_kelurahan);
+    foreach ($arr_id_kelurahan as $ar_id) {
+      $id_kelurahan = $ar_id;
+      if ($id_kelurahan == NULL || $id_kelurahan == '' || $id_kelurahan == 0) continue;
+      $fkj  = ['id_kelurahan' => $id_kelurahan];
+      $pkj  = $this->getKelurahan($fkj)->row();
+      $pkjs = $this->getKelurahanFromOtherDB($fkj)->row();
+
+      //Jika Tidak Ada pada DB
+      if ($pkj == NULL) {
+        $ins_kelurahan_batch[] = [
+          'id_kelurahan' => $id_kelurahan,
+          'kelurahan'      => $pkjs->kelurahan,
+          'aktif' => 1,
+          'created_by'     => $user->id_user,
+          'created_at'     => waktu(),
+        ];
+      } else {
+        // Jika Beda Dengan DB
+        if ($pkj->kelurahan != $pkjs->kelurahan) {
+          $upd_kelurahan_batch[] = [
+            'id_kelurahan' => $id_kelurahan,
+            'kelurahan'      => $pkjs->kelurahan,
+            'updated_by'     => $user->id_user,
+            'updated_at'     => waktu(),
+          ];
+        }
+      }
+    }
+
+    if (isset($ins_kelurahan_batch)) {
+      $this->db->insert_batch('ms_maintain_kelurahan', $ins_kelurahan_batch);
+    }
+    if (isset($upd_kelurahan_batch)) {
+      $this->db->update_batch('ms_maintain_kelurahan', $upd_kelurahan_batch, 'id_kelurahan');
+    }
+  }
 }

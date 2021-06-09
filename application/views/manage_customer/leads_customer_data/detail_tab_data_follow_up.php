@@ -14,7 +14,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
     <?php $data = ['set_active' => [1, 2, 3]];
     $this->load->view('manage_customer/leads_customer_data/wizard', $data); ?>
     <label data-toggle="tooltip" data-html="true" class='tooltipInformasiCustomer'><i>Informasi</i> <i class='fa fa-info-circle'></i></label>
-    <form id="form_data_follow_up_<?= $i ?>" class='form-horizontal'>
+    <form id="form_data_follow_up_<?= $i ?>" class='form-horizontal form_'>
       <div class="row">
         <?php for ($x = 1; $x <= $max_pertab; $x++) {
           if (!isset($list_follow_up[$fol_up_sekarang])) continue;
@@ -154,6 +154,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             <?php if ($disabled == '') { ?>
               <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
               <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
+              <button onclick="saveCheckDataAndSendAPI3(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-green btn-flat"><i class='fa fa-save'></i> Simpan Data</button>
             <?php } ?>
           <?php } ?>
         </div>
@@ -228,7 +229,6 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     });
   }
 
-
   function tambahDataFollowUp(el, fu, tabs_no) {
     Swal.fire({
       title: 'Apakah Anda Yakin Menambah Follow Up Baru ?',
@@ -291,5 +291,105 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
         // Swal.fire('Changes are not saved', '', 'info')
       }
     })
+  }
+
+  function saveCheckDataAndSendAPI3(el, tabs, position, fu) {
+    $('.form_').validate({
+      highlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().addClass(errorClass);
+        } else {
+          $(element).parents('.form-input').addClass('has-error');
+        }
+      },
+      unhighlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().removeClass(errorClass);
+        } else {
+          $(element).parents('.form-input').removeClass('has-error');
+        }
+      },
+      errorPlacement: function(error, element) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          element = $("#select2-" + elem.attr("id") + "-container").parent();
+          error.insertAfter(element);
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    })
+
+    if ($('.form_').valid()) // check if form is valid
+    {
+      console.log('oke');
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: '<font color="white">Peringatan</font>',
+        html: '<font color="white">Silahkan lengkapi field yang wajib diisi</font>',
+        background: '#dd4b39',
+        confirmButtonColor: '#cc3422',
+        confirmButtonText: 'Tutup',
+        iconColor: 'white'
+      })
+    }
+
+    var default_name_button = "<i class='fa fa-save'></i> Simpan Data";
+    var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
+    val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
+    val_form_follow_up.append('is_send_api3', true);
+
+    $.ajax({
+      beforeSend: function() {
+        $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+        $(el).attr('disabled', true);
+      },
+      enctype: 'multipart/form-data',
+      url: '<?= site_url(get_controller() . '/saveEditFollowUp') ?>',
+      type: "POST",
+      data: val_form_follow_up,
+      processData: false,
+      contentType: false,
+      // cache: false,
+      dataType: 'JSON',
+      success: function(response) {
+        if (response.status == 1) {
+          Swal.fire({
+            icon: 'success',
+            title: '<font color="black">Informasi</font>',
+            html: '<font color="black">' + response.pesan + '</font>',
+            confirmButtonText: 'Tutup',
+          })
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: '<font color="white">Peringatan</font>',
+            html: '<font color="white">' + response.pesan + '</font>',
+            background: '#dd4b39',
+            confirmButtonColor: '#cc3422',
+            confirmButtonText: 'Tutup',
+            iconColor: 'white'
+          })
+        }
+        $(el).attr('disabled', false);
+        $(el).html(default_name_button);
+      },
+      error: function() {
+        Swal.fire({
+          icon: 'error',
+          title: '<font color="white">Peringatan</font>',
+          html: '<font color="white">Telah terjadi kesalahan !</font>',
+          background: '#dd4b39',
+          confirmButtonColor: '#cc3422',
+          confirmButtonText: 'Tutup',
+          iconColor: 'white'
+        })
+        $(el).html(default_name_button);
+        $(el).attr('disabled', false);
+      }
+    });
   }
 </script>
