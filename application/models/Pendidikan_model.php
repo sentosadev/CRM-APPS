@@ -140,9 +140,10 @@ class Pendidikan_model extends CI_Model
   function sinkronTabelPendidikan($arr_id_pendidikan, $user)
   {
     //Cek Pendidikan
+    // send_json($arr_id_pendidikan);
     foreach ($arr_id_pendidikan as $ar_id) {
       $idPendidikan = $ar_id;
-      if ($idPendidikan == NULL || $idPendidikan == '') continue;
+      if ($idPendidikan == NULL || $idPendidikan == '' || $idPendidikan == 0) continue;
       $fkj          = ['id_pendidikan' => $idPendidikan];
       $pdks         = $this->getPendidikanFromOtherDB($fkj)->row();
       $pdk          = $this->getPendidikan($fkj)->row();

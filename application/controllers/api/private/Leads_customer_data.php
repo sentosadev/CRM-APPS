@@ -56,13 +56,28 @@ class Leads_customer_data extends CI_Controller
   }
   function selectPekerjaan()
   {
-    $this->load->model('pekerjaan_model', 'lm');
+    $this->load->model('pekerjaan_model', 'pkjs');
     $search = null;
     if (isset($_POST['searchTerm'])) {
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getPekerjaanFromOtherDB($filter)->result();
+    $response = $this->pkjs->getPekerjaanFromOtherDB($filter)->result();
+    send_json($response);
+  }
+  function selectSubPekerjaan()
+  {
+    $this->load->model('pekerjaan_model', 'pkjss');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+
+    if (isset($_POST['kodePekerjaan'])) {
+      $filter['id_pekerjaan'] = $_POST['kodePekerjaan'];
+    }
+    $response = $this->pkjss->getSubPekerjaanFromOtherDB($filter)->result();
     send_json($response);
   }
   function selectPendidikan()
@@ -190,6 +205,18 @@ class Leads_customer_data extends CI_Controller
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
     $response = $this->lm->getSumberProspekFromOtherDB($filter)->result();
+    send_json($response);
+  }
+
+  function selectSalesmanFromOtherDb()
+  {
+    $this->load->model('karyawan_dealer_model', 'sm');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    $response = $this->sm->getSalesmanFromOtherDb($filter)->result();
     send_json($response);
   }
 }

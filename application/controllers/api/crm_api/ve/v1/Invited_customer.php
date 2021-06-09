@@ -15,7 +15,7 @@ class Invited_customer extends CI_Controller
   public function index()
   {
     $api_routes = api_routes_by_code('api_1');
-    $api_key = api_key();
+    $api_key    = api_key('mdms', 've');
     $url = $api_routes->external_url;
     $fl = ['is_send_to_ve' => 0];
     $leads = $this->ld_m->getLeads($fl);

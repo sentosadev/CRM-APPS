@@ -1,9 +1,12 @@
 <?php
 class Dealer_model extends CI_Model
 {
+  var $db_live = '';
+
   public function __construct()
   {
     parent::__construct();
+    $this->db_live = $this->load->database('sinsen_live', true);
   }
 
   function getDealer($filter = null)
@@ -150,6 +153,61 @@ class Dealer_model extends CI_Model
     }
 
     return $this->db->query("SELECT $select
+    FROM ms_dealer AS mu
+    $where
+    $order_data
+    $limit
+    ");
+  }
+
+  function getDealerFromOtherDb($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    $select = '';
+    if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
+      if (isset($filter['kode_dealer'])) {
+        if ($filter['kode_dealer'] != '') {
+          $where .= " AND mu.kode_dealer_md='{$this->db->escape_str($filter['kode_dealer'])}'";
+        }
+      }
+
+      if (isset($filter['search'])) {
+        if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
+          $where .= " AND ( mu.kode_dealer_md LIKE'%{$filter['search']}%'
+                            OR mu.nama_dealer LIKE'%{$filter['search']}%'
+          )";
+        }
+      }
+      if (isset($filter['select'])) {
+        if ($filter['select'] == 'dropdown') {
+          $select = "kode_dealer_md id,nama_dealer text";
+        } else {
+          $select = $filter['select'];
+        }
+      } else {
+        $select = "mu.id_dealer, mu.kode_dealer_md,mu.nama_dealer";
+      }
+    }
+
+    $order_data = '';
+    if (isset($filter['order'])) {
+      $order_column = [null, 'id_dealer', 'kode_dealer', 'mu.nama_dealer', 'mu.aktif', null];
+      $order = $filter['order'];
+      if ($order != '') {
+        $order_clm  = $order_column[$order['0']['column']];
+        $order_by   = $order['0']['dir'];
+        $order_data = " ORDER BY $order_clm $order_by ";
+      }
+    }
+
+    $limit = '';
+    if (isset($filter['limit'])) {
+      $limit = $filter['limit'];
+    }
+
+    return $this->db_live->query("SELECT $select
     FROM ms_dealer AS mu
     $where
     $order_data

@@ -136,16 +136,25 @@ if (in_array('selectPekerjaan', $data)) { ?>
           cache: true
         }
       });
-      $("#kodePekerjaan2").select2({
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectSubPekerjaan', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#kodeSubPekerjaan").select2({
         // minimumInputLength: 2,
         ajax: {
-          url: "<?= site_url('api/private/leads_customer_data/selectPekerjaan') ?>",
+          url: "<?= site_url('api/private/leads_customer_data/selectSubPekerjaan') ?>",
           type: "POST",
           dataType: 'json',
           delay: 100,
           data: function(params) {
             return {
               searchTerm: params.term, // search term
+              kodePekerjaan: $('#kodePekerjaan').val()
             };
           },
           processResults: function(response) {
@@ -489,6 +498,34 @@ if (in_array('selectSumberProspek', $data)) { ?>
         // minimumInputLength: 2,
         ajax: {
           url: "<?= site_url('api/private/leads_customer_data/selectSumberProspek') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectSalesmanFromOtherDb', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#id_karyawan_dealer").select2({
+        minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectSalesmanFromOtherDb') ?>",
           type: "POST",
           dataType: 'json',
           delay: 100,

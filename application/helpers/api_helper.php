@@ -184,19 +184,22 @@ function insert_api_log($activity, $status, $message, $data)
 }
 
 
-function curlPost($url, $data = NULL, $headers = NULL)
+function curlPost($url, $data = NULL, $method = NULL, $headers = NULL)
 {
   $ch = curl_init($url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
   if (!empty($data)) {
+    if ($method == 'json_post') {
+      $data = json_encode($data);
+    }
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   }
 
   if (!empty($headers)) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
   }
-
+  // send_json($headers);
   $response = curl_exec($ch);
 
   if (curl_error($ch)) {
@@ -227,8 +230,28 @@ function api_routes($filter)
   return $CI->db->query("SELECT id_api_routes,slug,controller,api_name,aktif,api_code,external_url FROM  ms_api_routes $where");
 }
 
-function api_key()
+function api_key($sender, $receiver)
 {
   $CI = &get_instance();
-  return $CI->db->query("SELECT api_key, secret_key, sender, receiver from ms_api_secret_key WHERE aktif=1")->row();
+  return $CI->db->query("SELECT api_key, secret_key, sender, receiver 
+      from ms_api_secret_key 
+      WHERE aktif=1 AND sender='$sender' AND receiver='$receiver'
+    ")->row();
+}
+
+function send_api_post($data, $sender, $receiver)
+{
+  $api_routes = api_routes_by_code('api_3');
+  // send_json($api_routes);
+  $api_key = api_key($sender, $receiver);
+  // send_json($api_key);
+  $url = $api_routes->external_url;
+  $request_time = time();
+  $hash = hash('sha256', $api_key->api_key . $api_key->secret_key . $request_time);
+  $header = [
+    "X-Request-Time:$request_time",
+    "CRM-API-Key:$api_key->api_key",
+    "CRM-API-Token:$hash",
+  ];
+  return json_decode(curlPost($url, $data, 'json_post', $header), true);
 }

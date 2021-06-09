@@ -83,7 +83,7 @@
       if (flash.tabs != undefined) {
         changeTabs(flash.tabs) //Menuju Tab Tertentu
       }
-      // changeTabs('data_follow_up_1') //Testing Menuju Tab Tertentu
+      // changeTabs('data_pendukung_probing_1') //Testing Menuju Tab Tertentu
     });
 
     function changeTabs(tabs) {
@@ -101,6 +101,7 @@
       }
       $('#fug_script_guide').html('');
       $('#fug_golden_time').html('');
+      $("#kodeSubPekerjaan").val('').trigger('change');
       $.ajax({
         beforeSend: function() {
           $('#btnFollowUpGuidance').html('<i class="fa fa-spinner fa-spin"></i>');

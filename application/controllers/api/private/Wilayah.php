@@ -75,4 +75,19 @@ class Wilayah extends CI_Controller
     $response = $this->ms->getKelurahan($filter)->result();
     send_json($response);
   }
+  function selectKelurahanFromOtherDb()
+  {
+    $this->load->model('kelurahan_model', 'ms');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = [
+      'search' => $search,
+      'select' => 'dropdown',
+      'aktif' => 1
+    ];
+    $response = $this->ms->getKelurahanFromOtherDb($filter)->result();
+    send_json($response);
+  }
 }

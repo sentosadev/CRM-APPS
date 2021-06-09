@@ -1,7 +1,7 @@
 <div class="tab-pane active" id="data_registrasi">
   <?php $data = ['init' => true, 'set_active' => [1]];
   $this->load->view('manage_customer/leads_customer_data/wizard', $data); ?>
-  <form id="form_registrasi" class='form-horizontal'>
+  <form id="form_registrasi" class='form-horizontal form_'>
     <div class="form-group">
       <label class="col-sm-2 control-label">Leads ID</label>
       <div class="form-input">
@@ -26,7 +26,7 @@
       <label class="col-sm-2 control-label">Kategori Modul Leads</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='kategoriModulLeads' required value='<?= $row->kategoriModulLeads ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='kategoriModulLeads' value='<?= $row->kategoriModulLeads ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -34,18 +34,18 @@
       <label class="col-sm-2 control-label">Deskripsi Event Virtual MD</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='deskripsiEvent' required value='<?= $row->deskripsiEvent ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='deskripsiEvent' value='<?= $row->deskripsiEvent ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Tanggal Visit Booth</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datetimepicker" name='tanggalVisitBooth' required value='<?= $row->tanggalVisitBoothEng ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datetimepicker" name='tanggalVisitBooth' value='<?= $row->tanggalVisitBoothEng ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Nama</label>
+      <label class="col-sm-2 control-label">Nama *</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" id='nama' name='nama' required value='<?= $row->nama ?>' <?= $disabled ?>>
@@ -54,12 +54,12 @@
       <label class="col-sm-2 control-label">Segmen Produk</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='segmenProduk' required value='<?= $row->segmenProduk ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='segmenProduk' value='<?= $row->segmenProduk ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">No. HP Pendaftaran</label>
+      <label class="col-sm-2 control-label">No. HP Pendaftaran *</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" name='noHP' required value='<?= $row->noHP ?>' <?= $disabled ?>>
@@ -68,7 +68,7 @@
       <label class="col-sm-2 control-label">Tgl. Download Brosur</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datetimepicker" name='tanggalDownloadBrosur' required value='<?= $row->tanggalDownloadBrosurEng ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datetimepicker" name='tanggalDownloadBrosur' value='<?= $row->tanggalDownloadBrosurEng ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -76,13 +76,13 @@
       <label class="col-sm-2 control-label">No. Telepon</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='noTelp' required value='<?= $row->noTelp ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='noTelp' value='<?= $row->noTelp ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Series Brosur</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='seriesBrosur' required value='<?= $row->seriesBrosur ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='seriesBrosur' value='<?= $row->seriesBrosur ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -90,13 +90,13 @@
       <label class="col-sm-2 control-label">Email</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='email' required value='<?= $row->email ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='email' value='<?= $row->email ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Tanggal Wishlist</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datetimepicker" name='tanggalWishlist' required value='<?= $row->tanggalWishlistEng ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datetimepicker" name='tanggalWishlist' value='<?= $row->tanggalWishlistEng ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -104,7 +104,7 @@
       <label class="col-sm-2 control-label">Kota / Kabupaten</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='kabupaten' required value='<?= $row->kabupaten ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='kabupaten' value='<?= $row->kabupaten ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Series Wishlist</label>
@@ -115,16 +115,16 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Event Code Invitation</label>
+      <label class="col-sm-2 control-label">Event Code Invitation *</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" name='eventCodeInvitation' required value='<?= $row->eventCodeInvitation ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Status No. Handphone</label>
+      <label class="col-sm-2 control-label">Status No. Handphone *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="statusNoHp" class='form-control' name='statusNoHp' <?= $disabled ?>>
+          <select style='width:100%' id="statusNoHp" class='form-control' name='statusNoHp' <?= $disabled ?> required>
             <option value=""></option>
             <?php $list = ['1' => 'Pra Bayar(Isi Ulang)', '2' => 'Pasca Bayar/Billing/Tagihan'];
             foreach ($list as $key => $val) { ?>

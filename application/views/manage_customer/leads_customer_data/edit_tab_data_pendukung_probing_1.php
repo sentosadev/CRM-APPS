@@ -1,7 +1,7 @@
 <div class="tab-pane" id="data_pendukung_probing_1">
   <?php $data = ['set_active' => [1, 2, 3]];
   $this->load->view('manage_customer/leads_customer_data/wizard', $data); ?>
-  <form id="form_data_pendukung_probing_1" class='form-horizontal'>
+  <form id="form_data_pendukung_probing_1" class='form-horizontal form_'>
     <div class="form-group">
       <label class="col-sm-2 control-label">Platform Data</label>
       <div class="form-input">
@@ -32,7 +32,7 @@
       <label class="col-sm-2 control-label">Keterangan Preferensi Dealer Lain</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='keteranganPreferensiDealerLain' required value='<?= $row->keteranganPreferensiDealerLain ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='keteranganPreferensiDealerLain' value='<?= $row->keteranganPreferensiDealerLain ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@
       <label class="col-sm-2 control-label">Alasan Pindah Dealer</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='alasanPindahDealer' required value='<?= $row->alasanPindahDealer ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='alasanPindahDealer' value='<?= $row->alasanPindahDealer ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -62,7 +62,7 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Gender</label>
+      <label class="col-sm-2 control-label">Gender *</label>
       <div class="form-input">
         <div class="col-sm-1">
           <input type="radio" name="gender" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->gender == '1' ? 'checked' : '' ?> <?= $disabled ?>> Pria
@@ -81,7 +81,7 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">No. KTP</label>
+      <label class="col-sm-2 control-label">No. KTP *</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" name='noKtp' required value='<?= $row->noKtp ?>' <?= $disabled ?>>
@@ -92,14 +92,24 @@
       <label class="col-sm-2 control-label">Tanggal Pembelian Terakhir</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datepicker" name='tanggalPembelianTerakhir' required value='<?= $row->tanggalPembelianTerakhir ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datepicker" name='tanggalPembelianTerakhir' value='<?= $row->tanggalPembelianTerakhir ?>' <?= $disabled ?>>
 
         </div>
       </div>
-      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (Saat Ini)</label>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP)</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaan' <?= $disabled ?>>
+          <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaanKtp' <?= $disabled ?>>
+            <option value='<?= $row->kodePekerjaanKtp ?>'><?= $row->deskripsiPekerjaanKtp ?></option>
+          </select>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (Saat Ini) *</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="kodeSubPekerjaan" class='form-control' name='kodePekerjaan' <?= $disabled ?> required>
             <option value='<?= $row->kodePekerjaan ?>'><?= $row->deskripsiPekerjaan ?></option>
           </select>
         </div>
@@ -109,13 +119,13 @@
       <label class="col-sm-2 control-label">Desk. Tipe Unit Pembelian Terakhir</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='deskripsiTipeUnitPembelianTerakhir' required value='<?= $row->deskripsiTipeUnitPembelianTerakhir ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='deskripsiTipeUnitPembelianTerakhir' value='<?= $row->deskripsiTipeUnitPembelianTerakhir ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Promo Yang Diminati Customer</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" id='promoYangDiminatiCustomer' name='promoYangDiminatiCustomer' required value='<?= $row->promoYangDiminatiCustomer ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" id='promoYangDiminatiCustomer' name='promoYangDiminatiCustomer' value='<?= $row->promoYangDiminatiCustomer ?>' <?= $disabled ?>>
 
         </div>
       </div>
@@ -124,7 +134,7 @@
       <label class="col-sm-2 control-label">Kategori Preferensi Dealer</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='kategoriPreferensiDealer' required value='<?= $row->kategoriPreferensiDealer ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='kategoriPreferensiDealer' value='<?= $row->kategoriPreferensiDealer ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Pendidikan</label>
@@ -140,23 +150,23 @@
       <label class="col-sm-2 control-label">Nama Dealer Preferensi Customer</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='namaDealerPreferensiCustomer' required value='<?= $row->namaDealerPreferensiCustomer ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='namaDealerPreferensiCustomer' value='<?= $row->namaDealerPreferensiCustomer ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Agama</label>
+      <label class="col-sm-2 control-label">Agama *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="idAgama" class='form-control' name='idAgama' <?= $disabled ?>>
+          <select style='width:100%' id="idAgama" class='form-control' name='idAgama' <?= $disabled ?> required>
             <option value='<?= $row->idAgama ?>'><?= $row->deskripsiAgama ?></option>
           </select>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kecamatan Domisili</label>
+      <label class="col-sm-2 control-label">Kecamatan Domisili *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kecamatan" class='form-control' name='kecamatan' <?= $disabled ?>>
+          <select style='width:100%' id="id_kecamatan" class='form-control' name='kecamatan' <?= $disabled ?> required>
             <option value='<?= $row->kecamatan ?>'><?= $row->deskripsiKecamatanDomisili ?></option>
           </select>
         </div>
@@ -164,15 +174,15 @@
       <label class="col-sm-2 control-label">Tanggal Rencana Pembelian</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datepicker" name='tanggalRencanaPembelian' required value='<?= $row->tanggalRencanaPembelian ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datepicker" name='tanggalRencanaPembelian' value='<?= $row->tanggalRencanaPembelian ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kelurahan</label>
+      <label class="col-sm-2 control-label">Kelurahan *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kelurahan" class='form-control' name='kelurahan' <?= $disabled ?>>
+          <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?> required>
             <option value='<?= $row->kelurahan ?>'><?= $row->deskripsiKelurahanDomisili ?></option>
           </select>
         </div>
@@ -180,7 +190,15 @@
       <label class="col-sm-2 control-label">Kategori Prospect</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='kategoriProspect' required value='<?= $row->kategoriProspect ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='kategoriProspect' value='<?= $row->kategoriProspect ?>' <?= $disabled ?>>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Alamat *</label>
+      <div class="form-input">
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name='alamat' required value='<?= $row->alamat ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -196,12 +214,12 @@
       <label class="col-sm-2 control-label">Nama Community</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='namaCommunity' required value='<?= $row->namaCommunity ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='namaCommunity' value='<?= $row->namaCommunity ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Jenis Motor yg dimiliki sekarang</label>
+      <label class="col-sm-2 control-label">Jenis Motor Yangg Dimiliki Sekarang</label>
       <div class="form-input">
         <div class="col-sm-4">
           <select style='width:100%' id="idJenisMotorYangDimilikiSekarang" class='form-control' name='idJenisMotorYangDimilikiSekarang' <?= $disabled ?>>
@@ -209,7 +227,7 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Merk Motor yg dimiliki sekarang</label>
+      <label class="col-sm-2 control-label">Merk Motor Yang Dimiliki Sekarang</label>
       <div class="form-input">
         <div class="col-sm-4">
           <select style='width:100%' id="idMerkMotorYangDimilikiSekarang" class='form-control' name='idMerkMotorYangDimilikiSekarang' <?= $disabled ?>>
@@ -231,10 +249,10 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Status Prospek</label>
+      <label class="col-sm-2 control-label">Status Prospek *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="statusProspek" class='form-control' name='statusProspek' <?= $disabled ?>>
+          <select style='width:100%' id="statusProspek" class='form-control' name='statusProspek' <?= $disabled ?> required>
             <option></option>
             <?php $list = ['Low', 'Hot', 'Not Deal', 'Deal'];
             foreach ($list as $val) { ?>
@@ -245,13 +263,13 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Longitude</label>
+      <label class="col-sm-2 control-label">Longitude *</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="number" class="form-control" name='longitude' required value='<?= $row->longitude ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Latitude</label>
+      <label class="col-sm-2 control-label">Latitude *</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="number" class="form-control" id='latitude' name='latitude' required value='<?= $row->latitude ?>' <?= $disabled ?>>
@@ -263,21 +281,35 @@
       <label class="col-sm-2 control-label">No. KK</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="number" class="form-control" name='noKK' required value='<?= $row->noKK ?>' <?= $disabled ?>>
+          <input type="number" class="form-control" name='noKK' value='<?= $row->noKK ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">No. NPWP</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="number" class="form-control" id='npwp' name='npwp' required value='<?= $row->npwp ?>' <?= $disabled ?>>
+          <input type="number" class="form-control" id='npwp' name='npwp' value='<?= $row->npwp ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Jenis Customer</label>
+      <label class="col-sm-2 control-label">Tempat Lahir *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="jenisCustomer" class='form-control' name='jenisCustomer' <?= $disabled ?>>
+          <input type="text" class="form-control" name='tempatLahir' required value='<?= $row->tempatLahir ?>' <?= $disabled ?>>
+        </div>
+      </div>
+      <label class="col-sm-2 control-label">Tgl. Lahir *</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control datepicker" id='tanggalLahir' name='tanggalLahir' required value='<?= $row->tanggalLahir ?>' <?= $disabled ?>>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Jenis Customer *</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="jenisCustomer" class='form-control' name='jenisCustomer' <?= $disabled ?> required>
             <option value=""></option>
             <?php $list = ['regular' => 'Regular', 'group_customer' => 'Group Customer'];
             foreach ($list as $key => $val) { ?>
@@ -286,20 +318,20 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Sumber Prospek</label>
+      <label class="col-sm-2 control-label">Sumber Prospek *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="idSumberProspek" class='form-control' name='idSumberProspek' <?= $disabled ?>>
+          <select style='width:100%' id="idSumberProspek" class='form-control' name='idSumberProspek' <?= $disabled ?> required>
             <option value='<?= $row->idSumberProspek ?>'><?= $row->sumberProspek ?></option>
           </select>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Jenis Kewarganegaraan</label>
+      <label class="col-sm-2 control-label">Jenis Kewarganegaraan *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="jenisKewarganegaraan" class='form-control' name='jenisKewarganegaraan' <?= $disabled ?>>
+          <select style='width:100%' id="jenisKewarganegaraan" class='form-control' name='jenisKewarganegaraan' <?= $disabled ?> required>
             <option value=""></option>
             <?php $list = ['WNA' => 'WNA', 'WNI' => 'WNI'];
             foreach ($list as $key => $val) { ?>
@@ -308,10 +340,10 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Rencana Pembayaran</label>
+      <label class="col-sm-2 control-label">Rencana Pembayaran *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="rencanaPembayaran" class='form-control' name='rencanaPembayaran' <?= $disabled ?>>
+          <select style='width:100%' id="rencanaPembayaran" class='form-control' name='rencanaPembayaran' <?= $disabled ?> required>
             <option value=""></option>
             <?php $list = ['cash' => 'Cash', 'kredit' => 'Kredit'];
             foreach ($list as $key => $val) { ?>
@@ -322,14 +354,6 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP)</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="kodePekerjaan2" class='form-control' name='kodePekerjaanKtp' <?= $disabled ?>>
-            <option value='<?= $row->kodePekerjaanKtp ?>'><?= $row->deskripsiPekerjaanKtp ?></option>
-          </select>
-        </div>
-      </div>
       <label class="col-sm-2 control-label">Prioritas Prospect Customer</label>
       <div class="form-input">
         <div class="col-sm-1">
@@ -350,9 +374,9 @@
     </div>
   </form>
 </div>
-<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerSebelumnya', 'selectLeasingSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek'];
+<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerSebelumnya', 'selectLeasingSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
-<?php $data['data'] = ['selectProvinsi', 'selectKecamatan', 'selectKecamatan2', 'selectKelurahan'];
+<?php $data['data'] = ['selectProvinsi', 'selectKecamatan', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];
 $this->load->view('additionals/dropdown_wilayah', $data); ?>
 <script>
   function saveDataPendukung(tabs) {

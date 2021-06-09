@@ -145,7 +145,7 @@ class Agama_model extends CI_Model
     // send_json($arr_id_agama);
     foreach ($arr_id_agama as $ar_id) {
       $idAgama = $ar_id;
-      if ($idAgama == NULL || $idAgama == '') continue;
+      if ($idAgama == NULL || $idAgama == '' || $idAgama == 0) continue;
       $fkj              = ['id_agama' => $idAgama];
       $pkj              = $this->getAgama($fkj)->row();
       $pkjs             = $this->getAgamaFromOtherDB($fkj)->row();

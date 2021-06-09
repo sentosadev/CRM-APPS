@@ -179,4 +179,70 @@ class Pekerjaan_model extends CI_Model
       $this->db->update_batch('ms_pekerjaan', $upd_pekerjaan_batch, 'id_pekerjaan');
     }
   }
+
+  function getSubPekerjaanFromOtherDB($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    $select = '';
+    if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
+
+      if (isset($filter['id_pekerjaan'])) {
+        if ($filter['id_pekerjaan'] != '') {
+          $where .= " AND mu.id_pekerjaan='{$filter['id_pekerjaan']}'";
+        }
+      }
+      if (isset($filter['id_sub_pekerjaan'])) {
+        if ($filter['id_sub_pekerjaan'] != '') {
+          $where .= " AND mu.id_sub_pekerjaan='{$filter['id_sub_pekerjaan']}'";
+        }
+      }
+
+      if (isset($filter['aktif'])) {
+        if ($filter['aktif'] != '') {
+          $where .= " AND mu.active='{$this->db->escape_str($filter['aktif'])}'";
+        }
+      }
+      if (isset($filter['search'])) {
+        if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
+          $where .= " AND ( mu.id_pekerjaan LIKE'%{$filter['search']}%'
+                            OR mu.pekerjaan LIKE'%{$filter['search']}%'
+          )";
+        }
+      }
+      if (isset($filter['select'])) {
+        if ($filter['select'] == 'dropdown') {
+          $select = "id_sub_pekerjaan id,sub_pekerjaan text";
+        } else {
+          $select = $filter['select'];
+        }
+      } else {
+        $select = "mu.id_sub_pekerjaan,mu.sub_pekerjaan,mu.active";
+      }
+    }
+
+    $order_data = '';
+    if (isset($filter['order'])) {
+      $order_column = [null, 'kode_pekerjaan', 'pekerjaan', null];
+      $order = $filter['order'];
+      if ($order != '') {
+        $order_clm  = $order_column[$order['0']['column']];
+        $order_by   = $order['0']['dir'];
+        $order_data = " ORDER BY $order_clm $order_by ";
+      }
+    }
+
+    $limit = '';
+    if (isset($filter['limit'])) {
+      $limit = $filter['limit'];
+    }
+
+    return $this->db_live->query("SELECT $select
+    FROM ms_sub_pekerjaan AS mu
+    $where
+    $order_data
+    $limit
+    ");
+  }
 }

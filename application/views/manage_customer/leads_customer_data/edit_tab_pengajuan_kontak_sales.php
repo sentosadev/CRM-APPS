@@ -1,7 +1,7 @@
 <div class="tab-pane" id="pengajuan_kontak_sales">
   <?php $data = ['set_active' => [1, 2]];
   $this->load->view('manage_customer/leads_customer_data/wizard', $data); ?>
-  <form id="form_pengajuan_kontak_sales" class='form-horizontal'>
+  <form id="form_pengajuan_kontak_sales" class='form-horizontal form_'>
     <div class="form-group">
       <label class="col-sm-2 control-label">Tanggal Pengajuan</label>
       <div class="form-input">
@@ -17,10 +17,12 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Nama Pengajuan</label>
+      <label class="col-sm-2 control-label">Nama Pengajuan (Salesman)</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='namaPengajuan' required value='<?= $row->namaPengajuan ?>' <?= $disabled ?>>
+          <select style="width:100%" id="id_karyawan_dealer" class='form-control' name='id_karyawan_dealer' <?= $disabled ?> required>
+            <option value='<?= $row->id_karyawan_dealer ?>'><?= $row->namaPengajuan ?></option>
+          </select>
         </div>
       </div>
     </div>
@@ -43,20 +45,20 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
+          <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati *</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select style='width:100%' id="id_tipe" class='form-control' name='kodeTypeUnit' <?= $disabled ?>>
+              <select style='width:100%' id="id_tipe_from_other_db" class='form-control' name='kodeTypeUnit' <?= $disabled ?> required>
                 <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
               </select>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
+          <label class="col-sm-4 control-label">Kode & Warna Motor Diminati *</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select style="width:100%" id="id_warna" class='form-control' name='kodeWarnaUnit' <?= $disabled ?>>
+              <select style="width:100%" id="id_warna_from_other_db" class='form-control' name='kodeWarnaUnit' <?= $disabled ?> required>
                 <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
               </select>
             </div>
@@ -102,24 +104,26 @@
     </div>
     <div class="form-group" style='padding-top:20px'>
       <div class="col-sm-6">
-        <button type="button" id="backTo_data_registrasi" class="btn btn-primary btn-flat" onclick="saveDataPengajuanKontakSales('data_registrasi')"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
+        <button type="button" class="btn btn-primary btn-flat" onclick="saveDataPengajuanKontakSales(this, 'data_registrasi')"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
       </div>
       <div class="col-sm-6" align="right">
-        <button type="button" id="nextTo_data_pendukung_probing_1" class="btn btn-primary btn-flat" onclick="saveDataPengajuanKontakSales('data_pendukung_probing_1')"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
+        <button type="button" class="btn btn-primary btn-flat" onclick="saveDataPengajuanKontakSales(this, 'data_pendukung_probing_1')"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
       </div>
     </div>
   </form>
 </div>
-<?php $data['data'] = ['selectTipe', 'selectWarna'];
-$this->load->view('additionals/dropdown_series_tipe', $data); ?>
+<?php
+$data['data'] = ['selectTipeFromOtherDb', 'selectWarnaFromOtherDb'];
+$this->load->view('additionals/dropdown_series_tipe', $data);
+
+$data['data'] = ['selectSalesmanFromOtherDb'];
+$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
+?>
 <script>
-  function saveDataPengajuanKontakSales(tabs) {
-    console.log(tabs);
+  function saveDataPengajuanKontakSales(el, tabs) {
     if (tabs == 'data_registrasi') {
-      var set_id = "#backTo_data_registrasi";
       var default_name_button = '<i class = "fa fa-backward"></i> Halaman Sebelumnya';
-    } else if (tabs == 'pendukung_probing_1') {
-      var set_id = "#nextTo_data_pendukung_probing_1";
+    } else {
       var default_name_button = '<i class = "fa fa-forward"></i> Halaman Berikutnya';
     }
     var val_form_pengajuan_kontak_sales = new FormData($('#form_pengajuan_kontak_sales')[0]);
@@ -130,8 +134,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
     <?php } ?>
     $.ajax({
       beforeSend: function() {
-        $(set_id).html('<i class="fa fa-spinner fa-spin"></i> Process');
-        $(set_id).attr('disabled', true);
+        $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+        $(el).attr('disabled', true);
       },
       enctype: 'multipart/form-data',
       url: '<?= site_url(get_controller() . '/saveEditPengajuanKontakSales') ?>',
@@ -155,8 +159,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
             iconColor: 'white'
           })
         }
-        $(set_id).attr('disabled', false);
-        $(set_id).html(default_name_button);
+        $(el).attr('disabled', false);
+        $(el).html(default_name_button);
       },
       error: function() {
         Swal.fire({
@@ -168,8 +172,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           confirmButtonText: 'Tutup',
           iconColor: 'white'
         })
-        $(set_id).html(default_name_button);
-        $(set_id).attr('disabled', false);
+        $(el).html(default_name_button);
+        $(el).attr('disabled', false);
       }
     });
   }
