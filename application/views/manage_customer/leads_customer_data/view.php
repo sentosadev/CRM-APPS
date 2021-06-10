@@ -38,8 +38,31 @@
                   <label class="col-sm-2 control-label">Periode Event</label>
                   <div class="form-input">
                     <div class="col-sm-4">
+                      <input type="text" class="form-control" id='periode_event' name='periode_event'>
+                      <input type="hidden" class="form-control" id='start_periode_event'>
+                      <input type="hidden" class="form-control" id='end_periode_event'>
                     </div>
                   </div>
+                  <script>
+                    $(function() {
+                      $('#periode_event').daterangepicker({
+                        // opens: 'left',
+                        autoUpdateInput: false,
+                        locale: {
+                          format: 'DD/MM/YYYY'
+                        }
+                      }, function(start, end, label) {
+                        $('#start_periode_event').val(start.format('YYYY-MM-DD'));
+                        $('#end_periode_event').val(end.format('YYYY-MM-DD'));
+                      }).on('apply.daterangepicker', function(ev, picker) {
+                        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+                      }).on('cancel.daterangepicker', function(ev, picker) {
+                        $(this).val('');
+                        $('#start_periode_event').val('');
+                        $('#end_periode_event').val('');
+                      });
+                    });
+                  </script>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">Warna</label>
@@ -61,11 +84,7 @@
                   <label class="col-sm-2 control-label">Dealer Sebelumnya</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='kodeDealerSebelumnya' multiple>
                       </select>
                     </div>
                   </div>
@@ -74,9 +93,6 @@
                     <div class="col-sm-4">
                       <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
                         <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
                       </select>
                     </div>
                   </div>
@@ -85,22 +101,14 @@
                   <label class="col-sm-2 control-label">Dealer Dispatch</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='searchAssignedDealer' multiple>
                       </select>
                     </div>
                   </div>
                   <label class="col-sm-2 control-label">Jumlah FU</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='jumlah_fu' multiple>
                       </select>
                     </div>
                   </div>
@@ -116,9 +124,31 @@
                   <label class="col-sm-2 control-label">Next FU</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-
+                      <input type="text" class="form-control" id='next_fu' name='next_fu'>
+                      <input type="hidden" class="form-control" id='start_next_fu'>
+                      <input type="hidden" class="form-control" id='end_next_fu'>
                     </div>
                   </div>
+                  <script>
+                    $(function() {
+                      $('#next_fu').daterangepicker({
+                        // opens: 'left',
+                        autoUpdateInput: false,
+                        locale: {
+                          format: 'DD/MM/YYYY'
+                        }
+                      }, function(start, end, label) {
+                        $('#start_next_fu').val(start.format('YYYY-MM-DD'));
+                        $('#end_next_fu').val(end.format('YYYY-MM-DD'));
+                      }).on('apply.daterangepicker', function(ev, picker) {
+                        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+                      }).on('cancel.daterangepicker', function(ev, picker) {
+                        $(this).val('');
+                        $('#start_next_fu').val('');
+                        $('#end_next_fu').val('');
+                      });
+                    });
+                  </script>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">Source Leads</label>
@@ -140,11 +170,7 @@
                   <label class="col-sm-2 control-label">Deskripsi Event</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
-                        <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
+                      <select class="form-control select2" style="width: 100%;" id='deskripsiEvent' multiple>
                       </select>
                     </div>
                   </div>
@@ -153,9 +179,6 @@
                     <div class="col-sm-4">
                       <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
                         <option value=''>- Pilih -</option>
-                        <?php for ($i = 1; $i <= 10; $i++) {  ?>
-                          <option value='<?= $i ?>'>Select <?= $i ?></option>
-                        <?php } ?>
                       </select>
                     </div>
                   </div>
@@ -164,7 +187,7 @@
             </div>
             <div class="box-footer" align='center'>
               <button class='btn btn-primary' type="button" onclick="search()"><i class="fa fa-search"></i></button>
-              <button class='btn btn-default' type="button" onclick="refresh()"><i class="fa fa-refresh"></i></button>
+              <button class='btn btn-default' type="button" onclick="location.reload(true)"><i class="fa fa-refresh"></i></button>
             </div>
             <!-- /.box-body -->
           </div>
@@ -205,7 +228,7 @@
   </div>
   <!-- /.box -->
 </section>
-<?php $data['data'] = ['selectLeadsId', 'selectStatusFU', 'selectPlatformData', 'selectSourceLeads'];
+<?php $data['data'] = ['selectLeadsId', 'selectStatusFU', 'selectPlatformData', 'selectSourceLeads', 'selectDealerSebelumnya', 'selectAssignedDealer', 'selectDeskripsiEvent', 'selectJumlahFu'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 
 <?php $data['data'] = ['selectWarna', 'selectTipe'];
@@ -233,7 +256,18 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
         type: "POST",
         dataSrc: "data",
         data: function(d) {
-          // d.periode = '';
+          d.id_platform_data_multi = $('#id_platform_data').val()
+          d.id_source_leads_multi = $('#id_source_leads').val()
+          d.kode_dealer_sebelumnya_multi = $('#kodeDealerSebelumnya').val()
+          d.assigned_dealer_multi = $('#searchAssignedDealer').val()
+          d.kode_warna_multi = $('#id_warna').val()
+          d.kode_type_motor_multi = $('#id_tipe').val()
+          d.leads_id_multi = $('#leads_id').val()
+          d.deskripsi_event_multi = $('#deskripsiEvent').val()
+          d.id_status_fu_multi = $('#id_status_fu').val()
+          d.jumlah_fu = $('#jumlah_fu').val()
+          d.start_next_fu = $('#start_next_fu').val()
+          d.end_next_fu = $('#end_next_fu').val()
           return d;
         },
       },
@@ -411,5 +445,9 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
       $('#tbl_reassign_dealer').DataTable().ajax.reload();
     }
     load_data_reassign_dealer++;
+  }
+
+  function search() {
+    $('.serverside-tables').DataTable().ajax.reload();
   }
 </script>

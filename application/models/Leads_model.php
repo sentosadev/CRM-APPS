@@ -77,7 +77,80 @@ class Leads_model extends CI_Model
   {
     $where = 'WHERE 1=1';
     $select = '';
+    $jumlah_fu = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=stl.leads_id";
     if ($filter != null) {
+
+      // Posisi di atas karena skip filter escape '
+      if (isset($filter['platformDataIn'])) {
+        if ($filter['platformDataIn'] != '') {
+          $filter['platformDataIn'] = arr_sql($filter['platformDataIn']);
+          $where .= " AND stl.platformData IN({$filter['platformDataIn']})";
+        }
+      }
+      if (isset($filter['sourceLeadsIn'])) {
+        if ($filter['sourceLeadsIn'] != '') {
+          $filter['sourceLeadsIn'] = arr_sql($filter['sourceLeadsIn']);
+          $where .= " AND stl.sourceData IN({$filter['sourceLeadsIn']})";
+        }
+      }
+      if (isset($filter['kodeDealerSebelumnyaIn'])) {
+        if ($filter['kodeDealerSebelumnyaIn'] != '') {
+          $filter['kodeDealerSebelumnyaIn'] = arr_sql($filter['kodeDealerSebelumnyaIn']);
+          $where .= " AND stl.kodeDealerSebelumnya IN({$filter['kodeDealerSebelumnyaIn']})";
+        }
+      }
+      if (isset($filter['assignedDealerIn'])) {
+        if ($filter['assignedDealerIn'] != '') {
+          $filter['assignedDealerIn'] = arr_sql($filter['assignedDealerIn']);
+          $where .= " AND stl.assignedDealer IN({$filter['assignedDealerIn']})";
+        }
+      }
+      if (isset($filter['kodeWarnaUnitIn'])) {
+        if ($filter['kodeWarnaUnitIn'] != '') {
+          $filter['kodeWarnaUnitIn'] = arr_sql($filter['kodeWarnaUnitIn']);
+          $where .= " AND stl.kodeWarnaUnit IN({$filter['kodeWarnaUnitIn']})";
+        }
+      }
+      if (isset($filter['kodeTypeUnitIn'])) {
+        if ($filter['kodeTypeUnitIn'] != '') {
+          $filter['kodeTypeUnitIn'] = arr_sql($filter['kodeTypeUnitIn']);
+          $where .= " AND stl.kodeTypeUnit IN({$filter['kodeTypeUnitIn']})";
+        }
+      }
+      if (isset($filter['leads_idIn'])) {
+        if ($filter['leads_idIn'] != '') {
+          $filter['leads_idIn'] = arr_sql($filter['leads_idIn']);
+          $where .= " AND stl.leads_id IN({$filter['leads_idIn']})";
+        }
+      }
+      if (isset($filter['deskripsiEventIn'])) {
+        if ($filter['deskripsiEventIn'] != '') {
+          $filter['deskripsiEventIn'] = arr_sql($filter['deskripsiEventIn']);
+          $where .= " AND stl.deskripsiEvent IN({$filter['deskripsiEventIn']})";
+        }
+      }
+      if (isset($filter['id_status_fu_in'])) {
+        if ($filter['id_status_fu_in'] != '') {
+          $filter['id_status_fu_in'] = arr_sql($filter['id_status_fu_in']);
+          $where .= " AND msf.id_status_fu IN({$filter['id_status_fu_in']})";
+        }
+      }
+      if (isset($filter['jumlah_fu_in'])) {
+        if ($filter['jumlah_fu_in'] != '') {
+          $filter['jumlah_fu_in'] = arr_sql($filter['jumlah_fu_in']);
+          $where .= " AND ($jumlah_fu) IN({$filter['jumlah_fu_in']})";
+        }
+      }
+      if (isset($filter['periode_next_fu'])) {
+        if ($filter['periode_next_fu'] != '') {
+          $next_fu = $filter['periode_next_fu'];
+          $where .= " AND stl.tanggalNextFU BETWEEN '{$next_fu[0]}' AND '{$next_fu[1]}' ";
+        }
+      }
+
+
+
+      //Filter Escaped String Like '
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
         if ($filter['leads_id'] != '') {
@@ -111,6 +184,7 @@ class Leads_model extends CI_Model
           )";
         }
       }
+
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
@@ -125,7 +199,7 @@ class Leads_model extends CI_Model
         noTelp,assignedDealer,sourceRefID,stl.provinsi,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,tanggalAssignDealer,alasanTidakKeDealerSebelumnya,followUpID,tanggalFollowUp,
         CASE WHEN msf.id_status_fu IS NULL THEN kodeStatusKontakFU ELSE msf.deskripsi_status_fu END deskripsiStatusKontakFU,kodeStatusKontakFU,
         '' deskripsiHasilStatusFollowUp,
-        0 jumlahFollowUp,
+        ($jumlah_fu) jumlahFollowUp,
         kodeHasilStatusFollowUp,alasanNotProspectNotDeal,keteranganLainnyaNotProspectNotDeal,tanggalNextFU,statusProspect,keteranganNextFU,kodeTypeUnitProspect,kodeWarnaUnitProspect,picFollowUpMD,ontimeSLA1,picFollowUpD,ontimeSLA2,idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, prov.provinsi deskripsiProvinsi,keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,kec_domisili.kecamatan deskripsiKecamatanDomisili,stl.kecamatan,stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
         " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
@@ -413,5 +487,22 @@ class Leads_model extends CI_Model
       $new_kode   = 'CUST/' . $dmy . '/001';
     }
     return strtoupper($new_kode);
+  }
+
+  function getDeskripsiEvent()
+  {
+    $where = "WHERE 1=1 ";
+    if (isset($filter['search'])) {
+      if ($filter['search'] != '') {
+        $filter['search'] = $this->db->escape_str($filter['search']);
+        $where .= " AND ( leads.deskripsiEvent LIKE'%{$filter['search']}%'
+        )";
+      }
+    }
+    return $this->db->query("SELECT deskripsiEvent id, deskripsiEvent text FROM leads GROUP BY deskripsiEvent");
+  }
+  function getJumlahFUMaks()
+  {
+    return $this->db->query("SELECT COUNT(leads_id) maks FROM leads_follow_up GROUP BY leads_id ORDER BY COUNT(leads_id) DESC LIMIT 1")->row()->maks;
   }
 }

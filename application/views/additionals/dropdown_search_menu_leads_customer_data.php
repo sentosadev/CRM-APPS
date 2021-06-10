@@ -255,6 +255,34 @@ if (in_array('selectDealerSebelumnya', $data)) { ?>
 <?php } ?>
 
 <?php
+if (in_array('selectAssignedDealer', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#searchAssignedDealer").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectDealer') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
 if (in_array('selectLeasingSebelumnya', $data)) { ?>
   <script>
     $(document).ready(function() {
@@ -526,6 +554,62 @@ if (in_array('selectSalesmanFromOtherDb', $data)) { ?>
         minimumInputLength: 2,
         ajax: {
           url: "<?= site_url('api/private/leads_customer_data/selectSalesmanFromOtherDb') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectDeskripsiEvent', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#deskripsiEvent").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectDeskripsiEvent') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>
+
+<?php
+if (in_array('selectJumlahFu', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#jumlah_fu").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectJumlahFu') ?>",
           type: "POST",
           dataType: 'json',
           delay: 100,

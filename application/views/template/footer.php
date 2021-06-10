@@ -66,8 +66,6 @@
      //  //Money Euro
      //  $('[data-mask]').inputmask()
 
-     //Date range picker
-     $('#reservation').daterangepicker()
      //Date range picker with time picker
      $('.datetimepicker').daterangepicker({
        timePicker: true,
@@ -110,6 +108,7 @@
        singleDatePicker: true,
        isInvalidDate: false,
        autoUpdateInput: false,
+       showDropdowns: true,
        locale: {
          cancelLabel: 'Clear',
          format: 'YYYY-MM-DD',

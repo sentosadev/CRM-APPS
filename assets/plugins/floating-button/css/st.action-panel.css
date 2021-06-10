@@ -21,7 +21,7 @@ div.st-actionContainer li {
 }
 
 .st-panel {
-  width: 240px;
+  width: 200px;
   margin-bottom: 7%;
   background-color: #fff;
   color: black;
@@ -48,10 +48,10 @@ div.st-panel {
 }
 
 .st-button-main {
-  font-size: 16px;
+  font-size: 14px;
   color: #ffffff;
   text-align: center;
-  line-height: 40px;
+  line-height: 35px;
   cursor: pointer;
   height: 100%;
   width: 100%;
@@ -65,8 +65,8 @@ div.st-panel {
 
 .st-btn-container {
   background: #3c8dbc;
-  width: 240px;
-  height: 40px;
+  width: 200px;
+  height: 35px;
   /* border-radius:100%; */
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }

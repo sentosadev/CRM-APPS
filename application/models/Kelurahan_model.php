@@ -236,10 +236,10 @@ class Kelurahan_model extends CI_Model
       if ($pkj == NULL) {
         $ins_kelurahan_batch[] = [
           'id_kelurahan' => $id_kelurahan,
-          'kelurahan'      => $pkjs->kelurahan,
-          'aktif' => 1,
-          'created_by'     => $user->id_user,
-          'created_at'     => waktu(),
+          'kelurahan'    => $pkjs->kelurahan,
+          'aktif'        => 1,
+          'created_by'   => $user->id_user,
+          'created_at'   => waktu(),
         ];
       } else {
         // Jika Beda Dengan DB

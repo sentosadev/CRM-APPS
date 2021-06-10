@@ -92,6 +92,39 @@ class Leads_customer_data extends Crm_Controller
       'order_column' => 'view',
       'deleted' => false
     ];
+    if ($this->input->post('id_platform_data_multi')) {
+      $filter['platformDataIn'] = $this->input->post('id_platform_data_multi');
+    }
+    if ($this->input->post('id_source_leads_multi')) {
+      $filter['sourceLeadsIn'] = $this->input->post('id_source_leads_multi');
+    }
+    if ($this->input->post('kode_dealer_sebelumnya_multi')) {
+      $filter['kodeDealerSebelumnyaIn'] = $this->input->post('kode_dealer_sebelumnya_multi');
+    }
+    if ($this->input->post('assigned_dealer_multi')) {
+      $filter['assignedDealerIn'] = $this->input->post('assigned_dealer_multi');
+    }
+    if ($this->input->post('kode_warna_multi')) {
+      $filter['kodeWarnaUnitIn'] = $this->input->post('kode_warna_multi');
+    }
+    if ($this->input->post('leads_id_multi')) {
+      $filter['leads_idIn'] = $this->input->post('leads_id_multi');
+    }
+    if ($this->input->post('deskripsi_event_multi')) {
+      $filter['deskripsiEventIn'] = $this->input->post('deskripsi_event_multi');
+    }
+    if ($this->input->post('id_status_fu_multi')) {
+      $filter['id_status_fu_in'] = $this->input->post('id_status_fu_multi');
+    }
+    if ($this->input->post('kode_type_motor_multi')) {
+      $filter['kodeTypeUnitIn'] = $this->input->post('kode_type_motor_multi');
+    }
+    if ($this->input->post('jumlah_fu')) {
+      $filter['jumlah_fu_in'] = $this->input->post('jumlah_fu');
+    }
+    if ($this->input->post('start_next_fu') && $this->input->post('end_next_fu')) {
+      $filter['periode_next_fu'] = [$this->input->post('start_next_fu'), $this->input->post('end_next_fu')];
+    }
     if ($recordsFiltered == true) {
       return $this->ld_m->getLeads($filter)->num_rows();
     } else {

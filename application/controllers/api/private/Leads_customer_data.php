@@ -219,4 +219,25 @@ class Leads_customer_data extends CI_Controller
     $response = $this->sm->getSalesmanFromOtherDb($filter)->result();
     send_json($response);
   }
+
+  function selectDeskripsiEvent()
+  {
+    $this->load->model('leads_model', 'sm');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    $response = $this->sm->getDeskripsiEvent($filter)->result();
+    send_json($response);
+  }
+  function selectJumlahFu()
+  {
+    $this->load->model('leads_model', 'sm');
+    $maks = $this->sm->getJumlahFUMaks();
+    for ($i = 0; $i <= $maks; $i++) {
+      $res[] = ['id' => $i, 'text' => $i];
+    }
+    send_json($res);
+  }
 }
