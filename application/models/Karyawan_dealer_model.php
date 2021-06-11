@@ -11,7 +11,7 @@ class Karyawan_dealer_model extends CI_Model
 
   function getSalesmanFromOtherDb($filter = null)
   {
-    $where = 'WHERE 1=1';
+    $where = "WHERE id_jabatan IN('JBT-035','JBT-071','JBT-072','JBT-073','JBT-074','JBT-063','JBT-064','JBT-065','JBT-103','JBT-099') ";
     $select = '';
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);

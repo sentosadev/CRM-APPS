@@ -59,7 +59,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Tgl. Next Follow Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Tgl. Next Follow Up</label>
               <div class="form-input">
                 <div class="col-sm-8">
                   <input type="text" class="form-control datepicker" name='tglNextFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?>>

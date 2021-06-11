@@ -109,9 +109,9 @@ class Kelurahan_model extends CI_Model
 
     return $this->db->query("SELECT $select
     FROM ms_maintain_kelurahan AS kel
-    JOIN ms_maintain_kecamatan kec ON kec.id_kecamatan=kel.id_kecamatan
-    JOIN ms_maintain_kabupaten_kota kab ON kab.id_kabupaten_kota=kel.id_kabupaten_kota
-    JOIN ms_maintain_provinsi prov ON prov.id_provinsi=kel.id_provinsi
+    LEFT JOIN ms_maintain_kecamatan kec ON kec.id_kecamatan=kel.id_kecamatan
+    LEFT JOIN ms_maintain_kabupaten_kota kab ON kab.id_kabupaten_kota=kel.id_kabupaten_kota
+    LEFT JOIN ms_maintain_provinsi prov ON prov.id_provinsi=kel.id_provinsi
     $where
     $order_data
     $limit
@@ -231,7 +231,7 @@ class Kelurahan_model extends CI_Model
       $fkj  = ['id_kelurahan' => $id_kelurahan];
       $pkj  = $this->getKelurahan($fkj)->row();
       $pkjs = $this->getKelurahanFromOtherDB($fkj)->row();
-
+      // send_json($pkj);
       //Jika Tidak Ada pada DB
       if ($pkj == NULL) {
         $ins_kelurahan_batch[] = [
