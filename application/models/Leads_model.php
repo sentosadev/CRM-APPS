@@ -196,11 +196,11 @@ class Leads_model extends CI_Model
         $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,kabupaten,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest,
         CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,sourceData,
         CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,platformData,
-        noTelp,assignedDealer,sourceRefID,stl.provinsi,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,tanggalAssignDealer,alasanTidakKeDealerSebelumnya,followUpID,tanggalFollowUp,
-        CASE WHEN msf.id_status_fu IS NULL THEN kodeStatusKontakFU ELSE msf.deskripsi_status_fu END deskripsiStatusKontakFU,kodeStatusKontakFU,
+        noTelp,assignedDealer,sourceRefID,stl.provinsi,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,
+        ($jumlah_fu) jumlahFollowUp,ontimeSLA1,ontimeSLA2,idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, prov.provinsi deskripsiProvinsi,keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,kec_domisili.kecamatan deskripsiKecamatanDomisili,stl.kecamatan,stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,tanggalAssignDealer,
+        '' deskripsiStatusKontakFU,
         '' deskripsiHasilStatusFollowUp,
-        ($jumlah_fu) jumlahFollowUp,
-        kodeHasilStatusFollowUp,alasanNotProspectNotDeal,keteranganLainnyaNotProspectNotDeal,tanggalNextFU,statusProspect,keteranganNextFU,kodeTypeUnitProspect,kodeWarnaUnitProspect,picFollowUpMD,ontimeSLA1,picFollowUpD,ontimeSLA2,idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, prov.provinsi deskripsiProvinsi,keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,kec_domisili.kecamatan deskripsiKecamatanDomisili,stl.kecamatan,stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,
+        '' tanggalNextFU,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
         " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
         " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
@@ -231,7 +231,6 @@ class Leads_model extends CI_Model
     FROM leads AS stl
     LEFT JOIN ms_source_leads msl ON msl.id_source_leads=stl.sourceData
     LEFT JOIN ms_platform_data mpd ON mpd.id_platform_data=stl.platformData
-    LEFT JOIN ms_status_fu msf ON msf.id_status_fu=stl.kodeStatusKontakFU
     LEFT JOIN ms_maintain_tipe tpu ON tpu.kode_tipe=stl.kodeTypeUnit
     LEFT JOIN ms_maintain_warna twu ON twu.kode_warna=stl.kodeWarnaUnit
     LEFT JOIN ms_maintain_provinsi prov ON prov.id_provinsi=stl.provinsi
@@ -358,7 +357,7 @@ class Leads_model extends CI_Model
         $select = "lfu.id_int,lfu.leads_id,lfu.followUpKe,lfu.pic,
         CASE WHEN lfu.tglFollowUp='0000-00-00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.id_kategori_status_komunikasi,lfu.id_hasil_komunikasi,lfu.id_alasan_fu_not_interest,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,ksts.kategori_status_komunikasi,hks.hasil_komunikasi,als.alasan_fu_not_interest,lfu.status,lfu.assignedDealer";
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.id_kategori_status_komunikasi,lfu.kodeHasilStatusFollowUp,lfu.id_alasan_fu_not_interest,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,ksts.kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasan_fu_not_interest,lfu.status,lfu.assignedDealer,followUpID";
       }
     }
 
@@ -384,7 +383,7 @@ class Leads_model extends CI_Model
     LEFT JOIN ms_media_kontak_fu media ON media.id_media_kontak_fu=lfu.id_media_kontak_fu
     LEFT JOIN ms_status_fu sts ON sts.id_status_fu=lfu.id_status_fu
     LEFT JOIN ms_kategori_status_komunikasi ksts ON ksts.id_kategori_status_komunikasi=lfu.id_kategori_status_komunikasi
-    LEFT JOIN ms_hasil_komunikasi hks ON hks.id_hasil_komunikasi=lfu.id_hasil_komunikasi
+    LEFT JOIN ms_hasil_status_follow_up hks ON hks.kodeHasilStatusFollowUp=lfu.kodeHasilStatusFollowUp
     LEFT JOIN ms_alasan_fu_not_interest als ON als.id_alasan_fu_not_interest=lfu.id_alasan_fu_not_interest
     $where
     $order_data
@@ -485,6 +484,31 @@ class Leads_model extends CI_Model
       }
     } else {
       $new_kode   = 'CUST/' . $dmy . '/001';
+    }
+    return strtoupper($new_kode);
+  }
+  function getFollowUpID()
+  {
+    $dmy = gmdate("dmY", time() + 60 * 60 * 7);
+    $ymd = tanggal();
+    $get_data  = $this->db->query("SELECT RIGHT(followUpID,3) followUpID 
+                  FROM leads WHERE LEFT(created_at,10)='$ymd'
+                  ORDER BY created_at DESC LIMIT 0,1");
+    if ($get_data->num_rows() > 0) {
+      $row = $get_data->row();
+      $new_kode = 'FOLUP/' . $dmy . '/' . sprintf("%'.03d", $row->followUpID + 1);
+      $i = 0;
+      while ($i < 1) {
+        $cek = $this->db->get_where('leads', ['followUpID' => $new_kode])->num_rows();
+        if ($cek > 0) {
+          $new_kode   = 'FOLUP/' . $dmy . '/' . sprintf("%'.03d", substr($new_kode, -3) + 1);
+          $i = 0;
+        } else {
+          $i++;
+        }
+      }
+    } else {
+      $new_kode   = 'FOLUP/' . $dmy . '/001';
     }
     return strtoupper($new_kode);
   }

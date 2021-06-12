@@ -104,13 +104,13 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label">Hasil Komunikasi</label>
+              <label class="col-sm-4 control-label">Hasil Status Follow Up</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_hasil_komunikasi_<?= $fol_up_sekarang ?>" class='form-control' name='id_hasil_komunikasi_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>" class='form-control' name='kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
-                      <option value='<?= $lfu['id_hasil_komunikasi'] ?>'><?= $lfu['hasil_komunikasi'] ?></option>
+                      <option value='<?= $lfu['kodeHasilStatusFollowUp'] ?>'><?= $lfu['deskripsiHasilStatusFollowUp'] ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -163,7 +163,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
   </div>
 <?php } ?>
 <?php
-$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilKomunikasiMulti', 'selectAlasanFuNotInterestMulti'];
+$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilStatusFollowUpMulti', 'selectAlasanFuNotInterestMulti'];
 $data['total_fol_up'] = $total_fol_up;
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 <script>

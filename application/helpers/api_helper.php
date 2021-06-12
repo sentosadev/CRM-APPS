@@ -239,9 +239,9 @@ function api_key($sender, $receiver)
     ")->row();
 }
 
-function send_api_post($data, $sender, $receiver)
+function send_api_post($data, $sender, $receiver, $api_code)
 {
-  $api_routes = api_routes_by_code('api_3');
+  $api_routes = api_routes_by_code($api_code);
   // send_json($api_routes);
   $api_key = api_key($sender, $receiver);
   // send_json($api_key);

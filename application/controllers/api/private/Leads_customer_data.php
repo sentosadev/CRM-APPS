@@ -148,15 +148,15 @@ class Leads_customer_data extends CI_Controller
     send_json($response);
   }
 
-  function selectHasilKomunikasi()
+  function selectHasilStatusFollowUp()
   {
-    $this->load->model('hasil_komunikasi_model', 'lm');
+    $this->load->model('hasil_status_follow_up_model', 'lm');
     $search = null;
     if (isset($_POST['searchTerm'])) {
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getHasilKomunikasi($filter)->result();
+    $response = $this->lm->getHasilStatusFollowUp($filter)->result();
     send_json($response);
   }
 

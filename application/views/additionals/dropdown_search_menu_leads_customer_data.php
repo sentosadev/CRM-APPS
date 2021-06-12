@@ -403,14 +403,14 @@ if (in_array('selectKategoriStatusKomunikasiMulti', $data)) {
 } ?>
 
 <?php
-if (in_array('selectHasilKomunikasiMulti', $data)) {
+if (in_array('selectHasilStatusFollowUpMulti', $data)) {
   for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
     <script>
       $(document).ready(function() {
-        $("#id_hasil_komunikasi_<?= $i ?>").select2({
+        $("#kodeHasilStatusFollowUp_<?= $i ?>").select2({
           // minimumInputLength: 2,
           ajax: {
-            url: "<?= site_url('api/private/leads_customer_data/selectHasilKomunikasi') ?>",
+            url: "<?= site_url('api/private/leads_customer_data/selectHasilStatusFollowUp') ?>",
             type: "POST",
             dataType: 'json',
             delay: 100,

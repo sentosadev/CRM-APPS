@@ -420,7 +420,7 @@ class Leads_customer_data extends Crm_Controller
             'followUpKe' => $i,
             'leads_id' => $this->input->post('leads_id', true),
             'id_alasan_fu_not_interest' => $this->input->post('id_alasan_fu_not_interest_' . $i, true),
-            'id_hasil_komunikasi' => $this->input->post('id_hasil_komunikasi_' . $i, true),
+            'kodeHasilStatusFollowUp' => $this->input->post('kodeHasilStatusFollowUp_' . $i, true),
             'id_kategori_status_komunikasi' => $this->input->post('id_kategori_status_komunikasi_' . $i, true),
             'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
             'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
@@ -438,7 +438,7 @@ class Leads_customer_data extends Crm_Controller
             'leads_id' => $this->input->post('leads_id', true),
             'followUpKe' => $i,
             'id_alasan_fu_not_interest' => $this->input->post('id_alasan_fu_not_interest_' . $i, true),
-            'id_hasil_komunikasi' => $this->input->post('id_hasil_komunikasi_' . $i, true),
+            'kodeHasilStatusFollowUp' => $this->input->post('kodeHasilStatusFollowUp_' . $i, true),
             'id_kategori_status_komunikasi' => $this->input->post('id_kategori_status_komunikasi_' . $i, true),
             'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
             'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
@@ -459,7 +459,7 @@ class Leads_customer_data extends Crm_Controller
       'upd_fol_up' => isset($upd_fol_up) ? $upd_fol_up : NULL,
       'ins_fol_up' => isset($ins_fol_up) ? $ins_fol_up : NULL,
     ];
-    send_json($tes);
+    // send_json($tes);
     $this->db->trans_begin();
     if (isset($ins_fol_up)) {
       $this->db->insert_batch('leads_follow_up', $ins_fol_up);
