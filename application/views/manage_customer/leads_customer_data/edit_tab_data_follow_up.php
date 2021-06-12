@@ -154,7 +154,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             <?php if ($disabled == '') { ?>
               <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
               <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
-              <button onclick="saveCheckDataAndSendAPI3(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-green btn-flat"><i class='fa fa-save'></i> Simpan Data</button>
+              <button onclick="saveCheckDataAndSendAPI3(this,<?= $i ?>)" type="button" class="btn bg-green btn-flat"><i class='fa fa-save'></i> Simpan Data</button>
             <?php } ?>
           <?php } ?>
         </div>
@@ -293,7 +293,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     })
   }
 
-  function saveCheckDataAndSendAPI3(el, tabs, position, fu) {
+  function saveCheckDataAndSendAPI3(el, fu) {
     $('.form_').validate({
       highlight: function(element, errorClass, validClass) {
         var elem = $(element);
@@ -340,7 +340,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     var default_name_button = "<i class='fa fa-save'></i> Simpan Data";
     var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
     val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
-    val_form_follow_up.append('is_send_api3', true);
+    val_form_follow_up.append('is_simpan', true);
 
     $.ajax({
       beforeSend: function() {

@@ -414,7 +414,9 @@ class Leads_customer_data extends Crm_Controller
         $fg['created_by_null'] = true;
         $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
         if ($cek == NULL) {
+          $followUpID = $this->ld_m->getFollowUpID();
           $ins_fol_up[] = [
+            'followUpID' => $followUpID,
             'followUpKe' => $i,
             'leads_id' => $this->input->post('leads_id', true),
             'id_alasan_fu_not_interest' => $this->input->post('id_alasan_fu_not_interest_' . $i, true),
@@ -457,7 +459,7 @@ class Leads_customer_data extends Crm_Controller
       'upd_fol_up' => isset($upd_fol_up) ? $upd_fol_up : NULL,
       'ins_fol_up' => isset($ins_fol_up) ? $ins_fol_up : NULL,
     ];
-    // send_json($tes);
+    send_json($tes);
     $this->db->trans_begin();
     if (isset($ins_fol_up)) {
       $this->db->insert_batch('leads_follow_up', $ins_fol_up);
@@ -480,21 +482,23 @@ class Leads_customer_data extends Crm_Controller
       $this->db->trans_commit();
 
       $pesan = '';
-      if ($gr->idProspek == NULL || $gr->idProspek == '') {
-        //Melakukan Pengiriman API 3
-        $data = $this->_post_to_api3($leads_id);
-        $res_api3 = send_api_post($data, 'mdms', 'nms');
-        if ($res_api3['status'] == 1) {
-          $id_prospek = $res_api3['data']['id_prospek'];
-          $pesan = " dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
-          $upd = ['idProspek' => $id_prospek];
-          $this->db->update('leads', $upd, ['leads_id' => $leads_id]);
-        } else {
-          $msg = '';
-          foreach ($res_api3['message'] as $val) {
-            $msg .= $val;
+      if ($this->input->post('is_simpan') != NULL) {
+        if ($gr->idProspek == NULL || $gr->idProspek == '') {
+          //Melakukan Pengiriman API 3
+          $data = $this->_post_to_api3($leads_id);
+          $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
+          if ($res_api3['status'] == 1) {
+            $id_prospek = $res_api3['data']['id_prospek'];
+            $pesan = " dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
+            $upd = ['idProspek' => $id_prospek];
+            $this->db->update('leads', $upd, ['leads_id' => $leads_id]);
+          } else {
+            $msg = '';
+            foreach ($res_api3['message'] as $val) {
+              $msg .= $val;
+            }
+            $pesan = " dan gagal melakukan pengiriman API 3. Error Message : " . $msg;
           }
-          $pesan = " dan gagal melakukan pengiriman API 3. Error Message : " . $msg;
         }
       }
       $response = [
@@ -590,6 +594,7 @@ class Leads_customer_data extends Crm_Controller
     $leads_id = $this->input->post('leads_id', true);
     $get_lead = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
     $ins_fol_up = [
+      'followUpID' => $this->ld_m->getFollowUpID(),
       'leads_id' => $leads_id,
       'followUpKe' => $followUpKe,
       'assignedDealer' => $get_lead->assignedDealer,
