@@ -147,8 +147,9 @@ class Lead extends CI_Controller
     $data = $this->ld_m->getStagingTableVSMainTable($fc)->result_array();
     $this->db->trans_begin();
     foreach ($data as $pst) {
+      $leads_id = $this->ld_m->getLeadsID();
       $insert = [
-        'leads_id' => $this->ld_m->getLeadsID(),
+        'leads_id' => $leads_id,
         'customerId' => $this->ld_m->getCustomerID(),
         'batchID' => $pst['batchID'],
         'nama' => clear_removed_html($pst['nama']),
@@ -183,6 +184,13 @@ class Lead extends CI_Controller
         'created_at' => waktu(),
       ];
       $this->db->insert('leads', $insert);
+      //Set Stage ID 1
+      $ins_leads_history_stage = [
+        'leads_id' => $leads_id,
+        'stageId' => 1,
+        'created_at' => waktu(),
+      ];
+      $this->db->insert('leads_history_stage', $ins_leads_history_stage);
     }
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
