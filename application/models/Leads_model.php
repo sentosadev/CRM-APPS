@@ -359,7 +359,7 @@ class Leads_model extends CI_Model
         $select = "lfu.id_int,lfu.leads_id,lfu.followUpKe,lfu.pic,
         CASE WHEN lfu.tglFollowUp='0000-00-00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp";
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,CASE WHEN dl_assg.kode_dealer IS NULL THEN 1 ELSE 0 END is_md";
       }
     }
 
@@ -385,6 +385,7 @@ class Leads_model extends CI_Model
 
     $dt_result = $this->db->query("SELECT $select
     FROM leads_follow_up AS lfu
+    LEFT JOIN ms_dealer dl_assg ON dl_assg.kode_dealer=lfu.assignedDealer
     JOIN leads ld ON ld.leads_id=lfu.leads_id
     LEFT JOIN ms_media_kontak_fu media ON media.id_media_kontak_fu=lfu.id_media_kontak_fu
     LEFT JOIN ms_status_fu sts ON sts.id_status_fu=lfu.id_status_fu
