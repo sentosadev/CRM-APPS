@@ -12,7 +12,7 @@ class Migration_Create_leads_history_stage extends CI_Migration
 
     {
         $this->dbforge->add_field(array(
-            'leads_id' => ['type' => 'VARCHAR', 'constraint' => 30, 'unique' => true],
+            'leads_id' => ['type' => 'VARCHAR', 'constraint' => 30],
             'stageId' => ['type' => 'VARCHAR', 'constraint' => 2],
             'created_at' => ['type' => 'DATETIME'],
             'sending_to_ahm_at' => ['type' => 'DATETIME', 'null' => true],

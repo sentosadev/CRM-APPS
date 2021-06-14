@@ -54,11 +54,11 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Nama Dealer Sebelumnya</label>
+      <label class="col-sm-2 control-label">Nama Dealer Pembelian Sebelumnya</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="kodeDealerSebelumnya" class='form-control' name='kodeDealerSebelumnya' <?= $disabled ?>>
-            <option value='<?= $row->kodeDealerSebelumnya ?>'><?= $row->namaDealerSebelumnya ?></option>
+          <select style='width:100%' id="kodeDealerPembelianSebelumnya" class='form-control' name='kodeDealerPembelianSebelumnya' <?= $disabled ?>>
+            <option value='<?= $row->kodeDealerPembelianSebelumnya ?>'><?= $row->namaDealerPembelianSebelumnya ?></option>
           </select>
         </div>
       </div>
@@ -73,11 +73,11 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Nama Leasing Sebelumnya</label>
+      <label class="col-sm-2 control-label">Nama Leasing Pembelian Sebelumnya</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="kodeLeasingSebelumnya" name="kodeLeasingSebelumnya" class='form-control' name='kodeLeasingSebelumnya' <?= $disabled ?>>
-            <option value='<?= $row->kodeLeasingSebelumnya ?>'><?= $row->namaLeasingSebelumnya ?></option>
+          <select style='width:100%' id="kodeLeasingPembelianSebelumnya" name="kodeLeasingPembelianSebelumnya" class='form-control' name='kodeLeasingPembelianSebelumnya' <?= $disabled ?>>
+            <option value='<?= $row->kodeLeasingPembelianSebelumnya ?>'><?= $row->namaLeasingPembelianSebelumnya ?></option>
           </select>
         </div>
       </div>
@@ -96,14 +96,20 @@
 
         </div>
       </div>
-    </div>
-    <div class="form-group">
       <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP)</label>
       <div class="form-input">
         <div class="col-sm-4">
           <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaanKtp' <?= $disabled ?>>
             <option value='<?= $row->kodePekerjaanKtp ?>'><?= $row->deskripsiPekerjaanKtp ?></option>
           </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Desk. Tipe Unit Pembelian Terakhir</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='deskripsiTipeUnitPembelianTerakhir' value='<?= $row->deskripsiTipeUnitPembelianTerakhir ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Deskripsi Pekerjaan (Saat Ini) *</label>
@@ -116,10 +122,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Desk. Tipe Unit Pembelian Terakhir</label>
+      <label class="col-sm-2 control-label">Kategori Preferensi Dealer</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='deskripsiTipeUnitPembelianTerakhir' value='<?= $row->deskripsiTipeUnitPembelianTerakhir ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='kategoriPreferensiDealer' value='<?= $row->kategoriPreferensiDealer ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Promo Yang Diminati Customer</label>
@@ -131,10 +137,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kategori Preferensi Dealer</label>
+      <label class="col-sm-2 control-label">Nama Dealer Preferensi Customer</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='kategoriPreferensiDealer' value='<?= $row->kategoriPreferensiDealer ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='namaDealerPreferensiCustomer' value='<?= $row->namaDealerPreferensiCustomer ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Pendidikan</label>
@@ -147,18 +153,41 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Nama Dealer Preferensi Customer</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="text" class="form-control" name='namaDealerPreferensiCustomer' value='<?= $row->namaDealerPreferensiCustomer ?>' <?= $disabled ?>>
+      <div class="col-sm-6 col-md-6">
+        <label class="col-sm-4 control-label">Alamat *</label>
+        <div class="form-input">
+          <div class="col-sm-8">
+            <textarea class='form-control' rows=5 name='alamat'><?= $row->alamat ?></textarea>
+          </div>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Agama *</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="idAgama" class='form-control' name='idAgama' <?= $disabled ?> required>
-            <option value='<?= $row->idAgama ?>'><?= $row->deskripsiAgama ?></option>
-          </select>
+      <div class="col-sm-6 col-md-6">
+        <div class="form-group">
+
+          <label class="col-sm-4 control-label">Agama *</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <select style='width:100%' id="idAgama" class='form-control' name='idAgama' <?= $disabled ?> required>
+                <option value='<?= $row->idAgama ?>'><?= $row->deskripsiAgama ?></option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Pengeluaran</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name='pengeluaran' value='<?= $row->pengeluaran ?>' <?= $disabled ?>>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Preferensi Promo Yang Diminati Customer</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name='preferensiPromoDiminatiCustomer' value='<?= $row->preferensiPromoDiminatiCustomer ?>' <?= $disabled ?>>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -191,14 +220,6 @@
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" name='kategoriProspect' value='<?= $row->kategoriProspect ?>' <?= $disabled ?>>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Alamat *</label>
-      <div class="form-input">
-        <div class="col-sm-10">
-          <input type="text" class="form-control" name='alamat' required value='<?= $row->alamat ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -374,7 +395,7 @@
     </div>
   </form>
 </div>
-<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerSebelumnya', 'selectLeasingSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan'];
+<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 <?php $data['data'] = ['selectProvinsi', 'selectKecamatan', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];
 $this->load->view('additionals/dropdown_wilayah', $data); ?>

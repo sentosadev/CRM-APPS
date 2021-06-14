@@ -227,10 +227,10 @@ if (in_array('selectAgama', $data)) { ?>
 
 
 <?php
-if (in_array('selectDealerSebelumnya', $data)) { ?>
+if (in_array('selectDealerPembelianSebelumnya', $data)) { ?>
   <script>
     $(document).ready(function() {
-      $("#kodeDealerSebelumnya").select2({
+      $("#kodeDealerPembelianSebelumnya").select2({
         // minimumInputLength: 2,
         ajax: {
           url: "<?= site_url('api/private/leads_customer_data/selectDealer') ?>",
@@ -283,10 +283,10 @@ if (in_array('selectAssignedDealer', $data)) { ?>
 <?php } ?>
 
 <?php
-if (in_array('selectLeasingSebelumnya', $data)) { ?>
+if (in_array('selectLeasingPembelianSebelumnya', $data)) { ?>
   <script>
     $(document).ready(function() {
-      $("#kodeLeasingSebelumnya").select2({
+      $("#kodeLeasingPembelianSebelumnya").select2({
         // minimumInputLength: 2,
         ajax: {
           url: "<?= site_url('api/private/leads_customer_data/selectLeasing') ?>",

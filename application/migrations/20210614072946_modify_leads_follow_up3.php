@@ -22,6 +22,8 @@ class Migration_Modify_leads_follow_up3 extends CI_Migration
         $this->dbforge->drop_column('leads_follow_up', 'id_hasil_komunikasi');
         $this->dbforge->drop_column('leads_follow_up', 'id_kategori_status_komunikasi');
         $this->dbforge->drop_column('leads_follow_up', 'id_alasan_fu_not_interest');
+        $this->dbforge->drop_column('leads_follow_up', 'alasanTidakKeDealerSebelumnya');
+
 
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -48,6 +50,7 @@ class Migration_Modify_leads_follow_up3 extends CI_Migration
             'id_hasil_komunikasi' => ['type' => 'INT', 'constraint' => 3, 'null' => true],
             'id_kategori_status_komunikasi' => ['type' => 'INT', 'constraint' => 5, 'null' => true],
             'id_alasan_fu_not_interest' => ['type' => 'INT', 'constraint' => 5, 'null' => true],
+            'alasanTidakKeDealerSebelumnya' => ['type' => 'VARCHAR', 'constraint' => 2, 'null' => true],
         );
         $this->dbforge->add_column('leads_follow_up', $fields);
         if ($this->db->trans_status() === FALSE) {

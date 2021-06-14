@@ -198,10 +198,10 @@ class Leads_model extends CI_Model
         CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,sourceData,
         CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,platformData,
         noTelp,assignedDealer,sourceRefID,stl.provinsi,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,
-        ($jumlah_fu) jumlahFollowUp,ontimeSLA1,ontimeSLA2,idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, prov.provinsi deskripsiProvinsi,keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,kec_domisili.kecamatan deskripsiKecamatanDomisili,stl.kecamatan,stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,tanggalAssignDealer,
+        ($jumlah_fu) jumlahFollowUp,ontimeSLA1,ontimeSLA2,idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, prov.provinsi deskripsiProvinsi,keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingPembelianSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingPembelianSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,kec_domisili.kecamatan deskripsiKecamatanDomisili,stl.kecamatan,stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,tanggalAssignDealer,
         '' deskripsiStatusKontakFU,
         '' deskripsiHasilStatusFollowUp,
-        '' tanggalNextFU,
+        '' tanggalNextFU,pengeluaran,preferensiPromoDiminatiCustomer,kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
         " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
         " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
@@ -236,13 +236,14 @@ class Leads_model extends CI_Model
     LEFT JOIN ms_maintain_warna twu ON twu.kode_warna=stl.kodeWarnaUnit
     LEFT JOIN ms_maintain_provinsi prov ON prov.id_provinsi=stl.provinsi
     LEFT JOIN ms_dealer dl_sebelumnya ON dl_sebelumnya.kode_dealer=stl.kodeDealerSebelumnya
-    LEFT JOIN ms_leasing ls_sebelumnya ON ls_sebelumnya.kode_leasing=stl.kodeLeasingSebelumnya
+    LEFT JOIN ms_leasing ls_sebelumnya ON ls_sebelumnya.kode_leasing=stl.kodeLeasingPembelianSebelumnya
     LEFT JOIN ms_pekerjaan pkjk ON pkjk.kode_pekerjaan=stl.kodePekerjaanKtp
     LEFT JOIN ms_pendidikan pdk ON pdk.id_pendidikan=stl.idPendidikan
     LEFT JOIN ms_agama agm ON agm.id_agama=stl.idAgama
     LEFT JOIN ms_maintain_kecamatan kec_domisili ON kec_domisili.id_kecamatan=stl.kecamatan
     LEFT JOIN ms_maintain_kelurahan kel_domisili ON kel_domisili.id_kelurahan=stl.kelurahan
     LEFT JOIN ms_maintain_kecamatan kec_kantor ON kec_kantor.id_kecamatan=stl.idKecamatanKantor
+    LEFT JOIN ms_dealer dl_beli_sebelumnya ON dl_beli_sebelumnya.kode_dealer=stl.kodeDealerPembelianSebelumnya
     $where
     $order_data
     $limit
@@ -358,7 +359,7 @@ class Leads_model extends CI_Model
         $select = "lfu.id_int,lfu.leads_id,lfu.followUpKe,lfu.pic,
         CASE WHEN lfu.tglFollowUp='0000-00-00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID";
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp";
       }
     }
 
@@ -367,9 +368,13 @@ class Leads_model extends CI_Model
       $order_column = [null];
       $order = $filter['order'];
       if ($order != '') {
-        $order_clm  = $order_column[$order['0']['column']];
-        $order_by   = $order['0']['dir'];
-        $order_data = " ORDER BY $order_clm $order_by ";
+        if (is_array($order)) {
+          $order_clm  = $order_column[$order['0']['column']];
+          $order_by   = $order['0']['dir'];
+          $order_data = " ORDER BY $order_clm $order_by ";
+        } else {
+          $order_data = " ORDER BY $order";
+        }
       }
     }
 
@@ -409,6 +414,11 @@ class Leads_model extends CI_Model
       if (isset($filter['leads_id'])) {
         if ($filter['leads_id'] != '') {
           $where .= " AND lhad.leads_id='{$this->db->escape_str($filter['leads_id'])}'";
+        }
+      }
+      if (isset($filter['assignedDealer'])) {
+        if ($filter['assignedDealer'] != '') {
+          $where .= " AND lhad.assignedDealer='{$this->db->escape_str($filter['assignedDealer'])}'";
         }
       }
 
@@ -529,5 +539,15 @@ class Leads_model extends CI_Model
   function getJumlahFUMaks()
   {
     return $this->db->query("SELECT COUNT(leads_id) maks FROM leads_follow_up GROUP BY leads_id ORDER BY COUNT(leads_id) DESC LIMIT 1")->row()->maks;
+  }
+
+  function getLeadsStage($filter)
+  {
+    $where = "WHERE 1=1 ";
+    $filter['search'] = $this->db->escape_str($filter);
+    if (isset($filter['sending_to_ahm_at_is_null'])) {
+      $where .= " AND sending_to_ahm_at IS NULL";
+    }
+    return $this->db->query("SELECT leads_id,stageId FROM leads_history_stage $where");
   }
 }

@@ -314,8 +314,8 @@ class Leads_customer_data extends Crm_Controller
       'kecamatan' => $this->input->post('kecamatan', true),
       'kelurahan' => $this->input->post('kelurahan', true),
       'keteranganPreferensiDealerLain' => $this->input->post('keteranganPreferensiDealerLain', true),
-      'kodeDealerSebelumnya' => $this->input->post('kodeDealerSebelumnya', true),
-      'kodeLeasingSebelumnya' => $this->input->post('kodeLeasingSebelumnya', true),
+      'kodeDealerPembelianSebelumnya' => $this->input->post('kodeDealerPembelianSebelumnya', true),
+      'kodeLeasingPembelianSebelumnya' => $this->input->post('kodeLeasingPembelianSebelumnya', true),
       'kodePekerjaan' => $this->input->post('kodePekerjaan', true),
       'deskripsiPekerjaan' => $spkj == NULL ? NULL : $spkj->sub_pekerjaan,
       'kodePekerjaanKtp' => $this->input->post('kodePekerjaanKtp', true),
@@ -351,6 +351,8 @@ class Leads_customer_data extends Crm_Controller
       'tempatLahir' => $this->input->post('tempatLahir', true),
       'tanggalLahir' => $this->input->post('tanggalLahir', true),
       'alamat' => $this->input->post('alamat', true),
+      'preferensiPromoDiminatiCustomer' => $this->input->post('preferensiPromoDiminatiCustomer', true),
+      'pengeluaran' => $this->input->post('pengeluaran', true),
     ];
 
     //Sinkron Tabel Pendidikan
@@ -360,7 +362,7 @@ class Leads_customer_data extends Crm_Controller
     $arr_kode_pekerjaan = [$this->input->post('kodePekerjaanKtp', true)];
 
     //Sinkron Tabel Leasing
-    $arr_kode_leasing = [$this->input->post('kodeLeasingSebelumnya', true)];
+    $arr_kode_leasing = [$this->input->post('kodeLeasingPembelianSebelumnya', true)];
 
     //Sinkron Tabel Agama
     $arr_kode_agama = [$this->input->post('idAgama', true)];
