@@ -357,7 +357,7 @@ class Leads_model extends CI_Model
         $select = "lfu.id_int,lfu.leads_id,lfu.followUpKe,lfu.pic,
         CASE WHEN lfu.tglFollowUp='0000-00-00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.id_kategori_status_komunikasi,lfu.kodeHasilStatusFollowUp,lfu.id_alasan_fu_not_interest,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,ksts.kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasan_fu_not_interest,lfu.status,lfu.assignedDealer,followUpID";
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID";
       }
     }
 
@@ -382,9 +382,9 @@ class Leads_model extends CI_Model
     JOIN leads ld ON ld.leads_id=lfu.leads_id
     LEFT JOIN ms_media_kontak_fu media ON media.id_media_kontak_fu=lfu.id_media_kontak_fu
     LEFT JOIN ms_status_fu sts ON sts.id_status_fu=lfu.id_status_fu
-    LEFT JOIN ms_kategori_status_komunikasi ksts ON ksts.id_kategori_status_komunikasi=lfu.id_kategori_status_komunikasi
+    LEFT JOIN ms_kategori_status_komunikasi ksk ON ksk.id_kategori_status_komunikasi=sts.id_kategori_status_komunikasi
     LEFT JOIN ms_hasil_status_follow_up hks ON hks.kodeHasilStatusFollowUp=lfu.kodeHasilStatusFollowUp
-    LEFT JOIN ms_alasan_fu_not_interest als ON als.id_alasan_fu_not_interest=lfu.id_alasan_fu_not_interest
+    LEFT JOIN ms_alasan_not_prospect_not_deal als ON als.kodeAlasanNotProspectNotDeal=lfu.kodeAlasanNotProspectNotDeal
     $where
     $order_data
     $limit

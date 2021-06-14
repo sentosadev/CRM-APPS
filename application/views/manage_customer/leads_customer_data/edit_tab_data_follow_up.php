@@ -88,17 +88,21 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 </div>
               </div>
             </div>
+            <script>
+              var $eventSelect<?= $fol_up_sekarang ?> = $("#id_status_fu_<?= $fol_up_sekarang ?>");
+
+              $eventSelect<?= $fol_up_sekarang ?>.on("change", function(e) {
+                data = $eventSelect<?= $fol_up_sekarang ?>.select2('data')[0];
+                $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val(data.kategori);
+              });
+            </script>
+
 
             <div class="form-group">
               <label class="col-sm-4 control-label">Kategori Status Komunikasi</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_kategori_status_komunikasi_<?= $fol_up_sekarang ?>" class='form-control' name='id_kategori_status_komunikasi_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
-                    <?php if (isset($list_follow_up[$fol_up_sekarang])) {
-                      $lfu = $list_follow_up[$fol_up_sekarang]; ?>
-                      <option value='<?= $lfu['id_kategori_status_komunikasi'] ?>'><?= $lfu['kategori_status_komunikasi'] ?></option>
-                    <?php } ?>
-                  </select>
+                  <input type="text" class="form-control" id='kategori_status_komunikasi_<?= $fol_up_sekarang ?>' disabled value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['kategori_status_komunikasi'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
@@ -117,19 +121,27 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Interest</label>
+            <div class="form-group" id="input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>">
+              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Prospect/Not Deal</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_alasan_fu_not_interest_<?= $fol_up_sekarang ?>" class='form-control' name='id_alasan_fu_not_interest_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>" class='form-control' name='kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
-                      <option value='<?= $lfu['id_alasan_fu_not_interest'] ?>'><?= $lfu['alasan_fu_not_interest'] ?></option>
+                      <option value='<?= $lfu['kodeAlasanNotProspectNotDeal'] ?>'><?= $lfu['alasanNotProspectNotDeal'] ?></option>
                     <?php } ?>
                   </select>
                 </div>
               </div>
             </div>
+            <script>
+              // $(document).ready(function() {
+              //   var selected_hasil<?= $fol_up_sekarang ?> = $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').select2().val();
+              //   if (selected_hasil<?= $fol_up_sekarang ?> == 2 || selected_hasil<?= $fol_up_sekarang ?> == 4) {
+              //     $("#")
+              //   }
+              // });
+            </script>
 
             <div class="form-group">
               <label class="col-sm-4 control-label">Keterangan Alasan Lainnya</label>
@@ -163,7 +175,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
   </div>
 <?php } ?>
 <?php
-$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilStatusFollowUpMulti', 'selectAlasanFuNotInterestMulti'];
+$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilStatusFollowUpMulti', 'selectAlasanNotProspectNotDealMulti'];
 $data['total_fol_up'] = $total_fol_up;
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 <script>

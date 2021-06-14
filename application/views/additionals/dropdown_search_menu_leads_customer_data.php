@@ -360,7 +360,13 @@ if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
             },
             processResults: function(response) {
               return {
-                results: response
+                results: $.map(response, function(item) {
+                  return {
+                    text: item.text,
+                    kategori: item.kategori,
+                    id: item.id
+                  }
+                })
               };
             },
             cache: true
@@ -433,14 +439,14 @@ if (in_array('selectHasilStatusFollowUpMulti', $data)) {
 } ?>
 
 <?php
-if (in_array('selectAlasanFuNotInterestMulti', $data)) {
+if (in_array('selectAlasanNotProspectNotDealMulti', $data)) {
   for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
     <script>
       $(document).ready(function() {
-        $("#id_alasan_fu_not_interest_<?= $i ?>").select2({
+        $("#kodeAlasanNotProspectNotDeal_<?= $i ?>").select2({
           // minimumInputLength: 2,
           ajax: {
-            url: "<?= site_url('api/private/leads_customer_data/selectAlasanFuNotInterest') ?>",
+            url: "<?= site_url('api/private/leads_customer_data/selectAlasanNotProspectNotDeal') ?>",
             type: "POST",
             dataType: 'json',
             delay: 100,

@@ -160,15 +160,15 @@ class Leads_customer_data extends CI_Controller
     send_json($response);
   }
 
-  function selectAlasanFuNotInterest()
+  function selectAlasanNotProspectNotDeal()
   {
-    $this->load->model('alasan_fu_not_interest_model', 'lm');
+    $this->load->model('alasan_not_prospect_not_deal_model', 'lm');
     $search = null;
     if (isset($_POST['searchTerm'])) {
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getAlasanFuNotInterest($filter)->result();
+    $response = $this->lm->getselectAlasanNotProspectNotDeal($filter)->result();
     send_json($response);
   }
 

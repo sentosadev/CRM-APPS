@@ -40,12 +40,12 @@ class Status_fu_model extends CI_Model
       }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
-          $select = "id_status_fu id,deskripsi_status_fu text";
+          $select = "id_status_fu id,deskripsi_status_fu text,kategori_status_komunikasi kategori";
         } else {
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_status_fu,mu.deskripsi_status_fu,media_kontak_fu,grup_status_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by";
+        $select = "mu.id_status_fu,mu.deskripsi_status_fu,media_kontak_fu,grup_status_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,kategori_status_komunikasi";
       }
     }
 
@@ -67,6 +67,7 @@ class Status_fu_model extends CI_Model
 
     return $this->db->query("SELECT $select
     FROM ms_status_fu AS mu
+    JOIN ms_kategori_status_komunikasi ksk ON ksk.id_kategori_status_komunikasi=mu.id_kategori_status_komunikasi
     $where
     $order_data
     $limit
