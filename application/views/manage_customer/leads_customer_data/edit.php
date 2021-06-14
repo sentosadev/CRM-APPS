@@ -83,16 +83,22 @@
       if (flash.tabs != undefined) {
         changeTabs(flash.tabs) //Menuju Tab Tertentu
       }
-      // changeTabs('data_pendukung_probing_1') //Testing Menuju Tab Tertentu
+      // changeTabs('data_follow_up_1') //Testing Menuju Tab Tertentu
     });
 
     function changeTabs(tabs) {
       $('[href="#' + tabs + '"]').tab('show');
       document.body.scrollTop = 0; // For Safari
       document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-      title = "Nama Customer : " + $('#nama').val() + "<br>" + "Kode Motor : " + $('#id_tipe').val() + "<br>" + "Tipe Motor : " + $('#id_warna').val() + "<br>" + "Riding Test : " + "<br>" + "Promo Diminati : " + $('#promoYangDiminatiCustomer').val();
+      html_title = "<table>";
+      html_title += "<tr><td align='left'>Nama Customer </td><td>&nbsp;: " + $('#nama').val() + "</td></tr>";
+      html_title += "<tr><td align='left'>Tipe Motor </td><td align='left'>&nbsp; : " + $('#id_tipe_from_other_db').val() + "</td></tr>";
+      html_title += "<tr><td align='left'>Warna Motor </td><td align='left'>&nbsp; : " + $('#id_warna_from_other_db').val() + "</td></tr>";
+      html_title += "<tr><td align='left'>Riding Test </td><td align='left'>&nbsp; : <?= $row->minatRidingTestDesc ?></td></tr>";
+      html_title += "<tr><td align='left'>Promo Diminati </td><td align='left'>&nbsp; : " + $('#promoYangDiminatiCustomer').val() + "</td></tr>";
+      html_title += "</table>";
       $('.tooltipInformasiCustomer').removeAttr('title');
-      $('.tooltipInformasiCustomer').attr('data-original-title', title);
+      $('.tooltipInformasiCustomer').attr('data-original-title', html_title);
     }
 
     $("#kodePekerjaan").on("change", function() {

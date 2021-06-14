@@ -13,7 +13,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
   <div class="tab-pane" id="data_follow_up_<?= $i ?>">
     <?php $data = ['set_active' => [1, 2, 3]];
     $this->load->view('manage_customer/leads_customer_data/wizard', $data); ?>
-    <label data-toggle="tooltip" data-html="true" class='tooltipInformasiCustomer'><i>Informasi</i> <i class='fa fa-info-circle'></i></label>
+    <label data-toggle="tooltip" data-html="true" data-html="true" class='tooltipInformasiCustomer'><i>Informasi</i> <i class='fa fa-info-circle'></i></label>
     <form id="form_data_follow_up_<?= $i ?>" class='form-horizontal form_'>
       <div class="row">
         <?php for ($x = 1; $x <= $max_pertab; $x++) {
