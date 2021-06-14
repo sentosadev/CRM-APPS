@@ -64,7 +64,7 @@ class Lead extends CI_Controller
         'email' => clear_removed_html($pst['email']),
         'customerType' => clear_removed_html($pst['customerType']),
         'eventCodeInvitation' => clear_removed_html($pst['eventCodeInvitation']),
-        'customerActionDate' => clear_removed_html($pst['customerActionDate']),
+        'customerActionDate' => date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate'])),
         'kabupaten' => clear_removed_html($pst['kabupaten']),
         'cmsSource' => clear_removed_html($pst['cmsSource']),
         'segmentMotor' => clear_removed_html($pst['segmentMotor']),
@@ -97,6 +97,7 @@ class Lead extends CI_Controller
         'errorMessage' => ''
       ];
     }
+    // send_json(($insert_batch));
     if (isset($insert_batch)) {
       $this->db->trans_begin();
       $this->db->insert_batch('staging_table_leads', $insert_batch);

@@ -492,3 +492,9 @@ function sql_convert_date($field)
 {
   return "DATE_FORMAT($field,'%d %M %Y %H:%i:%s')";
 }
+
+
+function date_iso_8601_to_datetime($date)
+{
+  return date('Y-m-d H:i:s', strtotime($date));
+}
