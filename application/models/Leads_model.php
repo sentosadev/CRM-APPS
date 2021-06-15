@@ -78,9 +78,32 @@ class Leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     $jumlah_fu = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=stl.leads_id";
-    if ($filter != null) {
+    $sql_tgl_follow_up_md = "SELECT tglFollowUp FROM leads_follow_up WHERE leads_id=stl.leads_id AND (assignedDealer='' OR assignedDealer IS NULL) AND followUpKe=1";
 
-      // Posisi di atas karena skip filter escape '
+    $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,kabupaten,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
+        CASE WHEN minatRidingTest=1 THEN 'Ya' WHEN minatRidingTest=0 THEN 'Tidak' Else '-' END minatRidingTestDesc,
+        CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,sourceData,
+        CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,platformData,
+        noTelp,assignedDealer,sourceRefID,stl.provinsi,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,
+        ($jumlah_fu) jumlahFollowUp,
+        ontimeSLA1, CASE WHEN ontimeSLA1=1 THEN 'On Track' WHEN ontimeSLA1=0 THEN 'Overdue' ELSE '-' END ontimeSLA1_desc,
+        ontimeSLA2,CASE WHEN ontimeSLA2=1 THEN 'On Track' WHEN ontimeSLA2=0 THEN 'Overdue' ELSE '-' END ontimeSLA2_desc,
+        idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,
+        CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, 
+        prov.provinsi deskripsiProvinsi,keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingPembelianSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingPembelianSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,kec_domisili.kecamatan deskripsiKecamatanDomisili,stl.kecamatan,stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,tanggalAssignDealer,
+        '' deskripsiStatusKontakFU,
+        '' deskripsiHasilStatusFollowUp,
+        '' tanggalNextFU,pengeluaran,preferensiPromoDiminatiCustomer,kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
+        " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
+        " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
+        " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
+        " . sql_convert_date('tanggalDownloadBrosur') . " tanggalDownloadBrosurEng,
+        " . sql_convert_date('tanggalPengajuan') . " tanggalPengajuanEng,
+        " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng
+        ";
+
+    if ($filter != null) {
+      // Posisi di atas karena skip filter escape tanda kutip (')
       if (isset($filter['platformDataIn'])) {
         if ($filter['platformDataIn'] != '') {
           $filter['platformDataIn'] = arr_sql($filter['platformDataIn']);
@@ -150,7 +173,7 @@ class Leads_model extends CI_Model
 
 
 
-      //Filter Escaped String Like '
+      //Filter Escaped String Like Singe Quote (')
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
         if ($filter['leads_id'] != '') {
@@ -177,6 +200,16 @@ class Leads_model extends CI_Model
           $where .= " AND stl.status='{$this->db->escape_str($filter['status'])}'";
         }
       }
+      if (isset($filter['idProspek'])) {
+        if ($filter['idProspek'] != '') {
+          $where .= " AND stl.idProspek='{$this->db->escape_str($filter['idProspek'])}'";
+        }
+      }
+      if (isset($filter['assignedDealer'])) {
+        if ($filter['assignedDealer'] != '') {
+          $where .= " AND stl.assignedDealer='{$this->db->escape_str($filter['assignedDealer'])}'";
+        }
+      }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -191,24 +224,6 @@ class Leads_model extends CI_Model
         } else {
           $select = $filter['select'];
         }
-      } else {
-
-        $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,kabupaten,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
-        CASE WHEN minatRidingTest=1 THEN 'Ya' WHEN minatRidingTest=0 THEN 'Tidak' Else '-' END minatRidingTestDesc,
-        CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,sourceData,
-        CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,platformData,
-        noTelp,assignedDealer,sourceRefID,stl.provinsi,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,
-        ($jumlah_fu) jumlahFollowUp,ontimeSLA1,ontimeSLA2,idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,kabupatenPengajuan,CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, prov.provinsi deskripsiProvinsi,keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingPembelianSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingPembelianSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,kec_domisili.kecamatan deskripsiKecamatanDomisili,stl.kecamatan,stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,tanggalAssignDealer,
-        '' deskripsiStatusKontakFU,
-        '' deskripsiHasilStatusFollowUp,
-        '' tanggalNextFU,pengeluaran,preferensiPromoDiminatiCustomer,kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
-        " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
-        " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
-        " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
-        " . sql_convert_date('tanggalDownloadBrosur') . " tanggalDownloadBrosurEng,
-        " . sql_convert_date('tanggalPengajuan') . " tanggalPengajuanEng,
-        " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng
-        ";
       }
     }
 
@@ -351,15 +366,18 @@ class Leads_model extends CI_Model
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
+        } elseif ($filter['select'] == 'count') {
+          $select = "COUNT(lfu.leads_id) count";
         } else {
           $select = $filter['select'];
         }
       } else {
 
         $select = "lfu.id_int,lfu.leads_id,lfu.followUpKe,lfu.pic,
-        CASE WHEN lfu.tglFollowUp='0000-00-00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
+        CASE WHEN lfu.tglFollowUp='0000-00-00 00:00:00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_at,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,CASE WHEN dl_assg.kode_dealer IS NULL THEN 1 ELSE 0 END is_md";
+        CASE WHEN lfu.created_at='0000-00-00 00:00:00' THEN '' ELSE lfu.created_at END created_at,
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,CASE WHEN dl_assg.kode_dealer IS NULL THEN 1 ELSE 0 END is_md";
       }
     }
 
@@ -504,14 +522,14 @@ class Leads_model extends CI_Model
     $dmy = gmdate("dmY", time() + 60 * 60 * 7);
     $ymd = tanggal();
     $get_data  = $this->db->query("SELECT RIGHT(followUpID,3) followUpID 
-                  FROM leads WHERE LEFT(created_at,10)='$ymd'
+                  FROM leads_follow_up WHERE LEFT(created_at,10)='$ymd'
                   ORDER BY created_at DESC LIMIT 0,1");
     if ($get_data->num_rows() > 0) {
       $row = $get_data->row();
       $new_kode = 'FOLUP/' . $dmy . '/' . sprintf("%'.03d", $row->followUpID + 1);
       $i = 0;
       while ($i < 1) {
-        $cek = $this->db->get_where('leads', ['followUpID' => $new_kode])->num_rows();
+        $cek = $this->db->get_where('leads_follow_up', ['followUpID' => $new_kode])->num_rows();
         if ($cek > 0) {
           $new_kode   = 'FOLUP/' . $dmy . '/' . sprintf("%'.03d", substr($new_kode, -3) + 1);
           $i = 0;
@@ -549,6 +567,52 @@ class Leads_model extends CI_Model
     if (isset($filter['sending_to_ahm_at_is_null'])) {
       $where .= " AND sending_to_ahm_at IS NULL";
     }
+
+    if (isset($filter['stageId'])) {
+      $where .= " AND stageId='{$filter['stageId']}'";
+    }
+
+    if (isset($filter['leads_id'])) {
+      $where .= " AND leads_id='{$filter['leads_id']}'";
+    }
     return $this->db->query("SELECT leads_id,stageId FROM leads_history_stage $where");
+  }
+
+  function setOntimeSLA1_detik($customerActionDate, $tglFollowUp)
+  {
+    $selisih = selisih_detik($customerActionDate, $tglFollowUp);
+    return $selisih;
+  }
+
+  function setOntimeSLA1($detik)
+  {
+    $operasional = $this->db->get_where('ms_jam_operasional', ['kode_dealer' => NULL, 'aktif' => 1])->row();
+    $timeInSeconds = strtotime($operasional->total_jam) - strtotime('TODAY');
+    $selisih = $timeInSeconds - $detik;
+    if ($selisih < 0) {
+      $return = 0;
+    } else {
+      $return = 1;
+    }
+    return $return;
+  }
+
+  function setOntimeSLA2_detik($tglAssign, $tglFollowUp)
+  {
+    $selisih = selisih_detik($tglAssign, $tglFollowUp);
+    return $selisih;
+  }
+
+  function setOntimeSLA2($detik, $kode_dealer)
+  {
+    $operasional = $this->db->get_where('ms_jam_operasional', ['kode_dealer' => $kode_dealer, 'aktif' => 1])->row();
+    $timeInSeconds = strtotime($operasional->total_jam) - strtotime('TODAY');
+    $selisih = $timeInSeconds - $detik;
+    if ($selisih < 0) {
+      $return = 0;
+    } else {
+      $return = 1;
+    }
+    return $return;
   }
 }

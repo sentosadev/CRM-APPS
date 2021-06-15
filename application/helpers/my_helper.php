@@ -498,3 +498,23 @@ function date_iso_8601_to_datetime($date)
 {
   return date('Y-m-d H:i:s', strtotime($date));
 }
+
+function selisih_hari($start, $end)
+{
+  $tgl1 = new DateTime(substr($start, 0, 10));
+  $tgl2 = new DateTime(substr($end, 0, 10));
+  return $tgl2->diff($tgl1)->d;
+}
+
+function selisih_menit($start, $end)
+{
+  $tgl1 = new DateTime(substr($start, 0, 10));
+  $tgl2 = new DateTime(substr($end, 0, 10));
+  return $tgl2->diff($tgl1)->i;
+}
+function selisih_detik($start, $end)
+{
+  $tgl1 = strtotime($start);
+  $tgl2 = strtotime($end);
+  return $tgl2 - $tgl1;
+}

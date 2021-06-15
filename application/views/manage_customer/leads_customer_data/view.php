@@ -271,6 +271,18 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           return d;
         },
       },
+      "createdRow": function(row, data, index) {
+        if (data[16] == 'Overdue') {
+          $('td', row).eq(16).addClass('bg-red'); // 6 is index of column
+        } else if (data[16] == 'On Track') {
+          $('td', row).eq(16).addClass('bg-green'); // 6 is index of column
+        }
+        if (data[17] == 'Overdue') {
+          $('td', row).eq(17).addClass('bg-red'); // 6 is index of column
+        } else if (data[17] == 'On Track') {
+          $('td', row).eq(17).addClass('bg-green'); // 6 is index of column
+        }
+      },
       "columnDefs": [{
           "targets": [0, 1, 2, 3, 4, 5, 6],
           "orderable": false

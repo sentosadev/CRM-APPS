@@ -64,8 +64,8 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->jumlahFollowUp;
       $sub_array[] = $rs->tanggalNextFU;
       $sub_array[] = $rs->updated_at;
-      $sub_array[] = 'Overdue';
-      $sub_array[] = 'Overdue';
+      $sub_array[] = $rs->ontimeSLA1_desc;
+      $sub_array[] = $rs->ontimeSLA2_desc;
       $sub_array[] = link_on_data_details($params, $user->id_group);
       $data[]      = $sub_array;
       $no++;
@@ -413,11 +413,12 @@ class Leads_customer_data extends Crm_Controller
     if ($this->input->post('folup', true) != NULL) {
       foreach ($this->input->post('folup', true) as $i) {
         $fg['followUpKe'] = $i;
+        $fg['assignedDealer'] = $gr->assignedDealer;
         $fg['created_by_null'] = true;
         $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
         if ($cek == NULL) {
           $followUpID = $this->ld_m->getFollowUpID();
-          $ins_fol_up[] = [
+          $ins_fol = [
             'followUpID' => $followUpID,
             'followUpKe' => $i,
             'leads_id' => $this->input->post('leads_id', true),
@@ -429,15 +430,18 @@ class Leads_customer_data extends Crm_Controller
             'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
             'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
             'pic' => $this->input->post('pic_' . $i, true),
-            'tglFollowUp' => $this->input->post('tglFollowUp_' . $i, true),
+            'tglFollowUp' => convert_datetime($this->input->post('tglFollowUp_' . $i, true)),
             'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
             'created_at'    => waktu(),
             'created_by' => $user->id_user,
           ];
+
+          $ins_fol_up[] = $ins_fol;
         } else {
-          $upd_fol_up[] = [
+          $upd_fol = [
             'leads_id' => $this->input->post('leads_id', true),
             'followUpKe' => $i,
+            'assignedDealer' => $cek->assignedDealer,
             'kodeAlasanNotProspectNotDeal' => $this->input->post('kodeAlasanNotProspectNotDeal_' . $i, true),
             'kodeHasilStatusFollowUp' => $this->input->post('kodeHasilStatusFollowUp_' . $i, true),
             'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
@@ -446,11 +450,40 @@ class Leads_customer_data extends Crm_Controller
             'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
             'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
             'pic' => $this->input->post('pic_' . $i, true),
-            'tglFollowUp' => $this->input->post('tglFollowUp_' . $i, true),
+            'tglFollowUp' => convert_datetime($this->input->post('tglFollowUp_' . $i, true)),
             'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
             'updated_at'    => waktu(),
             'updated_by' => $user->id_user,
           ];
+          if ($cek->created_at == '') {
+            $upd_fol['created_at'] = waktu();
+            $upd_fol['created_by'] = $user->id_user;
+            unset($upd_fol['updated_at']);
+            unset($upd_fol['updated_by']);
+          }
+
+          $upd_fol_up[] = $upd_fol;
+        }
+        //Cek Apakah FollowUpKe=1
+        if ($i == 1) {
+
+          if ((string)$gr->assignedDealer == '') { //Is MD
+            // Update ontimeSLA1
+            $ontimeSLA1_detik = $this->ld_m->setOntimeSLA1_detik($gr->customerActionDate, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
+            $upd_leads = [
+              'leads_id' => $leads_id,
+              'ontimeSLA1_detik' => $ontimeSLA1_detik,
+              'ontimeSLA1' => $this->ld_m->setOntimeSLA1($ontimeSLA1_detik),
+            ];
+          } else {
+            // Update ontimeSLA1
+            $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($gr->tanggalAssignDealer, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
+            $upd_leads = [
+              'leads_id' => $leads_id,
+              'ontimeSLA2_detik' => $ontimeSLA2_detik,
+              'ontimeSLA2' => $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $cek->assignedDealer),
+            ];
+          }
         }
       }
     }
@@ -458,23 +491,34 @@ class Leads_customer_data extends Crm_Controller
     $tes = [
       'upd_fol_up' => isset($upd_fol_up) ? $upd_fol_up : NULL,
       'ins_fol_up' => isset($ins_fol_up) ? $ins_fol_up : NULL,
+      'upd_leads' => isset($upd_leads) ? $upd_leads : NULL,
     ];
     // send_json($tes);
+
     $this->db->trans_begin();
+
     if (isset($ins_fol_up)) {
       $this->db->insert_batch('leads_follow_up', $ins_fol_up);
     }
+
     if (isset($upd_fol_up)) {
       foreach ($upd_fol_up as $upd) {
         $cond = [
           'followUpKe' => $upd['followUpKe'],
+          'assignedDealer' => $upd['assignedDealer'],
           'leads_id' => $upd['leads_id'],
         ];
         unset($upd['followUpKe']);
         unset($upd['leads_id']);
+        unset($upd['assignedDealer']);
         $this->db->update('leads_follow_up', $upd, $cond);
       }
     }
+
+    if (isset($upd_leads)) {
+      $this->db->update('leads', $upd_leads, ['leads_id' => $leads_id]);
+    }
+
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
