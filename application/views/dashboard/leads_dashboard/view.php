@@ -10,7 +10,7 @@
 
   #leadsToProspectJourney {
     width: 100%;
-    height: 420px
+    height: 454px
   }
 </style>
 <script src="<?= base_url('assets/') ?>plugins/amcharts4/core.js"></script>
@@ -61,6 +61,29 @@
           <h3 class="box-title">Leads Source Effectiveness</h3>
         </div>
         <div class="box-body">
+        <input type="text" class="form-control" id='periodeLeadsSourceEffect' name='periodeLeadsSourceEffect'>
+        <input type="hidden" class="form-control" id='start_periodeLeadsSourceEffect'>
+        <input type="hidden" class="form-control" id='end_periodeLeadsSourceEffect'>
+        <script>
+          $(function() {
+            $('#periodeLeadsSourceEffect').daterangepicker({
+              // opens: 'left',
+              autoUpdateInput: false,
+              locale: {
+                format: 'DD/MM/YYYY'
+              }
+            }, function(start, end, label) {
+              $('#start_periodeLeadsSourceEffect').val(start.format('YYYY-MM-DD'));
+              $('#end_periodeLeadsSourceEffect').val(end.format('YYYY-MM-DD'));
+            }).on('apply.daterangepicker', function(ev, picker) {
+              $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            }).on('cancel.daterangepicker', function(ev, picker) {
+              $(this).val('');
+              $('#start_periodeLeadsSourceEffect').val('');
+              $('#end_periodeLeadsSourceEffect').val('');
+            });
+          });
+        </script>
           <div id="leadsSourceEffectiveness"></div>
         </div>
       </div>
