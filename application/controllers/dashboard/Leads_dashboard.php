@@ -52,7 +52,7 @@ class Leads_dashboard extends Crm_Controller
           [$rs->assignedDealer, '==', '']
         ]
       ];
-      $sub_array[] = $btnAssign . link_assign_reassign($rs->leads_id, $user->id_group, $skip_if);
+      $sub_array[] = $btnAssign;
       $sub_array[] = $rs->tanggalAssignDealer;
       $sub_array[] = $rs->deskripsiPlatformData;
       $sub_array[] = $rs->deskripsiSourceData;
@@ -66,7 +66,6 @@ class Leads_dashboard extends Crm_Controller
       $sub_array[] = $rs->updated_at;
       $sub_array[] = $rs->ontimeSLA1_desc;
       $sub_array[] = $rs->ontimeSLA2_desc;
-      $sub_array[] = link_on_data_details($params, $user->id_group);
       $data[]      = $sub_array;
       $no++;
     }
