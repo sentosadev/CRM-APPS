@@ -43,7 +43,7 @@ function get_client_ip()
 
 function get_user_agent()
 {
-  return $_SERVER['HTTP_USER_AGENT'];
+  return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 }
 
 function request_validation($action = NULL)
