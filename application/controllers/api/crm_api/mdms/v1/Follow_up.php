@@ -189,13 +189,13 @@ class Follow_up extends CI_Controller
       ];
       $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
       $ins_fol_up = [
-        'followUpID' => $this->ld_m->getFollowUpID(),
-        'followUpKe' => $count_fol + 1,
-        'pic' => $post['fol_up']['pic'],
-        'tglFollowUp' => $post['fol_up']['tglFollowUp'],
+        'followUpID'              => $this->ld_m->getFollowUpID(),
+        'followUpKe'              => $count_fol + 1,
+        'pic'                     => $post['fol_up']['pic'],
+        'tglFollowUp'             => $post['fol_up']['tglFollowUp'],
         'kodeHasilStatusFollowUp' => $post['fol_up']['kodeHasilStatusFollowUp'],
-        'id_status_fu' => $post['fol_up']['id_status_fu'],
-        'created_at' => waktu()
+        'id_status_fu'            => $post['fol_up']['id_status_fu'],
+        'created_at'              => waktu()
       ];
 
       $tes = [
@@ -208,7 +208,7 @@ class Follow_up extends CI_Controller
         $this->db->trans_begin();
         $cond = ['leads_id' => $leads_id];
         $this->db->insert('leads_follow_up', $ins_fol_up);
-        $this->db->update('sleads', $update_leads, $cond);
+        $this->db->update('leads', $update_leads, $cond);
         if ($this->db->trans_status() === FALSE) {
           $this->db->trans_rollback();
         } else {
@@ -299,6 +299,7 @@ class Follow_up extends CI_Controller
         'deskripsiPromoDeal'      => $leads['deskripsiPromoDeal'],
         'metodePembayaranDeal'    => $leads['metodePembayaranDeal'],
         'kodeLeasingDeal'         => $leads['kodeLeasingDeal'],
+        'frameNo'                 => $leads['frameNo'],
         'stageId_10_processed_at' => waktu(),
         'stageId_10_processed_by_user_d_nms' => $leads['id_user'],
       ];
@@ -311,13 +312,13 @@ class Follow_up extends CI_Controller
       ];
       $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
       $ins_fol_up = [
-        'followUpID' => $this->ld_m->getFollowUpID(),
-        'followUpKe' => $count_fol + 1,
-        'pic' => $post['fol_up']['pic'],
-        'tglFollowUp' => $post['fol_up']['tglFollowUp'],
+        'followUpID'              => $this->ld_m->getFollowUpID(),
+        'followUpKe'              => $count_fol + 1,
+        'pic'                     => $post['fol_up']['pic'],
+        'tglFollowUp'             => $post['fol_up']['tglFollowUp'],
         'kodeHasilStatusFollowUp' => $post['fol_up']['kodeHasilStatusFollowUp'],
-        'id_status_fu' => $post['fol_up']['id_status_fu'],
-        'created_at' => waktu()
+        'id_status_fu'            => $post['fol_up']['id_status_fu'],
+        'created_at'              => waktu()
       ];
 
       $tes = [
@@ -330,7 +331,7 @@ class Follow_up extends CI_Controller
         $this->db->trans_begin();
         $cond = ['leads_id' => $leads_id];
         $this->db->insert('leads_follow_up', $ins_fol_up);
-        $this->db->update('sleads', $update_leads, $cond);
+        $this->db->update('leads', $update_leads, $cond);
         if ($this->db->trans_status() === FALSE) {
           $this->db->trans_rollback();
         } else {
