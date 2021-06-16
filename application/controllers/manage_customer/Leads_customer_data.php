@@ -326,7 +326,7 @@ class Leads_customer_data extends Crm_Controller
       'promoYangDiminatiCustomer' => $this->input->post('promoYangDiminatiCustomer', true),
       'provinsi' => $this->input->post('provinsi', true),
       'sourceData' => $this->input->post('sourceData', true),
-      'kategoriKonsumen' => $this->input->post('kategoriKonsumen', true),
+      'customerType' => $this->input->post('customerType', true),
       'gender' => $this->input->post('gender', true),
       'tanggalPembelianTerakhir' => convert_datetime($this->input->post('tanggalPembelianTerakhir', true)),
       'tanggalRencanaPembelian' => convert_datetime($this->input->post('tanggalRencanaPembelian', true)),

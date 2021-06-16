@@ -210,6 +210,11 @@ class Leads_model extends CI_Model
           $where .= " AND stl.assignedDealer='{$this->db->escape_str($filter['assignedDealer'])}'";
         }
       }
+      if (isset($filter['idSPK'])) {
+        if ($filter['idSPK'] != '') {
+          $where .= " AND stl.idSPK='{$this->db->escape_str($filter['idSPK'])}'";
+        }
+      }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -614,5 +619,25 @@ class Leads_model extends CI_Model
       $return = 1;
     }
     return $return;
+  }
+
+  function getLeadsGroupByCustomerType()
+  {
+    return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
+    CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
+    FROM leads GROUP BY customerType");
+  }
+
+  function getLeadsGroupBySourceData($filter = NULL)
+  {
+    $where = "WHERE 1=1";
+    if (isset($filter['customerType'])) {
+      $where .= " AND leads.customerType='{$filter['customerType']}'";
+    }
+    return $this->db->query("SELECT COUNT(leads_id) c,source_leads 
+    FROM leads 
+    JOIN ms_source_leads sl ON sl.id_source_leads=leads.sourceData
+    $where
+    GROUP BY sourceData");
   }
 }

@@ -61,29 +61,29 @@
           <h3 class="box-title">Leads Source Effectiveness</h3>
         </div>
         <div class="box-body">
-        <input type="text" class="form-control" id='periodeLeadsSourceEffect' name='periodeLeadsSourceEffect'>
-        <input type="hidden" class="form-control" id='start_periodeLeadsSourceEffect'>
-        <input type="hidden" class="form-control" id='end_periodeLeadsSourceEffect'>
-        <script>
-          $(function() {
-            $('#periodeLeadsSourceEffect').daterangepicker({
-              // opens: 'left',
-              autoUpdateInput: false,
-              locale: {
-                format: 'DD/MM/YYYY'
-              }
-            }, function(start, end, label) {
-              $('#start_periodeLeadsSourceEffect').val(start.format('YYYY-MM-DD'));
-              $('#end_periodeLeadsSourceEffect').val(end.format('YYYY-MM-DD'));
-            }).on('apply.daterangepicker', function(ev, picker) {
-              $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-            }).on('cancel.daterangepicker', function(ev, picker) {
-              $(this).val('');
-              $('#start_periodeLeadsSourceEffect').val('');
-              $('#end_periodeLeadsSourceEffect').val('');
+          <input type="text" class="form-control" id='periodeLeadsSourceEffect' name='periodeLeadsSourceEffect' placeholder="Periode Leads Source Effectiveness">
+          <input type="hidden" class="form-control" id='start_periodeLeadsSourceEffect'>
+          <input type="hidden" class="form-control" id='end_periodeLeadsSourceEffect'>
+          <script>
+            $(function() {
+              $('#periodeLeadsSourceEffect').daterangepicker({
+                // opens: 'left',
+                autoUpdateInput: false,
+                locale: {
+                  format: 'DD/MM/YYYY'
+                }
+              }, function(start, end, label) {
+                $('#start_periodeLeadsSourceEffect').val(start.format('YYYY-MM-DD'));
+                $('#end_periodeLeadsSourceEffect').val(end.format('YYYY-MM-DD'));
+              }).on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+              }).on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+                $('#start_periodeLeadsSourceEffect').val('');
+                $('#end_periodeLeadsSourceEffect').val('');
+              });
             });
-          });
-        </script>
+          </script>
           <div id="leadsSourceEffectiveness"></div>
         </div>
       </div>
@@ -102,49 +102,50 @@
     </div>
   </div>
   <div class="row">
-  <div class="col-sm-12">
-  <div class="box box-default">
-    <div class="box-header with-border">
-    <h3 class="box-title">Leads Performance Details</h3>
-      <div class="box-tools pull-right">
-        <button class='btn btn-primary btn-sm'>Export To Excel</button>
+    <div class="col-sm-12">
+      <div class="box box-default">
+        <div class="box-header with-border">
+          <h3 class="box-title">Leads Performance Details</h3>
+          <div class="box-tools pull-right">
+            <button class='btn btn-primary btn-sm'>Export To Excel</button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="table-responsive">
+            <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
+              <thead>
+                <th width='5%'>#</th>
+                <th width='15%'>Leads ID</th>
+                <th>Nama</th>
+                <th>Dealer Sebelumnya</th>
+                <th>Dealer Dispatch</th>
+                <th>Tgl. Dispatch</th>
+                <th>Platform Data</th>
+                <th>Source Leads</th>
+                <th>Deskripsi Event</th>
+                <th>Periode Event</th>
+                <th>Status FU</th>
+                <th>Pernah Terhubung</th>
+                <th>Hasil FU</th>
+                <th>Jumlah FU</th>
+                <th>Next FU</th>
+                <th>Last Update</th>
+                <th>MD Overdue</th>
+                <th>D Overdue</th>
+              </thead>
+            </table>
+          </div>
+          <!-- /.row -->
+        </div>
       </div>
     </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-      <div class="table-responsive">
-        <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
-          <thead>
-            <th width='5%'>#</th>
-            <th width='15%'>Leads ID</th>
-            <th>Nama</th>
-            <th>Dealer Sebelumnya</th>
-            <th>Dealer Dispatch</th>
-            <th>Tgl. Dispatch</th>
-            <th>Platform Data</th>
-            <th>Source Leads</th>
-            <th>Deskripsi Event</th>
-            <th>Periode Event</th>
-            <th>Status FU</th>
-            <th>Pernah Terhubung</th>
-            <th>Hasil FU</th>
-            <th>Jumlah FU</th>
-            <th>Next FU</th>
-            <th>Last Update</th>
-            <th>MD Overdue</th>
-            <th>D Overdue</th>
-          </thead>
-        </table>
-      </div>
-      <!-- /.row -->
-    </div>
-  </div>
-  </div>
   </div>
 </section>
-
+<?php $this->load->view('dashboard/leads_dashboard/leads_source_effectiveness'); ?>
 <script>
   $(document).ready(function() {
+    ajaxDataChartLeadsSourceEffectiveness();
     var dataTable = $('.serverside-tables').DataTable({
       "processing": true,
       "serverSide": true,
@@ -208,106 +209,6 @@
       ],
     });
   });
-  /**
-   * ---------------------------------------
-   * This demo was created using amCharts 4.
-   * 
-   * For more information visit:
-   * https://www.amcharts.com/
-   * 
-   * Documentation is available at:
-   * https://www.amcharts.com/docs/v4/
-   * ---------------------------------------
-   */
-
-  // Themes begin
-  am4core.useTheme(am4themes_animated);
-  // Themes end
-
-  // create chart
-  var chart = am4core.create("leadsSourceEffectiveness", am4plugins_sunburst.Sunburst);
-  chart.padding(0, 0, 0, 0);
-  chart.radius = am4core.percent(98);
-
-  chart.data = [{
-      name: "Invited",
-      children: [{
-          name: "RO Dealer",
-          value: 10000
-        },
-        {
-          name: "RO Fincoy",
-          value: 16000
-        },
-        {
-          name: "Leads MD",
-          value: 16000
-        },
-        {
-          name: "WA",
-          value: 16000
-        },
-        {
-          name: "Line",
-          value: 16000
-        }
-      ]
-    },
-    {
-      name: "Not Invited",
-
-      children: [{
-          name: "1",
-          value: 10000
-        },
-        {
-          name: "2",
-          value: 16000
-        }
-      ]
-    }
-  ];
-
-  chart.colors.step = 2;
-  chart.fontSize = 11;
-  chart.innerRadius = am4core.percent(0);
-
-  // define data fields
-  chart.dataFields.value = "value";
-  chart.dataFields.name = "name";
-  chart.dataFields.children = "children";
-
-
-  var level0SeriesTemplate = new am4plugins_sunburst.SunburstSeries();
-  level0SeriesTemplate.hiddenInLegend = false;
-  chart.seriesTemplates.setKey("0", level0SeriesTemplate)
-
-  // this makes labels to be hidden if they don't fit
-  level0SeriesTemplate.labels.template.truncate = true;
-  level0SeriesTemplate.labels.template.hideOversized = true;
-  level0SeriesTemplate.slices.template.tooltipText = `{name}-{value.formatDuration("hh 'hours' & mm 'mins.'")}`;
-
-
-  level0SeriesTemplate.labels.template.adapter.add("rotation", (rotation, target) => {
-    target.maxWidth = target.dataItem.slice.radius - target.dataItem.slice.innerRadius - 10;
-    target.maxHeight = Math.abs(target.dataItem.slice.arc * (target.dataItem.slice.innerRadius + target.dataItem.slice.radius) / 2 * am4core.math.RADIANS);
-
-    return rotation;
-  })
-
-
-  var level1SeriesTemplate = level0SeriesTemplate.clone();
-  chart.seriesTemplates.setKey("1", level1SeriesTemplate)
-  level1SeriesTemplate.fillOpacity = 0.75;
-  level1SeriesTemplate.hiddenInLegend = true;
-
-
-  var level2SeriesTemplate = level0SeriesTemplate.clone();
-  chart.seriesTemplates.setKey("2", level2SeriesTemplate)
-  level2SeriesTemplate.fillOpacity = 0.5;
-  level2SeriesTemplate.hiddenInLegend = true;
-
-  chart.legend = new am4charts.Legend();
 </script>
 
 <script>
@@ -320,44 +221,168 @@
     var chart = am4core.create("leadsToProspectJourney", am4charts.SankeyDiagram);
     chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
-    chart.data = [
-    { from: "Not Invited", to: "Facebook", value: 1, id:"NI0" },
-    { from: "Not Invited", to: "Ads", value: 1, id:"NI1" },
-    { from: "Not Invited", to: "Invitation", value: 1, id:"NI2" },
-    { from: "Not Invited", to: "Whatsapp", value: 1, id:"NI3" },
-  
-    { from: "Invited", to: "Facebook", value: 1, id:"IN0" },
-    { from: "Invited", to: "Ads", value: 1, id:"IN1" },
-    { from: "Invited", to: "Invitation", value: 5, id:"IN2" },
-    { from: "Invited", to: "Whatsapp", value: 1, id:"IN3" },
+    chart.data = [{
+        from: "Not Invited",
+        to: "Facebook",
+        value: 1,
+        id: "NI0"
+      },
+      {
+        from: "Not Invited",
+        to: "Ads",
+        value: 1,
+        id: "NI1"
+      },
+      {
+        from: "Not Invited",
+        to: "Invitation",
+        value: 1,
+        id: "NI2"
+      },
+      {
+        from: "Not Invited",
+        to: "Whatsapp",
+        value: 1,
+        id: "NI3"
+      },
 
-    //
-    { from: "Facebook", to: "RO Customer", value: 5, id:"" },
-    { from: "Facebook", to: "New Customer", value: 1, id:"" },
+      {
+        from: "Invited",
+        to: "Facebook",
+        value: 1,
+        id: "IN0"
+      },
+      {
+        from: "Invited",
+        to: "Ads",
+        value: 1,
+        id: "IN1"
+      },
+      {
+        from: "Invited",
+        to: "Invitation",
+        value: 5,
+        id: "IN2"
+      },
+      {
+        from: "Invited",
+        to: "Whatsapp",
+        value: 1,
+        id: "IN3"
+      },
 
-    { from: "Ads", to: "RO Customer", value: 5, id:"" },
-    { from: "Ads", to: "New Customer", value: 5, id:"" },
+      //
+      {
+        from: "Facebook",
+        to: "RO Customer",
+        value: 5,
+        id: ""
+      },
+      {
+        from: "Facebook",
+        to: "New Customer",
+        value: 1,
+        id: ""
+      },
 
-    { from: "Invitation", to: "RO Customer", value: 1, id:"" },
+      {
+        from: "Ads",
+        to: "RO Customer",
+        value: 5,
+        id: ""
+      },
+      {
+        from: "Ads",
+        to: "New Customer",
+        value: 5,
+        id: ""
+      },
 
-    { from: "Whatsapp", to: "RO Customer", value: 1, id:"" },
+      {
+        from: "Invitation",
+        to: "RO Customer",
+        value: 1,
+        id: ""
+      },
 
-    { from: "Whatsapp", to: "New Customer", value: 1, id:"" },
+      {
+        from: "Whatsapp",
+        to: "RO Customer",
+        value: 1,
+        id: ""
+      },
 
-    { from: "Invitation", to: "New Customer", value: 1, id:"" },
+      {
+        from: "Whatsapp",
+        to: "New Customer",
+        value: 1,
+        id: ""
+      },
 
-    { from: "RO Customer", to: "Hot Prospect", value: 2, id:"" },
-    { from: "RO Customer", to: "Low Prospect", value: 2, id:"" },
-    { from: "RO Customer", to: "Low Prospect", value: 2, id:"" },
+      {
+        from: "Invitation",
+        to: "New Customer",
+        value: 1,
+        id: ""
+      },
 
-    { from: "New Customer", to: "Low Prospect", value: 2, id:"" },
-    { from: "New Customer", to: "Med Prospect", value: 1, id:"" },
-    { from: "New Customer", to: "Low Prospect", value: 2, id:"" },
-    { from: "New Customer", to: "Not Prospect", value: 2, id:"" },
-    { from: "New Customer", to: "Need Follow Up", value: 2, id:"" },
-    { from: "New Customer", to: "No Need Fol. Up", value: 2, id:"" },
+      {
+        from: "RO Customer",
+        to: "Hot Prospect",
+        value: 2,
+        id: ""
+      },
+      {
+        from: "RO Customer",
+        to: "Low Prospect",
+        value: 2,
+        id: ""
+      },
+      {
+        from: "RO Customer",
+        to: "Low Prospect",
+        value: 2,
+        id: ""
+      },
 
-];
+      {
+        from: "New Customer",
+        to: "Low Prospect",
+        value: 2,
+        id: ""
+      },
+      {
+        from: "New Customer",
+        to: "Med Prospect",
+        value: 1,
+        id: ""
+      },
+      {
+        from: "New Customer",
+        to: "Low Prospect",
+        value: 2,
+        id: ""
+      },
+      {
+        from: "New Customer",
+        to: "Not Prospect",
+        value: 2,
+        id: ""
+      },
+      {
+        from: "New Customer",
+        to: "Need Follow Up",
+        value: 2,
+        id: ""
+      },
+      {
+        from: "New Customer",
+        to: "No Need Fol. Up",
+        value: 2,
+        id: ""
+      },
+
+    ];
     let hoverState = chart.links.template.states.create("hover");
     hoverState.properties.fillOpacity = 0.6;
 

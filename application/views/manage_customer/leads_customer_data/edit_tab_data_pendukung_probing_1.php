@@ -40,10 +40,10 @@
       <label class="col-sm-2 control-label">Kategori Konsumen</label>
       <div class="form-input">
         <div class="col-sm-1">
-          <input type="radio" name="kategoriKonsumen" value="vip" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->kategoriKonsumen == 'vip' ? 'checked' : '' ?> <?= $disabled ?>> VIP
+          <input type="radio" name="customerType" value="V" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->customerType == 'V' ? 'checked' : '' ?> <?= $disabled ?>> VIP
         </div>
         <div class="col-sm-3">
-          <input type="radio" name="kategoriKonsumen" value="reguler" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->kategoriKonsumen == 'reguler' ? 'checked' : '' ?> <?= $disabled ?>> Reguler
+          <input type="radio" name="customerType" value="R" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->customerType == 'R' ? 'checked' : '' ?> <?= $disabled ?>> Reguler
         </div>
       </div>
       <label class="col-sm-2 control-label">Alasan Pindah Dealer</label>
