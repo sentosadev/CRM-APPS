@@ -819,6 +819,7 @@ class Leads_customer_data extends Crm_Controller
   public function saveAssignDealer()
   {
     $user = user();
+    $leads_id = $this->input->post('leads_id', true);
     $fg = ['kode_dealer' => $this->input->post('assignedDealer', true)];
     $gr = $this->dealer_m->getDealerForAssigned($fg)->row();
 
@@ -831,16 +832,59 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
+    // Cek Apakah Sudah Stage ID 1,4
+    $list_cek_stage = [1, 4];
+    $stage_belum = [];
+    foreach ($list_cek_stage as $vs) {
+      $lstg = [
+        'leads_id' => $leads_id,
+        'stageId' => $vs
+      ];
+      $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
+      if ($cek_stage == NULL) {
+        $stage_belum[] = $vs;
+      }
+    }
+
+    if (count($stage_belum) > 0) {
+      $stage = implode(', ', $stage_belum);
+      $response = [
+        'status' => 0,
+        'pesan' => "Stage $stage belum diproses"
+      ];
+      send_json($response);
+    }
+
+    //Cek Apakah Sudah Stage ID 5
+    $fstg5 = ['leads_id' => $leads_id, 'stageId' => 5];
+    $c_stg5 = $this->ld_m->getLeadsStage($fstg5)->row();
+
+    // Set Stage ID 5
+    // 5. Dispatch Prospect to Dealer
+    if ($c_stg5 == NULL) {
+      $ins_history_stage = [
+        'leads_id' => $leads_id,
+        'created_at' => waktu(),
+        'stageId' => 5
+      ];
+    }
+
     $update = [
       'assignedDealer'        => $this->input->post('assignedDealer', true),
       'tanggalAssignDealer' => waktu(),
       'assignedDealerBy' => $user->id_user,
     ];
 
-    $tes = ['update' => $update];
+    $tes = [
+      'update' => $update,
+      'ins_history_stage' => $ins_history_stage
+    ];
     // send_json($tes);
     $this->db->trans_begin();
-    $this->db->update('leads', $update, ['leads_id' => $this->input->post('leads_id', true)]);
+    $this->db->update('leads', $update, ['leads_id' => $leads_id]);
+    if (isset($ins_history_stage)) {
+      $this->db->insert('leads_history_stage', $ins_history_stage);
+    };
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];

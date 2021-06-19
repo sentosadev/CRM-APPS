@@ -92,7 +92,7 @@
       <div class="modal-footer">
         <div class="row">
           <div class="col-sm-12 col-md-12" align='center'>
-            <button type="button" class="btn btn-primary" onclick="saveAssignDealer(this)">Simpan</button>
+            <button type="button" class="btn btn-primary" onclick="saveAssignDealer(this)">Assigned Dealer</button>
           </div>
         </div>
       </div>
@@ -285,7 +285,8 @@
       return false;
     }
     Swal.fire({
-      title: 'Apakah Anda Yakin ?',
+      title: 'Assigned To Dealer',
+      text: 'Apakah Anda yakin melakukan Assigned ke Dealer : ' + assignedDealer + ' ?',
       showCancelButton: true,
       confirmButtonText: 'Simpan',
       cancelButtonText: 'Batal',
