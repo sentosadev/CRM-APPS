@@ -433,6 +433,7 @@ class Leads_model extends CI_Model
   {
     $where = 'WHERE 1=1';
     $select = '';
+    $tglFollowUp = "SELECT tglFollowUp FROM leads_follow_up lfu WHERE lfu.leads_id=lhad.leads_id AND lfu.assignedDealer=lhad.assignedDealer AND lfu.followUpKe=1";
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
@@ -465,8 +466,7 @@ class Leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-
-        $select = "lhad.id_int,lhad.assignedDealer,assignedKe,lhad.tanggalAssignDealer,lhad.assignedDealerBy,lhad.created_at,lhad.created_by,dl.nama_dealer";
+        $select = "lhad.id_int,lhad.assignedDealer,assignedKe,lhad.tanggalAssignDealer,lhad.assignedDealerBy,lhad.created_at,lhad.created_by,dl.nama_dealer,alasanReAssignDealer,($tglFollowUp) tglFollowUp,lhad.ontimeSLA2,CASE WHEN lhad.ontimeSLA2=1 THEN 'On Track' WHEN lhad.ontimeSLA2=0 THEN 'Overdue' ELSE '-' END ontimeSLA2_desc";
       }
     }
 

@@ -11,7 +11,7 @@
           <div class="col-md-12">
             <div class="box box-default box-solid">
               <div class="box-header with-border">
-                <h3 class="box-title">Dispatch History</h3>
+                <h3 class="box-title">Main Dealer/Dealer Leads Distribution Checkbox*</h3>
                 <div class="box-tools pull-right">
                   <!-- <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
                   </button> -->
@@ -128,7 +128,7 @@
                     <th>#</th>
                     <th>Nama Dealer</th>
                     <th>Tgl. Dispatch</th>
-                    <th>Tgl. Alasan Reassign</th>
+                    <th>Alasan Reassign</th>
                     <th>Tgl. FU 1</th>
                     <th>SLA FU1 D</th>
                     <th>D Overdue</th>
@@ -142,7 +142,7 @@
           <div class="col-md-12">
             <div class="box box-default box-solid">
               <div class="box-header with-border">
-                <h3 class="box-title">Main Dealer/Dealer Leads Distribution Checkbox *</h3>
+                <h3 class="box-title">Main Dealer/Dealer Leads Distribution Checkbox*</h3>
                 <div class="box-tools pull-right">
                   <!-- <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
                   </button> -->
@@ -235,7 +235,7 @@
       <div class="modal-footer">
         <div class="row">
           <div class="col-sm-12 col-md-12" align='center'>
-            <button type="button" class="btn btn-primary" onclick="saveReAssignDealer(this)">Simpan</button>
+            <button type="button" class="btn btn-success" onclick="saveReAssignDealer(this)">Reassign Dealer</button>
           </div>
         </div>
       </div>
@@ -288,7 +288,7 @@
       title: 'Assigned To Dealer',
       text: 'Apakah Anda yakin melakukan Assigned ke Dealer : ' + assignedDealer + ' ?',
       showCancelButton: true,
-      confirmButtonText: 'Simpan',
+      confirmButtonText: 'Assigned Dealer',
       cancelButtonText: 'Batal',
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
@@ -325,7 +325,7 @@
               })
               $(el).attr('disabled', false);
             }
-            $(el).html('Simpan');
+            $(el).html('Assigned Dealer');
           },
           error: function() {
             Swal.fire({
@@ -417,7 +417,8 @@
     if ($('#form_alasan_reassign').valid()) // check if form is valid
     {
       Swal.fire({
-        title: 'Apakah Anda Yakin ?',
+        title: 'Reassigned To Dealer',
+        text: 'Apakah Anda yakin melakukan Ressigned ke Dealer : ' + reAssignedDealer + ' ?',
         showCancelButton: true,
         confirmButtonText: 'Simpan',
         cancelButtonText: 'Batal',
@@ -457,7 +458,7 @@
                 })
                 $(el).attr('disabled', false);
               }
-              $(el).html('Simpan');
+              $(el).html('Reassign Dealer');
             },
             error: function() {
               Swal.fire({
@@ -469,7 +470,7 @@
                 confirmButtonText: 'Tutup',
                 iconColor: 'white'
               })
-              $(el).html('Simpan');
+              $(el).html('Reassign Dealer');
               $(el).attr('disabled', false);
             }
           });

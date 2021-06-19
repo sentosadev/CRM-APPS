@@ -950,6 +950,7 @@ class Leads_customer_data extends Crm_Controller
   public function saveReAssignDealer()
   {
     $user = user();
+    $leads_id = $this->input->post('leads_id', true);
     $f_asg = ['leads_id' => $this->input->post('leads_id', true)];
     $lead = $this->ld_m->getLeads($f_asg)->row();
 
@@ -971,6 +972,43 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
+    // Cek Apakah Sudah Stage ID 1,4,5
+    $list_cek_stage = [1, 4, 5];
+    $stage_belum = [];
+    foreach ($list_cek_stage as $vs) {
+      $lstg = [
+        'leads_id' => $leads_id,
+        'stageId' => $vs
+      ];
+      $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
+      if ($cek_stage == NULL) {
+        $stage_belum[] = $vs;
+      }
+    }
+
+    if (count($stage_belum) > 0) {
+      $stage = implode(', ', $stage_belum);
+      $response = [
+        'status' => 0,
+        'pesan' => "Stage $stage belum diproses"
+      ];
+      send_json($response);
+    }
+
+    //Cek Apakah Sudah Stage ID 6
+    $fstg6 = ['leads_id' => $leads_id, 'stageId' => 6];
+    $c_stg6 = $this->ld_m->getLeadsStage($fstg6)->row();
+
+    // Set Stage ID 6
+    // 6. Reassign Dealer
+    if ($c_stg6 == NULL) {
+      $ins_history_stage = [
+        'leads_id' => $leads_id,
+        'created_at' => waktu(),
+        'stageId' => 6
+      ];
+    }
+
     $update = [
       'kodeDealerSebelumnya' => $lead->assignedDealer,
       'assignedDealer'       => $this->input->post('assignedDealer', true),
@@ -979,22 +1017,30 @@ class Leads_customer_data extends Crm_Controller
     ];
 
     // Insert History Assigned Dealer
-    $insert = [
-      'leads_id'             => $this->input->post('leads_id', true),
+    $insert_history_assigned = [
+      'leads_id'             => $leads_id,
       'assignedKe'           => $this->ld_m->getLeadsHistoryAssignedDealer($f_asg)->num_rows() + 1,
       'assignedDealer'       => $lead->assignedDealer,
       'tanggalAssignDealer'  => $lead->tanggalAssignDealer,
       'assignedDealerBy'     => $lead->assignedDealerBy,
+      'ontimeSLA2'           => $lead->ontimeSLA2,
       'created_at'           => waktu(),
       'created_by'           => $user->id_user,
       'alasanReAssignDealer' => $this->input->post('alasanReAssignDealer', true),
     ];
 
-    $tes = ['update' => $update, 'insert' => $insert];
+    $tes = [
+      'update' => $update,
+      'insert_history_assigned' => $insert_history_assigned,
+      'ins_history_stage' => isset($ins_history_stage) ? $ins_history_stage : NULL,
+    ];
     // send_json($tes);
     $this->db->trans_begin();
+    $this->db->insert('leads_history_assigned_dealer', $insert_history_assigned);
     $this->db->update('leads', $update, $f_asg);
-    $this->db->insert('leads_history_assigned_dealer', $insert);
+    if (isset($ins_history_stage)) {
+      $this->db->insert('leads_history_stage', $ins_history_stage);
+    };
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
@@ -1021,10 +1067,10 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $no;
       $sub_array[] = $rs->nama_dealer;
       $sub_array[] = $rs->tanggalAssignDealer;
-      $sub_array[] = $rs->created_at;
+      $sub_array[] = $rs->alasanReAssignDealer;
+      $sub_array[] = $rs->tglFollowUp;
       $sub_array[] = '';
-      $sub_array[] = '';
-      $sub_array[] = '';
+      $sub_array[] = $rs->ontimeSLA2_desc;
       $data[]      = $sub_array;
       $no++;
     }
