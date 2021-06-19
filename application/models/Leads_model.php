@@ -640,4 +640,9 @@ class Leads_model extends CI_Model
     $where
     GROUP BY sourceData");
   }
+
+  function insertLeadsStage($data) //$data = array
+  {
+    $this->db->insert('leads_history_stage', $data);
+  }
 }

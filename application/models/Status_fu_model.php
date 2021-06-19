@@ -28,13 +28,23 @@ class Status_fu_model extends CI_Model
           $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
+
+      if (isset($filter['id_kategori_status_komunikasi'])) {
+        if ($filter['id_kategori_status_komunikasi'] != '') {
+          $where .= " AND mu.id_kategori_status_komunikasi='{$this->db->escape_str($filter['id_kategori_status_komunikasi'])}'";
+        }
+      }
+      if (isset($filter['id_kategori_status_komunikasi_not'])) {
+        if ($filter['id_kategori_status_komunikasi_not'] != '') {
+          $where .= " AND mu.id_kategori_status_komunikasi !='{$this->db->escape_str($filter['id_kategori_status_komunikasi_not'])}'";
+        }
+      }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_status_fu LIKE'%{$filter['search']}%'
                             OR mu.deskripsi_status_fu LIKE'%{$filter['search']}%'
-                            OR mu.media_kontak_fu LIKE'%{$filter['search']}%'
-                            OR mu.grup_status_fu LIKE'%{$filter['search']}%'
+                            OR mdk.media_kontak_fu LIKE'%{$filter['search']}%'
           )";
         }
       }
@@ -45,7 +55,7 @@ class Status_fu_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_status_fu,mu.deskripsi_status_fu,media_kontak_fu,grup_status_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,kategori_status_komunikasi";
+        $select = "mu.id_status_fu,mu.deskripsi_status_fu,mdk.media_kontak_fu,mu.id_media_kontak_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,kategori_status_komunikasi";
       }
     }
 
@@ -68,6 +78,7 @@ class Status_fu_model extends CI_Model
     return $this->db->query("SELECT $select
     FROM ms_status_fu AS mu
     JOIN ms_kategori_status_komunikasi ksk ON ksk.id_kategori_status_komunikasi=mu.id_kategori_status_komunikasi
+    JOIN ms_media_kontak_fu mdk ON mdk.id_media_kontak_fu=mu.id_media_kontak_fu
     $where
     $order_data
     $limit

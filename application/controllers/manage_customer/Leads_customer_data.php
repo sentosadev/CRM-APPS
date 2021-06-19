@@ -10,6 +10,7 @@ class Leads_customer_data extends Crm_Controller
     if (!logged_in()) redirect('auth/login');
     $this->load->model('leads_model', 'ld_m');
     $this->load->model('Dealer_model', 'dealer_m');
+    $this->load->model('status_fu_model', 'sfu_m');
   }
 
   public function index()
@@ -413,60 +414,37 @@ class Leads_customer_data extends Crm_Controller
     if ($this->input->post('folup', true) != NULL) {
       foreach ($this->input->post('folup', true) as $i) {
         $fg['followUpKe'] = $i;
-        $fg['assignedDealer'] = $gr->assignedDealer;
+        $fg['assignedDealer'] = (string)$gr->assignedDealer;
         $fg['created_by_null'] = true;
         $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
-        if ($cek == NULL) {
-          $followUpID = $this->ld_m->getFollowUpID();
-          $ins_fol = [
-            'followUpID' => $followUpID,
-            'followUpKe' => $i,
-            'leads_id' => $this->input->post('leads_id', true),
-            'kodeAlasanNotProspectNotDeal' => $this->input->post('kodeAlasanNotProspectNotDeal_' . $i, true),
-            'kodeHasilStatusFollowUp' => $this->input->post('kodeHasilStatusFollowUp_' . $i, true),
-            'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
-            'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
-            'keteranganAlasanLainnya' => $this->input->post('keteranganAlasanLainnya_' . $i, true),
-            'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
-            'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
-            'pic' => $this->input->post('pic_' . $i, true),
-            'tglFollowUp' => convert_datetime($this->input->post('tglFollowUp_' . $i, true)),
-            'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
-            'created_at'    => waktu(),
-            'created_by' => $user->id_user,
-          ];
-
-          $ins_fol_up[] = $ins_fol;
-        } else {
-          $upd_fol = [
-            'leads_id' => $this->input->post('leads_id', true),
-            'followUpKe' => $i,
-            'assignedDealer' => $cek->assignedDealer,
-            'kodeAlasanNotProspectNotDeal' => $this->input->post('kodeAlasanNotProspectNotDeal_' . $i, true),
-            'kodeHasilStatusFollowUp' => $this->input->post('kodeHasilStatusFollowUp_' . $i, true),
-            'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
-            'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
-            'keteranganAlasanLainnya' => $this->input->post('keteranganAlasanLainnya_' . $i, true),
-            'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
-            'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
-            'pic' => $this->input->post('pic_' . $i, true),
-            'tglFollowUp' => convert_datetime($this->input->post('tglFollowUp_' . $i, true)),
-            'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
-            'updated_at'    => waktu(),
-            'updated_by' => $user->id_user,
-          ];
-          if ($cek->created_at == '') {
-            $upd_fol['created_at'] = waktu();
-            $upd_fol['created_by'] = $user->id_user;
-            unset($upd_fol['updated_at']);
-            unset($upd_fol['updated_by']);
-          }
-
-          $upd_fol_up[] = $upd_fol;
+        $upd_fol = [
+          'leads_id' => $this->input->post('leads_id', true),
+          'followUpKe' => $i,
+          'assignedDealer' => $cek->assignedDealer,
+          'kodeAlasanNotProspectNotDeal' => $this->input->post('kodeAlasanNotProspectNotDeal_' . $i, true),
+          'kodeHasilStatusFollowUp' => $this->input->post('kodeHasilStatusFollowUp_' . $i, true),
+          'id_media_kontak_fu' => $this->input->post('id_media_kontak_fu_' . $i, true),
+          'id_status_fu' => $this->input->post('id_status_fu_' . $i, true),
+          'keteranganAlasanLainnya' => $this->input->post('keteranganAlasanLainnya_' . $i, true),
+          'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
+          'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
+          'pic' => $this->input->post('pic_' . $i, true),
+          'tglFollowUp' => convert_datetime($this->input->post('tglFollowUp_' . $i, true)),
+          'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
+          'updated_at'    => waktu(),
+          'updated_by' => $user->id_user,
+        ];
+        if ($cek->created_at == '') {
+          $upd_fol['created_at'] = waktu();
+          $upd_fol['created_by'] = $user->id_user;
+          unset($upd_fol['updated_at']);
+          unset($upd_fol['updated_by']);
         }
+
+        $upd_fol_up[] = $upd_fol;
+
         //Cek Apakah FollowUpKe=1
         if ($i == 1) {
-
           if ((string)$gr->assignedDealer == '') { //Is MD
             // Update ontimeSLA1
             $ontimeSLA1_detik = $this->ld_m->setOntimeSLA1_detik($gr->customerActionDate, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
@@ -485,6 +463,106 @@ class Leads_customer_data extends Crm_Controller
             ];
           }
         }
+
+        // Cek Apakah Sudah Stage ID 1
+        $list_cek_stage = [1,];
+        $stage_belum = [];
+        foreach ($list_cek_stage as $vs) {
+          $lstg = [
+            'leads_id' => $leads_id,
+            'stageId' => $vs
+          ];
+          $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
+          if ($cek_stage == NULL) {
+            $stage_belum[] = $vs;
+          }
+        }
+
+        if (count($stage_belum) > 0) {
+          $stage = implode(', ', $stage_belum);
+          $response = [
+            'status' => 0,
+            'pesan' => "Stage $stage belum diproses"
+          ];
+          send_json($response);
+        } else {
+          if ((string)$gr->assignedDealer == '') { //Is MD
+            //Cek Apakah Sudah Stage ID 2
+            $fstg2 = ['leads_id' => $leads_id, 'stageId' => 2];
+            $c_stg2 = $this->ld_m->getLeadsStage($fstg2)->row();
+            if ($c_stg2 == NULL) {
+              // Set Stage ID 2
+              // 2. Record Follow Up Result by PIC MD Not Contacted
+              $csf = [
+                'id_status_fu' => $upd_fol['id_status_fu'],
+                'id_kategori_status_komunikasi_not' => 4 //4. Contacted
+              ];
+              $cek_status_fu = $this->sfu_m->getStatusFU($csf)->num_rows();
+              if ($cek_status_fu > 0) {
+                $history_stage_id[] = [
+                  'leads_id' => $leads_id,
+                  'created_at' => waktu(),
+                  'stageId' => 2
+                ];
+              }
+            }
+
+            //Cek Apakah Sudah Stage ID 3
+            $fstg3 = ['leads_id' => $leads_id, 'stageId' => 3];
+            $c_stg3 = $this->ld_m->getLeadsStage($fstg3)->row();
+            if ($c_stg3 == NULL) {
+              // Set Stage ID 3
+              // 3. Record Follow Up Result by PIC MD Not Prospect
+              $csf3 = [
+                'id_status_fu' => $upd_fol['id_status_fu'],
+                'id_kategori_status_komunikasi' => 4 //4. Contacted
+              ];
+              $cek_status_fu3 = $this->sfu_m->getStatusFU($csf3)->num_rows();
+
+              if ($upd_fol['kodeHasilStatusFollowUp'] == '2' && $cek_status_fu3 > 0) { // 2. Not Prospect
+                $history_stage_id[] = [
+                  'leads_id' => $leads_id,
+                  'created_at' => waktu(),
+                  'stageId' => 3
+                ];
+              }
+            }
+
+            //Cek Apakah Sudah Stage ID 4
+            $fstg4 = ['leads_id' => $leads_id, 'stageId' => 4];
+            $c_stg4 = $this->ld_m->getLeadsStage($fstg4)->row();
+            if ($c_stg4 == NULL) {
+              // Set Stage ID 3
+              // 4. Record Follow Up Result by PIC MD Prospect
+              if ($upd_fol['kodeHasilStatusFollowUp'] == '1') { // 1. Prospect
+                $history_stage_id[] = [
+                  'leads_id' => $leads_id,
+                  'created_at' => waktu(),
+                  'stageId' => 4
+                ];
+              }
+            }
+          } else {
+            // //Cek Apakah Sudah Stage ID 7
+            // $fstg2 = ['leads_id' => $leads_id, 'stageId' => 2];
+            // $c_stg2 = $this->ld_m->getLeadsStage($fstg2)->row();
+            // if ($c_stg2 == NULL) {
+            //   // Set Stage ID 2
+            //   // 2. Record Follow Up Result by PIC MD Not Contacted
+            //   $csf = [
+            //     'id_status_fu' => $upd_fol['id_status_fu'],
+            //     'id_kategori_status_komunikasi_not' => 4 //4. Contacted
+            //   ];
+            //   $cek_status_fu = $this->sfu_m->getStatusFU($csf)->num_rows();
+            //   if ($cek_status_fu > 0) {
+            //     $history_stage_id[] = [
+            //       'leads_id' => $leads_id,
+            //       'stageId' => 2
+            //     ];
+            //   }
+            // }
+          }
+        }
       }
     }
 
@@ -492,6 +570,7 @@ class Leads_customer_data extends Crm_Controller
       'upd_fol_up' => isset($upd_fol_up) ? $upd_fol_up : NULL,
       'ins_fol_up' => isset($ins_fol_up) ? $ins_fol_up : NULL,
       'upd_leads' => isset($upd_leads) ? $upd_leads : NULL,
+      'history_stage_id' => isset($history_stage_id) ? $history_stage_id : NULL,
     ];
     // send_json($tes);
 
@@ -517,6 +596,10 @@ class Leads_customer_data extends Crm_Controller
 
     if (isset($upd_leads)) {
       $this->db->update('leads', $upd_leads, ['leads_id' => $leads_id]);
+    }
+
+    if (isset($history_stage_id)) {
+      $this->db->insert_batch('leads_history_stage', $history_stage_id);
     }
 
     if ($this->db->trans_status() === FALSE) {
@@ -561,6 +644,7 @@ class Leads_customer_data extends Crm_Controller
     $leads = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
     // send_json($leads);
     return [
+      'leads_id' => $leads->leads_id,
       'kode_dealer_md' => $leads->assignedDealer,
       'id_karyawan_dealer' => $leads->id_karyawan_dealer,
       'id_customer' => $leads->customerId,

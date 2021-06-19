@@ -191,7 +191,7 @@ class Lead extends CI_Controller
         'stageId' => 1,
         'created_at' => waktu(),
       ];
-      $this->db->insert('leads_history_stage', $ins_leads_history_stage);
+      $this->ld_m->insertLeadsStage($ins_leads_history_stage);
     }
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();

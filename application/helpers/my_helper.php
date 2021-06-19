@@ -388,7 +388,7 @@ function link_assign_reassign($leads_id, $id_group, $skip_if = NULL)
       'onclick' => "showAssign('leads_id')"
     ],
     'reassign' => [
-      'class' => "btn btn-primary btn-xs btn-flat",
+      'class' => "btn btn-success btn-xs btn-flat",
       'icon' => '',
       'title' => 'Reassign',
       'onclick' => "showReAssign('leads_id')"
