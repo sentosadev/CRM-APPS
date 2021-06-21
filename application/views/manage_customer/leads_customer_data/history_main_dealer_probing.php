@@ -125,9 +125,4 @@
     $('#carousel_fu_md .carousel-indicators').html(html_indicators);
     $('#carousel_fu_md .carousel-inner').html(html_content);
   }
-
-  function string(params) {
-    pr = params == null ? '' : params;
-    return pr;
-  }
 </script>

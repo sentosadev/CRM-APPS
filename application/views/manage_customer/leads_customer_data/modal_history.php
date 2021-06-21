@@ -113,4 +113,8 @@
   function reloadTabsDealerFu() {
     changeTabs('dealer_fu');
   }
+
+  function string(params) {
+    return params;
+  }
 </script>
