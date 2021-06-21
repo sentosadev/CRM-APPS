@@ -235,6 +235,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
 $this->load->view('additionals/dropdown_series_tipe', $data); ?>
 
 <?php $this->load->view('manage_customer/leads_customer_data/modal_assign_reassign'); ?>
+<?php $this->load->view('manage_customer/leads_customer_data/modal_history'); ?>
 
 <script>
   $(document).ready(function() {
@@ -452,7 +453,6 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
         ],
       });
     } else {
-      console.log('s')
       $('#tbl_dispatch_history').DataTable().ajax.reload();
       $('#tbl_reassign_dealer').DataTable().ajax.reload();
     }

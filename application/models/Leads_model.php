@@ -78,7 +78,7 @@ class Leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     $jumlah_fu = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=stl.leads_id";
-    $sql_tgl_follow_up_md = "SELECT tglFollowUp FROM leads_follow_up WHERE leads_id=stl.leads_id AND (assignedDealer='' OR assignedDealer IS NULL) AND followUpKe=1";
+    $tgl_follow_up_md = "SELECT tglFollowUp FROM leads_follow_up WHERE leads_id=stl.leads_id AND (assignedDealer='' OR assignedDealer IS NULL)ORDER BY followUpKe LIMIT 1";
 
     $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,kabupaten,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
         CASE WHEN minatRidingTest=1 THEN 'Ya' WHEN minatRidingTest=0 THEN 'Tidak' Else '-' END minatRidingTestDesc,
@@ -99,7 +99,8 @@ class Leads_model extends CI_Model
         " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
         " . sql_convert_date('tanggalDownloadBrosur') . " tanggalDownloadBrosurEng,
         " . sql_convert_date('tanggalPengajuan') . " tanggalPengajuanEng,
-        " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng
+        " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng,
+        " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md
         ";
 
     if ($filter != null) {
@@ -340,12 +341,19 @@ class Leads_model extends CI_Model
   function getLeadsFollowUp($filter = null)
   {
     $where = 'WHERE 1=1';
+    $tglFollowUpFormated = sql_convert_date('lfu.tglFollowUp');
     $select = '';
+    $is_md = "CASE WHEN dl_assg.kode_dealer IS NULL THEN 1 ELSE 0 END";
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
         if ($filter['leads_id'] != '') {
           $where .= " AND lfu.leads_id='{$this->db->escape_str($filter['leads_id'])}'";
+        }
+      }
+      if (isset($filter['is_md'])) {
+        if ($filter['is_md'] != '') {
+          $where .= " AND ($is_md)='{$this->db->escape_str($filter['is_md'])}'";
         }
       }
       if (isset($filter['assignedDealer'])) {
@@ -377,12 +385,12 @@ class Leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-
         $select = "lfu.id_int,lfu.leads_id,lfu.followUpKe,lfu.pic,
         CASE WHEN lfu.tglFollowUp='0000-00-00 00:00:00' THEN '' ELSE lfu.tglFollowUp END tglFollowUp,
+        CASE WHEN lfu.tglFollowUp='0000-00-00 00:00:00' THEN '' ELSE ($tglFollowUpFormated) END tglFollowUpFormated,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
         CASE WHEN lfu.created_at='0000-00-00 00:00:00' THEN '' ELSE lfu.created_at END created_at,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,CASE WHEN dl_assg.kode_dealer IS NULL THEN 1 ELSE 0 END is_md";
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,$is_md is_md,dl_assg.nama_dealer namaDealerFollowUp";
       }
     }
 

@@ -415,7 +415,6 @@ class Leads_customer_data extends Crm_Controller
       foreach ($this->input->post('folup', true) as $i) {
         $fg['followUpKe'] = $i;
         $fg['assignedDealer'] = (string)$gr->assignedDealer;
-        $fg['created_by_null'] = true;
         $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
         $upd_fol = [
           'leads_id' => $this->input->post('leads_id', true),
@@ -447,20 +446,24 @@ class Leads_customer_data extends Crm_Controller
         if ($i == 1) {
           if ((string)$gr->assignedDealer == '') { //Is MD
             // Update ontimeSLA1
-            $ontimeSLA1_detik = $this->ld_m->setOntimeSLA1_detik($gr->customerActionDate, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
-            $upd_leads = [
-              'leads_id' => $leads_id,
-              'ontimeSLA1_detik' => $ontimeSLA1_detik,
-              'ontimeSLA1' => $this->ld_m->setOntimeSLA1($ontimeSLA1_detik),
-            ];
+            if ($gr->ontimeSLA1 == 0 || (string)$gr->ontimeSLA1 == NULL) {
+              $ontimeSLA1_detik = $this->ld_m->setOntimeSLA1_detik($gr->customerActionDate, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
+              $upd_leads = [
+                'leads_id' => $leads_id,
+                'ontimeSLA1_detik' => $ontimeSLA1_detik,
+                'ontimeSLA1' => $this->ld_m->setOntimeSLA1($ontimeSLA1_detik),
+              ];
+            }
           } else {
-            // Update ontimeSLA1
-            $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($gr->tanggalAssignDealer, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
-            $upd_leads = [
-              'leads_id' => $leads_id,
-              'ontimeSLA2_detik' => $ontimeSLA2_detik,
-              'ontimeSLA2' => $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $cek->assignedDealer),
-            ];
+            if ($gr->ontimeSLA2 == 0 || (string)$gr->ontimeSLA2 == NULL) {
+              // Update ontimeSLA2
+              $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($gr->tanggalAssignDealer, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
+              $upd_leads = [
+                'leads_id' => $leads_id,
+                'ontimeSLA2_detik' => $ontimeSLA2_detik,
+                'ontimeSLA2' => $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $cek->assignedDealer),
+              ];
+            }
           }
         }
 
@@ -1101,5 +1104,41 @@ class Leads_customer_data extends Crm_Controller
     } else {
       return $this->ld_m->getLeadsHistoryAssignedDealer($filter)->result();
     }
+  }
+
+  public function history()
+  {
+    $data['title'] = $this->title;
+    $data['file']  = 'edit';
+    $filter['leads_id']  = $this->input->get('id');
+    $row = $this->ld_m->getLeads($filter)->row();
+    if ($row != NULL) {
+      $filter['is_md']       = 1;
+      $data['fol_up_md']     = $this->ld_m->getLeadsFollowUp($filter)->result();
+      $filter['is_md']       = 0;
+      $data['fol_up_dealer'] = $this->ld_m->getLeadsFollowUp($filter)->result();
+
+      $ontime_sla1 = '';
+      if ($row->ontimeSLA1_desc == 'On Track') {
+        $ontime_sla1 = "<label class='label label-success'>On Track</label>";
+      } elseif ($row->ontimeSLA1_desc == 'Overdue') {
+        $ontime_sla1 = "<label class='label label-danger'>Overdue</label>";
+      }
+
+      $send           = [
+        'nama'       => $row->nama,
+        'leads_id'   => $row->leads_id,
+        'titik_sla'  => $row->cmsSource,
+        'tgl_fu'     => (string)$row->tgl_follow_up_md,
+        'sla_md'     => '',
+        'md_overdue' => $ontime_sla1,
+      ];
+      $data['row']    = $send;
+      $data['status'] = 1;
+    } else {
+      $data['status'] = 0;
+      $data['pesan']  = 'Data tidak ditemukan';
+    }
+    send_json($data);
   }
 }

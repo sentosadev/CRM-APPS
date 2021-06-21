@@ -312,11 +312,12 @@ function links_on_table()
       'tipe' => 'href',
     ],
     'history' => [
-      'class' => "btn btn-xs btn-primary btn-flat",
+      'class' => "btn btn-xs btn-primary btn-flat btn_history",
       'icon' => '<i class="fa fa-list"></i>',
       'title' => 'History',
       'show_title' => 0,
-      'tipe' => 'href',
+      'tipe' => 'button',
+      'function'=>'showHistoryLeads'
     ],
     'delete' => [
       'class'      => "btn btn-xs btn-danger btn-flat",
@@ -359,10 +360,11 @@ function link_on_data_details($params, $id_group, $skip_if = NULL)
       if ($lk['tipe'] == 'href') {
         $button .= '<a data-toggle="tooltip" title="' . $lk['title'] . '" href="' . $url . '" class="' . $lk['class'] . '" data-original-title="' . $title . '">' . $lk['icon'] . ' ' . $title . '</a>';
       } else {
-        // $params_delete = json_encode(['url' => $url]);
-        // $button .= "<button type=\"button\" class=\"{$lk['class']}\" data-toggle=\"tooltip\" title=\"$title\" onclick='delete_act(this, $params_delete)'> 
-        // {$lk['logo']}
-        // </button>";
+        $params_delete = json_encode(['url' => $url]);
+        $function=$lk['function'];
+        $button .= "<button type=\"button\" class=\"{$lk['class']}\" data-toggle=\"tooltip\" title=\"{$lk['title']}\" onclick='$function(this, $params_delete)'> 
+        {$lk['icon']} $title
+        </button>";
       }
     }
   }
