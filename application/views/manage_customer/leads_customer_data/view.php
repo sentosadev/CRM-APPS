@@ -335,6 +335,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
             d.dealer_crm_score = $("#dealer_crm_score").prop("checked");
             d.workload_dealer = $("#workload_dealer").prop("checked");
             d.threshold_per_salespeople = $("#threshold_per_salespeople").val();
+            d.leads_id = leads_id;
             return d;
           },
         },
@@ -392,6 +393,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
             d.dealer_crm_score = $("#reassign_dealer_crm_score").prop("checked");
             d.workload_dealer = $("#reassign_workload_dealer").prop("checked");
             d.threshold_per_salespeople = $("#reassign_threshold_per_salespeople").val();
+            d.leads_id = leads_id;
             return d;
           },
         },

@@ -807,10 +807,18 @@ class Leads_customer_data extends Crm_Controller
     if ($recordsFiltered == true) $limit = '';
 
     $filter = [
-      'limit'  => $limit,
-      'order'  => isset($_POST['order']) ? $_POST['order'] : '',
-      'search' => $this->input->post('search')['value'],
-      'order_column' => 'view',
+      'limit'                     => $limit,
+      'order'                     => isset($_POST['order']) ? $_POST['order'] : '',
+      'search'                    => $this->input->post('search')['value'],
+      'territory_data_vs_leads'   => $this->input->post('territory_data'),
+      'dealer_mapping'            => $this->input->post('dealer_mapping'),
+      'nos_score'                 => $this->input->post('nos_score'),
+      'dealer_crm_score'          => $this->input->post('dealer_crm_score'),
+      'workload_dealer'           => $this->input->post('workload_dealer'),
+      'threshold_per_salespeople' => $this->input->post('threshold_per_salespeople'),
+      'leads_id'                  => $this->input->post('leads_id'),
+      'order_column'              => 'view',
+      'select'                    => 'assign_reassign'
     ];
     if ($recordsFiltered == true) {
       return $this->dealer_m->getDealerForAssigned($filter)->num_rows();
@@ -938,10 +946,18 @@ class Leads_customer_data extends Crm_Controller
     if ($recordsFiltered == true) $limit = '';
 
     $filter = [
-      'limit'  => $limit,
-      'order'  => isset($_POST['order']) ? $_POST['order'] : '',
-      'search' => $this->input->post('search')['value'],
-      'order_column' => 'view',
+      'limit'                     => $limit,
+      'order'                     => isset($_POST['order']) ? $_POST['order'] : '',
+      'search'                    => $this->input->post('search')['value'],
+      'territory_data_vs_leads'   => $this->input->post('territory_data'),
+      'dealer_mapping'            => $this->input->post('dealer_mapping'),
+      'nos_score'                 => $this->input->post('nos_score'),
+      'dealer_crm_score'          => $this->input->post('dealer_crm_score'),
+      'workload_dealer'           => $this->input->post('workload_dealer'),
+      'threshold_per_salespeople' => $this->input->post('threshold_per_salespeople'),
+      'leads_id'                  => $this->input->post('leads_id'),
+      'order_column'              => 'view',
+      'select'                    => 'assign_reassign'
     ];
     if ($recordsFiltered == true) {
       return $this->dealer_m->getDealerForAssigned($filter)->num_rows();

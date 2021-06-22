@@ -39,6 +39,10 @@ function tahun()
 {
   return gmdate("Y", time() + 60 * 60 * 7);
 }
+function tahun_bulan()
+{
+  return gmdate("Y-m", time() + 60 * 60 * 7);
+}
 
 function waktu()
 {
@@ -317,7 +321,7 @@ function links_on_table()
       'title' => 'History',
       'show_title' => 0,
       'tipe' => 'button',
-      'function'=>'showHistoryLeads'
+      'function' => 'showHistoryLeads'
     ],
     'delete' => [
       'class'      => "btn btn-xs btn-danger btn-flat",
@@ -361,7 +365,7 @@ function link_on_data_details($params, $id_group, $skip_if = NULL)
         $button .= '<a data-toggle="tooltip" title="' . $lk['title'] . '" href="' . $url . '" class="' . $lk['class'] . '" data-original-title="' . $title . '">' . $lk['icon'] . ' ' . $title . '</a>';
       } else {
         $params_delete = json_encode(['url' => $url]);
-        $function=$lk['function'];
+        $function = $lk['function'];
         $button .= "<button type=\"button\" class=\"{$lk['class']}\" data-toggle=\"tooltip\" title=\"{$lk['title']}\" onclick='$function(this, $params_delete)'> 
         {$lk['icon']} $title
         </button>";

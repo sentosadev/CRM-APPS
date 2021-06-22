@@ -183,7 +183,7 @@
                 <div style='font-size:10pt'>* Jika tidak menemukan kondisi ideal, boleh melakukan uncheck dari prioritas terbawah, yaitu dari kanan (Workload Dealer) ke kiri (Territory Data)</div>
               </div>
               <div class="box-footer" align='center'>
-                <button class='btn btn-primary' type="button" onclick="searchAssignDealer()">Filter</button>
+                <button class='btn btn-primary' type="button" onclick="searchReAssignDealer()">Filter</button>
               </div>
               <!-- /.box-body -->
             </div>
