@@ -11,6 +11,7 @@ class Leads_customer_data extends Crm_Controller
     $this->load->model('leads_model', 'ld_m');
     $this->load->model('Dealer_model', 'dealer_m');
     $this->load->model('status_fu_model', 'sfu_m');
+    $this->load->model('hasil_status_follow_up_model', 'hfu_m');
   }
 
   public function index()
@@ -409,8 +410,6 @@ class Leads_customer_data extends Crm_Controller
       ];
       send_json($result);
     }
-
-    // for ($i = 1; $i <= count($this->input->post('folup')); $i++) {
     if ($this->input->post('folup', true) != NULL) {
       foreach ($this->input->post('folup', true) as $i) {
         $fg['followUpKe'] = $i;
@@ -468,7 +467,7 @@ class Leads_customer_data extends Crm_Controller
         }
 
         // Cek Apakah Sudah Stage ID 1
-        $list_cek_stage = [1,];
+        $list_cek_stage = [1];
         $stage_belum = [];
         foreach ($list_cek_stage as $vs) {
           $lstg = [
@@ -545,25 +544,64 @@ class Leads_customer_data extends Crm_Controller
                 ];
               }
             }
-          } else {
-            // //Cek Apakah Sudah Stage ID 7
-            // $fstg2 = ['leads_id' => $leads_id, 'stageId' => 2];
-            // $c_stg2 = $this->ld_m->getLeadsStage($fstg2)->row();
-            // if ($c_stg2 == NULL) {
-            //   // Set Stage ID 2
-            //   // 2. Record Follow Up Result by PIC MD Not Contacted
-            //   $csf = [
-            //     'id_status_fu' => $upd_fol['id_status_fu'],
-            //     'id_kategori_status_komunikasi_not' => 4 //4. Contacted
-            //   ];
-            //   $cek_status_fu = $this->sfu_m->getStatusFU($csf)->num_rows();
-            //   if ($cek_status_fu > 0) {
-            //     $history_stage_id[] = [
-            //       'leads_id' => $leads_id,
-            //       'stageId' => 2
-            //     ];
-            //   }
-            // }
+          } else { // Is Dealer
+            // Cek Apakah Sudah Stage ID 1,4
+            $list_cek_stage = [1, 4];
+            $stage_belum = [];
+            foreach ($list_cek_stage as $vs) {
+              $lstg = [
+                'leads_id' => $leads_id,
+                'stageId' => $vs
+              ];
+              $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
+              if ($cek_stage == NULL) {
+                $stage_belum[] = $vs;
+              }
+            }
+
+            $fuc = [
+              'id_status_fu' => $upd_fol['id_status_fu']
+            ];
+            $cek_status_fu = $this->sfu_m->getStatusFU($fuc)->row();
+            $not_contacted = [1, 2, 3];
+            //Cek Apakah Masuk Ke Dalam Kategori Stage ID 7
+            if (in_array($cek_status_fu->id_kategori_status_komunikasi, $not_contacted)) {
+              //Cek Apakah Sudah Stage ID 7
+              $fstg7 = ['leads_id' => $leads_id, 'stageId' => 7];
+              $c_stg7 = $this->ld_m->getLeadsStage($fstg7)->row();
+              if ($c_stg7 == NULL) {
+                // Set Stage ID 7
+                // 7. Record Follow Up Result by Salespeople Not Contacted
+                $history_stage_id[] = [
+                  'leads_id' => $leads_id,
+                  'created_at' => waktu(),
+                  'stageId' => 7
+                ];
+              }
+            } else {
+              //Cek Apakah Masuk Ke dalam Kategori Stage ID 8 Atau Stage ID 9
+              $fhf = ['kodeHasilStatusFollowUp' => $upd_fol['kodeHasilStatusFollowUp']];
+              $cek_hasil_fu = $this->hfu_m->getHasilStatusFollowUp($fhf)->row();
+              if ($cek_hasil_fu != NULL) {
+                if ($cek_hasil_fu->kodeHasilStatusFollowUp == '1') {
+                  //Set Stage ID 8
+                  // 8. Record Follow Up Result by Salespeople Contacted & Prospect
+                  $history_stage_id[] = [
+                    'leads_id' => $leads_id,
+                    'created_at' => waktu(),
+                    'stageId' => 8
+                  ];
+                } elseif ($cek_hasil_fu->kodeHasilStatusFollowUp == '4') {
+                  //Set Stage ID 9
+                  // 9. Record Follow Up Result by Salespeople Not Deal
+                  $history_stage_id[] = [
+                    'leads_id' => $leads_id,
+                    'created_at' => waktu(),
+                    'stageId' => 9
+                  ];
+                }
+              }
+            }
           }
         }
       }

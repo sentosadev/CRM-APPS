@@ -55,7 +55,7 @@ class Status_fu_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_status_fu,mu.deskripsi_status_fu,mdk.media_kontak_fu,mu.id_media_kontak_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,kategori_status_komunikasi";
+        $select = "mu.id_status_fu,mu.deskripsi_status_fu,mdk.media_kontak_fu,mu.id_media_kontak_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,mu.id_kategori_status_komunikasi,kategori_status_komunikasi";
       }
     }
 
