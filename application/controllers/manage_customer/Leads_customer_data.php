@@ -127,6 +127,9 @@ class Leads_customer_data extends Crm_Controller
     if ($this->input->post('start_next_fu') && $this->input->post('end_next_fu')) {
       $filter['periode_next_fu'] = [$this->input->post('start_next_fu'), $this->input->post('end_next_fu')];
     }
+    if (user()->kode_dealer != NULL) {
+      $filter['assignedDealer'] = user()->kode_dealer;
+    }
     if ($recordsFiltered == true) {
       return $this->ld_m->getLeads($filter)->num_rows();
     } else {
