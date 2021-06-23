@@ -95,11 +95,11 @@ function msg_error($pesan)
 }
 function msg_sukses_simpan()
 {
-  return  ['icon' => 'info', 'title' => 'Informasi', 'text' => 'Data berhasil disimpan'];
+  return  ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Data berhasil disimpan'];
 }
 function msg_sukses_update()
 {
-  return  ['icon' => 'info', 'title' => 'Informasi', 'text' => 'Data berhasil diupdate'];
+  return  ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Data berhasil diupdate'];
 }
 
 function msg_sukses_upload()

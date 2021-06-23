@@ -35,6 +35,26 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="col-sm-2 control-label">Main Dealer / Dealer <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <select class="form-control" style="width: 100%;" name='main_dealer_or_dealer' id="main_dealer_or_dealer" onchange="cekMainDealerOrDealer()" <?= $disabled ?>>
+                    <option value=''>- Pilih -</option>
+                    <option value='md' <?= $row->main_dealer_or_dealer == 'md' ? 'selected' : '' ?>>Main Dealer</option>
+                    <option value='d' <?= $row->main_dealer_or_dealer == 'd' ? 'selected' : '' ?>>Dealer</option>
+                  </select>
+                </div>
+              </div>
+              <label class="col-sm-2 control-label" id="label_kode_dealer">Dealer <span class='required'>*</span></label>
+              <div class="form-input" id="input_kode_dealer">
+                <div class="col-sm-4">
+                  <select style='width:100%' id="kode_dealer" class='form-control' name='kode_dealer' <?= $disabled ?>>
+                    <option value='<?= $row->kode_dealer ?>'><?= (string)$row->kode_dealer == '' ? '- Pilih -' : $row->nama_dealer ?></option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-2 control-label">Username <span class='required'>*</span></label>
               <div class="form-input">
                 <div class="col-sm-4">
@@ -210,5 +230,25 @@
           iconColor: 'white'
         })
       }
+    })
+
+    function cekMainDealerOrDealer() {
+      selected = $('#main_dealer_or_dealer').val();
+      if (selected == 'd') {
+        $('#label_kode_dealer').show();
+        $('#input_kode_dealer').show();
+      } else if (selected == 'md') {
+        $('#label_kode_dealer').hide();
+        $('#input_kode_dealer').hide();
+        $('#kode_dealer').val('');
+      } else {
+        $('#label_kode_dealer').hide();
+        $('#input_kode_dealer').hide();
+        $('#kode_dealer').val('');
+      }
+    }
+
+    $(document).ready(function() {
+      cekMainDealerOrDealer()
     })
   </script>

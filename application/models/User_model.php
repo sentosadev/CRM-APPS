@@ -9,7 +9,7 @@ class User_model extends CI_Model
   function getUser($filter = null)
   {
     $where = 'WHERE 1=1';
-    $select = 'mu.id_user,mu.id_group,email,username,nama_lengkap,no_hp,img_small,img_big,mu.created,mu.aktif,mu.created_by,mu.updated_at,mu.updated_by,nama_group';
+    $select = 'mu.id_user,mu.id_group,email,username,nama_lengkap,no_hp,img_small,img_big,mu.created,mu.aktif,mu.created_by,mu.updated_at,mu.updated_by,nama_group,main_dealer_or_dealer,mu.kode_dealer,nama_dealer';
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
       if (isset($filter['id_user'])) {
@@ -67,6 +67,7 @@ class User_model extends CI_Model
     return $this->db->query("SELECT $select
     FROM ms_users AS mu
     LEFT JOIN ms_user_groups gu ON gu.id_group=mu.id_group
+    LEFT JOIN ms_dealer dl ON dl.kode_dealer=mu.kode_dealer
     $where
     $order_data
     $limit
