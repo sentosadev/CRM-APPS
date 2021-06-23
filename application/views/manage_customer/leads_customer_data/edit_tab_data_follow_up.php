@@ -162,7 +162,8 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
         <div class="col-sm-6" align="right">
           <?php if ($i < $tot_tab_fol) { ?>
             <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i + 1 ?>','next',<?= $i ?>)" type="button" id="#backTo_data_pendukung_probing_1" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
-          <?php } else { ?>
+          <?php } else {
+            $set_end = true; ?>
             <?php if ($disabled == '') { ?>
               <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
               <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
@@ -170,6 +171,15 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             <?php } ?>
           <?php } ?>
         </div>
+        <?php if (isset($set_end)) { ?>
+          <div class="col-sm-12" align='left' style='margin-top:20px;padding-top:15px;border-top:1px solid #f4f4f4'>
+            *) Tombol <button type="button" class="btn btn-info btn-flat btn-xs">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button> digunakan untuk menambah form follow up baru.
+            <br>
+            *) Tombol <button type="button" class="btn bg-blue btn-flat btn-xs">Simpan Data</button> digunakan untuk menyimpan data follow up.
+            <br>
+            *) Jika tombol <button type="button" class="btn bg-green btn-flat btn-xs"><i class='fa fa-save'></i> Simpan Data</button> diklik, maka sistem akan menyimpan data follow up dan mengirimkan data ke sistem SEEDS.
+          </div>
+        <?php } ?>
       </div>
     </form>
   </div>
