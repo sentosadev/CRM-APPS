@@ -32,10 +32,13 @@ class Crm_Controller extends CI_Controller
         break;
       }
     }
-    $akses = cekAkasesMenuBySlug($user->id_group, get_slug(), $link);
+    $slug = get_slug();
+    $akses = cekAkasesMenuBySlug($user->id_group, $slug, $link);
     if (count($akses) == 0) {
-      $this->session->set_flashdata(msg_no_access());
-      redirect('defaults/blank');
+      if ($slug != 'defaults/blank') {
+        $this->session->set_flashdata(msg_no_access());
+        redirect('defaults/blank');
+      }
     }
     $data['user'] = $user;
     $fc = [];

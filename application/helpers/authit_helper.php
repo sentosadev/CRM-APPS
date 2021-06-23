@@ -23,7 +23,10 @@ function user($key = '')
 
 	$user = $CI->session->userdata('user');
 	if ($user != NULL) {
-		$get_user = $CI->db->query("SELECT id_user,email,username,id_group,nama_lengkap,img_small FROM ms_users WHERE id_user=$user->id_user");
+		$get_user = $CI->db->query("SELECT id_user,email,username,id_group,nama_lengkap,img_small,dl.kode_dealer,dl.nama_dealer
+			FROM ms_users
+			LEFT JOIN ms_dealer dl ON dl.kode_dealer=ms_users.kode_dealer
+			WHERE id_user=$user->id_user");
 		if ($get_user->num_rows() > 0) {
 			$user = $get_user->row();
 		}
