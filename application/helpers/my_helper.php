@@ -524,3 +524,9 @@ function selisih_detik($start, $end)
   $tgl2 = strtotime($end);
   return $tgl2 - $tgl1;
 }
+
+function convert_date($val)
+{
+  $date = str_replace('/', '-', $val);
+  return date('Y-m-d', strtotime($date));
+}

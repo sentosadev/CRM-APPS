@@ -192,6 +192,12 @@ class Leads_model extends CI_Model
           $where .= " AND stl.tanggalNextFU BETWEEN '{$next_fu[0]}' AND '{$next_fu[1]}' ";
         }
       }
+      if (isset($filter['periodeCreatedLeads'])) {
+        if ($filter['periodeCreatedLeads'] != '') {
+          $created = $filter['periodeCreatedLeads'];
+          $where .= " AND LEFT(stl.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
+        }
+      }
 
       //Filter Escaped String Like Singe Quote (')
       $filter = $this->db->escape_str($filter);
@@ -414,6 +420,13 @@ class Leads_model extends CI_Model
         if ($filter['deskripsiEventIn'] != '') {
           $filter['deskripsiEventIn'] = arr_sql($filter['deskripsiEventIn']);
           $where .= " AND ld.deskripsiEvent IN({$filter['deskripsiEventIn']})";
+        }
+      }
+
+      if (isset($filter['periodeCreatedLeads'])) {
+        if ($filter['periodeCreatedLeads'] != '') {
+          $created = $filter['periodeCreatedLeads'];
+          $where .= " AND LEFT(ld.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
         }
       }
 
@@ -748,6 +761,14 @@ class Leads_model extends CI_Model
       }
     }
 
+    if (isset($filter['periodeCreatedLeads'])) {
+      if ($filter['periodeCreatedLeads'] != '') {
+        $created = $filter['periodeCreatedLeads'];
+        $where .= " AND LEFT(leads.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
+      }
+    }
+
+
     return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
     CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
     FROM leads 
@@ -815,6 +836,13 @@ class Leads_model extends CI_Model
       if ($filter['deskripsiEventIn'] != '') {
         $filter['deskripsiEventIn'] = arr_sql($filter['deskripsiEventIn']);
         $where .= " AND ld.deskripsiEvent IN({$filter['deskripsiEventIn']})";
+      }
+    }
+
+    if (isset($filter['periodeCreatedLeads'])) {
+      if ($filter['periodeCreatedLeads'] != '') {
+        $created = $filter['periodeCreatedLeads'];
+        $where .= " AND LEFT(ld.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
       }
     }
 

@@ -19,19 +19,29 @@ class Performance_dashboard extends Crm_Controller
     $data['title'] = $this->title;
     $data['file']  = 'view';
     $data['filter_header'] = [
-      'id_platform_data' => 'Platform Data',
-      'id_source_leads' => 'Source Data',
-      'deskripsiEvent' => 'Event Description',
+      'id_platform_data' => ['text' => 'Platform Data', 'type' => 'select2'],
+      'id_source_leads' => ['text' => 'Source Data', 'type' => 'select2'],
+      'deskripsiEvent' => ['text' => 'Event Description', 'type' => 'select2'],
+      'periode_created_leads' => ['text' => 'Periode', 'type' => 'daterange'],
     ];
     $this->template_portal($data);
   }
 
   function _header_filter()
   {
+    $periode = explode('-', $this->input->post('periode_created_leads'));
+    $periodeCreatedLeads = NULL;
+    if (count($periode) > 1) {
+      foreach ($periode as $val) {
+        $periodeCreatedLeads[] = convert_date(str_replace(' ', '', $val));
+      }
+    }
+
     $filter = [
       'platformDataIn' => $this->input->post('id_platform_data'),
       'sourceLeadsIn' => $this->input->post('id_source_leads'),
       'deskripsiEventIn' => $this->input->post('deskripsiEvent'),
+      'periodeCreatedLeads' => $periodeCreatedLeads,
     ];
     return $filter;
   }
