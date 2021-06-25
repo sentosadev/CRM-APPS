@@ -18,7 +18,7 @@
   }
 </style>
 <div class="row">
-  <div class="col-md-offset-8 col-md-4">
+  <div class="col-md-12">
     <div class="box box-default">
       <div class="box-header with-border">
         <h3 class="box-title">Leads Funneling</h3>
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-4">
             <div class="box box-default">
               <div class="box-body">
                 <table>
@@ -253,7 +253,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-4">
             <div class="box box-default">
               <div class="box-body">
                 <table style="width:100%">
@@ -413,7 +413,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-4">
             <div class="box box-default">
               <div class="box-body">
                 <div style='font-size:18pt;font-weight:600;text-align:center;padding-top:10px'>Conversion Rate</div>
