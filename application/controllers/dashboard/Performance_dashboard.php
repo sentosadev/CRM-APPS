@@ -18,58 +18,67 @@ class Performance_dashboard extends Crm_Controller
   {
     $data['title'] = $this->title;
     $data['file']  = 'view';
+    $data['filter_header'] = [
+      'id_platform_data' => 'Platform Data',
+      'id_source_leads' => 'Source Data',
+      'deskripsiEvent' => 'Event Description',
+    ];
     $this->template_portal($data);
+  }
+
+  function _header_filter()
+  {
+    $filter = [
+      'platformDataIn' => $this->input->post('id_platform_data'),
+      'sourceLeadsIn' => $this->input->post('id_source_leads'),
+      'deskripsiEventIn' => $this->input->post('deskripsiEvent'),
+    ];
+    return $filter;
   }
 
   function loadCardViewMD()
   {
+    $filter = $this->_header_filter();
     $status = 1;
+    $data_source = $this->pdm->data_source($filter);
 
-    $data_source = $this->pdm->data_source();
-
-    $fds = [
-      'data_source' => $data_source,
-    ];
-    $get_invited_pre_event    = $this->pdm->invited_pre_event($fds);
+    $f_pre = $filter;
+    $f_pre['data_source']     = $data_source;
+    $get_invited_pre_event    = $this->pdm->invited_pre_event($f_pre);
     $invited_pre_event        = $get_invited_pre_event['invited_pre_event'];
     $invited_pre_event_persen = $get_invited_pre_event['invited_pre_event_persen'];
 
-    $get_leads = $this->pdm->leads_invited_non_invited($fds);
+    $get_leads = $this->pdm->leads_invited_non_invited($f_pre);
     $leads_invited_non_invited =  $get_leads['leads_invited_non_invited'];
     $tot_leads = $get_leads['tot_leads'];
     $leads_invited_non_invited_persen = $get_leads['leads_invited_non_invited_persen'];
 
-    $fds = [
-      'tot_leads' => $tot_leads,
-    ];
-    $get_contact_leads    = $this->pdm->contact_leads($fds);
+    $fls = $filter;
+    $fls['tot_leads']     = $tot_leads;
+    $get_contact_leads    = $this->pdm->contact_leads($fls);
     $contact_leads        = $get_contact_leads['contact_leads'];
     $contact_leads_persen = $get_contact_leads['contact_leads_persen'];
 
-    $fds = [
-      'contact_leads' => $contact_leads
-    ];
-    $get_prospects    = $this->pdm->prospects($fds);
+    $fps = $filter;
+    $fps['contact_leads'] = $contact_leads;
+    $get_prospects    = $this->pdm->prospects($fps);
     $prospects        = $get_prospects['prospects'];
     $prospects_persen = $get_prospects['prospects_persen'];
 
-    $fds = [
-      'prospects' => $prospects
-    ];
+    $fds = $filter;
+    $fds['prospects'] = $prospects;
     $get_contacted_prospects    = $this->pdm->contacted_prospects($fds);
     $contacted_prospects        = $get_contacted_prospects['contacted_prospects'];
     $contacted_prospects_persen = $get_contacted_prospects['contacted_prospects_persen'];
 
-    $fds = [
-      'contacted_prospects' => $contacted_prospects
-    ];
+    $fds = $filter;
+    $fds['contacted_prospects'] = $contacted_prospects;
     $get_deal    = $this->pdm->deal($fds);
     $deal        = $get_deal['deal'];
     $deal_persen = $get_deal['deal_persen'];
 
-    $fds = [
-      'deal' => $deal
-    ];
+    $fds = $filter;
+    $fds['deal'] = $deal;
     $get_sales    = $this->pdm->sales($fds);
     $sales        = $get_sales['sales'];
     $sales_persen = $get_sales['sales_persen'];
@@ -103,41 +112,27 @@ class Performance_dashboard extends Crm_Controller
   function loadLeadsFunneling()
   {
 
+    $filter = $this->_header_filter();
+    $fds = $filter;
     $fds['data_source'] = 0;
     $get_leads = $this->pdm->leads_invited_non_invited($fds);
 
-    $fds = [
-      'tot_leads' => 0,
-      'group_by' => " stl.customerType"
-    ];
+    $fds = $filter;
+    $fds['tot_leads'] = 0;
+    $fds['group_by'] = " stl.customerType";
     $get_contact_leads    = $this->pdm->contact_leads($fds);
     $contact_leads        = $get_contact_leads;
 
-    $fds = [
-      'tot_leads' => 0,
-      'group_by' => " stl.customerType"
-    ];
+    $fds = $filter;
     $get_workload_md_leads    = $this->pdm->workload_md_leads($fds);
     $workload_md_leads        = $get_workload_md_leads;
 
-    $fds = [
-      'tot_leads' => 0,
-      'group_by' => " stl.customerType"
-    ];
     $get_unreachable_md_leads    = $this->pdm->unreachable_md_leads($fds);
     $unreachable_md_leads        = $get_unreachable_md_leads;
 
-    $fds = [
-      'tot_leads' => 0,
-      'group_by' => " stl.customerType"
-    ];
     $get_rejected_md_leads    = $this->pdm->rejected_md_leads($fds);
     $rejected_md_leads        = $get_rejected_md_leads;
 
-    $fds = [
-      'tot_leads' => 0,
-      'group_by' => " stl.customerType"
-    ];
     $get_failed_md_leads    = $this->pdm->failed_md_leads($fds);
     $failed_md_leads        = $get_failed_md_leads;
 

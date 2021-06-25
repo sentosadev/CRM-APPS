@@ -101,7 +101,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_leads">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_leads"></div>
                             Unreachable
                           </td>
                         </tr>
@@ -139,7 +139,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_failed_leads">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_failed_leads"></div>
                             Failed
                           </td>
                         </tr>
@@ -159,7 +159,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style='min-height:210px'>
                         <tr>
                           <td align='center' colspan=2 style='vertical-align:middle'>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_contacted_prospects">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_contacted_prospects"></div>
                             Contacted Prospects
                           </td>
                         </tr>
@@ -177,7 +177,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table margin-left-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_workload_prospects">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_workload_prospects"></div>
                             Workload
                           </td>
                         </tr>
@@ -195,7 +195,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_prospects">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_prospects"></div>
                             Unreachable
                           </td>
                         </tr>
@@ -215,7 +215,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table margin-left-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_rejected_prospects">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_rejected_prospects"></div>
                             Rejected
                           </td>
                         </tr>
@@ -280,7 +280,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(241,134,179)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_med">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_med"></div>
                             MED
                           </td>
                         </tr>
@@ -298,7 +298,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(0,168,221)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_low">50</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_low"></div>
                             LOW
                           </td>
                         </tr>
@@ -456,17 +456,13 @@
       enctype: 'multipart/form-data',
       url: '<?= site_url(get_controller() . '/loadLeadsFunneling') ?>',
       type: "POST",
-      // data: values,
-      processData: false,
-      contentType: false,
-      // cache: false,
+      data: filter_values,
       dataType: 'JSON',
       success: function(response) {
         if (response.status == 1) {
           data = response.data;
           $('.dt_leads_funneling').each(function() {
             id = this.id;
-            console.log(data[id]);
             $('#' + id).html(data[id]);
           });
         }

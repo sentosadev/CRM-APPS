@@ -11,6 +11,27 @@ class Leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      // Posisi di atas karena skip filter escape tanda kutip (')
+      if (isset($filter['platformDataIn'])) {
+        if ($filter['platformDataIn'] != '') {
+          $filter['platformDataIn'] = arr_sql($filter['platformDataIn']);
+          $where .= " AND stl.platformData IN({$filter['platformDataIn']})";
+        }
+      }
+      if (isset($filter['sourceLeadsIn'])) {
+        if ($filter['sourceLeadsIn'] != '') {
+          $filter['sourceLeadsIn'] = arr_sql($filter['sourceLeadsIn']);
+          $where .= " AND stl.sourceData IN({$filter['sourceLeadsIn']})";
+        }
+      }
+
+      if (isset($filter['deskripsiEventIn'])) {
+        if ($filter['deskripsiEventIn'] != '') {
+          $filter['deskripsiEventIn'] = arr_sql($filter['deskripsiEventIn']);
+          $where .= " AND stl.deskripsiEvent IN({$filter['deskripsiEventIn']})";
+        }
+      }
+
       $filter = $this->db->escape_str($filter);
       if (isset($filter['nama'])) {
         if ($filter['nama'] != '') {
@@ -374,6 +395,28 @@ class Leads_model extends CI_Model
     $select = '';
     $is_md = "CASE WHEN dl_assg.kode_dealer IS NULL THEN 1 ELSE 0 END";
     if ($filter != null) {
+      // Posisi di atas karena skip filter escape tanda kutip (')
+      if (isset($filter['platformDataIn'])) {
+        if ($filter['platformDataIn'] != '') {
+          $filter['platformDataIn'] = arr_sql($filter['platformDataIn']);
+          $where .= " AND ld.platformData IN({$filter['platformDataIn']})";
+        }
+      }
+
+      if (isset($filter['sourceLeadsIn'])) {
+        if ($filter['sourceLeadsIn'] != '') {
+          $filter['sourceLeadsIn'] = arr_sql($filter['sourceLeadsIn']);
+          $where .= " AND ld.sourceData IN({$filter['sourceLeadsIn']})";
+        }
+      }
+
+      if (isset($filter['deskripsiEventIn'])) {
+        if ($filter['deskripsiEventIn'] != '') {
+          $filter['deskripsiEventIn'] = arr_sql($filter['deskripsiEventIn']);
+          $where .= " AND ld.deskripsiEvent IN({$filter['deskripsiEventIn']})";
+        }
+      }
+
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
         if ($filter['leads_id'] != '') {
@@ -680,11 +723,36 @@ class Leads_model extends CI_Model
     return $return;
   }
 
-  function getLeadsGroupByCustomerType()
+  function getLeadsGroupByCustomerType($filter = NULL)
   {
+    $where = "WHERE 1=1 ";
+    // Posisi di atas karena skip filter escape tanda kutip (')
+    if (isset($filter['platformDataIn'])) {
+      if ($filter['platformDataIn'] != '') {
+        $filter['platformDataIn'] = arr_sql($filter['platformDataIn']);
+        $where .= " AND leads.platformData IN({$filter['platformDataIn']})";
+      }
+    }
+
+    if (isset($filter['sourceLeadsIn'])) {
+      if ($filter['sourceLeadsIn'] != '') {
+        $filter['sourceLeadsIn'] = arr_sql($filter['sourceLeadsIn']);
+        $where .= " AND leads.sourceData IN({$filter['sourceLeadsIn']})";
+      }
+    }
+
+    if (isset($filter['deskripsiEventIn'])) {
+      if ($filter['deskripsiEventIn'] != '') {
+        $filter['deskripsiEventIn'] = arr_sql($filter['deskripsiEventIn']);
+        $where .= " AND leads.deskripsiEvent IN({$filter['deskripsiEventIn']})";
+      }
+    }
+
     return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
     CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
-    FROM leads GROUP BY customerType");
+    FROM leads 
+    $where
+    GROUP BY customerType");
   }
 
   function getLeadsGroupBySourceData($filter = NULL)
@@ -728,6 +796,26 @@ class Leads_model extends CI_Model
     }
     if (isset($filter['is_failed'])) {
       $where .= " AND ($last_id_kategori)=2 ";
+    }
+    if (isset($filter['platformDataIn'])) {
+      if ($filter['platformDataIn'] != '') {
+        $filter['platformDataIn'] = arr_sql($filter['platformDataIn']);
+        $where .= " AND ld.platformData IN({$filter['platformDataIn']})";
+      }
+    }
+
+    if (isset($filter['sourceLeadsIn'])) {
+      if ($filter['sourceLeadsIn'] != '') {
+        $filter['sourceLeadsIn'] = arr_sql($filter['sourceLeadsIn']);
+        $where .= " AND ld.sourceData IN({$filter['sourceLeadsIn']})";
+      }
+    }
+
+    if (isset($filter['deskripsiEventIn'])) {
+      if ($filter['deskripsiEventIn'] != '') {
+        $filter['deskripsiEventIn'] = arr_sql($filter['deskripsiEventIn']);
+        $where .= " AND ld.deskripsiEvent IN({$filter['deskripsiEventIn']})";
+      }
     }
 
     $group_by = '';

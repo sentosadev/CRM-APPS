@@ -6,20 +6,17 @@ class Performance_dashboard_model extends CI_Model
     parent::__construct();
   }
 
-  function data_source()
+  function data_source($filter)
   {
-    $fds = [
-      'select' => 'count',
-    ];
-    return $this->ld_m->getStagingLeads($fds)->row()->count;
+    $filter['select'] = 'count';
+    return $this->ld_m->getStagingLeads($filter)->row()->count;
   }
 
   function invited_pre_event($params)
   {
-    $fds = [
-      'select' => 'count',
-      'eventCodeInvitation_not_null' => true,
-    ];
+    $fds = $params;
+    $fds['select'] = 'count';
+    $fds['eventCodeInvitation_not_null'] = true;
     $invited_pre_event = $this->ld_m->getLeads($fds)->row()->count;
     $invited_pre_event_persen = number_format((@($invited_pre_event / $params['data_source']) * 100), 2);
     return [
@@ -29,7 +26,7 @@ class Performance_dashboard_model extends CI_Model
   }
   function leads_invited_non_invited($params)
   {
-    $cust_type = $this->ld_m->getLeadsGroupByCustomerType()->result_array();
+    $cust_type = $this->ld_m->getLeadsGroupByCustomerType($params)->result_array();
     $cust_v = isset($cust_type[1]['count_cust_type']) ? $cust_type[1]['count_cust_type'] : 0;
     $cust_r = isset($cust_type[0]['count_cust_type']) ? $cust_type[0]['count_cust_type'] : 0;
     $leads_invited_non_invited =  $cust_v . '/' . $cust_r;
@@ -45,10 +42,9 @@ class Performance_dashboard_model extends CI_Model
   }
   function contact_leads($params)
   {
-    $fds = [
-      'select' => 'count',
-      'fu_md_contacted' => true,
-    ];
+    $fds                    = $params;
+    $fds['select']          = 'count';
+    $fds['fu_md_contacted'] = true;
     if (isset($params['group_by'])) {
       $fds['group_by'] = $params['group_by'];
     }
@@ -76,10 +72,9 @@ class Performance_dashboard_model extends CI_Model
 
   function prospects($params)
   {
-    $fds = [
-      'select' => 'count_distinct_leads_id',
-      'kodeHasilStatusFollowUp' => 1,
-    ];
+    $fds           = $params;
+    $fds['select'] = 'count_distinct_leads_id';
+    $fds['kodeHasilStatusFollowUp'] = 1;
     $prospects = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $prospects_persen = number_format((@($prospects / $params['contact_leads']) * 100), 2);
     return [
@@ -90,11 +85,10 @@ class Performance_dashboard_model extends CI_Model
 
   function contacted_prospects($params)
   {
-    $fds = [
-      'select' => 'count_distinct_leads_id',
-      'kodeHasilStatusFollowUp' => 1,
-      'id_kategori_status_komunikasi' => 4
-    ];
+    $fds = $params;
+    $fds['select']                        = 'count_distinct_leads_id';
+    $fds['kodeHasilStatusFollowUp']       = 1;
+    $fds['id_kategori_status_komunikasi'] = 4;
     $contacted_prospects = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $contacted_prospects_persen = number_format((@($contacted_prospects / $params['prospects']) * 100), 2);
     return [
@@ -104,12 +98,12 @@ class Performance_dashboard_model extends CI_Model
   }
   function deal($params)
   {
-    $fds = [
-      'select' => 'count_distinct_leads_id',
-      'kodeHasilStatusFollowUp' => 3,
-      'id_kategori_status_komunikasi' => 4,
-      'idSPK_not_null' => true
-    ];
+    $fds = $params;
+    $fds['select'] = 'count_distinct_leads_id';
+    $fds['kodeHasilStatusFollowUp'] = 3;
+    $fds['id_kategori_status_komunikasi'] = 4;
+    $fds['idSPK_not_null'] = true;
+
     $deal = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $deal_persen = number_format((@($deal / $params['contacted_prospects']) * 100), 2);
     return [
@@ -119,12 +113,11 @@ class Performance_dashboard_model extends CI_Model
   }
   function sales($params)
   {
-    $fds = [
-      'select' => 'count_distinct_leads_id',
-      'kodeHasilStatusFollowUp' => 3,
-      'id_kategori_status_komunikasi' => 4,
-      'frameNo_not_null' => true
-    ];
+    $fds = $params;
+    $fds['select'] = 'count_distinct_leads_id';
+    $fds['kodeHasilStatusFollowUp'] = 3;
+    $fds['id_kategori_status_komunikasi'] = 4;
+    $fds['frameNo_not_null'] = true;
     $sales = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $sales_persen = number_format((@($sales / $params['deal']) * 100), 2);
     return [
@@ -134,11 +127,11 @@ class Performance_dashboard_model extends CI_Model
   }
   function workload_md_leads($params)
   {
-    $fds = [
-      'is_workload' => true,
-      'is_md' => true,
-      'group_by' => "ld.customerType"
-    ];
+    $fds = $params;
+    $fds['is_workload'] = true;
+    $fds['is_md'] = true;
+    $fds['group_by'] = "ld.customerType";
+
     $res_workload = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $workload = 0;
     foreach ($res_workload as $rs) {
@@ -159,11 +152,11 @@ class Performance_dashboard_model extends CI_Model
 
   function unreachable_md_leads($params)
   {
-    $fds = [
-      'is_unreachable' => true,
-      'is_md' => true,
-      'group_by' => "ld.customerType"
-    ];
+    $fds = $params;
+    $fds['is_unreachable'] = true;
+    $fds['is_md'] = true;
+    $fds['group_by'] = "ld.customerType";
+
     $res_unreachable = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $unreachable = 0;
     foreach ($res_unreachable as $rs) {
@@ -184,11 +177,11 @@ class Performance_dashboard_model extends CI_Model
 
   function rejected_md_leads($params)
   {
-    $fds = [
-      'is_rejected' => true,
-      'is_md' => true,
-      'group_by' => "ld.customerType"
-    ];
+    $fds = $params;
+    $fds['is_rejected'] = true;
+    $fds['is_md'] = true;
+    $fds['group_by'] = "ld.customerType";
+
     $res_rejected = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $rejected = 0;
     foreach ($res_rejected as $rs) {
@@ -209,11 +202,11 @@ class Performance_dashboard_model extends CI_Model
 
   function failed_md_leads($params)
   {
-    $fds = [
-      'is_failed' => true,
-      'is_md' => true,
-      'group_by' => "ld.customerType"
-    ];
+    $fds = $params;
+    $fds['is_failed'] = true;
+    $fds['is_md'] = true;
+    $fds['group_by'] = "ld.customerType";
+
     $res_failed = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $failed = 0;
     foreach ($res_failed as $rs) {

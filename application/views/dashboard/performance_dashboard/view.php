@@ -30,14 +30,9 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class='li-nav' onclick="setFilterHeader('platform_data')" id="hdr_platform_data"><a href="#">Platform Data</a></li>
-            <li class='li-nav' onclick="setFilterHeader('source_data')" id="hdr_source_data"><a href="#">Source Data</a></li>
-            <li class='li-nav' onclick="setFilterHeader('event_description')" id="hdr_event_description"><a href="#">Event Description</a></li>
-            <li class='li-nav' onclick="setFilterHeader('kabupaten')" id="hdr_kabupaten"><a href="#">Kabupaten</a></li>
-            <li class='li-nav' onclick="setFilterHeader('dealer')" id="hdr_dealer"><a href="#">Dealers</a></li>
-            <li class='li-nav' onclick="setFilterHeader('periode')" id="hdr_periode"><a href="#">Periode</a></li>
-            <li class='li-nav' onclick="setFilterHeader('series')" id="hdr_series"><a href="#">Series</a></li>
-            <li class='li-nav' onclick="setFilterHeader('tipe_motor')" id="hdr_tipe_motor"><a href="#">Tipe Motor</a></li>
+            <?php foreach ($filter_header as $key => $val) { ?>
+              <li class='li-nav' onclick="setFilterHeader('<?= $key ?>')" id="hdr_<?= $key ?>"><a href="#"><?= $val ?></a></li>
+            <?php } ?>
             <!-- <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -174,16 +169,11 @@
 </section>
 <?php $this->load->view('dashboard/performance_dashboard/performance_overview'); ?>
 <?php $this->load->view('dashboard/performance_dashboard/prospect'); ?>
+<?php
+$data['filter_header'] = $filter_header;
+$this->load->view('dashboard/performance_dashboard/modal_filter_header', $data); ?>
 
 <script>
-  function setFilterHeader(header) {
-    if ($('#hdr_' + header).hasClass('active')) {
-      $('#hdr_' + header).removeClass('active');
-    } else {
-      $('#hdr_' + header).addClass('active');
-    }
-  }
-
   function loadCardViewMD() {
     $.ajax({
       beforeSend: function() {
@@ -193,31 +183,22 @@
       enctype: 'multipart/form-data',
       url: '<?= site_url(get_controller() . '/loadCardViewMD') ?>',
       type: "POST",
-      // data: values,
-      processData: false,
-      contentType: false,
+      data: filter_values,
+      // processData: false,
+      // contentType: false,
       // cache: false,
       dataType: 'JSON',
       success: function(response) {
         if (response.status == 1) {
           data = response.data;
-          $('#data_source').html(data.data_source);
-          $('#data_source_persen').html(data.data_source_persen);
-          $('#invited_pre_event_persen').html(data.invited_pre_event_persen);
-          $('#invited_pre_event').html(data.invited_pre_event);
-          $('#leads_invited_non_invited_persen').html(data.leads_invited_non_invited_persen);
-          $('#leads_invited_non_invited').html(data.leads_invited_non_invited);
-          $('#contact_leads_persen').html(data.contact_leads_persen);
-          $('#contact_leads').html(data.contact_leads);
-          $('#prospects_persen').html(data.prospects_persen);
-          $('#prospects').html(data.prospects);
-          $('#prospects_persen').html(data.prospects_persen);
-          $('#contacted_prospects').html(data.contacted_prospects);
-          $('#contacted_prospects_persen').html(data.contacted_prospects_persen);
-          $('#deal').html(data.deal);
-          $('#deal_persen').html(data.deal_persen);
-          $('#sales').html(data.sales);
-          $('#sales_persen').html(data.sales_persen);
+          $('.card_view_persen').each(function() {
+            id = this.id;
+            $('#' + id).html(data[id]);
+          });
+          $('.card_view').each(function() {
+            id = this.id;
+            $('#' + id).html(data[id]);
+          });
         }
       },
       error: function() {
