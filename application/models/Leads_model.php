@@ -40,8 +40,8 @@ class Leads_model extends CI_Model
         }
       }
       if (isset($filter['select'])) {
-        if ($filter['select'] == 'login_mobile') {
-          $select = "";
+        if ($filter['select'] == 'count') {
+          $select = "COUNT(stage_id) count";
         } else {
           $select = $filter['select'];
         }
@@ -172,8 +172,6 @@ class Leads_model extends CI_Model
         }
       }
 
-
-
       //Filter Escaped String Like Singe Quote (')
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
@@ -216,6 +214,29 @@ class Leads_model extends CI_Model
           $where .= " AND stl.idSPK='{$this->db->escape_str($filter['idSPK'])}'";
         }
       }
+      if (isset($filter['eventCodeInvitation_not_null'])) {
+        if ($filter['eventCodeInvitation_not_null'] == true) {
+          $where .= " AND IFNULL(stl.eventCodeInvitation,'') != '' ";
+        }
+      }
+      if (isset($filter['idProspek_not_null'])) {
+        if ($filter['idProspek_not_null'] == true) {
+          $where .= " AND IFNULL(stl.idProspek,'') != '' ";
+        }
+      }
+      if (isset($filter['customerType'])) {
+        if ($filter['customerType'] != '') {
+          $where .= " AND stl.customerType='{$this->db->escape_str($filter['customerType'])}'";
+        }
+      }
+      if (isset($filter['fu_md_contacted'])) {
+        if ($filter['fu_md_contacted'] == true) {
+          $where .= " AND (SELECT COUNT(leads_id) 
+                            FROM leads_follow_up lfup
+                            JOIN ms_status_fu sf ON sf.id_status_fu=lfup.id_status_fu
+                            WHERE leads_id=stl.leads_id AND IFNULL(assignedDealer,'')='' AND id_kategori_status_komunikasi=4)>0 ";
+        }
+      }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -227,6 +248,8 @@ class Leads_model extends CI_Model
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
+        } elseif ($filter['select'] == 'count') {
+          $select = "COUNT(leads_id) count,stl.customerType";
         } else {
           $select = $filter['select'];
         }
@@ -249,6 +272,11 @@ class Leads_model extends CI_Model
       $limit = $filter['limit'];
     }
 
+    $group_by = '';
+    if (isset($filter['group_by'])) {
+      $group_by = "GROUP BY " . $filter['group_by'];
+    }
+
     return $this->db->query("SELECT $select
     FROM leads AS stl
     LEFT JOIN ms_source_leads msl ON msl.id_source_leads=stl.sourceData
@@ -266,6 +294,7 @@ class Leads_model extends CI_Model
     LEFT JOIN ms_maintain_kecamatan kec_kantor ON kec_kantor.id_kecamatan=stl.idKecamatanKantor
     LEFT JOIN ms_dealer dl_beli_sebelumnya ON dl_beli_sebelumnya.kode_dealer=stl.kodeDealerPembelianSebelumnya
     $where
+    $group_by
     $order_data
     $limit
     ");
@@ -288,7 +317,7 @@ class Leads_model extends CI_Model
     return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at 
                              FROM staging_table_leads stl 
                              LEFT JOIN leads tl ON tl.noHP=stl.noHP
-                             $where
+                             $where AND stl.customerType='R' LIMIT 175
     ");
   }
 
@@ -366,6 +395,16 @@ class Leads_model extends CI_Model
           $where .= " AND lfu.followUpKe='{$this->db->escape_str($filter['followUpKe'])}'";
         }
       }
+      if (isset($filter['kodeHasilStatusFollowUp'])) {
+        if ($filter['kodeHasilStatusFollowUp'] != '') {
+          $where .= " AND lfu.kodeHasilStatusFollowUp='{$this->db->escape_str($filter['kodeHasilStatusFollowUp'])}'";
+        }
+      }
+      if (isset($filter['id_kategori_status_komunikasi'])) {
+        if ($filter['id_kategori_status_komunikasi'] != '') {
+          $where .= " AND ksk.id_kategori_status_komunikasi='{$this->db->escape_str($filter['id_kategori_status_komunikasi'])}'";
+        }
+      }
       if (isset($filter['created_by_null'])) {
         if ($filter['created_by_null'] != '') {
           $where .= " AND (lfu.created_by IS NULL OR lfu.created_by='')";
@@ -376,11 +415,23 @@ class Leads_model extends CI_Model
           $where .= " AND (lfu.status IS NULL OR lfu.status='')";
         }
       }
+      if (isset($filter['idSPK_not_null'])) {
+        if ($filter['idSPK_not_null'] != '') {
+          $where .= " AND IFNULL(ld.idSPK,'')!=''";
+        }
+      }
+      if (isset($filter['frameNo_not_null'])) {
+        if ($filter['frameNo_not_null'] != '') {
+          $where .= " AND IFNULL(ld.frameNo,'')!=''";
+        }
+      }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
         } elseif ($filter['select'] == 'count') {
           $select = "COUNT(lfu.leads_id) count";
+        } elseif ($filter['select'] == 'count_distinct_leads_id') {
+          $select = "COUNT(DISTINCT lfu.leads_id) count";
         } else {
           $select = $filter['select'];
         }
@@ -652,5 +703,41 @@ class Leads_model extends CI_Model
   function insertLeadsStage($data) //$data = array
   {
     $this->db->insert('leads_history_stage', $data);
+  }
+
+  function getCountLeadsVsFollowUp($filter)
+  {
+    $last_id_kategori = "SELECT id_kategori_status_komunikasi
+        FROM leads_follow_up lfu
+        LEFT JOIN ms_status_fu sf ON sf.id_status_fu=lfu.id_status_fu
+        WHERE lfu.leads_id=ld.leads_id ORDER BY id_int DESC LIMIT 1
+    ";
+    $where = "WHERE 1=1 ";
+    if (isset($filter['is_md'])) {
+      $where .= " AND dl.kode_dealer IS NULL ";
+    }
+
+    if (isset($filter['is_workload'])) {
+      $where .= " AND ($last_id_kategori) IS NULL ";
+    }
+    if (isset($filter['is_unreachable'])) {
+      $where .= " AND ($last_id_kategori)=1 ";
+    }
+    if (isset($filter['is_rejected'])) {
+      $where .= " AND ($last_id_kategori)=3 ";
+    }
+    if (isset($filter['is_failed'])) {
+      $where .= " AND ($last_id_kategori)=2 ";
+    }
+
+    $group_by = '';
+    if (isset($filter['group_by'])) {
+      $group_by = "GROUP BY " . $filter['group_by'];
+    }
+    return $this->db->query("SELECT COUNT(DISTINCT ld.leads_id) count,ld.customerType
+    FROM leads ld
+    LEFT JOIN ms_dealer dl ON dl.kode_dealer=ld.assignedDealer
+    $where $group_by
+    ");
   }
 }
