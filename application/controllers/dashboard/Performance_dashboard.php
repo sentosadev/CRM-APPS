@@ -4,6 +4,7 @@ class Performance_dashboard extends Crm_Controller
 {
   var $title  = "Performance Dashboard";
   var $db2 = '';
+  var $user = '';
   public function __construct()
   {
     parent::__construct();
@@ -12,6 +13,7 @@ class Performance_dashboard extends Crm_Controller
     $this->load->model('dealer_model', 'dealer_m');
     $this->load->model('performance_dashboard_model', 'pdm');
     $this->db_live = $this->load->database('sinsen_live', true);
+    $this->user = user();
   }
 
   public function index()
@@ -28,6 +30,10 @@ class Performance_dashboard extends Crm_Controller
       'id_series' => ['text' => 'Series', 'type' => 'select2'],
       'id_tipe' => ['text' => 'Tipe Motor', 'type' => 'select2'],
     ];
+    if ((string)$this->user->kode_dealer != '') {
+      unset($data['filter_header']['idKabupatenPengajuan']);
+      unset($data['filter_header']['searchAssignedDealer']);
+    }
     $this->template_portal($data);
   }
 
@@ -51,6 +57,9 @@ class Performance_dashboard extends Crm_Controller
       'kodeTypeUnitIn' => $this->input->post('id_tipe'),
       'seriesMotorIn' => $this->input->post('id_series'),
     ];
+    if ((string)$this->user->kode_dealer != '') {
+      $filter['assignedDealerIn'] = [$this->user->kode_dealer];
+    }
     return $filter;
   }
 
