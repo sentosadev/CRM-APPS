@@ -154,6 +154,21 @@ class Performance_dashboard extends Crm_Controller
     $get_failed_md_leads    = $this->pdm->failed_md_leads($fds);
     $failed_md_leads        = $get_failed_md_leads;
 
+    $get_contacted_prospetcs    = $this->pdm->contacted_prospetcs($fds);
+    $contacted_prospetcs        = $get_contacted_prospetcs;
+
+    $get_workload_prospetcs    = $this->pdm->workload_prospetcs($fds);
+    $workload_prospetcs        = $get_workload_prospetcs;
+
+    $get_unreachable_prospetcs    = $this->pdm->unreachable_prospetcs($fds);
+    $unreachable_prospetcs        = $get_unreachable_prospetcs;
+
+    $get_rejected_prospetcs    = $this->pdm->rejected_prospetcs($fds);
+    $rejected_prospetcs        = $get_rejected_prospetcs;
+
+    $get_failed_prospetcs    = $this->pdm->failed_prospetcs($fds);
+    $failed_prospetcs        = $get_failed_prospetcs;
+
     $result = [
       'status' => 1,
       'data' => [
@@ -175,21 +190,21 @@ class Performance_dashboard extends Crm_Controller
         "lf_failed_leads" => $failed_md_leads['failed'],
         "lf_failed_leads_invited" => $failed_md_leads['failed_invited'],
         "lf_failed_leads_non_invited" => $failed_md_leads['failed_non_invited'],
-        "lf_contacted_prospects" => 0,
-        "lf_contacted_prospects_invited" => 0,
-        "lf_contacted_prospects_non_invited" => 0,
-        "lf_workload_prospects" => 0,
-        "lf_workload_prospects_invited" => 0,
-        "lf_workload_prospects_non_invited" => 0,
-        "lf_unreachable_prospects" => 0,
-        "lf_unreachable_prospects_invited" => 0,
-        "lf_unreachable_prospects_non_invited" => 0,
-        "lf_rejected_prospects" => 0,
-        "lf_rejected_prospects_invited" => 0,
-        "lf_rejected_prospects_non_invited" => 0,
-        "lf_failed_prospects" => 0,
-        "lf_failed_prospects_invited" => 0,
-        "lf_failed_prospects_non_invited" => 0,
+        "lf_contacted_prospects" => $contacted_prospetcs['contacted'],
+        "lf_contacted_prospects_invited" => $contacted_prospetcs['contacted_invited'],
+        "lf_contacted_prospects_non_invited" => $contacted_prospetcs['contacted_non_invited'],
+        "lf_workload_prospects" => $workload_prospetcs['workload'],
+        "lf_workload_prospects_invited" => $workload_prospetcs['workload_invited'],
+        "lf_workload_prospects_non_invited" => $workload_prospetcs['workload_non_invited'],
+        "lf_unreachable_prospects" => $unreachable_prospetcs['unreachable'],
+        "lf_unreachable_prospects_invited" => $unreachable_prospetcs['unreachable_invited'],
+        "lf_unreachable_prospects_non_invited" => $unreachable_prospetcs['unreachable_non_invited'],
+        "lf_rejected_prospects" => $rejected_prospetcs['rejected'],
+        "lf_rejected_prospects_invited" => $rejected_prospetcs['rejected_invited'],
+        "lf_rejected_prospects_non_invited" => $rejected_prospetcs['rejected_non_invited'],
+        "lf_failed_prospects" => $failed_prospetcs['failed'],
+        "lf_failed_prospects_invited" => $failed_prospetcs['failed_invited'],
+        "lf_failed_prospects_non_invited" => $failed_prospetcs['failed_non_invited'],
         "fl_hot" => 0,
         "fl_hot_invited" => 0,
         "fl_hot_non_invited" => 0,

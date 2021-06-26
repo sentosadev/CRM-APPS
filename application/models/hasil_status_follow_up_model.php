@@ -1,5 +1,5 @@
 <?php
-class hasil_status_follow_up_model extends CI_Model
+class Hasil_status_follow_up_model extends CI_Model
 {
   public function __construct()
   {
@@ -13,9 +13,7 @@ class hasil_status_follow_up_model extends CI_Model
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
       if (isset($filter['kodeHasilStatusFollowUp'])) {
-        if ($filter['kodeHasilStatusFollowUp'] != '') {
-          $where .= " AND mu.kodeHasilStatusFollowUp='{$this->db->escape_str($filter['kodeHasilStatusFollowUp'])}'";
-        }
+        $where .= " AND mu.kodeHasilStatusFollowUp='{$this->db->escape_str($filter['kodeHasilStatusFollowUp'])}'";
       }
 
       if (isset($filter['deskripsiHasilStatusFollowUp'])) {

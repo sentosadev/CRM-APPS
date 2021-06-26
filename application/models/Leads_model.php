@@ -301,9 +301,16 @@ class Leads_model extends CI_Model
           $where .= " AND (SELECT COUNT(leads_id) 
                             FROM leads_follow_up lfup
                             JOIN ms_status_fu sf ON sf.id_status_fu=lfup.id_status_fu
-                            WHERE leads_id=stl.leads_id AND IFNULL(assignedDealer,'')='' AND id_kategori_status_komunikasi=4)>0 ";
+                            WHERE leads_id=stl.leads_id AND IFNULL(lfup.assignedDealer,'')='' AND id_kategori_status_komunikasi=4)>0 ";
         }
       }
+
+      if (isset($filter['assignedDealerIsNULL'])) {
+        if ($filter['assignedDealerIsNULL'] == true) {
+          $where .= " AND IFNULL(stl.assignedDealer,'')=''";
+        }
+      }
+
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -906,15 +913,22 @@ class Leads_model extends CI_Model
 
   function getCountLeadsVsFollowUp($filter)
   {
-    $last_id_kategori = "SELECT id_kategori_status_komunikasi
-        FROM leads_follow_up lfu
-        LEFT JOIN ms_status_fu sf ON sf.id_status_fu=lfu.id_status_fu
-        WHERE lfu.leads_id=ld.leads_id ORDER BY id_int DESC LIMIT 1
-    ";
     $where = "WHERE 1=1 ";
     if (isset($filter['is_md'])) {
       $where .= " AND dl.kode_dealer IS NULL ";
     }
+
+    if (isset($filter['is_dealer'])) {
+      $where .= " AND dl.kode_dealer IS NOT NULL ";
+    }
+
+    $last_id_kategori = "SELECT id_kategori_status_komunikasi
+        FROM leads_follow_up lfu
+        LEFT JOIN ms_dealer dl ON dl.kode_dealer=lfu.assignedDealer
+        LEFT JOIN ms_status_fu sf ON sf.id_status_fu=lfu.id_status_fu
+        $where AND lfu.leads_id=ld.leads_id 
+        ORDER BY id_int DESC LIMIT 1
+    ";
 
     if (isset($filter['is_workload'])) {
       $where .= " AND ($last_id_kategori) IS NULL ";
@@ -922,11 +936,14 @@ class Leads_model extends CI_Model
     if (isset($filter['is_unreachable'])) {
       $where .= " AND ($last_id_kategori)=1 ";
     }
+    if (isset($filter['is_failed'])) {
+      $where .= " AND ($last_id_kategori)=2 ";
+    }
     if (isset($filter['is_rejected'])) {
       $where .= " AND ($last_id_kategori)=3 ";
     }
-    if (isset($filter['is_failed'])) {
-      $where .= " AND ($last_id_kategori)=2 ";
+    if (isset($filter['is_contacted'])) {
+      $where .= " AND ($last_id_kategori)=4 ";
     }
     if (isset($filter['platformDataIn'])) {
       if ($filter['platformDataIn'] != '') {

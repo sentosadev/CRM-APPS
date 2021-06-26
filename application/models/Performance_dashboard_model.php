@@ -87,9 +87,8 @@ class Performance_dashboard_model extends CI_Model
   {
     $fds                                  = $params;
     $fds['select']                        = 'count_distinct_leads_id';
-    $fds['kodeHasilStatusFollowUp']       = 1;
     $fds['id_kategori_status_komunikasi'] = 4;
-    $fds['assignedDealerIsNotNULL']         = true;
+    $fds['assignedDealerIsNotNULL']       = true;
     $contacted_prospects = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $contacted_prospects_persen = number_format((@($contacted_prospects / $params['prospects']) * 100), 2);
     return [
@@ -206,6 +205,126 @@ class Performance_dashboard_model extends CI_Model
     $fds = $params;
     $fds['is_failed'] = true;
     $fds['is_md'] = true;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_failed = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $failed = 0;
+    foreach ($res_failed as $rs) {
+      $failed += $rs->count;
+      if ($rs->customerType == 'V') {
+        $failed_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $failed_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'failed' => $failed,
+      'failed_invited' => isset($failed_invited) ? $failed_invited : 0,
+      'failed_non_invited' => isset($failed_non_invited) ? $failed_non_invited : 0,
+    ];
+  }
+  function contacted_prospetcs($params)
+  {
+    $fds = $params;
+    $fds['is_contacted'] = true;
+    $fds['is_dealer'] = true;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_contacted = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $contacted = 0;
+    foreach ($res_contacted as $rs) {
+      $contacted += $rs->count;
+      if ($rs->customerType == 'V') {
+        $contacted_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $contacted_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'contacted' => $contacted,
+      'contacted_invited' => isset($contacted_invited) ? $contacted_invited : 0,
+      'contacted_non_invited' => isset($contacted_non_invited) ? $contacted_non_invited : 0,
+    ];
+  }
+  function workload_prospetcs($params)
+  {
+    $fds = $params;
+    $fds['is_workload'] = true;
+    $fds['is_dealer'] = true;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_workload = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $workload = 0;
+    foreach ($res_workload as $rs) {
+      $workload += $rs->count;
+      if ($rs->customerType == 'V') {
+        $workload_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $workload_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'workload' => $workload,
+      'workload_invited' => isset($workload_invited) ? $workload_invited : 0,
+      'workload_non_invited' => isset($workload_non_invited) ? $workload_non_invited : 0,
+    ];
+  }
+  function unreachable_prospetcs($params)
+  {
+    $fds = $params;
+    $fds['is_unreachable'] = true;
+    $fds['is_dealer'] = true;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_unreachable = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $unreachable = 0;
+    foreach ($res_unreachable as $rs) {
+      $unreachable += $rs->count;
+      if ($rs->customerType == 'V') {
+        $unreachable_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $unreachable_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'unreachable' => $unreachable,
+      'unreachable_invited' => isset($unreachable_invited) ? $unreachable_invited : 0,
+      'unreachable_non_invited' => isset($unreachable_non_invited) ? $unreachable_non_invited : 0,
+    ];
+  }
+  function rejected_prospetcs($params)
+  {
+    $fds = $params;
+    $fds['is_rejected'] = true;
+    $fds['is_dealer'] = true;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_rejected = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $rejected = 0;
+    foreach ($res_rejected as $rs) {
+      $rejected += $rs->count;
+      if ($rs->customerType == 'V') {
+        $rejected_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $rejected_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'rejected' => $rejected,
+      'rejected_invited' => isset($rejected_invited) ? $rejected_invited : 0,
+      'rejected_non_invited' => isset($rejected_non_invited) ? $rejected_non_invited : 0,
+    ];
+  }
+  function failed_prospetcs($params)
+  {
+    $fds = $params;
+    $fds['is_failed'] = true;
+    $fds['is_dealer'] = true;
     $fds['group_by'] = "ld.customerType";
 
     $res_failed = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
