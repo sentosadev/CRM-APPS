@@ -45,6 +45,13 @@ class Leads_model extends CI_Model
         }
       }
 
+      if (isset($filter['seriesMotorIn'])) {
+        if ($filter['seriesMotorIn'] != '') {
+          $filter['seriesMotorIn'] = arr_sql($filter['seriesMotorIn']);
+          $where .= " AND stl.seriesMotor IN({$filter['seriesMotorIn']})";
+        }
+      }
+
       $filter = $this->db->escape_str($filter);
       if (isset($filter['nama'])) {
         if ($filter['nama'] != '') {
@@ -222,6 +229,13 @@ class Leads_model extends CI_Model
         if ($filter['kabupatenIn'] != '') {
           $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
           $where .= " AND stl.kabupaten IN({$filter['kabupatenIn']})";
+        }
+      }
+
+      if (isset($filter['seriesMotorIn'])) {
+        if ($filter['seriesMotorIn'] != '') {
+          $filter['seriesMotorIn'] = arr_sql($filter['seriesMotorIn']);
+          $where .= " AND stl.seriesMotor IN({$filter['seriesMotorIn']})";
         }
       }
 
@@ -477,6 +491,13 @@ class Leads_model extends CI_Model
         if ($filter['kodeTypeUnitIn'] != '') {
           $filter['kodeTypeUnitIn'] = arr_sql($filter['kodeTypeUnitIn']);
           $where .= " AND ld.kodeTypeUnit IN({$filter['kodeTypeUnitIn']})";
+        }
+      }
+
+      if (isset($filter['seriesMotorIn'])) {
+        if ($filter['seriesMotorIn'] != '') {
+          $filter['seriesMotorIn'] = arr_sql($filter['seriesMotorIn']);
+          $where .= " AND ld.seriesMotor IN({$filter['seriesMotorIn']})";
         }
       }
 
@@ -839,6 +860,13 @@ class Leads_model extends CI_Model
       }
     }
 
+    if (isset($filter['seriesMotorIn'])) {
+      if ($filter['seriesMotorIn'] != '') {
+        $filter['seriesMotorIn'] = arr_sql($filter['seriesMotorIn']);
+        $where .= " AND leads.seriesMotor IN({$filter['seriesMotorIn']})";
+      }
+    }
+
 
     return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
     CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
@@ -935,6 +963,13 @@ class Leads_model extends CI_Model
       if ($filter['kodeTypeUnitIn'] != '') {
         $filter['kodeTypeUnitIn'] = arr_sql($filter['kodeTypeUnitIn']);
         $where .= " AND ld.kodeTypeUnit IN({$filter['kodeTypeUnitIn']})";
+      }
+    }
+
+    if (isset($filter['seriesMotorIn'])) {
+      if ($filter['seriesMotorIn'] != '') {
+        $filter['seriesMotorIn'] = arr_sql($filter['seriesMotorIn']);
+        $where .= " AND ld.seriesMotor IN({$filter['seriesMotorIn']})";
       }
     }
 

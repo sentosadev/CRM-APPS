@@ -25,6 +25,7 @@ class Performance_dashboard extends Crm_Controller
       'idKabupatenPengajuan' => ['text' => 'Kabupaten / Kota', 'type' => 'select2'],
       'searchAssignedDealer' => ['text' => 'Dealer', 'type' => 'select2'],
       'periode_created_leads' => ['text' => 'Periode', 'type' => 'daterange'],
+      'id_series' => ['text' => 'Series', 'type' => 'select2'],
       'id_tipe' => ['text' => 'Tipe Motor', 'type' => 'select2'],
     ];
     $this->template_portal($data);
@@ -48,6 +49,7 @@ class Performance_dashboard extends Crm_Controller
       'kabupatenIn' => $this->input->post('idKabupatenPengajuan'),
       'assignedDealerIn' => $this->input->post('searchAssignedDealer'),
       'kodeTypeUnitIn' => $this->input->post('id_tipe'),
+      'seriesMotorIn' => $this->input->post('id_series'),
     ];
     return $filter;
   }
