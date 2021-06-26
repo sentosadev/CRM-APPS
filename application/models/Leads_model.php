@@ -385,9 +385,9 @@ class Leads_model extends CI_Model
       }
     }
     return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at 
-                             FROM staging_table_leads stl 
-                             LEFT JOIN leads tl ON tl.noHP=stl.noHP
-                             $where AND stl.customerType='R' LIMIT 175
+    FROM staging_table_leads stl 
+    LEFT JOIN leads tl ON tl.noHP=stl.noHP
+    $where
     ");
   }
 

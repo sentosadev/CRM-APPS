@@ -170,6 +170,10 @@ class Kelurahan_model extends CI_Model
         }
       }
 
+      if (isset($filter['id_or_name_kelurahan'])) {
+        $where .= " AND (kel.kelurahan='{$this->db->escape_str($filter['id_or_name_kelurahan'])}' OR kel.id_kelurahan='{$this->db->escape_str($filter['id_or_name_kelurahan'])}')";
+      }
+
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -221,7 +225,7 @@ class Kelurahan_model extends CI_Model
     ");
   }
 
-  function sinkronTabelKelurahan($arr_id_kelurahan, $user)
+  function sinkronTabelKelurahan($arr_id_kelurahan, $user = NULL)
   {
     //Cek Kode kelurahan
     // send_json($arr_id_kelurahan);
@@ -238,7 +242,7 @@ class Kelurahan_model extends CI_Model
           'id_kelurahan' => $id_kelurahan,
           'kelurahan'    => $pkjs->kelurahan,
           'aktif'        => 1,
-          'created_by'   => $user->id_user,
+          'created_by'   => $user == NULL ? 1 : $user->id_user,
           'created_at'   => waktu(),
         ];
       } else {
@@ -247,7 +251,7 @@ class Kelurahan_model extends CI_Model
           $upd_kelurahan_batch[] = [
             'id_kelurahan' => $id_kelurahan,
             'kelurahan'      => $pkjs->kelurahan,
-            'updated_by'     => $user->id_user,
+            'updated_by'     => $user == NULL ? 1 : $user->id_user,
             'updated_at'     => waktu(),
           ];
         }

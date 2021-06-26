@@ -137,6 +137,9 @@ class Kecamatan_model extends CI_Model
           $where .= " AND kec.kecamatan='{$this->db->escape_str($filter['kecamatan'])}'";
         }
       }
+      if (isset($filter['id_or_name_kecamatan'])) {
+        $where .= " AND (kec.kecamatan='{$this->db->escape_str($filter['id_or_name_kecamatan'])}' OR kec.id_kecamatan='{$this->db->escape_str($filter['id_or_name_kecamatan'])}')";
+      }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
@@ -185,7 +188,7 @@ class Kecamatan_model extends CI_Model
     ");
   }
 
-  function sinkronTabelKecamatan($arr_id_kecamatan, $user)
+  function sinkronTabelKecamatan($arr_id_kecamatan, $user = NULL)
   {
     //Cek Kode kecamatan
 
@@ -203,7 +206,7 @@ class Kecamatan_model extends CI_Model
           'id_kabupaten_kota' => $db_live->id_kabupaten,
           'id_provinsi' => $db_live->id_provinsi,
           'aktif'             => 1,
-          'created_by'        => $user->id_user,
+          'created_by'        => $user == NULL ? 1 : $user->id_user,
           'created_at'        => waktu(),
         ];
       } else {
@@ -214,7 +217,7 @@ class Kecamatan_model extends CI_Model
             'kecamatan'         => $db_live->kecamatan,
             'id_kabupaten_kota' => $db_live->id_kabupaten,
             'id_provinsi' => $db_live->id_provinsi,
-            'updated_by'        => $user->id_user,
+            'updated_by'        => $user == NULL ? 1 : $user->id_user,
             'updated_at'        => waktu(),
           ];
         }

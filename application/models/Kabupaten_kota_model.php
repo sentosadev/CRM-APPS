@@ -98,9 +98,7 @@ class Kabupaten_kota_model extends CI_Model
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_name_kabupaten'])) {
-        if ($filter['id_or_name_kabupaten'] != '') {
-          $where .= " AND (kab.id_kabupaten='{$this->db->escape_str($filter['id_or_name_kabupaten'])}' OR kab.kabupaten='{$this->db->escape_str($filter['id_or_name_kabupaten'])}') ";
-        }
+        $where .= " AND (kab.id_kabupaten='{$this->db->escape_str($filter['id_or_name_kabupaten'])}' OR kab.kabupaten='{$this->db->escape_str($filter['id_or_name_kabupaten'])}') ";
       }
       if (isset($filter['id_provinsi'])) {
         if ($filter['id_provinsi'] != '') {
@@ -164,7 +162,7 @@ class Kabupaten_kota_model extends CI_Model
     ");
   }
 
-  function sinkronTabelKabupaten($arr_id_kabupaten, $user)
+  function sinkronTabelKabupaten($arr_id_kabupaten, $user = NULL)
   {
     //Cek Kode kabupaten_kota
 
@@ -182,7 +180,7 @@ class Kabupaten_kota_model extends CI_Model
           'kabupaten_kota' => $db_live->kabupaten,
           'id_provinsi'    => $db_live->id_provinsi,
           'aktif'          => 1,
-          'created_by'     => $user->id_user,
+          'created_by'     => $user == NULL ? 1 : $user->id_user,
           'created_at'     => waktu(),
         ];
       } else {
@@ -192,7 +190,7 @@ class Kabupaten_kota_model extends CI_Model
             'id_kabupaten_kota'   => $id_kabupaten,
             'kabupaten_kota' => $db_live->kabupaten,
             'id_provinsi'    => $db_live->id_provinsi,
-            'updated_by'     => $user->id_user,
+            'updated_by'     => $user == NULL ? 1 : $user->id_user,
             'updated_at'     => waktu(),
           ];
         }

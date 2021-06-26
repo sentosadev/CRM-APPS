@@ -112,17 +112,17 @@ class Series_dan_tipe_model extends CI_Model
     return strtoupper($new_kode);
   }
 
-  function sinkronTabelSeriesTipe($params, $user)
+  function sinkronTabelSeriesTipe($params, $user = NULL)
   {
     $cek = $this->getSeriesTipe($params)->row();
     if ($cek == NULL) {
       $insert = [
-        'kode_tipe' => $params['kode_tipe'],
+        'kode_tipe'   => $params['kode_tipe'],
         'kode_series' => $params['kode_series'],
-        'kode_warna' => $params['kode_warna'],
-        'aktif'      => 1,
-        'created_at'    => waktu(),
-        'created_by' => $user->id_user,
+        'kode_warna'  => $params['kode_warna'],
+        'aktif'       => 1,
+        'created_at'  => waktu(),
+        'created_by' => $user == NULL ? 1 : $user->id_user,
       ];
       $this->db->insert('ms_maintain_series_tipe', $insert);
     }

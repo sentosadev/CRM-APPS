@@ -141,7 +141,7 @@ class Warna_model extends CI_Model
     ");
   }
 
-  function sinkronTabelWarna($arr_kode_warna, $user)
+  function sinkronTabelWarna($arr_kode_warna, $user = NULL)
   {
     //Cek Kode warna
     // send_json($arr_kode_warna);
@@ -157,7 +157,7 @@ class Warna_model extends CI_Model
         $ins_warna_batch[] = [
           'kode_warna'      => $kode_warna,
           'deskripsi_warna' => $pkjs->warna,
-          'created_by'     => $user->id_user,
+          'created_by'     => $user == NULL ? 1 : $user->id_user,
           'created_at'     => waktu(),
         ];
       } else {
@@ -166,7 +166,7 @@ class Warna_model extends CI_Model
           $upd_warna_batch[] = [
             'kode_warna'      => $kode_warna,
             'deskripsi_warna' => $pkjs->warna,
-            'updated_by'     => $user->id_user,
+            'updated_by'     => $user == NULL ? 1 : $user->id_user,
             'updated_at'     => waktu(),
           ];
         }

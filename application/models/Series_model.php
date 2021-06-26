@@ -117,7 +117,7 @@ class Series_model extends CI_Model
     ");
   }
 
-  function sinkronTabelSeries($arr_kode_series, $user)
+  function sinkronTabelSeries($arr_kode_series, $user = NULL)
   {
     //Cek Kode tipe
     // send_json($arr_kode_series);
@@ -133,7 +133,7 @@ class Series_model extends CI_Model
         $insert_batch[] = [
           'kode_series'      => $kode_series,
           'deskripsi_series' => $db_live->series,
-          'created_by'     => $user->id_user,
+          'created_by'     => $user == NULL ? 1 : $user->id_user,
           'created_at'     => waktu(),
         ];
       } else {
@@ -142,7 +142,7 @@ class Series_model extends CI_Model
           $update_batch[] = [
             'kode_series'      => $kode_series,
             'deskripsi_series' => $db_live->series,
-            'updated_by'     => $user->id_user,
+            'updated_by'     => $user == NULL ? 1 : $user->id_user,
             'updated_at'     => waktu(),
           ];
         }

@@ -165,7 +165,40 @@ class Tipe_model extends CI_Model
     ");
   }
 
-  function sinkronTabelTipe($arr_kode_tipe, $user)
+  function getTipeWarnaFromOtherDb($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    $select = '';
+    if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
+      if (isset($filter['id_or_nama_tipe'])) {
+        $where .= " AND (tp.id_tipe_kendaraan = '{$filter['id_or_nama_tipe']}' OR tp.tipe_ahm = '{$filter['id_or_nama_tipe']}')";
+      }
+      if (isset($filter['id_or_nama_warna'])) {
+        $where .= " AND (wr.id_warna = '{$filter['id_or_nama_warna']}' OR wr.warna = '{$filter['id_or_nama_warna']}')";
+      }
+
+      if (isset($filter['select'])) {
+        if ($filter['select'] == 'dropdown') {
+          $select = "id_tipe_kendaraan id,CONCAT(id_tipe_kendaraan,' - ',tipe_ahm) text";
+        } else {
+          $select = $filter['select'];
+        }
+      } else {
+        $select = "tp.id_tipe_kendaraan,wr.id_warna,tp.id_series";
+      }
+    }
+
+    return $this->db_live->query("SELECT $select
+    FROM ms_item itm
+    JOIN ms_tipe_kendaraan tp ON tp.id_tipe_kendaraan=itm.id_tipe_kendaraan
+    JOIN ms_warna wr ON wr.id_warna=itm.id_warna
+    JOIN ms_series srs ON srs.id_series=tp.id_series
+    $where
+    ");
+  }
+
+  function sinkronTabelTipe($arr_kode_tipe, $user = NULL)
   {
     //Cek Kode tipe
     // send_json($arr_kode_tipe);
@@ -181,7 +214,7 @@ class Tipe_model extends CI_Model
         $ins_tipe_batch[] = [
           'kode_tipe'      => $kode_tipe,
           'deskripsi_tipe' => $pkjs->tipe_ahm,
-          'created_by'     => $user->id_user,
+          'created_by'     => $user == NULL ? 1 : $user->id_user,
           'created_at'     => waktu(),
         ];
       } else {
@@ -190,7 +223,7 @@ class Tipe_model extends CI_Model
           $upd_tipe_batch[] = [
             'kode_tipe'      => $kode_tipe,
             'deskripsi_tipe' => $pkjs->tipe_ahm,
-            'updated_by'     => $user->id_user,
+            'updated_by'     => $user == NULL ? 1 : $user->id_user,
             'updated_at'     => waktu(),
           ];
         }

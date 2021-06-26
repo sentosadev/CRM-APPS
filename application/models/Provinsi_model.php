@@ -82,9 +82,7 @@ class Provinsi_model extends CI_Model
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_name_provinsi'])) {
-        if ($filter['id_or_name_provinsi'] != '') {
-          $where .= " AND (prov.id_provinsi='{$this->db->escape_str($filter['id_or_name_provinsi'])}' OR prov.provinsi='{$this->db->escape_str($filter['id_or_name_provinsi'])}') ";
-        }
+        $where .= " AND (prov.id_provinsi='{$this->db->escape_str($filter['id_or_name_provinsi'])}' OR prov.provinsi='{$this->db->escape_str($filter['id_or_name_provinsi'])}') ";
       }
 
       if (isset($filter['id_provinsi'])) {
@@ -144,7 +142,7 @@ class Provinsi_model extends CI_Model
     ");
   }
 
-  function sinkronTabelProvinsi($arr_id_provinsi, $user)
+  function sinkronTabelProvinsi($arr_id_provinsi, $user = NULL)
   {
     //Cek Kode provinsi
 
@@ -162,7 +160,7 @@ class Provinsi_model extends CI_Model
           'provinsi' => $db_live->provinsi,
           'id_provinsi'    => $db_live->id_provinsi,
           'aktif'          => 1,
-          'created_by'     => $user->id_user,
+          'created_by'     => $user == NULL ? 1 : $user->id_user,
           'created_at'     => waktu(),
         ];
       } else {
@@ -172,7 +170,7 @@ class Provinsi_model extends CI_Model
             'id_provinsi'   => $id_provinsi,
             'provinsi' => $db_live->provinsi,
             'id_provinsi'    => $db_live->id_provinsi,
-            'updated_by'     => $user->id_user,
+            'updated_by'     => $user == NULL ? 1 : $user->id_user,
             'updated_at'     => waktu(),
           ];
         }

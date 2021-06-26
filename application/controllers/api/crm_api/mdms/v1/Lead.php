@@ -12,113 +12,26 @@ class Lead extends CI_Controller
     parent::__construct();
     $this->load->helper('api');
     $this->load->model('leads_model', 'ld_m');
+    $this->load->model('leads_api_model', 'lda_m');
   }
 
   public function index()
   {
     $validasi = request_validation();
-    $batchID = $this->ld_m->getBatchID();
-    $reject = [];
-    $list_leads = [];
-    foreach ($validasi['post']['leads'] as $pst) {
-      //Cek No HP
-      $noHP = $pst['noHP'];
-      $cek = $this->ld_m->getStagingLeads(['noHP' => $noHP])->num_rows();
-      if ($cek > 0) {
-        $reject[$noHP] = 'No. HP sudah ada';
-      } elseif (strlen($noHP) > 15) {
-        $reject[$noHP] = 'Jumlah karakter melebihi batas';
-      } elseif ($noHP == '') {
-        $reject[$noHP] = 'No. HP Wajib Diisi';
-      }
-
-      //Cek Nama
-      if (strlen($pst['nama']) > 100) {
-        $reject[$noHP] = 'Jumlah karakter melebihi batas';
-      } elseif ($pst['nama'] == '') {
-        $reject[$noHP] = 'Nama Wajib Diisi';
-      }
-
-      //Cek sourceRefID
-      if ($pst['sourceRefID'] != '') {
-        $fl = ['sourceRefID' => $pst['sourceRefID']];
-        $cek = $this->ld_m->getLeads($fl)->num_rows();
-        if ($cek > 0) {
-          $reject[$noHP] = 'Source Ref ID sudah ada';
-        }
-      }
-
-      if (in_array($noHP, array_keys($reject))) {
-        $list_leads[] = [
-          'noHP' => $noHP,
-          'accpted' => 'N',
-          'errorMessage' => $reject[$noHP]
-        ];
-        continue;
-      }
-
-      $insert_batch[] = [
-        'batchID' => $batchID,
-        'nama' => clear_removed_html($pst['nama']),
-        'noHP' => clear_removed_html($pst['noHP']),
-        'email' => clear_removed_html($pst['email']),
-        'customerType' => clear_removed_html($pst['customerType']),
-        'eventCodeInvitation' => clear_removed_html($pst['eventCodeInvitation']),
-        'customerActionDate' => date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate'])),
-        'kabupaten' => clear_removed_html($pst['kabupaten']),
-        'cmsSource' => clear_removed_html($pst['cmsSource']),
-        'segmentMotor' => clear_removed_html($pst['segmentMotor']),
-        'seriesMotor' => clear_removed_html($pst['seriesMotor']),
-        'deskripsiEvent' => clear_removed_html($pst['deskripsiEvent']),
-        'kodeTypeUnit' => clear_removed_html($pst['kodeTypeUnit']),
-        'kodeWarnaUnit' => clear_removed_html($pst['kodeWarnaUnit']),
-        'minatRidingTest' => clear_removed_html($pst['minatRidingTest']),
-        'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']),
-        'sourceData' => clear_removed_html($pst['sourceData']),
-        'platformData' => clear_removed_html($pst['platformData']),
-        'noTelp' => clear_removed_html($pst['noTelp']),
-        'assignedDealer' => clear_removed_html($pst['assignedDealer']),
-        'sourceRefID' => clear_removed_html($pst['sourceRefID']),
-        'provinsi' => clear_removed_html($pst['provinsi']),
-        'kelurahan' => clear_removed_html($pst['kelurahan']),
-        'kecamatan' => clear_removed_html($pst['kecamatan']),
-        'noFramePembelianSebelumnya' => clear_removed_html($pst['noFramePembelianSebelumnya']),
-        'keterangan' => clear_removed_html($pst['keterangan']),
-        'promoUnit' => clear_removed_html($pst['promoUnit']),
-        'facebook' => clear_removed_html($pst['facebook']),
-        'instagram' => clear_removed_html($pst['instagram']),
-        'twitter' => clear_removed_html($pst['twitter']),
-        'created_at' => waktu(),
-      ];
-
-      $list_leads[] = [
-        'noHP' => $noHP,
-        'accpted' => 'Y',
-        'errorMessage' => ''
-      ];
-    }
-    // send_json(($insert_batch));
-    if (isset($insert_batch)) {
-      $this->db->trans_begin();
-      $this->db->insert_batch('staging_table_leads', $insert_batch);
-      if ($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-      } else {
-        $this->db->trans_commit();
-      }
-    }
-
+    $post = $validasi['post']['leads'];
+    // send_json($post);
+    $insert_st = $this->lda_m->insertStagingTables($post);
     //Set Data
     $data = [
-      'batchID' => $batchID,
+      'batchID' => $insert_st['batchID'],
     ];
 
     //Set Response Leads
-    if (count($reject) == 0) {
+    if (count($insert_st['reject']) == 0) {
       $status = 1;
       $message = null;
       $data['result']['leads'] = 'full_accept';
-    } elseif (count($validasi['post']['leads']) == count($reject)) {
+    } elseif (count($validasi['post']['leads']) == count($insert_st['reject'])) {
       $status = 0;
       $message = null;
       $data['result']['leads'] = 'full_reject';
@@ -127,7 +40,7 @@ class Lead extends CI_Controller
       $message = null;
       $data['result']['leads'] = 'partial_accept';
     }
-    $data['leads'] = $list_leads;
+    $data['leads'] = $insert_st['list_leads'];
 
     $result = [
       'status' => $status,
@@ -146,6 +59,7 @@ class Lead extends CI_Controller
   {
     $fc = ['mainTableNULL' => true];
     $data = $this->ld_m->getStagingTableVSMainTable($fc)->result_array();
+    // send_json($data);
     $this->db->trans_begin();
     foreach ($data as $pst) {
       $leads_id = $this->ld_m->getLeadsID();
@@ -205,7 +119,7 @@ class Lead extends CI_Controller
     $scheduler = new Scheduler();
     $this->_insertToMainTable();
     $scheduler->call(function () {
-      $this->_insertToMainTable();
+      // $this->_insertToMainTable();
       //Create Cron Log
       $cron_scheduler = ['created_at' => waktu(), 'from' => 'schedulerLeadsTransactionTable'];
       $this->db->insert('cron_scheduler', $cron_scheduler);
