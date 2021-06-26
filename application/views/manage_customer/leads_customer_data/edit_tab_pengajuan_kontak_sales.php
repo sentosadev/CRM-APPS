@@ -95,7 +95,7 @@
               Tabel History Interaksi
             </h3>
             <div class="box-tools pull-right">
-              <button type="button" id="showModalHistoryInteraksi" class="btn btn-primary btn-flat btn-xs">View All</button>
+              <button type="button" onclick="showModalHistoryInteraksi()" class="btn btn-primary btn-flat btn-xs">View All</button>
             </div>
           </div>
           <div class="box-body">
@@ -130,6 +130,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data);
 
 $data['data'] = ['selectSalesmanFromOtherDb', 'selectKabupatenKotaPengajuan', 'selectProvinsiPengajuan'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
+
+$this->load->view(get_controller() . '/modal_history_interaksi');
 ?>
 <script>
   function saveDataPengajuanKontakSales(el, tabs) {
@@ -188,5 +190,9 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
         $(el).attr('disabled', false);
       }
     });
+  }
+
+  function showModalHistoryInteraksi() {
+    $("#modalHistoryInteraksi").modal('show');
   }
 </script>

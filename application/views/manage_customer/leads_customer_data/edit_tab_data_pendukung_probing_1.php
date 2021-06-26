@@ -11,14 +11,6 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Provinsi</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="id_provinsi" class='form-control' name='provinsi' <?= $disabled ?>>
-            <option value='<?= $row->provinsi ?>'><?= $row->deskripsiProvinsi ?></option>
-          </select>
-        </div>
-      </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">Source Data</label>
@@ -192,10 +184,30 @@
       </div>
     </div>
     <div class="form-group">
+      <label class="col-sm-2 control-label">Provinsi *</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_provinsi_from_other_db" class='form-control' name='provinsi' <?= $disabled ?> required>
+            <option value='<?= $row->provinsi ?>'><?= $row->deskripsiProvinsiDomisili ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Kabupaten / Kota Domisili *</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <select style='width:100%' id="id_kabupaten_kota_from_other_db" class='form-control' name='kabupaten' <?= $disabled ?> required>
+            <option value='<?= $row->kabupaten ?>'><?= $row->deskripsiKabupatenKotaDomisili ?></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="col-sm-2 control-label">Kecamatan Domisili *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kecamatan" class='form-control' name='kecamatan' <?= $disabled ?> required>
+          <select style='width:100%' id="id_kecamatan_from_other_db" class='form-control' name='kecamatan' <?= $disabled ?> required>
             <option value='<?= $row->kecamatan ?>'><?= $row->deskripsiKecamatanDomisili ?></option>
           </select>
         </div>
@@ -208,7 +220,7 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kelurahan *</label>
+      <label class="col-sm-2 control-label">Kelurahan Domisili *</label>
       <div class="form-input">
         <div class="col-sm-4">
           <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?> required>
@@ -397,7 +409,7 @@
 </div>
 <?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
-<?php $data['data'] = ['selectProvinsi', 'selectKecamatan', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];
+<?php $data['data'] = ['selectProvinsiFromOtherDb', 'selectKabupatenKotaFromOtherDb', 'selectKecamatanFromOtherDb', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];
 $this->load->view('additionals/dropdown_wilayah', $data); ?>
 <script>
   function saveDataPendukung(tabs) {

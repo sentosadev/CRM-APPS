@@ -291,6 +291,9 @@ class Leads_customer_data extends Crm_Controller
     $this->load->model('Jenis_motor_yang_dimiliki_sekarang_model', 'jmds');
     $this->load->model('Merk_motor_yang_dimiliki_sekarang_model', 'mmds');
     $this->load->model('sumber_prospek_model', 'sprm');
+    $this->load->model('provinsi_model', 'prov');
+    $this->load->model('kabupaten_kota_model', 'kab');
+    $this->load->model('kecamatan_model', 'kec');
     $this->load->model('kelurahan_model', 'kel');
     //Cek Data
     if ($gr == NULL) {
@@ -327,6 +330,8 @@ class Leads_customer_data extends Crm_Controller
       'idPendidikan' => $this->input->post('idPendidikan', true),
       'kategoriPreferensiDealer' => $this->input->post('kategoriPreferensiDealer', true),
       'kategoriProspect' => $this->input->post('kategoriProspect', true),
+      'provinsi' => $this->input->post('provinsi', true),
+      'kabupaten' => $this->input->post('kabupaten', true),
       'kecamatan' => $this->input->post('kecamatan', true),
       'kelurahan' => $this->input->post('kelurahan', true),
       'keteranganPreferensiDealerLain' => $this->input->post('keteranganPreferensiDealerLain', true),
@@ -340,12 +345,11 @@ class Leads_customer_data extends Crm_Controller
       'noKtp' => $this->input->post('noKtp', true),
       'platformData' => $this->input->post('platformData', true),
       'promoYangDiminatiCustomer' => $this->input->post('promoYangDiminatiCustomer', true),
-      'provinsi' => $this->input->post('provinsi', true),
       'sourceData' => $this->input->post('sourceData', true),
       'customerType' => $this->input->post('customerType', true),
       'gender' => $this->input->post('gender', true),
-      'tanggalPembelianTerakhir' => convert_datetime($this->input->post('tanggalPembelianTerakhir', true)),
-      'tanggalRencanaPembelian' => convert_datetime($this->input->post('tanggalRencanaPembelian', true)),
+      'tanggalPembelianTerakhir' => $this->input->post('tanggalPembelianTerakhir', true) == '' ? NULL : convert_datetime($this->input->post('tanggalPembelianTerakhir', true)),
+      'tanggalRencanaPembelian' => $this->input->post('tanggalRencanaPembelian', true) == '' ? NULL : convert_datetime($this->input->post('tanggalRencanaPembelian', true)),
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
       'idJenisMotorYangDimilikiSekarang' => $idJenisMotorYangDimilikiSekarang,
@@ -365,7 +369,7 @@ class Leads_customer_data extends Crm_Controller
       'rencanaPembayaran' => $this->input->post('rencanaPembayaran', true),
       'prioritasProspekCustomer' => $this->input->post('prioritasProspekCustomer', true),
       'tempatLahir' => $this->input->post('tempatLahir', true),
-      'tanggalLahir' => $this->input->post('tanggalLahir', true),
+      'tanggalLahir' => $this->input->post('tanggalLahir', true) == '' ? NULL : $this->input->post('tanggalLahir', true),
       'alamat' => $this->input->post('alamat', true),
       'preferensiPromoDiminatiCustomer' => $this->input->post('preferensiPromoDiminatiCustomer', true),
       'pengeluaran' => $this->input->post('pengeluaran', true),
@@ -383,6 +387,15 @@ class Leads_customer_data extends Crm_Controller
     //Sinkron Tabel Agama
     $arr_kode_agama = [$this->input->post('idAgama', true)];
 
+    //Sinkron Tabel provinsi
+    $arr_id_provinsi = [$this->input->post('provinsi', true)];
+
+    //Sinkron Tabel kabupaten_kota
+    $arr_id_kabupaten_kota = [$this->input->post('kabupaten', true)];
+
+    //Sinkron Tabel kecamatan
+    $arr_id_kecamatan = [$this->input->post('kecamatan', true)];
+
     //Sinkron Tabel Kelurahan
     $arr_id_kelurahan = [$this->input->post('kelurahan', true)];
 
@@ -396,6 +409,9 @@ class Leads_customer_data extends Crm_Controller
     $this->pkj->sinkronTabelPekerjaan($arr_kode_pekerjaan, $user);
     $this->lsg->sinkronTabelLeasing($arr_kode_leasing, $user);
     $this->agm->sinkronTabelAgama($arr_kode_agama, $user);
+    $this->prov->sinkronTabelProvinsi($arr_id_provinsi, $user);
+    $this->kab->sinkronTabelKabupaten($arr_id_kabupaten_kota, $user);
+    $this->kec->sinkronTabelKecamatan($arr_id_kecamatan, $user);
     $this->kel->sinkronTabelKelurahan($arr_id_kelurahan, $user);
     $this->db->update('leads', $update, $fg);
     if ($this->db->trans_status() === FALSE) {

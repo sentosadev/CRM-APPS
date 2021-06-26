@@ -87,6 +87,9 @@ class Wilayah extends CI_Controller
       'select' => 'dropdown',
       'aktif' => 1
     ];
+    if ($this->input->post('id_kecamatan') != NULL) {
+      $filter['id_kecamatan'] = $this->input->post('id_kecamatan');
+    }
     $response = $this->ms->getKelurahanFromOtherDb($filter)->result();
     send_json($response);
   }
@@ -122,6 +125,25 @@ class Wilayah extends CI_Controller
       'aktif' => 1
     ];
     $response = $this->ms->getProvinsiFromOtherDb($filter)->result();
+    send_json($response);
+  }
+
+  function selectKecamatanFromOtherDb()
+  {
+    $this->load->model('kecamatan_model', 'kec');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = [
+      'search' => $search,
+      'select' => 'dropdown',
+      'aktif' => 1
+    ];
+    if ($this->input->post('id_kabupaten') != NULL) {
+      $filter['id_kabupaten'] = $this->input->post('id_kabupaten');
+    }
+    $response = $this->kec->getKecamatanFromOtherDb($filter)->result();
     send_json($response);
   }
 }
