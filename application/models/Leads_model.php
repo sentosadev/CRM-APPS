@@ -31,6 +31,12 @@ class Leads_model extends CI_Model
           $where .= " AND stl.deskripsiEvent IN({$filter['deskripsiEventIn']})";
         }
       }
+      if (isset($filter['kabupatenIn'])) {
+        if ($filter['kabupatenIn'] != '') {
+          $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
+          $where .= " AND stl.kabupaten IN({$filter['kabupatenIn']})";
+        }
+      }
 
       $filter = $this->db->escape_str($filter);
       if (isset($filter['nama'])) {
@@ -202,6 +208,13 @@ class Leads_model extends CI_Model
         if ($filter['periodeCreatedLeads'] != '') {
           $created = $filter['periodeCreatedLeads'];
           $where .= " AND LEFT(stl.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
+        }
+      }
+
+      if (isset($filter['kabupatenIn'])) {
+        if ($filter['kabupatenIn'] != '') {
+          $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
+          $where .= " AND stl.kabupaten IN({$filter['kabupatenIn']})";
         }
       }
 
@@ -436,6 +449,13 @@ class Leads_model extends CI_Model
         if ($filter['periodeCreatedLeads'] != '') {
           $created = $filter['periodeCreatedLeads'];
           $where .= " AND LEFT(ld.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
+        }
+      }
+
+      if (isset($filter['kabupatenIn'])) {
+        if ($filter['kabupatenIn'] != '') {
+          $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
+          $where .= " AND ld.kabupaten IN({$filter['kabupatenIn']})";
         }
       }
 
@@ -777,6 +797,13 @@ class Leads_model extends CI_Model
       }
     }
 
+    if (isset($filter['kabupatenIn'])) {
+      if ($filter['kabupatenIn'] != '') {
+        $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
+        $where .= " AND leads.kabupaten IN({$filter['kabupatenIn']})";
+      }
+    }
+
 
     return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
     CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
@@ -852,6 +879,13 @@ class Leads_model extends CI_Model
       if ($filter['periodeCreatedLeads'] != '') {
         $created = $filter['periodeCreatedLeads'];
         $where .= " AND LEFT(ld.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
+      }
+    }
+
+    if (isset($filter['kabupatenIn'])) {
+      if ($filter['kabupatenIn'] != '') {
+        $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
+        $where .= " AND ld.kabupaten IN({$filter['kabupatenIn']})";
       }
     }
 

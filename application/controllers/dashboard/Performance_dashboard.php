@@ -22,6 +22,7 @@ class Performance_dashboard extends Crm_Controller
       'id_platform_data' => ['text' => 'Platform Data', 'type' => 'select2'],
       'id_source_leads' => ['text' => 'Source Data', 'type' => 'select2'],
       'deskripsiEvent' => ['text' => 'Event Description', 'type' => 'select2'],
+      'idKabupatenPengajuan' => ['text' => 'Kabupaten / Kota', 'type' => 'select2'],
       'periode_created_leads' => ['text' => 'Periode', 'type' => 'daterange'],
     ];
     $this->template_portal($data);
@@ -42,6 +43,7 @@ class Performance_dashboard extends Crm_Controller
       'sourceLeadsIn' => $this->input->post('id_source_leads'),
       'deskripsiEventIn' => $this->input->post('deskripsiEvent'),
       'periodeCreatedLeads' => $periodeCreatedLeads,
+      'kabupatenIn' => $this->input->post('idKabupatenPengajuan'),
     ];
     return $filter;
   }

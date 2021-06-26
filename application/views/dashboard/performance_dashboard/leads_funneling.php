@@ -395,7 +395,7 @@
                         <tr>
                           <td align='center' colspan=2>
                             <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_indent"></div>
-                            Indendt
+                            Indent
                           </td>
                         </tr>
                         <tr>

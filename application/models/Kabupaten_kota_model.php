@@ -123,7 +123,6 @@ class Kabupaten_kota_model extends CI_Model
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( kab.id_provinsi LIKE'%{$filter['search']}%'
-                            OR kab.provinsi LIKE'%{$filter['search']}%'
                             OR kab.kabupaten LIKE'%{$filter['search']}%'
           )";
         }
