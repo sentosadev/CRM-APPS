@@ -930,6 +930,22 @@ class Leads_model extends CI_Model
         ORDER BY id_int DESC LIMIT 1
     ";
 
+    $selisih_next = "SELECT DATEDIFF(LEFT(lfu.tglNextFollowUp,10),LEFT(lfu.tglFollowUp,10))
+        FROM leads_follow_up lfu
+        LEFT JOIN ms_dealer dl ON dl.kode_dealer=lfu.assignedDealer
+        LEFT JOIN ms_status_fu sf ON sf.id_status_fu=lfu.id_status_fu
+        $where AND lfu.leads_id=ld.leads_id 
+        ORDER BY id_int DESC LIMIT 1
+    ";
+
+    $last_kodeHasilStatusFollowUp = "SELECT kodeHasilStatusFollowUp
+      FROM leads_follow_up lfu
+      LEFT JOIN ms_dealer dl ON dl.kode_dealer=lfu.assignedDealer
+      LEFT JOIN ms_status_fu sf ON sf.id_status_fu=lfu.id_status_fu
+      $where AND lfu.leads_id=ld.leads_id 
+      ORDER BY id_int DESC LIMIT 1
+      ";
+
     if (isset($filter['is_workload'])) {
       $where .= " AND ($last_id_kategori) IS NULL ";
     }
@@ -998,6 +1014,49 @@ class Leads_model extends CI_Model
       if ($filter['seriesMotorIn'] != '') {
         $filter['seriesMotorIn'] = arr_sql($filter['seriesMotorIn']);
         $where .= " AND ld.seriesMotor IN({$filter['seriesMotorIn']})";
+      }
+    }
+
+    if (isset($filter['selisih_next_lebih_kecil_dari'])) {
+      $where .= " AND ($selisih_next) < {$filter['selisih_next_lebih_kecil_dari']}";
+    }
+
+    if (isset($filter['selisih_next_between'])) {
+      $selisih = $filter['selisih_next_between'];
+      $where .= " AND ($selisih_next) BETWEEN {$selisih[0]} AND {$selisih[1]} ";
+    }
+
+    if (isset($filter['selisih_next_lebih_besar_dari'])) {
+      $where .= " AND ($selisih_next) > {$filter['selisih_next_lebih_besar_dari']}";
+    }
+    if (isset($filter['kodeHasilStatusFollowUp'])) {
+      $where .= " AND ($last_kodeHasilStatusFollowUp) = {$filter['kodeHasilStatusFollowUp']}";
+    }
+
+    if (isset($filter['idSPK_not_null'])) {
+      if ($filter['idSPK_not_null'] != '') {
+        $where .= " AND IFNULL(ld.idSPK,'')!=''";
+      }
+    }
+
+    if (isset($filter['kodeHasilStatusFollowUpNotIn'])) {
+      if ($filter['kodeHasilStatusFollowUpNotIn'] != '') {
+        $where .= " AND ($last_kodeHasilStatusFollowUp) NOT IN({$filter['kodeHasilStatusFollowUpNotIn']})";
+      }
+    }
+
+    if (isset($filter['not_contacted'])) {
+      $where .= " AND ($last_id_kategori) != 4 ";
+    }
+
+    if (isset($filter['frameNo_not_null'])) {
+      if ($filter['frameNo_not_null'] != '') {
+        $where .= " AND IFNULL(ld.frameNo,'') != ''";
+      }
+    }
+    if (isset($filter['kodeIndent_not_null'])) {
+      if ($filter['kodeIndent_not_null'] != '') {
+        $where .= " AND IFNULL(ld.kodeIndent,'') != ''";
       }
     }
 

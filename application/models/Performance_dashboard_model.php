@@ -344,4 +344,241 @@ class Performance_dashboard_model extends CI_Model
       'failed_non_invited' => isset($failed_non_invited) ? $failed_non_invited : 0,
     ];
   }
+
+  function fl_contact_leads($params)
+  {
+    $fds = $params;
+    $fds['is_contacted'] = true;
+    $fds['is_md'] = true;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_contacted = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $contacted = 0;
+    foreach ($res_contacted as $rs) {
+      $contacted += $rs->count;
+      if ($rs->customerType == 'V') {
+        $contacted_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $contacted_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'contacted' => $contacted,
+      'contacted_invited' => isset($contacted_invited) ? $contacted_invited : 0,
+      'contacted_non_invited' => isset($contacted_non_invited) ? $contacted_non_invited : 0,
+    ];
+  }
+  function hot($params)
+  {
+    $fds = $params;
+    $fds['is_contacted'] = true;
+    $fds['is_dealer'] = true;
+    $fds['selisih_next_lebih_kecil_dari'] = 14;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_hot = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $hot = 0;
+    foreach ($res_hot as $rs) {
+      $hot += $rs->count;
+      if ($rs->customerType == 'V') {
+        $hot_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $hot_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'hot' => $hot,
+      'hot_invited' => isset($hot_invited) ? $hot_invited : 0,
+      'hot_non_invited' => isset($hot_non_invited) ? $hot_non_invited : 0,
+    ];
+  }
+
+  function medium($params)
+  {
+    $fds = $params;
+    $fds['is_contacted'] = true;
+    $fds['is_dealer'] = true;
+    $fds['selisih_next_between'] = [14, 28];
+    $fds['group_by'] = "ld.customerType";
+
+    $res_medium = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $medium = 0;
+    foreach ($res_medium as $rs) {
+      $medium += $rs->count;
+      if ($rs->customerType == 'V') {
+        $medium_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $medium_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'medium' => $medium,
+      'medium_invited' => isset($medium_invited) ? $medium_invited : 0,
+      'medium_non_invited' => isset($medium_non_invited) ? $medium_non_invited : 0,
+    ];
+  }
+
+  function low($params)
+  {
+    $fds = $params;
+    $fds['is_contacted'] = true;
+    $fds['is_dealer'] = true;
+    $fds['selisih_next_lebih_besar_dari'] = 30;
+    $fds['group_by'] = "ld.customerType";
+
+    $res_low = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $low = 0;
+    foreach ($res_low as $rs) {
+      $low += $rs->count;
+      if ($rs->customerType == 'V') {
+        $low_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $low_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'low' => $low,
+      'low_invited' => isset($low_invited) ? $low_invited : 0,
+      'low_non_invited' => isset($low_non_invited) ? $low_non_invited : 0,
+    ];
+  }
+
+  function fl_deal($params)
+  {
+    $fds                            = $params;
+    $fds['is_contacted']            = true;
+    $fds['is_dealer']               = true;
+    $fds['group_by']                = "ld.customerType";
+    $fds['kodeHasilStatusFollowUp'] = 3;
+    $fds['idSPK_not_null']          = true;
+
+    $res_deal = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $deal = 0;
+    foreach ($res_deal as $rs) {
+      $deal += $rs->count;
+      if ($rs->customerType == 'V') {
+        $deal_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $deal_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'deal' => $deal,
+      'deal_invited' => isset($deal_invited) ? $deal_invited : 0,
+      'deal_non_invited' => isset($deal_non_invited) ? $deal_non_invited : 0,
+    ];
+  }
+
+  function fl_need_fu($params)
+  {
+    $fds                            = $params;
+    $fds['not_contacted']            = true;
+    $fds['is_dealer']               = true;
+    $fds['group_by']                = "ld.customerType";
+    $fds['kodeHasilStatusFollowUpNotIn'] = "3, 4";
+
+    $res_need_fu = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $need_fu = 0;
+    foreach ($res_need_fu as $rs) {
+      $need_fu += $rs->count;
+      if ($rs->customerType == 'V') {
+        $need_fu_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $need_fu_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'need_fu' => $need_fu,
+      'need_fu_invited' => isset($need_fu_invited) ? $need_fu_invited : 0,
+      'need_fu_non_invited' => isset($need_fu_non_invited) ? $need_fu_non_invited : 0,
+    ];
+  }
+
+
+  function fl_not_deal($params)
+  {
+    $fds                            = $params;
+    $fds['is_contacted']            = true;
+    $fds['is_dealer']               = true;
+    $fds['group_by']                = "ld.customerType";
+    $fds['kodeHasilStatusFollowUp'] = 4;
+
+    $res_not_deal = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $not_deal = 0;
+    foreach ($res_not_deal as $rs) {
+      $not_deal += $rs->count;
+      if ($rs->customerType == 'V') {
+        $not_deal_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $not_deal_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'not_deal' => $not_deal,
+      'not_deal_invited' => isset($not_deal_invited) ? $not_deal_invited : 0,
+      'not_deal_non_invited' => isset($not_deal_non_invited) ? $not_deal_non_invited : 0,
+    ];
+  }
+
+  function fl_sales($params)
+  {
+    $fds                            = $params;
+    $fds['is_contacted']            = true;
+    $fds['is_dealer']               = true;
+    $fds['group_by']                = "ld.customerType";
+    $fds['kodeHasilStatusFollowUp'] = 3;
+    $fds['frameNo_not_null']        = true;
+    $fds['idSPK_not_null']          = true;
+
+    $res_sales = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $sales = 0;
+    foreach ($res_sales as $rs) {
+      $sales += $rs->count;
+      if ($rs->customerType == 'V') {
+        $sales_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $sales_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'sales' => $sales,
+      'sales_invited' => isset($sales_invited) ? $sales_invited : 0,
+      'sales_non_invited' => isset($sales_non_invited) ? $sales_non_invited : 0,
+    ];
+  }
+  function fl_indent($params)
+  {
+    $fds                            = $params;
+    $fds['is_contacted']            = true;
+    $fds['is_dealer']               = true;
+    $fds['group_by']                = "ld.customerType";
+    $fds['kodeHasilStatusFollowUp'] = 3;
+    $fds['kodeIndent_not_null']     = true;
+    $fds['idSPK_not_null']          = true;
+
+    $res_indent = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
+    $indent = 0;
+    foreach ($res_indent as $rs) {
+      $indent += $rs->count;
+      if ($rs->customerType == 'V') {
+        $indent_invited = $rs->count;
+      } elseif ($rs->customerType == 'R') {
+        $indent_non_invited = $rs->count;
+      }
+    }
+
+    return [
+      'indent' => $indent,
+      'indent_invited' => isset($indent_invited) ? $indent_invited : 0,
+      'indent_non_invited' => isset($indent_non_invited) ? $indent_non_invited : 0,
+    ];
+  }
 }

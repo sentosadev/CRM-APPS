@@ -138,7 +138,7 @@ class Performance_dashboard extends Crm_Controller
     $fds = $filter;
     $fds['tot_leads'] = 0;
     $fds['group_by'] = " stl.customerType";
-    $get_contact_leads    = $this->pdm->contact_leads($fds);
+    $get_contact_leads    = $this->pdm->fl_contact_leads($fds);
     $contact_leads        = $get_contact_leads;
 
     $fds = $filter;
@@ -169,15 +169,38 @@ class Performance_dashboard extends Crm_Controller
     $get_failed_prospetcs    = $this->pdm->failed_prospetcs($fds);
     $failed_prospetcs        = $get_failed_prospetcs;
 
+    $get_hot    = $this->pdm->hot($fds);
+    $hot        = $get_hot;
+
+    $get_medium = $this->pdm->medium($fds);
+    $med        = $get_medium;
+
+    $get_low = $this->pdm->low($fds);
+    $low        = $get_low;
+
+    $get_deal = $this->pdm->fl_deal($fds);
+    $deal        = $get_deal;
+    $get_need_fu = $this->pdm->fl_need_fu($fds);
+    $need_fu        = $get_need_fu;
+
+    $get_not_deal = $this->pdm->fl_not_deal($fds);
+    $not_deal        = $get_not_deal;
+
+    $get_sales = $this->pdm->fl_sales($fds);
+    $sales        = $get_sales;
+
+    $get_indent = $this->pdm->fl_indent($fds);
+    $indent        = $get_indent;
+
     $result = [
       'status' => 1,
       'data' => [
         'lf_tot_leads' => $get_leads['tot_leads'],
         'lf_invited' => $get_leads['invited'],
         'lf_non_invited' => $get_leads['non_invited'],
-        "lf_contacted_leads" => $contact_leads['contact_leads'],
-        "lf_contacted_leads_invited" => $contact_leads['contact_leads_invited'],
-        "lf_contacted_leads_non_invited" => $contact_leads['contact_leads_non_invited'],
+        "lf_contacted_leads" => $contact_leads['contacted'],
+        "lf_contacted_leads_invited" => $contact_leads['contacted_invited'],
+        "lf_contacted_leads_non_invited" => $contact_leads['contacted_non_invited'],
         "lf_workload_leads" => $workload_md_leads['workload'],
         "lf_workload_leads_invited" => $workload_md_leads['workload_invited'],
         "lf_workload_leads_non_invited" => $workload_md_leads['workload_non_invited'],
@@ -205,30 +228,30 @@ class Performance_dashboard extends Crm_Controller
         "lf_failed_prospects" => $failed_prospetcs['failed'],
         "lf_failed_prospects_invited" => $failed_prospetcs['failed_invited'],
         "lf_failed_prospects_non_invited" => $failed_prospetcs['failed_non_invited'],
-        "fl_hot" => 0,
-        "fl_hot_invited" => 0,
-        "fl_hot_non_invited" => 0,
-        "fl_med" => 0,
-        "fl_med_invited" => 0,
-        "fl_med_non_invited" => 0,
-        "fl_low" => 0,
-        "fl_low_invited" => 0,
-        "fl_low_non_invited" => 0,
-        "fl_deal" => 0,
-        "fl_deal_invited" => 0,
-        "fl_deal_non_invited" => 0,
-        "fl_need_fu" => 0,
-        "fl_need_fu_invited" => 0,
-        "fl_need_fu_non_invited" => 0,
-        "fl_not_deal" => 0,
-        "fl_not_deal_invited" => 0,
-        "fl_not_deal_non_invited" => 0,
-        "fl_sales" => 0,
-        "fl_sales_invited" => 0,
-        "fl_sales_non_invited" => 0,
-        "fl_indent" => 0,
-        "fl_indent_invited" => 0,
-        "fl_indent_non_invited" => 0,
+        "fl_hot" => $hot['hot'],
+        "fl_hot_invited" => $hot['hot_invited'],
+        "fl_hot_non_invited" => $hot['hot_non_invited'],
+        "fl_med" => $med['medium'],
+        "fl_med_invited" => $med['medium_invited'],
+        "fl_med_non_invited" => $med['medium_non_invited'],
+        "fl_low" => $low['low'],
+        "fl_low_invited" => $low['low_invited'],
+        "fl_low_non_invited" => $low['low_non_invited'],
+        "fl_deal" => $deal['deal'],
+        "fl_deal_invited" => $deal['deal_invited'],
+        "fl_deal_non_invited" => $deal['deal_non_invited'],
+        "fl_need_fu" => $need_fu['need_fu'],
+        "fl_need_fu_invited" => $need_fu['need_fu_invited'],
+        "fl_need_fu_non_invited" => $need_fu['need_fu_non_invited'],
+        "fl_not_deal" => $not_deal['not_deal'],
+        "fl_not_deal_invited" => $not_deal['not_deal_invited'],
+        "fl_not_deal_non_invited" => $not_deal['not_deal_non_invited'],
+        "fl_sales" => $sales['sales'],
+        "fl_sales_invited" => $sales['sales_invited'],
+        "fl_sales_non_invited" => $sales['sales_non_invited'],
+        "fl_indent" => $indent['indent'],
+        "fl_indent_invited" => $indent['indent_invited'],
+        "fl_indent_non_invited" => $indent['indent_non_invited'],
         "lf_conv_sales_all_leads" => 0,
         "lf_conv_sales_of_contacted" => 0,
         "lf_conv_sales_invited" => 0,
