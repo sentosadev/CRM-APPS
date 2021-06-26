@@ -85,10 +85,11 @@ class Performance_dashboard_model extends CI_Model
 
   function contacted_prospects($params)
   {
-    $fds = $params;
+    $fds                                  = $params;
     $fds['select']                        = 'count_distinct_leads_id';
     $fds['kodeHasilStatusFollowUp']       = 1;
     $fds['id_kategori_status_komunikasi'] = 4;
+    $fds['assignedDealerIsNotNULL']         = true;
     $contacted_prospects = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $contacted_prospects_persen = number_format((@($contacted_prospects / $params['prospects']) * 100), 2);
     return [

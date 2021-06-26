@@ -443,6 +443,7 @@ class Leads_model extends CI_Model
     $tglFollowUpFormated = sql_convert_date('lfu.tglFollowUp');
     $select = '';
     $is_md = "CASE WHEN dl_assg.kode_dealer IS NULL THEN 1 ELSE 0 END";
+
     if ($filter != null) {
       // Posisi di atas karena skip filter escape tanda kutip (')
       if (isset($filter['platformDataIn'])) {
@@ -550,6 +551,16 @@ class Leads_model extends CI_Model
       if (isset($filter['frameNo_not_null'])) {
         if ($filter['frameNo_not_null'] != '') {
           $where .= " AND IFNULL(ld.frameNo,'')!=''";
+        }
+      }
+      if (isset($filter['assignedDealerIsNULL'])) {
+        if ($filter['assignedDealerIsNULL'] == true) {
+          $where .= " AND IFNULL(lfu.assignedDealer,'')=''";
+        }
+      }
+      if (isset($filter['assignedDealerIsNotNULL'])) {
+        if ($filter['assignedDealerIsNotNULL'] == true) {
+          $where .= " AND IFNULL(lfu.assignedDealer,'')!=''";
         }
       }
       if (isset($filter['select'])) {
