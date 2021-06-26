@@ -38,6 +38,13 @@ class Leads_model extends CI_Model
         }
       }
 
+      if (isset($filter['kodeTypeUnitIn'])) {
+        if ($filter['kodeTypeUnitIn'] != '') {
+          $filter['kodeTypeUnitIn'] = arr_sql($filter['kodeTypeUnitIn']);
+          $where .= " AND stl.kodeTypeUnit IN({$filter['kodeTypeUnitIn']})";
+        }
+      }
+
       $filter = $this->db->escape_str($filter);
       if (isset($filter['nama'])) {
         if ($filter['nama'] != '') {
@@ -466,6 +473,13 @@ class Leads_model extends CI_Model
         }
       }
 
+      if (isset($filter['kodeTypeUnitIn'])) {
+        if ($filter['kodeTypeUnitIn'] != '') {
+          $filter['kodeTypeUnitIn'] = arr_sql($filter['kodeTypeUnitIn']);
+          $where .= " AND ld.kodeTypeUnit IN({$filter['kodeTypeUnitIn']})";
+        }
+      }
+
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
         if ($filter['leads_id'] != '') {
@@ -818,6 +832,13 @@ class Leads_model extends CI_Model
       }
     }
 
+    if (isset($filter['kodeTypeUnitIn'])) {
+      if ($filter['kodeTypeUnitIn'] != '') {
+        $filter['kodeTypeUnitIn'] = arr_sql($filter['kodeTypeUnitIn']);
+        $where .= " AND leads.kodeTypeUnit IN({$filter['kodeTypeUnitIn']})";
+      }
+    }
+
 
     return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
     CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
@@ -907,6 +928,13 @@ class Leads_model extends CI_Model
       if ($filter['assignedDealerIn'] != '') {
         $filter['assignedDealerIn'] = arr_sql($filter['assignedDealerIn']);
         $where .= " AND ld.assignedDealer IN({$filter['assignedDealerIn']})";
+      }
+    }
+
+    if (isset($filter['kodeTypeUnitIn'])) {
+      if ($filter['kodeTypeUnitIn'] != '') {
+        $filter['kodeTypeUnitIn'] = arr_sql($filter['kodeTypeUnitIn']);
+        $where .= " AND ld.kodeTypeUnit IN({$filter['kodeTypeUnitIn']})";
       }
     }
 

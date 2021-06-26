@@ -39,9 +39,12 @@ foreach ($filter_header as $key => $val) { ?>
     <!-- /.modal-dialog -->
   </div>
 <?php } ?>
-<?php $data['data'] = ['selectPlatformData', 'selectSourceLeads', 'selectDeskripsiEvent', 'selectKabupatenKotaPengajuan', 'selectAssignedDealer'];
-$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
+<?php
+$data['data'] = ['selectPlatformData', 'selectSourceLeads', 'selectDeskripsiEvent', 'selectKabupatenKotaPengajuan', 'selectAssignedDealer',];
+$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
 
+$data['data'] = ['selectTipe'];
+$this->load->view('additionals/dropdown_series_tipe', $data); ?>
 <script>
   function setFilterHeader(header) {
     $('#modal_' + header).modal('show');
