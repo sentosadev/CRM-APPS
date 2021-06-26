@@ -18,6 +18,22 @@ class Series_dan_tipe_model extends CI_Model
         }
       }
 
+      if (isset($filter['kode_series'])) {
+        if ($filter['kode_series'] != '') {
+          $where .= " AND mu.kode_series='{$filter['kode_series']}'";
+        }
+      }
+      if (isset($filter['kode_tipe'])) {
+        if ($filter['kode_tipe'] != '') {
+          $where .= " AND mu.kode_tipe='{$filter['kode_tipe']}'";
+        }
+      }
+      if (isset($filter['kode_warna'])) {
+        if ($filter['kode_warna'] != '') {
+          $where .= " AND mu.kode_warna='{$filter['kode_warna']}'";
+        }
+      }
+
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {
           $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
@@ -94,5 +110,21 @@ class Series_dan_tipe_model extends CI_Model
       $new_kode   = substr(strtotime(waktu()), 5) . random_numbers(3);
     }
     return strtoupper($new_kode);
+  }
+
+  function sinkronTabelSeriesTipe($params, $user)
+  {
+    $cek = $this->getSeriesTipe($params)->row();
+    if ($cek == NULL) {
+      $insert = [
+        'kode_tipe' => $params['kode_tipe'],
+        'kode_series' => $params['kode_series'],
+        'kode_warna' => $params['kode_warna'],
+        'aktif'      => 1,
+        'created_at'    => waktu(),
+        'created_by' => $user->id_user,
+      ];
+      $this->db->insert('ms_maintain_series_tipe', $insert);
+    }
   }
 }

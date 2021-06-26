@@ -136,7 +136,7 @@ class Tipe_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_tipe_kendaraan,mu.tipe_ahm";
+        $select = "mu.id_tipe_kendaraan,mu.tipe_ahm,mu.id_series";
       }
     }
 
@@ -158,6 +158,7 @@ class Tipe_model extends CI_Model
 
     return $this->db_live->query("SELECT $select
     FROM ms_tipe_kendaraan AS mu
+    JOIN ms_series srs ON srs.id_series=mu.id_series
     $where
     $order_data
     $limit

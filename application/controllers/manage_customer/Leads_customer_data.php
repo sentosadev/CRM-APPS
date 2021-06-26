@@ -212,6 +212,8 @@ class Leads_customer_data extends Crm_Controller
   {
     $this->load->model('tipe_model', 'tpm');
     $this->load->model('warna_model', 'wrm');
+    $this->load->model('series_model', 'srs');
+    $this->load->model('series_dan_tipe_model', 'srstp');
     $this->load->model('karyawan_dealer_model', 'kryd');
     $this->load->model('kabupaten_kota_model', 'kab');
     $this->load->model('provinsi_model', 'prov');
@@ -223,6 +225,20 @@ class Leads_customer_data extends Crm_Controller
       $result = [
         'status' => 0,
         'pesan' => 'Data tidak ditemukan '
+      ];
+      send_json($result);
+    }
+
+    $kodeTypeUnit = $this->input->post('kodeTypeUnit', true);
+    $kodeWarnaUnit = $this->input->post('kodeWarnaUnit', true);
+    $ftp = [
+      'kode_tipe' => $kodeTypeUnit,
+    ];
+    $get_tipe = $this->tpm->getTipeFromOtherDb($ftp)->row();
+    if ($get_tipe == NULL) {
+      $result = [
+        'status' => 0,
+        'pesan' => 'Kode Type Unit Diminati Tidak Ditemukan'
       ];
       send_json($result);
     }
@@ -240,9 +256,10 @@ class Leads_customer_data extends Crm_Controller
       'namaPengajuan' => $kryd == NULL ? NULL : $kryd->nama_lengkap,
       'idProvinsiPengajuan' => $this->input->post('idProvinsiPengajuan', true),
       'idKabupatenPengajuan' => $this->input->post('idKabupatenPengajuan', true),
-      'kodeTypeUnit' => $this->input->post('kodeTypeUnit', true),
-      'kodeWarnaUnit' => $this->input->post('kodeWarnaUnit', true),
+      'kodeTypeUnit' => $kodeTypeUnit,
+      'kodeWarnaUnit' => $kodeWarnaUnit,
       'minatRidingTest' => $this->input->post('minatRidingTest', true),
+      'seriesMotor' => $get_tipe->id_series,
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
     ];
@@ -252,6 +269,16 @@ class Leads_customer_data extends Crm_Controller
 
     //Sinkron Tabel tipe
     $arr_kode_warna = [$this->input->post('kodeWarnaUnit', true)];
+
+    //Sinkron Tabel series
+    $arr_kode_series = [$get_tipe->id_series];
+
+    //Sinkron Tabel series & tipe
+    $params_cek_series_tipe = [
+      'kode_series' => $get_tipe->id_series,
+      'kode_tipe' => $kodeTypeUnit,
+      'kode_warna' => $kodeWarnaUnit
+    ];
 
     //Sinkron Tabel Kabupaten
     $arr_id_kabupaten = [$this->input->post('idKabupatenPengajuan', true)];
@@ -264,6 +291,8 @@ class Leads_customer_data extends Crm_Controller
     $this->db->trans_begin();
     $this->tpm->sinkronTabelTipe($arr_kode_tipe, $user);
     $this->wrm->sinkronTabelWarna($arr_kode_warna, $user);
+    $this->srs->sinkronTabelSeries($arr_kode_series, $user);
+    $this->srstp->sinkronTabelSeriesTipe($params_cek_series_tipe, $user);
     $this->kab->sinkronTabelKabupaten($arr_id_kabupaten, $user);
     $this->prov->sinkronTabelProvinsi($arr_id_provinsi, $user);
     $this->db->update('leads', $update, $fg);
