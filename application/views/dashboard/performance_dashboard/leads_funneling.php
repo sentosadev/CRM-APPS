@@ -43,7 +43,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td colspan=2 align='center'>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_tot_leads">&nbsp;</div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_tot_leads" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Customer yang hadir dalam VE, melakukan interaksi pada website VE (seluruh CMS Source, kecuali Non CMS), dan telah terverifikasi pada backlog Verification and Classified Customer Leads Data">&nbsp;</div>
                             Total Leads
                           </td>
                         </tr>
@@ -65,7 +65,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style='min-height:210px'>
                         <tr>
                           <td align='center' colspan=2 style='vertical-align:middle'>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_contacted_leads"></div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_contacted_leads" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang sudah diprobing, terhubung oleh PIC VE MD, dan siap didispatch ke Dealer."></div>
                             Contacted Leads
                           </td>
                         </tr>
@@ -83,7 +83,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table margin-left-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_workload_leads"></div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_workload_leads" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Seluruh data konsumen yang sudah diverifikasi (Filter Sistem by prioritas No Telp, kemudian ke Email) dan belum pernah difollow up oleh PIC di MD (faktor internal di MD, terkait dari work load Front desk/PIC CRM  ketidakcukupan waktu untuk follow up by call/visit, kekurangan human resource, dan lain-lain )"></div>
                             Workload
                           </td>
                         </tr>
@@ -101,7 +101,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_leads"></div>
+                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_leads" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Seluruh data konsumen yang sudah difollowup via Telepon oleh PIC di MD tetapi tidak diangkat. Metode FU (Jenis Interaction Channel): Telpon, SMS, Email, Social Media (Facebook, Instagram, Twitter, Telegram) (RO)"></div>
                             Unreachable
                           </td>
                         </tr>
@@ -121,7 +121,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table margin-left-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_rejected_leads"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Seluruh data konsumen yang sudah difollow up, ada interaksi langsung (sudah tersambung), tetapi perlu difollow up di lain waktu (Next Appointment)" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_rejected_leads"></div>
                             Rejected
                           </td>
                         </tr>
@@ -139,7 +139,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_failed_leads"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Proses follow up yang dilakukan ke konsumen, namun terdapat ketidaksesuaian / ketidakvalidan data" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_failed_leads"></div>
                             Failed
                           </td>
                         </tr>
@@ -159,7 +159,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style='min-height:210px'>
                         <tr>
                           <td align='center' colspan=2 style='vertical-align:middle'>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_contacted_prospects"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Prospects yang di follow up oleh PIC Salespeople Dealer" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_contacted_prospects"></div>
                             Contacted Prospects
                           </td>
                         </tr>
@@ -177,7 +177,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table margin-left-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_workload_prospects"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Seluruh data konsumen prospect yang belum pernah difollow up oleh PIC di Dealer setelah di dispatch dari MD  sesuai filter Header yang dipilih ((faktor internal di Dealer, terkait dari work load Front desk/PIC CRM  ketidakcukupan waktu untuk follow up by call/visit, kekurangan human resource, dan lain-lain)" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_workload_prospects"></div>
                             Workload
                           </td>
                         </tr>
@@ -195,7 +195,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_prospects"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Seluruh data konsumen yang sudah difollowup via Telepon oleh PIC di D tetapi tidak diangkatdan tampil sesuai filter Header yang dipilih . Metode FU (Jenis Interaction Channel): Telpon, SMS, Email, Social Media (Facebook, Instagram, Twitter, Telegram) (RO)" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_unreachable_prospects"></div>
                             Unreachable
                           </td>
                         </tr>
@@ -215,7 +215,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table margin-left-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_rejected_prospects"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Seluruh data konsumen yang sudah difollow up, ada interaksi langsung (sudah tersambung), tetapi perlu difollow up di lain waktu (Next Appointment), tampil sesuai filter Header yang dipilih." style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_rejected_prospects"></div>
                             Rejected
                           </td>
                         </tr>
@@ -233,7 +233,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_failed_prospects"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Proses follow up yang dilakukan ke konsumen, namun terdapat ketidaksesuaian data, tampil sesuai filter Header yang dipilih." style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_failed_prospects"></div>
                             Failed
                           </td>
                         </tr>
@@ -262,7 +262,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(255,153,0)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_hot"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang setelah dilakukan probing tertarik melakukan pembelian dengan kriteria Status Prospect berdasarkan selisih tanggal Next Follow Up dan tanggal Follow Upnya: Hot < 2minggu)" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_hot"></div>
                             HOT
                           </td>
                         </tr>
@@ -280,7 +280,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(241,134,179)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_med"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang setelah dilakukan probing tertarik melakukan pembelian dengan kriteria Status Prospect berdasarkan selisih tanggal Next Follow Up dan tanggal Follow Upnya: Medium (2-4minggu)" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_med"></div>
                             MED
                           </td>
                         </tr>
@@ -298,7 +298,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(0,168,221)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_low"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang setelah dilakukan probing tertarik melakukan pembelian dengan kriteria Status Prospect berdasarkan selisih tanggal Next Follow Up dan tanggal Follow Upnya: Low (>1bulan)" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_low"></div>
                             LOW
                           </td>
                         </tr>
@@ -318,7 +318,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(29,148,77)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_deal"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Prospect yang tertarik, siap untuk membeli unit Honda, dan sudah memiliki nomor SPK sesuai login Dealer dan filter Header yang dipilih Dealer" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_deal"></div>
                             DEAL
                           </td>
                         </tr>
@@ -336,7 +336,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(250,255,0)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_need_fu"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Prospect yang tertarik dan sudah didispatch ke Dealer, namun belum siap untuk membeli unit Honda (workload, unreachable, rejected, dan failed) sesuai filter Header yang dipilih." style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_need_fu"></div>
                             NEED FU
                           </td>
                         </tr>
@@ -354,7 +354,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(155,152,158)">
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_not_deal"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Status prospect yang sebelumnya telah menjadi Hot Prospect namun membatalkan keinginan untuk membeli setelah sales people melakukan follow up sesuai filter Header yang dipilih." style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_not_deal"></div>
                             NOT DEAL
                           </td>
                         </tr>
@@ -376,7 +376,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_sales"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Prospect yang tertarik, siap untuk membeli unit Honda, dan sudah memiliki nomor SPK Sales sesuai filter Header yang dipilih" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_sales"></div>
                             Sales
                           </td>
                         </tr>
@@ -394,7 +394,7 @@
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
                           <td align='center' colspan=2>
-                            <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_indent"></div>
+                            <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Prospect yang tertarik, siap untuk membeli unit Honda, dan sudah memiliki nomor SPK Indent sesuai filter Header yang dipilih." style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="fl_indent"></div>
                             Indent
                           </td>
                         </tr>
@@ -420,21 +420,21 @@
                 <table class='table table-bordered table-condensed margin-bottom-table' style="background:rgb(133,194,255)">
                   <tr>
                     <td align='center'>
-                      <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_all_leads"></div>
+                      <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="% perbandingan Sub-Chart Sales dengan Sub-Chart Total Leads sesuai dengan filter header yang dipilih" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_all_leads"></div>
                       Sales Of All Leads
                     </td>
                     <td align='center'>
-                      <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_of_contacted"></div>
+                      <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="% perbandingan Sub-Chart Sales dengan Sub-Chart Contacted Prospects  sesuai dengan filter header yang dipilih" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_of_contacted"></div>
                       Sales Of Contacted
                     </td>
                   </tr>
                   <tr>
                     <td align='center'>
-                      <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_invited"></div>
+                      <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="% perbandingan Sub-Chart Sales dengan Sub-Chart Total Leads (Invited) sesuai dengan filter header yang dipilih" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_invited"></div>
                       Sales Of Invited Leads
                     </td>
                     <td align='center'>
-                      <div style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_non_invited"></div>
+                      <div data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="% perbandingan Sub-Chart Sales dengan Sub-Chart Total Leads (Non Invited) sesuai dengan filter header yang dipilih" style='font-size:22pt;font-weight:600' class="dt_leads_funneling" id="lf_conv_sales_non_invited"></div>
                       Sales Of Non Invited Leads
                     </td>
                   </tr>

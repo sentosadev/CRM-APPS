@@ -192,10 +192,10 @@ class Performance_dashboard extends Crm_Controller
     $get_indent = $this->pdm->fl_indent($fds);
     $indent        = $get_indent;
 
-    $lf_conv_sales_all_leads = number_format((($sales['sales'] / $get_leads['tot_leads']) * 100), 2);
-    $lf_conv_sales_of_contacted = number_format((($sales['sales'] / $contacted_prospetcs['contacted']) * 100), 2);
-    $lf_conv_sales_invited = number_format((($sales['sales'] / $get_leads['invited']) * 100), 2);
-    $lf_conv_sales_non_invited = number_format((($sales['sales'] / $get_leads['non_invited']) * 100), 2);
+    $lf_conv_sales_all_leads = number_format((@($sales['sales'] / $get_leads['tot_leads']) * 100), 2);
+    $lf_conv_sales_of_contacted = number_format((@($sales['sales'] / $contacted_prospetcs['contacted']) * 100), 2);
+    $lf_conv_sales_invited = number_format((@($sales['sales'] / $get_leads['invited']) * 100), 2);
+    $lf_conv_sales_non_invited = number_format((@($sales['sales'] / $get_leads['non_invited']) * 100), 2);
 
     $result = [
       'status' => 1,
