@@ -192,6 +192,11 @@ class Performance_dashboard extends Crm_Controller
     $get_indent = $this->pdm->fl_indent($fds);
     $indent        = $get_indent;
 
+    $lf_conv_sales_all_leads = number_format((($sales['sales'] / $get_leads['tot_leads']) * 100), 2);
+    $lf_conv_sales_of_contacted = number_format((($sales['sales'] / $contacted_prospetcs['contacted']) * 100), 2);
+    $lf_conv_sales_invited = number_format((($sales['sales'] / $get_leads['invited']) * 100), 2);
+    $lf_conv_sales_non_invited = number_format((($sales['sales'] / $get_leads['non_invited']) * 100), 2);
+
     $result = [
       'status' => 1,
       'data' => [
@@ -252,10 +257,10 @@ class Performance_dashboard extends Crm_Controller
         "fl_indent" => $indent['indent'],
         "fl_indent_invited" => $indent['indent_invited'],
         "fl_indent_non_invited" => $indent['indent_non_invited'],
-        "lf_conv_sales_all_leads" => 0,
-        "lf_conv_sales_of_contacted" => 0,
-        "lf_conv_sales_invited" => 0,
-        "lf_conv_sales_non_invited" => 0,
+        "lf_conv_sales_all_leads" => $lf_conv_sales_all_leads . '%',
+        "lf_conv_sales_of_contacted" => $lf_conv_sales_of_contacted . '%',
+        "lf_conv_sales_invited" => $lf_conv_sales_invited . '%',
+        "lf_conv_sales_non_invited" => $lf_conv_sales_non_invited . '%',
       ]
     ];
     send_json($result);
