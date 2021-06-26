@@ -459,6 +459,13 @@ class Leads_model extends CI_Model
         }
       }
 
+      if (isset($filter['assignedDealerIn'])) {
+        if ($filter['assignedDealerIn'] != '') {
+          $filter['assignedDealerIn'] = arr_sql($filter['assignedDealerIn']);
+          $where .= " AND ld.assignedDealer IN({$filter['assignedDealerIn']})";
+        }
+      }
+
       $filter = $this->db->escape_str($filter);
       if (isset($filter['leads_id'])) {
         if ($filter['leads_id'] != '') {
@@ -804,6 +811,13 @@ class Leads_model extends CI_Model
       }
     }
 
+    if (isset($filter['assignedDealerIn'])) {
+      if ($filter['assignedDealerIn'] != '') {
+        $filter['assignedDealerIn'] = arr_sql($filter['assignedDealerIn']);
+        $where .= " AND leads.assignedDealer IN({$filter['assignedDealerIn']})";
+      }
+    }
+
 
     return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
     CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
@@ -886,6 +900,13 @@ class Leads_model extends CI_Model
       if ($filter['kabupatenIn'] != '') {
         $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
         $where .= " AND ld.kabupaten IN({$filter['kabupatenIn']})";
+      }
+    }
+
+    if (isset($filter['assignedDealerIn'])) {
+      if ($filter['assignedDealerIn'] != '') {
+        $filter['assignedDealerIn'] = arr_sql($filter['assignedDealerIn']);
+        $where .= " AND ld.assignedDealer IN({$filter['assignedDealerIn']})";
       }
     }
 

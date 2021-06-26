@@ -39,7 +39,7 @@ foreach ($filter_header as $key => $val) { ?>
     <!-- /.modal-dialog -->
   </div>
 <?php } ?>
-<?php $data['data'] = ['selectPlatformData', 'selectSourceLeads', 'selectDeskripsiEvent', 'selectKabupatenKotaPengajuan'];
+<?php $data['data'] = ['selectPlatformData', 'selectSourceLeads', 'selectDeskripsiEvent', 'selectKabupatenKotaPengajuan', 'selectAssignedDealer'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 
 <script>
