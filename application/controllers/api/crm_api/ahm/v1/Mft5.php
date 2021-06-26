@@ -222,7 +222,7 @@ class Mft5 extends CI_Controller
       mkdir($dir, 0777, true);
     }
     $namaFile = strtotime(waktu());
-    $path = $dir . '/' . $namaFile . '.mft';
+    $path = $dir . '/' . $namaFile . '.LDS';
     $fp = fopen($path, "w");
 
     $sending_to_ahm_at = waktu();
