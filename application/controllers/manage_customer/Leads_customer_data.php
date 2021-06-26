@@ -213,6 +213,8 @@ class Leads_customer_data extends Crm_Controller
     $this->load->model('tipe_model', 'tpm');
     $this->load->model('warna_model', 'wrm');
     $this->load->model('karyawan_dealer_model', 'kryd');
+    $this->load->model('kabupaten_kota_model', 'kab');
+    $this->load->model('provinsi_model', 'prov');
     $user = user();
     $fg = ['leads_id' => $this->input->post('leads_id', true)];
     $gr = $this->ld_m->getLeads($fg)->row();
@@ -236,7 +238,8 @@ class Leads_customer_data extends Crm_Controller
       'noHpPengajuan' => convert_no_hp($this->input->post('noHpPengajuan', true)),
       'id_karyawan_dealer' => $this->input->post('id_karyawan_dealer', true),
       'namaPengajuan' => $kryd == NULL ? NULL : $kryd->nama_lengkap,
-      'kabupatenPengajuan' => $this->input->post('kabupatenPengajuan', true),
+      'idProvinsiPengajuan' => $this->input->post('idProvinsiPengajuan', true),
+      'idKabupatenPengajuan' => $this->input->post('idKabupatenPengajuan', true),
       'kodeTypeUnit' => $this->input->post('kodeTypeUnit', true),
       'kodeWarnaUnit' => $this->input->post('kodeWarnaUnit', true),
       'minatRidingTest' => $this->input->post('minatRidingTest', true),
@@ -250,11 +253,19 @@ class Leads_customer_data extends Crm_Controller
     //Sinkron Tabel tipe
     $arr_kode_warna = [$this->input->post('kodeWarnaUnit', true)];
 
+    //Sinkron Tabel Kabupaten
+    $arr_id_kabupaten = [$this->input->post('idKabupatenPengajuan', true)];
+
+    //Sinkron Tabel Provinsi
+    $arr_id_provinsi = [$this->input->post('idProvinsiPengajuan', true)];
+
     $tes = ['update' => $update];
     // send_json($tes);
     $this->db->trans_begin();
     $this->tpm->sinkronTabelTipe($arr_kode_tipe, $user);
     $this->wrm->sinkronTabelWarna($arr_kode_warna, $user);
+    $this->kab->sinkronTabelKabupaten($arr_id_kabupaten, $user);
+    $this->prov->sinkronTabelProvinsi($arr_id_provinsi, $user);
     $this->db->update('leads', $update, $fg);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();

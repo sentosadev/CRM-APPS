@@ -90,4 +90,38 @@ class Wilayah extends CI_Controller
     $response = $this->ms->getKelurahanFromOtherDb($filter)->result();
     send_json($response);
   }
+
+  function selectKabupatenKotaFromOtherDb()
+  {
+    $this->load->model('kabupaten_kota_model', 'ms');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = [
+      'search' => $search,
+      'select' => 'dropdown',
+      'aktif' => 1
+    ];
+    if ($this->input->post('id_provinsi') != NULL) {
+      $filter['id_provinsi'] = $this->input->post('id_provinsi');
+    }
+    $response = $this->ms->getKabupatenKotaFromOtherDb($filter)->result();
+    send_json($response);
+  }
+  function selectProvinsiFromOtherDb()
+  {
+    $this->load->model('provinsi_model', 'ms');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = [
+      'search' => $search,
+      'select' => 'dropdown',
+      'aktif' => 1
+    ];
+    $response = $this->ms->getProvinsiFromOtherDb($filter)->result();
+    send_json($response);
+  }
 }

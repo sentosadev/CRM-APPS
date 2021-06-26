@@ -65,6 +65,9 @@ class Series_tipe extends CI_Controller
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    if ($this->input->post('id_tipe_kendaraan') != NULL) {
+      $filter['id_tipe_kendaraan'] = $this->input->post('id_tipe_kendaraan');
+    }
     $response = $this->ms->getWarnaFromOtherDb($filter)->result();
     send_json($response);
   }

@@ -91,6 +91,11 @@ class Warna_model extends CI_Model
           $where .= " AND mu.active='{$this->db->escape_str($filter['active'])}'";
         }
       }
+      if (isset($filter['id_tipe_kendaraan'])) {
+        if ($filter['id_tipe_kendaraan'] != '') {
+          $where .= " AND mu.id_warna IN (SELECT id_warna FROm ms_item WHERE id_tipe_kendaraan='{$this->db->escape_str($filter['id_tipe_kendaraan'])}')";
+        }
+      }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {

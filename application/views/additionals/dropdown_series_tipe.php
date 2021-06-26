@@ -107,6 +107,10 @@ if (in_array('selectTipeFromOtherDb', $data)) { ?>
         }
       });
     });
+    $(document.body).on("change", "#id_tipe_from_other_db", function() {
+      $('#id_warna_from_other_db').val(null).trigger('change');
+      $('#id_warna_from_other_db').empty().trigger("change");
+    });
   </script>
 <?php } ?>
 
@@ -124,6 +128,9 @@ if (in_array('selectWarnaFromOtherDb', $data)) { ?>
           data: function(params) {
             return {
               searchTerm: params.term, // search term
+              <?php if (in_array('filterWarnaByTipe', $data)) { ?>
+                id_tipe_kendaraan: $("#id_tipe_from_other_db").val(),
+              <?php } ?>
             };
           },
           processResults: function(response) {
