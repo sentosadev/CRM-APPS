@@ -407,10 +407,15 @@
     </div>
   </form>
 </div>
-<?php $data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan'];
-$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
-<?php $data['data'] = ['selectProvinsiFromOtherDb', 'selectKabupatenKotaFromOtherDb', 'selectKecamatanFromOtherDb', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];
-$this->load->view('additionals/dropdown_wilayah', $data); ?>
+<?php
+
+$data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan', 'selectPlatformData', 'selectSourceLeads'];
+$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
+
+$data['data'] = ['selectProvinsiFromOtherDb', 'selectKabupatenKotaFromOtherDb', 'selectKecamatanFromOtherDb', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];
+$this->load->view('additionals/dropdown_wilayah', $data);
+
+?>
 <script>
   function saveDataPendukung(tabs) {
     if (tabs == 'pengajuan_kontak_sales') {

@@ -268,3 +268,36 @@ if (in_array('selectKecamatanFromOtherDb', $data)) { ?>
     });
   </script>
 <?php } ?>
+
+<?php
+if (in_array('selectKabupatenKotaFromOtherDb2', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#id_kabupaten_kota_from_other_db_2").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/wilayah/selectKabupatenKotaFromOtherDb') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              id_provinsi: $('#id_provinsi_from_other_db').val(),
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+    $(document.body).on("change", "#id_provinsi_from_other_db", function() {
+      $('#id_kecamatan_from_other_db').val(null).trigger('change');
+      $('#id_kelurahan_from_other_db').val(null).trigger('change');
+    });
+  </script>
+<?php } ?>
