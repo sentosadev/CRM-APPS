@@ -119,7 +119,27 @@ class Leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     $jumlah_fu = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=stl.leads_id";
+
     $tgl_follow_up_md = "SELECT tglFollowUp FROM leads_follow_up WHERE leads_id=stl.leads_id AND (assignedDealer='' OR assignedDealer IS NULL)ORDER BY followUpKe LIMIT 1";
+
+    $status_fu = "SELECT deskripsi_status_fu 
+                  FROM leads_follow_up lfup
+                  JOIN ms_status_fu sfu ON sfu.id_status_fu=lfup.id_status_fu
+                  WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
+
+    $pernahTerhubung = "SELECT id_kategori_status_komunikasi
+                  FROM leads_follow_up lfup
+                  JOIN ms_status_fu sfu ON sfu.id_status_fu=lfup.id_status_fu
+                  WHERE leads_id=stl.leads_id AND id_kategori_status_komunikasi=4 ORDER BY lfup.id_int DESC LIMIT 1";
+
+    $tanggalNextFU = "SELECT tglNextFollowUp 
+                  FROM leads_follow_up lfup
+                  WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
+
+    $hasil_fu = "SELECT deskripsiHasilStatusFollowUp 
+                  FROM leads_follow_up lfup
+                  JOIN ms_hasil_status_follow_up hsfu ON hsfu.kodeHasilStatusFollowUp=lfup.kodeHasilStatusFollowUp
+                  WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
 
     $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
         CASE WHEN minatRidingTest=1 THEN 'Ya' WHEN minatRidingTest=0 THEN 'Tidak' Else '-' END minatRidingTestDesc,
@@ -138,9 +158,11 @@ class Leads_model extends CI_Model
         stl.kecamatan,kec_domisili.kecamatan deskripsiKecamatanDomisili,
         stl.kelurahan,kel_domisili.kelurahan deskripsiKelurahanDomisili,
         idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,tanggalAssignDealer,
-        '' deskripsiStatusKontakFU,
-        '' deskripsiHasilStatusFollowUp,
-        '' tanggalNextFU,pengeluaran,preferensiPromoDiminatiCustomer,kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
+        ($status_fu) deskripsiStatusKontakFU,
+        ($hasil_fu) deskripsiHasilStatusFollowUp,
+        ($tanggalNextFU) tanggalNextFU,pengeluaran,preferensiPromoDiminatiCustomer,
+        CASE WHEN ($pernahTerhubung)=4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
+        kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
         " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
         " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,

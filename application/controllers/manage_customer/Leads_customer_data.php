@@ -61,7 +61,7 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->deskripsiEvent;
       $sub_array[] = '-';
       $sub_array[] = $rs->deskripsiStatusKontakFU;
-      $sub_array[] = '-';
+      $sub_array[] = $rs->pernahTerhubung;
       $sub_array[] = $rs->deskripsiHasilStatusFollowUp;
       $sub_array[] = $rs->jumlahFollowUp;
       $sub_array[] = $rs->tanggalNextFU;
