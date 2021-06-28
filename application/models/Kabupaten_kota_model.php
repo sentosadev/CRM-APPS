@@ -84,8 +84,8 @@ class Kabupaten_kota_model extends CI_Model
     }
 
     return $this->db->query("SELECT $select
-    FROM ms_maintain_provinsi AS mu
-    JOIN ms_maintain_kabupaten_kota kab ON kab.id_provinsi=mu.id_provinsi
+    FROM ms_maintain_kabupaten_kota kab
+    LEFT JOIN ms_maintain_provinsi mu ON kab.id_provinsi=mu.id_provinsi
     $where
     $order_data
     $limit
@@ -169,10 +169,11 @@ class Kabupaten_kota_model extends CI_Model
     foreach ($arr_id_kabupaten as $ar_id) {
       $id_kabupaten = $ar_id;
       if ($id_kabupaten == NULL || $id_kabupaten == '' || $id_kabupaten == 0) continue;
-      $fkj  = ['id_kabupaten' => $id_kabupaten];
+      $fkj  = ['id_kabupaten_kota' => $id_kabupaten];
       $db  = $this->getKabupatenKota($fkj)->row();
+
+      $fkj  = ['id_kabupaten' => $id_kabupaten];
       $db_live = $this->getKabupatenKotaFromOtherDb($fkj)->row();
-      // send_json($db);
       //Jika Tidak Ada pada DB
       if ($db == NULL) {
         $insert_batch[] = [
