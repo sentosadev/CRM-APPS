@@ -12,13 +12,20 @@ class Cdb_nms_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['no_hp_or_email'])) {
+        if ($filter['no_hp_or_email'] != '') {
+          $no_hp = $filter['no_hp_or_email'][0];
+          $email = $filter['no_hp_or_email'][1];
+          $where .= " AND (spk.no_hp='$no_hp' OR spk.email='$email')";
+        }
+      }
+
       $filter = $this->db->escape_str($filter);
       if (isset($filter['no_hp'])) {
         if ($filter['no_hp'] != '') {
           $where .= " AND spk.no_hp='{$this->db->escape_str($filter['no_hp'])}'";
         }
       }
-
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "cdb.id_cdb";
@@ -31,7 +38,7 @@ class Cdb_nms_model extends CI_Model
         spk.no_telp,
         spk.email,
         spk.alamat,
-        spk.id_provinsi idPropinsi,
+        spk.id_provinsi idProvinsi,
         spk.id_kelurahan idKelurahan,
         spk.id_kecamatan idKecamatan,
         CASE WHEN prp.jenis_kelamin='Pria' THEN 1 WHEN prp.jenis_kelamin='Wanita' THEN 0 ELSE NULL END gender,

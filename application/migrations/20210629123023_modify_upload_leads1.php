@@ -27,8 +27,7 @@ class Migration_Modify_upload_leads1 extends CI_Migration
             'kodeDealerSebelumnya' => ['type' => 'VARCHAR', 'constraint' => '10', 'null' => true],
             'customerId' => ['type' => 'VARCHAR', 'constraint' => '30', 'null' => true],
             'alamat' => ['type' => 'VARCHAR', 'constraint' => '300', 'null' => true],
-            'alamat' => ['type' => 'VARCHAR', 'constraint' => '300', 'null' => true],
-            'idPropinsi' => ['type' => 'INT', 'constraint' => 10, 'unsigned' => true, 'null' => true],
+            'idProvinsi' => ['type' => 'INT', 'constraint' => 10, 'unsigned' => true, 'null' => true],
             'idKecamatan' => ['type' => 'INT', 'constraint' => 10, 'unsigned' => true, 'null' => true],
             'idKelurahan' => ['type' => 'BIGINT', 'constraint' => 15, 'unsigned' => true, 'null' => true],
             'gender' => ['type' => 'VARCHAR', 'constraint' => '1', 'null' => true],
@@ -68,8 +67,7 @@ class Migration_Modify_upload_leads1 extends CI_Migration
         $this->dbforge->drop_column('upload_leads', 'kodeDealerSebelumnya');
         $this->dbforge->drop_column('upload_leads', 'customerId');
         $this->dbforge->drop_column('upload_leads', 'alamat');
-        $this->dbforge->drop_column('upload_leads', 'alamat');
-        $this->dbforge->drop_column('upload_leads', 'idPropinsi');
+        $this->dbforge->drop_column('upload_leads', 'idProvinsi');
         $this->dbforge->drop_column('upload_leads', 'idKecamatan');
         $this->dbforge->drop_column('upload_leads', 'idKelurahan');
         $this->dbforge->drop_column('upload_leads', 'gender');

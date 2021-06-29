@@ -12,7 +12,12 @@ class Upload_leads extends Crm_Controller
 {
   var $title  = "Upload Leads";
   var $event_code_invitation = [];
+  var $id_provinsi = [];
   var $id_kabupaten = [];
+  var $id_kecamatan = [];
+  var $id_kelurahan = [];
+  var $kodeLeasingSebelumnya = [];
+  var $kodeDealerSebelumnya = [];
 
   public function __construct()
   {
@@ -139,6 +144,9 @@ class Upload_leads extends Crm_Controller
   function saveDataFileToDB()
   {
     $user = user();
+    $this->load->model('provinsi_model', 'prov_m');
+    $this->load->model('kecamatan_model', 'kec_m');
+    $this->load->model('kelurahan_model', 'kel_m');
     $this->load->model('Kabupaten_kota_model', 'kab_m');
     $this->load->model('source_leads_model', 'sl_m');
     $this->load->model('platform_data_model', 'pd_m');
@@ -164,8 +172,9 @@ class Upload_leads extends Crm_Controller
             if ((string)$row[2] == '') $error[$baris][] = 'No. HP Kosong';
 
             $no_hp = clean_no_hp($row[2]);
-            $fcdb['no_hp'] = $no_hp;
+            $fcdb['no_hp_or_email'] = [$no_hp, $row[4]];
             $cdb_nms = $this->cdb_nms->getOneCDBNMS($fcdb)->row();
+
             //Cek Kabupaten
             $fk = ['id_or_name_kabupaten' => $row[5]];
             $cek_kab = $this->kab_m->getKabupatenKotaFromOtherDb($fk)->row();
@@ -223,7 +232,7 @@ class Upload_leads extends Crm_Controller
               'kodeDealerSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeDealerSebelumnya,
               'customerId' => $cdb_nms == NULL ? NULL : $cdb_nms->customerId,
               'alamat' => $cdb_nms == NULL ? NULL : $cdb_nms->alamat,
-              'idPropinsi' => $cdb_nms == NULL ? NULL : $cdb_nms->idPropinsi,
+              'idProvinsi' => $cdb_nms == NULL ? NULL : $cdb_nms->idProvinsi,
               'idKecamatan' => $cdb_nms == NULL ? NULL : $cdb_nms->idKecamatan,
               'idKelurahan' => $cdb_nms == NULL ? NULL : $cdb_nms->idKelurahan,
               'gender' => $cdb_nms == NULL ? NULL : $cdb_nms->gender,
@@ -237,6 +246,23 @@ class Upload_leads extends Crm_Controller
             //tambahkan array $data ke $save
             array_push($save, $data);
             $this->db->insert('upload_leads', $data);
+
+            //Cek Wilayah
+            if ($data['idProvinsi'] != NULL) {
+              $this->id_provinsi[] = $data['idProvinsi'];
+            }
+            if ($data['idKecamatan'] != NULL) {
+              $this->id_kecamatan[] = $data['idKecamatan'];
+            }
+            if ($data['idKelurahan'] != NULL) {
+              $this->id_kelurahan[] = $data['idKelurahan'];
+            }
+            if ($data['kodeLeasingSebelumnya'] != NULL) {
+              $this->kodeLeasingSebelumnya[] = $data['kodeLeasingSebelumnya'];
+            }
+            if ($data['kodeDealerSebelumnya'] != NULL) {
+              $this->kodeDealerSebelumnya[] = $data['kodeDealerSebelumnya'];
+            }
             $baris++;
           }
           $numRow++;
@@ -247,6 +273,15 @@ class Upload_leads extends Crm_Controller
     if (count($this->id_kabupaten) > 0) {
       $this->kab_m->sinkronTabelKabupaten($this->id_kabupaten, $user);
     }
+    if (count($this->id_provinsi) > 0) {
+      $this->prov_m->sinkronTabelProvinsi($this->id_provinsi, $user);
+    }
+    if (count($this->id_kecamatan) > 0) {
+      $this->kec_m->sinkronTabelKecamatan($this->id_kecamatan, $user);
+    }
+    if (count($this->id_kelurahan) > 0) {
+      $this->kel_m->sinkronTabelKelurahan($this->id_kelurahan, $user);
+    }
     $tes = [
       'error' => $error,
       'baris' => array_keys($error),
@@ -255,7 +290,7 @@ class Upload_leads extends Crm_Controller
     // send_json($tes);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
-      $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
+      $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan, Silahkan Upload Ulang!'];
     } else {
       if (count($error) > 0) {
         $imp_baris = implode(', ', array_keys($error));
