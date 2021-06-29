@@ -84,4 +84,26 @@ class Upload_leads_model extends CI_Model
     $limit
     ");
   }
+  function getEventCodeInvitation($kode_md, $id_kabupaten_kota)
+  {
+    $ym = tahun_bulan();
+    $cek = $this->db->query("SELECT RIGHT(event_code_invitation,3) event_code_invitation FROM upload_leads WHERE LEFT(created_at,7)='$ym' ORDER BY created_at DESC LIMIT 1");
+    if ($cek->num_rows() > 0) {
+      $row = $cek->row();
+      $new_kode = $kode_md . '/' . $id_kabupaten_kota . '/' . $ym . '/' . sprintf("%'.03d", $row->event_code_invitation + 1);
+      $i = 0;
+      while ($i < 1) {
+        $cek = $this->db->get_where('upload_leads', ['event_code_invitation' => $new_kode])->num_rows();
+        if ($cek > 0) {
+          $new_kode   = $kode_md . '/' . $id_kabupaten_kota . '/' . $ym . '/' . sprintf("%'.03d", substr($new_kode, -6) + 1);
+          $i = 0;
+        } else {
+          $i++;
+        }
+      }
+    } else {
+      $new_kode   = $kode_md . '/' . $id_kabupaten_kota . '/' . $ym . '/001';
+    }
+    return strtoupper($new_kode);
+  }
 }

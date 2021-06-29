@@ -46,7 +46,6 @@ class Crm_Controller extends CI_Controller
       $fc = ['link_show' => 1];
     }
     $data['menus'] = $this->dm->getMenus($fc, $user->id_group)->result_array();
-    // send_json($data);
     $this->load->view('template/header', $data);
     $this->load->view('template/top_menu');
     $this->load->view('template/aside');
