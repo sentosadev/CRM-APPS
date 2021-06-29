@@ -19,6 +19,7 @@ class Upload_leads extends Crm_Controller
     parent::__construct();
     if (!logged_in()) redirect('auth/login');
     $this->load->model('upload_leads_model', 'udm_m');
+    $this->load->model('Cdb_nms_model', 'cdb_nms');
   }
 
   public function index()
@@ -162,6 +163,9 @@ class Upload_leads extends Crm_Controller
             if ((string)$row[1] == '') $error[$baris][] = 'Nama Konsumen Kosong';
             if ((string)$row[2] == '') $error[$baris][] = 'No. HP Kosong';
 
+            $no_hp = clean_no_hp($row[2]);
+            $fcdb['no_hp'] = $no_hp;
+            $cdb_nms = $this->cdb_nms->getOneCDBNMS($fcdb)->row();
             //Cek Kabupaten
             $fk = ['id_or_name_kabupaten' => $row[5]];
             $cek_kab = $this->kab_m->getKabupatenKotaFromOtherDb($fk)->row();
@@ -207,7 +211,7 @@ class Upload_leads extends Crm_Controller
               'deskripsi_event' => $deskripsi_event,
               'kode_md' => $row[0],
               'nama' => $row[1],
-              'no_hp' => $row[2],
+              'no_hp' => $no_hp,
               'no_telp' => $row[3],
               'email' => $row[4],
               'id_kabupaten_kota' => $id_kabupaten_kota,
@@ -215,7 +219,20 @@ class Upload_leads extends Crm_Controller
               'id_platform_data' => $id_platform_data,
               'created_at'    => waktu(),
               'created_by' => $user->id_user,
-              'path_upload_file' => $path_file
+              'path_upload_file' => $path_file,
+              'kodeDealerSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeDealerSebelumnya,
+              'customerId' => $cdb_nms == NULL ? NULL : $cdb_nms->customerId,
+              'alamat' => $cdb_nms == NULL ? NULL : $cdb_nms->alamat,
+              'idPropinsi' => $cdb_nms == NULL ? NULL : $cdb_nms->idPropinsi,
+              'idKecamatan' => $cdb_nms == NULL ? NULL : $cdb_nms->idKecamatan,
+              'idKelurahan' => $cdb_nms == NULL ? NULL : $cdb_nms->idKelurahan,
+              'gender' => $cdb_nms == NULL ? NULL : $cdb_nms->gender,
+              'idPekerjaan' => $cdb_nms == NULL ? NULL : $cdb_nms->idPekerjaan,
+              'idPendidikan' => $cdb_nms == NULL ? NULL : $cdb_nms->idPendidikan,
+              'idAgama' => $cdb_nms == NULL ? NULL : $cdb_nms->idAgama,
+              'tanggalSalesSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->tanggalSalesSebelumnya,
+              'kodeLeasingSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeLeasingSebelumnya,
+              'kodeEvent' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeEvent,
             ];
             //tambahkan array $data ke $save
             array_push($save, $data);
