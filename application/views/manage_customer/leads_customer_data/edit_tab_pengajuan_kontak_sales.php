@@ -108,6 +108,18 @@
                   <th>Keterangan</th>
                   <th>Customer Action Date</th>
                 </thead>
+                <tbody>
+                  <?php
+                  foreach ($interaksi as $it) { ?>
+                    <tr>
+                      <td><?= $it->kodeTypeUnit ?> + <?= $it->kodeWarnaUnit ?></td>
+                      <td><?= $it->jadwalRidingTest ?></td>
+                      <td><?= $it->deskripsiSourceData ?></td>
+                      <td></td>
+                      <td><?= $it->customerActionDate ?></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
               </table>
             </div>
           </div>
