@@ -410,10 +410,10 @@ class Leads_model extends CI_Model
     }
     if (isset($filter['mainTableNULL'])) {
       if ($filter['mainTableNULL'] != '') {
-        $where .= " AND tl.noHP IS NULL ";
+        $where .= " AND stl.setleads=0";
       }
     }
-    return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at 
+    return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id
     FROM staging_table_leads stl 
     LEFT JOIN leads tl ON tl.noHP=stl.noHP
     $where
@@ -1091,5 +1091,30 @@ class Leads_model extends CI_Model
     LEFT JOIN ms_dealer dl ON dl.kode_dealer=ld.assignedDealer
     $where $group_by
     ");
+  }
+
+  function getInteraksiID()
+  {
+    $dmy = gmdate("dmY", time() + 60 * 60 * 7);
+    $ym = tahun_bulan();
+    $get_data  = $this->db->query("SELECT RIGHT(interaksi_id,6)interaksi_id FROM leads_interaksi WHERE LEFT(created_at,7)='$ym'
+                  ORDER BY created_at DESC LIMIT 0,1");
+    if ($get_data->num_rows() > 0) {
+      $row = $get_data->row();
+      $new_kode = 'E20/ITR/' . $dmy . '/' . sprintf("%'.06d", $row->interaksi_id + 1);
+      $i = 0;
+      while ($i < 1) {
+        $cek = $this->db->get_where('leads_interaksi', ['interaksi_id' => $new_kode])->num_rows();
+        if ($cek > 0) {
+          $new_kode   = 'E20/ITR/' . $dmy . '/' . sprintf("%'.06d", substr($new_kode, -6) + 1);
+          $i = 0;
+        } else {
+          $i++;
+        }
+      }
+    } else {
+      $new_kode   = 'E20/ITR/' . $dmy . '/000001';
+    }
+    return strtoupper($new_kode);
   }
 }

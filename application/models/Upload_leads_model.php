@@ -11,11 +11,15 @@ class Upload_leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
-      $filter = $this->db->escape_str($filter);
       if (isset($filter['id_leads_int'])) {
         if ($filter['id_leads_int'] != '') {
           $where .= " AND mu.id_leads_int='{$this->db->escape_str($filter['id_leads_int'])}'";
         }
+      }
+      if (isset($filter['no_hp_or_email'])) {
+        $no_hp = $filter['no_hp_or_email'][0];
+        $email = $filter['no_hp_or_email'][1];
+        $where .= " AND (mu.no_hp='$no_hp' OR mu.email='$email')";
       }
       if (isset($filter['is_send_to_ve'])) {
         if ($filter['is_send_to_ve'] != '') {

@@ -30,11 +30,9 @@ class Leads_api_model extends CI_Model
 
     foreach ($post as $pst) {
       //Cek No HP
-      $noHP = $pst['noHP'];
+      $noHP = clean_no_hp($pst['noHP']);
       $cek = $this->ld_m->getStagingLeads(['noHP' => $noHP])->num_rows();
-      if ($cek > 0) {
-        $reject[$noHP] = 'No. HP sudah ada';
-      } elseif (strlen($noHP) > 15) {
+      if (strlen($noHP) > 15) {
         $reject[$noHP] = 'Jumlah karakter melebihi batas';
       } elseif ($noHP == '') {
         $reject[$noHP] = 'No. HP Wajib Diisi';
@@ -69,7 +67,7 @@ class Leads_api_model extends CI_Model
       $provinsi = clear_removed_html($pst['provinsi']);
       $fk = ['id_or_name_provinsi' => $provinsi];
       $prov = $this->prov->getProvinsiFromOtherDb($fk)->row();
-      $id_provinsi = NULL;
+      $id_provinsi = '';
       if ($prov != NULL) {
         $id_provinsi = $prov->id_provinsi;
         if (!in_array($id_provinsi, $insert_provinsi)) {
@@ -81,7 +79,7 @@ class Leads_api_model extends CI_Model
       $kabupaten = clear_removed_html($pst['kabupaten']);
       $fk = ['id_or_name_kabupaten' => $kabupaten];
       $kab = $this->kab->getKabupatenKotaFromOtherDb($fk)->row();
-      $id_kabupaten = NULL;
+      $id_kabupaten = '';
       if ($kab != NULL) {
         $id_kabupaten = $kab->id_kabupaten;
         if (!in_array($id_kabupaten, $insert_kabupaten)) {
@@ -93,7 +91,7 @@ class Leads_api_model extends CI_Model
       $kecamatan = clear_removed_html($pst['kecamatan']);
       $fk = ['id_or_name_kecamatan' => $kecamatan];
       $kec = $this->kec->getKecamatanFromOtherDb($fk)->row();
-      $id_kecamatan = NULL;
+      $id_kecamatan = '';
       if ($kec != NULL) {
         $id_kecamatan = $kec->id_kecamatan;
         if (!in_array($id_kecamatan, $insert_kecamatan)) {
@@ -105,7 +103,7 @@ class Leads_api_model extends CI_Model
       $kelurahan = clear_removed_html($pst['kelurahan']);
       $fk = ['id_or_name_kelurahan' => $kelurahan];
       $kel = $this->kel->getKelurahanFromOtherDb($fk)->row();
-      $id_kelurahan = NULL;
+      $id_kelurahan = '';
       if ($kel != NULL) {
         $id_kelurahan = $kel->id_kelurahan;
         if (!in_array($id_kelurahan, $insert_kelurahan)) {
@@ -121,8 +119,9 @@ class Leads_api_model extends CI_Model
         'id_or_nama_warna' => $kodeWarnaUnit,
       ];
       $cek_tipe = $this->tpm->getTipeWarnaFromOtherDb($ftp)->row();
-      $kodeTypeUnit = NULL;
-      $seriesMotor = NULL;
+      $kodeTypeUnit = '';
+      $kodeWarnaUnit = '';
+      $seriesMotor = '';
       if ($cek_tipe != NULL) {
         $kodeTypeUnit = $cek_tipe->id_tipe_kendaraan;
         $kodeWarnaUnit = $cek_tipe->id_warna;
@@ -147,7 +146,7 @@ class Leads_api_model extends CI_Model
       $insert_batch[] = [
         'batchID' => $batchID,
         'nama' => clear_removed_html($pst['nama']),
-        'noHP' => clear_removed_html($pst['noHP']),
+        'noHP' => $noHP,
         'email' => clear_removed_html($pst['email']),
         'customerType' => clear_removed_html($pst['customerType']),
         'eventCodeInvitation' => clear_removed_html($pst['eventCodeInvitation']),
@@ -161,7 +160,7 @@ class Leads_api_model extends CI_Model
         'kodeTypeUnit' => $kodeTypeUnit,
         'kodeWarnaUnit' => $kodeWarnaUnit,
         'minatRidingTest' => clear_removed_html($pst['minatRidingTest']),
-        'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']),
+        'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']) == '' ? NULL : clear_removed_html($pst['jadwalRidingTest']),
         'sourceData' => clear_removed_html($pst['sourceData']),
         'platformData' => clear_removed_html($pst['platformData']),
         'noTelp' => clear_removed_html($pst['noTelp']),

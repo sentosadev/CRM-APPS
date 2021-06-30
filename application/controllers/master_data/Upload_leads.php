@@ -110,7 +110,7 @@ class Upload_leads extends Crm_Controller
     $config['max_width']     = '3000';
     $config['max_height']    = '3000';
     $config['remove_spaces'] = TRUE;
-    $config['overwrite']     = TRUE;
+    // $config['overwrite']     = TRUE;
     // $config['file_name']     = $y_m . '-' . $post['username'];
     $this->upload->initialize($config);
     if ($this->upload->do_upload('file')) {
@@ -241,7 +241,7 @@ class Upload_leads extends Crm_Controller
               'idAgama' => $cdb_nms == NULL ? NULL : $cdb_nms->idAgama,
               'tanggalSalesSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->tanggalSalesSebelumnya,
               'kodeLeasingSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeLeasingSebelumnya,
-              'kodeEvent' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeEvent,
+              'kodeEvent' => NULL,
             ];
             //tambahkan array $data ke $save
             array_push($save, $data);

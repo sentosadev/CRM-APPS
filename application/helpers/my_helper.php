@@ -534,12 +534,12 @@ function convert_date($val)
 function clean_no_hp($no_hp)
 {
   if (substr($no_hp, 0, 3) == '+62') {
-    $no_hp = substr($no_hp, 3, 30);
+    $no_hp = '0' . substr($no_hp, 3, 30);
   } elseif (substr($no_hp, 0, 2) == '62') {
-    $no_hp = substr($no_hp, 2, 30);
+    $no_hp = '0' . substr($no_hp, 2, 30);
   } elseif (substr($no_hp, 0, 1) != '0') {
-    $no_hp = substr($no_hp, 2, 30);
+    $no_hp = '0' . substr($no_hp, 1, 30);
   }
   $no_hp = preg_replace("/[^0-9]+/", "", $no_hp);
-  return '0' . $no_hp;
+  return $no_hp;
 }

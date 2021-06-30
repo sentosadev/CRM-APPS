@@ -34,6 +34,7 @@ class Cdb_nms_model extends CI_Model
         }
       } else {
         $select = "spk.id_customer customerId,
+        spk.nama_konsumen nama,
         spk.no_hp,
         spk.no_telp,
         spk.email,
@@ -50,7 +51,9 @@ class Cdb_nms_model extends CI_Model
         so.no_rangka frameNoSebelumnya,
         dl.kode_dealer_md kodeDealerSebelumnya,
         spk.id_finance_company kodeLeasingSebelumnya,
-        sp.id_cdb id_source_leads
+        sp.id_cdb id_source_leads,
+        spk.status_hp statusNoHp,
+        prp.sub_pekerjaan idSubPekerjaan
         ";
       }
     }
