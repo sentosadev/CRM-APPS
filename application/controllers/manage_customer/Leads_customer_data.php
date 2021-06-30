@@ -1241,7 +1241,7 @@ class Leads_customer_data extends Crm_Controller
       $send           = [
         'nama'       => $row->nama,
         'leads_id'   => $row->leads_id,
-        'titik_sla'  => $row->cmsSource,
+        'titik_sla'  => $row->deskripsiCmsSource,
         'tgl_fu'     => (string)$row->tgl_follow_up_md,
         'sla_md'     => '',
         'md_overdue' => $ontime_sla1,
@@ -1253,5 +1253,56 @@ class Leads_customer_data extends Crm_Controller
       $data['pesan']  = 'Data tidak ditemukan';
     }
     send_json($data);
+  }
+
+  public function fetchHistoryLeadsInteraksi()
+  {
+    $fetch_data = $this->_makeQueryHistoryLeadsInteraksi();
+    $data = array();
+    $user = user();
+    $no = $this->input->post('start') + 1;
+    foreach ($fetch_data as $rs) {
+      $sub_array   = array();
+      $sub_array[] = $no;
+      $sub_array[] = $rs->nama;
+      $sub_array[] = $rs->kodeTypeUnit . '+' . $rs->kodeWarnaUnit;
+      $sub_array[] = $rs->seriesMotor;
+      $sub_array[] = $rs->segmentMotor;
+      $sub_array[] = $rs->jadwalRidingTest;
+      $sub_array[] = $rs->deskripsiCmsSource;
+      $sub_array[] = $rs->deskripsiSourceData;
+      $sub_array[] = $rs->deskripsiPlatformData;
+      $sub_array[] = $rs->customerActionDate;
+      $sub_array[] = $rs->sourceRefID;
+      $data[]      = $sub_array;
+      $no++;
+    }
+    $output = array(
+      "draw"            => intval($_POST["draw"]),
+      "recordsFiltered" => $this->_makeQueryHistoryLeadsInteraksi(true),
+      "data"            => $data
+    );
+    echo json_encode($output);
+  }
+
+  function _makeQueryHistoryLeadsInteraksi($recordsFiltered = false)
+  {
+    $start  = $this->input->post('start');
+    $length = $this->input->post('length');
+    $limit  = "LIMIT $start, $length";
+    if ($recordsFiltered == true) $limit = '';
+
+    $filter = [
+      'limit'                     => $limit,
+      'order'                     => isset($_POST['order']) ? $_POST['order'] : '',
+      'search'                    => $this->input->post('search')['value'],
+      'leads_id'                  => $this->input->post('leads_id'),
+      'order_column'              => 'view',
+    ];
+    if ($recordsFiltered == true) {
+      return $this->ld_m->getLeadsInteraksi($filter)->num_rows();
+    } else {
+      return $this->ld_m->getLeadsInteraksi($filter)->result();
+    }
   }
 }

@@ -199,7 +199,7 @@ class Lead extends CI_Controller
         'kodeTypeUnit' => clear_removed_html($pst['kodeTypeUnit']),
         'kodeWarnaUnit' => clear_removed_html($pst['kodeWarnaUnit']),
         'minatRidingTest' => clear_removed_html($pst['minatRidingTest']),
-        'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']),
+        'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']) == '' ? NULL : clear_removed_html($pst['jadwalRidingTest']),
         'sourceData' => clear_removed_html($pst['sourceData']),
         'platformData' => clear_removed_html($pst['platformData']),
         'noTelp' => clear_removed_html($pst['noTelp']),

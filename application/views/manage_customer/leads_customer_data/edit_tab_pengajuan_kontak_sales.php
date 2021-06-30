@@ -191,8 +191,4 @@ $this->load->view(get_controller() . '/modal_history_interaksi');
       }
     });
   }
-
-  function showModalHistoryInteraksi() {
-    $("#modalHistoryInteraksi").modal('show');
-  }
 </script>

@@ -7,7 +7,7 @@
         <h4 class="modal-title" align='center'>Tabel History Interaksi</h4>
       </div>
       <div class="modal-body">
-        <table class='table table-bordered table-condensed'>
+        <table class='table table-bordered table-condensed' id="tabelModalHistoryInteraksi" style="width:100%">
           <thead>
             <th>#</th>
             <th>Nama</th>
@@ -28,3 +28,50 @@
   </div>
   <!-- /.modal-dialog -->
 </div>
+
+<script>
+  var set_history_interaksi = 0;
+
+  function showModalHistoryInteraksi() {
+    if (set_history_interaksi == 0) {
+      $('#tabelModalHistoryInteraksi').DataTable({
+        "searchable": false,
+        "processing": true,
+        "serverSide": true,
+        "language": {
+          "infoFiltered": "",
+          "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
+        },
+        "order": [],
+        "lengthMenu": [
+          [10, 25, 50, 75, 100],
+          [10, 25, 50, 75, 100]
+        ],
+        "ajax": {
+          url: "<?php echo site_url(get_controller() . '/fetchHistoryLeadsInteraksi'); ?>",
+          type: "POST",
+          dataSrc: "data",
+          data: function(d) {
+            d.leads_id = '<?= $row->leads_id ?>';
+            return d;
+          },
+        },
+        "columnDefs": [{
+            "targets": [0],
+            "orderable": false
+          },
+          // {
+          //   "targets": [8],
+          //   "className": 'text-center'
+          // },
+          // {
+          //   "targets": [3],
+          //   "className": 'text-right'
+          // }
+        ],
+      });
+    }
+    set_history_interaksi++;
+    $("#modalHistoryInteraksi").modal('show');
+  }
+</script>

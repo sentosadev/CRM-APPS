@@ -114,6 +114,7 @@ class Leads_model extends CI_Model
     $limit
     ");
   }
+
   function getLeads($filter = null)
   {
     $where = 'WHERE 1=1';
@@ -141,10 +142,11 @@ class Leads_model extends CI_Model
                   JOIN ms_hasil_status_follow_up hsfu ON hsfu.kodeHasilStatusFollowUp=lfup.kodeHasilStatusFollowUp
                   WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
 
-    $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,cmsSource,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
+    $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
         CASE WHEN minatRidingTest=1 THEN 'Ya' WHEN minatRidingTest=0 THEN 'Tidak' Else '-' END minatRidingTestDesc,
         CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,sourceData,
         CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,platformData,
+        CASE WHEN mcs.kode_cms_source IS NULL THEN cmsSource ELSE mcs.deskripsi_cms_source END deskripsiCmsSource,cmsSource,
         noTelp,assignedDealer,sourceRefID,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,
         ($jumlah_fu) jumlahFollowUp,
         ontimeSLA1, CASE WHEN ontimeSLA1=1 THEN 'On Track' WHEN ontimeSLA1=0 THEN 'Overdue' ELSE '-' END ontimeSLA1_desc,
@@ -392,6 +394,7 @@ class Leads_model extends CI_Model
     LEFT JOIN ms_dealer dl_beli_sebelumnya ON dl_beli_sebelumnya.kode_dealer=stl.kodeDealerPembelianSebelumnya
     LEFT JOIN ms_maintain_provinsi prov_pengajuan ON prov_pengajuan.id_provinsi=stl.idProvinsiPengajuan
     LEFT JOIN ms_maintain_kabupaten_kota kab_pengajuan ON kab_pengajuan.id_kabupaten_kota=stl.idKabupatenPengajuan
+    LEFT JOIN ms_maintain_cms_source mcs ON mcs.kode_cms_source=stl.cmsSource
     $where
     $group_by
     $order_data
@@ -1116,5 +1119,70 @@ class Leads_model extends CI_Model
       $new_kode   = 'E20/ITR/' . $dmy . '/000001';
     }
     return strtoupper($new_kode);
+  }
+
+  function getLeadsInteraksi($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    $select = '';
+
+    $select = "ldi.leads_id,ldi.interaksi_id,ldi.nama,ldi.noHP,ldi.email,ldi.customerType,ldi.eventCodeInvitation,ldi.customerActionDate,ldi.idKabupaten,ldi.cmsSource,ldi.segmentMotor,ldi.seriesMotor,ldi.deskripsiEvent,ldi.kodeTypeUnit,ldi.kodeWarnaUnit,ldi.minatRidingTest,ldi.jadwalRidingTest,ldi.sourceData,ldi.platformData,ldi.noTelp,ldi.assignedDealer,ldi.sourceRefID,ldi.idProvinsi,ldi.idKelurahan,ldi.idKecamatan,ldi.frameNoPembelianSebelumnya,ldi.keterangan,ldi.promoUnit,ldi.facebook,ldi.instagram,ldi.twitter,ldi.created_at,
+    CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,
+    CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,
+    CASE WHEN cs.kode_cms_source IS NULL THEN cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource
+      ";
+
+    if ($filter != null) {
+
+      //Filter Escaped String Like Singe Quote (')
+      $filter = $this->db->escape_str($filter);
+      if (isset($filter['leads_id'])) {
+        if ($filter['leads_id'] != '') {
+          $where .= " AND ldi.leads_id='{$this->db->escape_str($filter['leads_id'])}'";
+        }
+      }
+
+      if (isset($filter['search'])) {
+        if ($filter['search'] != '') {
+          $filter['search'] = $this->db->escape_str($filter['search']);
+          $where .= " AND ( ldi.leads_id LIKE'%{$filter['search']}%'
+        )";
+        }
+      }
+    }
+
+    $order_data = '';
+    if (isset($filter['order'])) {
+      $order_column = [null, 'nama', 'kodeTypeUnit', 'seriesMotor', 'segmentMotor', 'jadwalRidingTest', 'deskripsi_cms_source', 'msl.source_leads', 'mpd.platform_data', 'customerActionDate', 'sourceRefID'];
+      $order = $filter['order'];
+      if ($order != '') {
+        $order_clm  = $order_column[$order['0']['column']];
+        $order_by   = $order['0']['dir'];
+        $order_data = " ORDER BY $order_clm $order_by ";
+      }
+    }
+
+    $limit = '';
+    if (isset($filter['limit'])) {
+      $limit = $filter['limit'];
+    }
+
+    $group_by = '';
+    if (isset($filter['group_by'])) {
+      $group_by = "GROUP BY " . $filter['group_by'];
+    }
+
+    return $this->db->query("SELECT $select
+  FROM leads_interaksi AS ldi
+  LEFT JOIN ms_source_leads msl ON msl.id_source_leads=ldi.sourceData
+  LEFT JOIN ms_platform_data mpd ON mpd.id_platform_data=ldi.platformData
+  LEFT JOIN ms_maintain_tipe tpu ON tpu.kode_tipe=ldi.kodeTypeUnit
+  LEFT JOIN ms_maintain_warna twu ON twu.kode_warna=ldi.kodeWarnaUnit
+  LEFT JOIN ms_maintain_cms_source cs ON cs.kode_cms_source=ldi.cmsSource
+  $where
+  $group_by
+  $order_data
+  $limit
+  ");
   }
 }
