@@ -132,6 +132,7 @@ class Lead extends CI_Controller
           'idAgama' => $cdb == NULL ? NULL : $cdb->idAgama,
           'gender' => $cdb == NULL ? NULL : $cdb->gender,
           'statusNoHp' => $cdb == NULL ? NULL : $cdb->statusNoHp,
+          'deskripsiTipeUnitPembelianTerakhir' => $cdb == NULL ? NULL : $cdb->deskripsiTipeUnitPembelianTerakhir,
         ];
         $this->db->insert('leads', $insert);
         //Set Stage ID 1

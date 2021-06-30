@@ -53,7 +53,8 @@ class Cdb_nms_model extends CI_Model
         spk.id_finance_company kodeLeasingSebelumnya,
         sp.id_cdb id_source_leads,
         spk.status_hp statusNoHp,
-        prp.sub_pekerjaan idSubPekerjaan
+        prp.sub_pekerjaan idSubPekerjaan,
+        tipe_ahm deskripsiTipeUnitPembelianTerakhir
         ";
       }
     }
@@ -65,6 +66,7 @@ class Cdb_nms_model extends CI_Model
     JOIN tr_sales_order so ON so.no_spk=spk.no_spk
     JOIN ms_dealer dl ON dl.id_dealer=spk.id_dealer
     LEFT JOIN ms_sumber_prospek sp ON sp.id_dms=prp.sumber_prospek
+    JOIN ms_tipe_kendaraan tk ON tk.id_tipe_kendaraan=spk.id_tipe_kendaraan
     $where
     GROUp BY spk.no_spk
     ORDER BY spk.created_at DESC
