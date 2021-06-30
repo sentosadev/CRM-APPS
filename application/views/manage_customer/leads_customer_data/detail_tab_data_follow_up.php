@@ -13,7 +13,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
   <div class="tab-pane" id="data_follow_up_<?= $i ?>">
     <?php $data = ['set_active' => [1, 2, 3]];
     $this->load->view('manage_customer/leads_customer_data/wizard', $data); ?>
-    <label data-toggle="tooltip" data-html="true" class='tooltipInformasiCustomer'><i>Informasi</i> <i class='fa fa-info-circle'></i></label>
+    <label data-toggle="tooltip" data-html="true" data-html="true" class='tooltipInformasiCustomer'><i>Informasi</i> <i class='fa fa-info-circle'></i></label>
     <form id="form_data_follow_up_<?= $i ?>" class='form-horizontal form_'>
       <div class="row">
         <?php for ($x = 1; $x <= $max_pertab; $x++) {
@@ -25,6 +25,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <div class="form-input">
                 <div class="col-sm-8">
                   <input type="text" class="form-control" name='pic_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['pic'] : '' ?>' <?= $disabled ?>>
+
                   <input type="hidden" class="form-control" name='folup[]' required value='<?= $fol_up_sekarang ?>'>
                 </div>
               </div>
@@ -33,7 +34,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?></label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datepicker" name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control datetimepicker" name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
@@ -59,7 +60,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Tgl. Next Follow Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Tgl. Next Follow Up</label>
               <div class="form-input">
                 <div class="col-sm-8">
                   <input type="text" class="form-control datepicker" name='tglNextFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?>>
@@ -88,48 +89,60 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 </div>
               </div>
             </div>
+            <script>
+              var $eventSelect<?= $fol_up_sekarang ?> = $("#id_status_fu_<?= $fol_up_sekarang ?>");
+
+              $eventSelect<?= $fol_up_sekarang ?>.on("change", function(e) {
+                data = $eventSelect<?= $fol_up_sekarang ?>.select2('data')[0];
+                $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val(data.kategori);
+              });
+            </script>
+
 
             <div class="form-group">
               <label class="col-sm-4 control-label">Kategori Status Komunikasi</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_kategori_status_komunikasi_<?= $fol_up_sekarang ?>" class='form-control' name='id_kategori_status_komunikasi_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" id='kategori_status_komunikasi_<?= $fol_up_sekarang ?>' disabled value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['kategori_status_komunikasi'] : '' ?>' <?= $disabled ?>>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Hasil Status Follow Up</label>
+              <div class="form-input">
+                <div class="col-sm-8">
+                  <select style="width:100%" id="kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>" class='form-control' name='kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
-                      <option value='<?= $lfu['id_kategori_status_komunikasi'] ?>'><?= $lfu['kategori_status_komunikasi'] ?></option>
+                      <option value='<?= $lfu['kodeHasilStatusFollowUp'] ?>'><?= $lfu['deskripsiHasilStatusFollowUp'] ?></option>
                     <?php } ?>
                   </select>
                 </div>
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Hasil Komunikasi</label>
+            <div class="form-group" id="input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>">
+              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Prospect/Not Deal</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_hasil_komunikasi_<?= $fol_up_sekarang ?>" class='form-control' name='id_hasil_komunikasi_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>" class='form-control' name='kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
-                      <option value='<?= $lfu['id_hasil_komunikasi'] ?>'><?= $lfu['hasil_komunikasi'] ?></option>
+                      <option value='<?= $lfu['kodeAlasanNotProspectNotDeal'] ?>'><?= $lfu['alasanNotProspectNotDeal'] ?></option>
                     <?php } ?>
                   </select>
                 </div>
               </div>
             </div>
-
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Interest</label>
-              <div class="form-input">
-                <div class="col-sm-8">
-                  <select style="width:100%" id="id_alasan_fu_not_interest_<?= $fol_up_sekarang ?>" class='form-control' name='id_alasan_fu_not_interest_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
-                    <?php if (isset($list_follow_up[$fol_up_sekarang])) {
-                      $lfu = $list_follow_up[$fol_up_sekarang]; ?>
-                      <option value='<?= $lfu['id_alasan_fu_not_interest'] ?>'><?= $lfu['alasan_fu_not_interest'] ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <script>
+              // $(document).ready(function() {
+              //   var selected_hasil<?= $fol_up_sekarang ?> = $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').select2().val();
+              //   if (selected_hasil<?= $fol_up_sekarang ?> == 2 || selected_hasil<?= $fol_up_sekarang ?> == 4) {
+              //     $("#")
+              //   }
+              // });
+            </script>
 
             <div class="form-group">
               <label class="col-sm-4 control-label">Keterangan Alasan Lainnya</label>
@@ -150,20 +163,30 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
         <div class="col-sm-6" align="right">
           <?php if ($i < $tot_tab_fol) { ?>
             <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i + 1 ?>','next',<?= $i ?>)" type="button" id="#backTo_data_pendukung_probing_1" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
-          <?php } else { ?>
+          <?php } else {
+            $set_end = true; ?>
             <?php if ($disabled == '') { ?>
               <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
               <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
-              <button onclick="saveCheckDataAndSendAPI3(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-green btn-flat"><i class='fa fa-save'></i> Simpan Data</button>
+              <button onclick="saveCheckDataAndSendAPI3(this,<?= $i ?>)" type="button" class="btn bg-green btn-flat"><i class='fa fa-save'></i> Simpan Data</button>
             <?php } ?>
           <?php } ?>
         </div>
+        <?php if (isset($set_end)) { ?>
+          <div class="col-sm-12" align='left' style='margin-top:20px;padding-top:15px;border-top:1px solid #f4f4f4'>
+            *) Tombol <button type="button" class="btn btn-info btn-flat btn-xs">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button> digunakan untuk menambah form follow up baru.
+            <br>
+            *) Tombol <button type="button" class="btn bg-blue btn-flat btn-xs">Simpan Data</button> digunakan untuk menyimpan data follow up.
+            <br>
+            *) Jika tombol <button type="button" class="btn bg-green btn-flat btn-xs"><i class='fa fa-save'></i> Simpan Data</button> diklik, maka sistem akan menyimpan data follow up dan mengirimkan data ke sistem SEEDS.
+          </div>
+        <?php } ?>
       </div>
     </form>
   </div>
 <?php } ?>
 <?php
-$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilKomunikasiMulti', 'selectAlasanFuNotInterestMulti'];
+$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilStatusFollowUpMulti', 'selectAlasanNotProspectNotDealMulti'];
 $data['total_fol_up'] = $total_fol_up;
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 <script>
@@ -293,7 +316,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     })
   }
 
-  function saveCheckDataAndSendAPI3(el, tabs, position, fu) {
+  function saveCheckDataAndSendAPI3(el, fu) {
     $('.form_').validate({
       highlight: function(element, errorClass, validClass) {
         var elem = $(element);
@@ -340,7 +363,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     var default_name_button = "<i class='fa fa-save'></i> Simpan Data";
     var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
     val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
-    val_form_follow_up.append('is_send_api3', true);
+    val_form_follow_up.append('is_simpan', true);
 
     $.ajax({
       beforeSend: function() {

@@ -54,7 +54,13 @@
       <label class="col-sm-2 control-label">Segmen Produk</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='segmenProduk' value='<?= $row->segmenProduk ?>' <?= $disabled ?>>
+          <select style='width:100%' id="segmenProduk" class='form-control' name='segmenProduk' <?= $disabled ?> required>
+            <option value=""></option>
+            <?php $list = ['C' => 'Cub', 'M' => 'Matic', 'S' => 'Sport'];
+            foreach ($list as $key => $val) { ?>
+              <option value='<?= $key ?>' <?= $key == $row->segmenProduk ? 'selected' : '' ?>><?= $val ?></option>
+            <?php } ?>
+          </select>
         </div>
       </div>
     </div>
@@ -104,7 +110,9 @@
       <label class="col-sm-2 control-label">Kota / Kabupaten</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='kabupaten' value='<?= $row->kabupaten ?>' <?= $disabled ?>>
+          <select style='width:100%' id="id_kabupaten_kota_from_other_db_2" class='form-control' name='kabupaten' <?= $disabled ?> required>
+            <option value='<?= $row->kabupaten ?>'><?= $row->deskripsiKabupatenKotaDomisili ?></option>
+          </select>
         </div>
       </div>
       <label class="col-sm-2 control-label">Series Wishlist</label>
@@ -141,7 +149,10 @@
     </div>
   </div>
 </div>
-
+<?php
+$data['data'] = ['selectKabupatenKotaFromOtherDb2'];
+$this->load->view('additionals/dropdown_wilayah', $data);
+?>
 <script>
   function saveRegistrasi() {
     var val_form_registrasi = new FormData($('#form_registrasi')[0]);

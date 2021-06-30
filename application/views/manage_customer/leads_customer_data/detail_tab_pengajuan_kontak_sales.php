@@ -32,7 +32,17 @@
           <label class="col-sm-4 control-label">No. HP Pengajuan</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <input type="text" class="form-control" name='noHpPengajuan' required value='<?= $row->noHpPengajuan ?>' <?= $disabled ?>>
+              <input type="text" class="form-control" name='noHpPengajuan' required value='<?= $row->noHpPengajuan ?>' <?= $disabled ?> onkeypress="only_number(event)">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Provinsi Pengajuan</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <select id="idProvinsiPengajuan" class='form-control' name='idProvinsiPengajuan' style='width:100%' <?= $disabled ?>>
+                <option value='<?= $row->idProvinsiPengajuan ?>'><?= $row->provinsiPengajuan ?></option>
+              </select>
             </div>
           </div>
         </div>
@@ -40,7 +50,9 @@
           <label class="col-sm-4 control-label">Kota/Kabupaten Pengajuan</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <input type="text" class="form-control" name='kabupatenPengajuan' required value='<?= $row->kabupatenPengajuan ?>' <?= $disabled ?>>
+              <select id="idKabupatenPengajuan" class='form-control' name='idKabupatenPengajuan' style='width:100%' <?= $disabled ?>>
+                <option value='<?= $row->idKabupatenPengajuan ?>'><?= $row->kabupatenPengajuan ?></option>
+              </select>
             </div>
           </div>
         </div>
@@ -83,7 +95,7 @@
               Tabel History Interaksi
             </h3>
             <div class="box-tools pull-right">
-              <button type="button" id="showModalHistoryInteraksi" class="btn btn-primary btn-flat btn-xs">View All</button>
+              <button type="button" onclick="showModalHistoryInteraksi()" class="btn btn-primary btn-flat btn-xs">View All</button>
             </div>
           </div>
           <div class="box-body">
@@ -96,6 +108,18 @@
                   <th>Keterangan</th>
                   <th>Customer Action Date</th>
                 </thead>
+                <tbody>
+                  <?php
+                  foreach ($interaksi as $it) { ?>
+                    <tr>
+                      <td><?= $it->kodeTypeUnit ?> + <?= $it->kodeWarnaUnit ?></td>
+                      <td><?= $it->jadwalRidingTest ?></td>
+                      <td><?= $it->deskripsiSourceData ?></td>
+                      <td></td>
+                      <td><?= $it->customerActionDate ?></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
               </table>
             </div>
           </div>
@@ -113,11 +137,13 @@
   </form>
 </div>
 <?php
-$data['data'] = ['selectTipeFromOtherDb', 'selectWarnaFromOtherDb'];
+$data['data'] = ['selectTipeFromOtherDb', 'selectWarnaFromOtherDb', 'filterWarnaByTipe'];
 $this->load->view('additionals/dropdown_series_tipe', $data);
 
-$data['data'] = ['selectSalesmanFromOtherDb'];
+$data['data'] = ['selectSalesmanFromOtherDb', 'selectKabupatenKotaPengajuan', 'selectProvinsiPengajuan'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
+
+$this->load->view(get_controller() . '/modal_history_interaksi');
 ?>
 <script>
   function saveDataPengajuanKontakSales(el, tabs) {

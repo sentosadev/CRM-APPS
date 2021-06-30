@@ -788,6 +788,7 @@ class Leads_customer_data extends Crm_Controller
       $filter['response'] = true;
       $filter['assignedDealer'] = $row->assignedDealer;
       $data['list_follow_up'] = $this->ld_m->getLeadsFollowUp($filter);
+      $data['interaksi'] = $this->ld_m->getLeadsInteraksi($filter)->result();
       // send_json($data);
       $this->template_portal($data);
     } else {
