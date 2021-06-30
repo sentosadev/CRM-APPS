@@ -364,6 +364,7 @@ if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
                   return {
                     text: item.text,
                     kategori: item.kategori,
+                    idKategori: item.idKategori,
                     id: item.id
                   }
                 })
@@ -695,3 +696,33 @@ if (in_array('selectKabupatenKotaPengajuan', $data)) { ?>
     });
   </script>
 <?php } ?>
+
+<?php
+if (in_array('selectPICDealerMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#pic_dealer_<?= $i ?>").select2({
+          // minimumInputLength: 2,
+          ajax: {
+            url: "<?= site_url('api/private/leads_customer_data/selectSalesmanFromOtherDb') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+    </script>
+<?php }
+} ?>

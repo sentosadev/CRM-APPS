@@ -30,7 +30,16 @@ class Leads_customer_data extends CI_Controller
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
     $response = $this->lm->getStatusFU($filter)->result();
-    send_json($response);
+    $res_ = [];
+    foreach ($response as $rs) {
+      $res_[] = [
+        'id' => (string)$rs->id,
+        'idKategori' => (string)$rs->idKategori,
+        'kategori' => (string)$rs->kategori,
+        'text' => (string)$rs->text,
+      ];
+    }
+    send_json($res_);
   }
   function selectPlatformData()
   {

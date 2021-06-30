@@ -76,7 +76,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label">Status Komunikasi Fol. Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Status Komunikasi Fol. Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
                   <select style="width:100%" id="id_status_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_status_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
@@ -89,11 +89,27 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <script>
-              var $eventSelect<?= $fol_up_sekarang ?> = $("#id_status_fu_<?= $fol_up_sekarang ?>");
+              $(document).ready(function() {
+                $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').hide();
+                $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').hide();
+                $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').hide();
 
+                //Cek ID kategori Status Komunikasi
+                id_kategori_status_komunikasi = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['id_kategori_status_komunikasi'] : '' ?>';
+                if (id_kategori_status_komunikasi == 4) {
+                  $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').show();
+                }
+              })
+              var $eventSelect<?= $fol_up_sekarang ?> = $("#id_status_fu_<?= $fol_up_sekarang ?>");
               $eventSelect<?= $fol_up_sekarang ?>.on("change", function(e) {
                 data = $eventSelect<?= $fol_up_sekarang ?>.select2('data')[0];
                 $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val(data.kategori);
+                if (data.idKategori == 4) {
+                  $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').show();
+                } else {
+                  $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').hide();
+                  $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                }
               });
             </script>
 
@@ -107,11 +123,11 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Hasil Status Follow Up</label>
+            <div class="form-group" id="input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>">
+              <label class="col-sm-4 control-label">Hasil Status Follow Up *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>" class='form-control' name='kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>" class='form-control' name='kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>' <?= $disabled ?> required>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['kodeHasilStatusFollowUp'] ?>'><?= $lfu['deskripsiHasilStatusFollowUp'] ?></option>
@@ -120,12 +136,31 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 </div>
               </div>
             </div>
+            <script>
+              $(document).ready(function() {
+                //Cek kodeHasilStatusFollowUp
+                kodeHasilStatusFollowUp = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['kodeHasilStatusFollowUp'] : '' ?>';
+                if (kodeHasilStatusFollowUp == 4 || kodeHasilStatusFollowUp == 2) {
+                  $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
+                }
+              })
+
+              $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").on("change", function(e) {
+                data = $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").select2('data')[0];
+                if (data.id == 2 || data.id == 4) {
+                  $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
+                } else {
+                  $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').hide();
+                  $('#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                }
+              });
+            </script>
 
             <div class="form-group" id="input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>">
-              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Prospect/Not Deal</label>
+              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Prospect/Not Deal *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>" class='form-control' name='kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>" class='form-control' name='kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>' <?= $disabled ?> required>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['kodeAlasanNotProspectNotDeal'] ?>'><?= $lfu['alasanNotProspectNotDeal'] ?></option>
@@ -135,15 +170,25 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <script>
-              // $(document).ready(function() {
-              //   var selected_hasil<?= $fol_up_sekarang ?> = $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').select2().val();
-              //   if (selected_hasil<?= $fol_up_sekarang ?> == 2 || selected_hasil<?= $fol_up_sekarang ?> == 4) {
-              //     $("#")
-              //   }
-              // });
-            </script>
+              $(document).ready(function() {
+                //Cek kodeAlasanNotProspectNotDeal
+                kodeAlasanNotProspectNotDeal = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['kodeAlasanNotProspectNotDeal'] : '' ?>';
+                if (kodeAlasanNotProspectNotDeal == 5) {
+                  $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').show();
+                }
+              })
 
-            <div class="form-group">
+              $("#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>").on("change", function(e) {
+                data = $("#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>").select2('data')[0];
+                if (data.id == 5) {
+                  $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').show();
+                } else {
+                  $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').hide();
+                  $('#keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                }
+              });
+            </script>
+            <div class="form-group" id="input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>">
               <label class="col-sm-4 control-label">Keterangan Alasan Lainnya</label>
               <div class="form-input">
                 <div class="col-sm-8">
@@ -167,7 +212,6 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             <?php if ($disabled == '') { ?>
               <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
               <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
-              <button onclick="saveCheckDataAndSendAPI3(this,<?= $i ?>)" type="button" class="btn bg-green btn-flat"><i class='fa fa-save'></i> Simpan Data</button>
             <?php } ?>
           <?php } ?>
         </div>
@@ -176,8 +220,6 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             *) Tombol <button type="button" class="btn btn-info btn-flat btn-xs">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button> digunakan untuk menambah form follow up baru.
             <br>
             *) Tombol <button type="button" class="btn bg-blue btn-flat btn-xs">Simpan Data</button> digunakan untuk menyimpan data follow up.
-            <br>
-            *) Jika tombol <button type="button" class="btn bg-green btn-flat btn-xs"><i class='fa fa-save'></i> Simpan Data</button> diklik, maka sistem akan menyimpan data follow up dan mengirimkan data ke sistem SEEDS.
           </div>
         <?php } ?>
       </div>
@@ -221,6 +263,12 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
       success: function(response) {
         if (response.status == 1) {
           changeTabs(tabs);
+          Swal.fire({
+            icon: 'success',
+            title: '<font>Informasi</font>',
+            html: '<font>' + response.pesan + '</font>',
+            confirmButtonText: 'Tutup',
+          })
         } else {
           Swal.fire({
             icon: 'error',

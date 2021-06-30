@@ -50,7 +50,7 @@ class Status_fu_model extends CI_Model
       }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
-          $select = "id_status_fu id,deskripsi_status_fu text,kategori_status_komunikasi kategori";
+          $select = "id_status_fu id,deskripsi_status_fu text,kategori_status_komunikasi AS kategori,mu.id_kategori_status_komunikasi idKategori";
         } else {
           $select = $filter['select'];
         }
