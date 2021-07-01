@@ -30,6 +30,7 @@ class Upload_dealer_mapping_model extends CI_Model
                             OR mu.kode_dealer LIKE'%{$filter['search']}%'
                             OR mu.periode_audit LIKE'%{$filter['search']}%'
                             OR dl.nama_dealer LIKE'%{$filter['search']}%'
+                            OR dealer_score LIKE'%{$filter['search']}%'
           )";
         }
       }
