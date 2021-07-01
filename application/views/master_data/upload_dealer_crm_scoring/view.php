@@ -156,7 +156,9 @@
           "infoFiltered": "",
           "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
         },
-        "order": [],
+        "order": [
+          [3, "desc"]
+        ],
         "lengthMenu": [
           [10, 25, 50, 75, 100],
           [10, 25, 50, 75, 100]
