@@ -90,22 +90,23 @@ class Dealer_model extends CI_Model
     $select = '';
 
     $tahun_bulan = tahun_bulan();
-    $territory_data = "SELECT id_kecamatan FROM upload_territory_data WHERE kode_dealer=mu.kode_dealer AND periode_audit='$tahun_bulan'";
+    $territory_data = "SELECT id_kecamatan FROM upload_territory_data WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit";
+
     $territory_data_desc = "SELECT kecamatan FROM upload_territory_data
                       JOIN ms_maintain_kecamatan kec ON kec.id_kecamatan=upload_territory_data.id_kecamatan
-                      WHERE kode_dealer=mu.kode_dealer AND periode_audit='$tahun_bulan'";
+                      WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
 
 
-    $dealer_mapping = "SELECT kode_dealer FROM upload_dealer_mapping WHERE kode_dealer=mu.kode_dealer AND periode_audit='$tahun_bulan'";
-    $dealer_mapping_desc = "SELECT dealer_score FROM upload_dealer_mapping WHERE kode_dealer=mu.kode_dealer AND periode_audit='$tahun_bulan'";
+    $dealer_mapping = "SELECT kode_dealer FROM upload_dealer_mapping WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan'";
+    $dealer_mapping_desc = "SELECT dealer_score FROM upload_dealer_mapping WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
 
     $nos_score = "SELECT ns.nos_grade FROM upload_nos_score uns
                   JOIN ms_nos_grade ns ON ns.id_nos_grade=uns.id_nos_grade
-                  WHERE kode_dealer=mu.kode_dealer AND periode_audit='$tahun_bulan'";
+                  WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
 
     $crm_score = "SELECT kd.kuadran FROM upload_dealer_crm_scoring dcs
                   JOIN ms_kuadran kd ON kd.id_kuadran=dcs.id_kuadran
-                  WHERE kode_dealer=mu.kode_dealer AND periode_audit='$tahun_bulan'";
+                  WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
     $workload = " SELECT COUNT(leads_id) FROM leads 
                   WHERE assignedDealer=mu.kode_dealer 
                   AND (SELECT COUNT(leads_id) 
