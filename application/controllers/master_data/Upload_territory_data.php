@@ -149,7 +149,7 @@ class Upload_territory_data extends Crm_Controller
             }
 
             //Cek Kabupaten
-            $fk = ['id_or_name_kabupaten' => $row[4]];
+            $fk = ['id_or_name_kabupaten' => $row[5]];
             $cek_kab = $this->kab_m->getKabupatenKota($fk)->row();
             $id_kabupaten_kota = '';
             if ($cek_kab == NULL) {
