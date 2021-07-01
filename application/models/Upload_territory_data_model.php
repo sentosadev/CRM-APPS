@@ -27,8 +27,11 @@ class Upload_territory_data_model extends CI_Model
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_territory LIKE'%{$filter['search']}%'
-                            OR mu.kode_dealer LIKE'%{$filter['search']}%'
-                            OR mu.nama_dealer LIKE'%{$filter['search']}%'
+                            OR dl.kode_dealer LIKE'%{$filter['search']}%'
+                            OR dl.nama_dealer LIKE'%{$filter['search']}%'
+                            OR kec.kecamatan LIKE'%{$filter['search']}%'
+                            OR rg.ring LIKE'%{$filter['search']}%'
+                            OR kab.kabupaten_kota LIKE'%{$filter['search']}%'
           )";
         }
       }

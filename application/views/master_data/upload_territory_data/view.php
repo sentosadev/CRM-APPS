@@ -18,6 +18,7 @@
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="box-tools pull-right">
+          <a href="<?= base_url('download/template_upload_territory_data.xlsx') ?>" download class="btn bg-green btn-flat">Template</a>
           <?= link_on_data_top(user()->id_group); ?>
         </div>
       </div>
@@ -173,7 +174,7 @@
           },
         },
         "columnDefs": [{
-            "targets": [0, 1, 2, 3, 4, 5, 6],
+            "targets": [0],
             "orderable": false
           },
           // {
