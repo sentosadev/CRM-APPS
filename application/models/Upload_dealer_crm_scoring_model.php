@@ -30,7 +30,7 @@ class Upload_dealer_crm_scoring_model extends CI_Model
                             OR mu.kode_dealer LIKE'%{$filter['search']}%'
                             OR mu.periode_audit LIKE'%{$filter['search']}%'
                             OR dl.nama_dealer LIKE'%{$filter['search']}%'
-                            OR ns.nos_score LIKE'%{$filter['search']}%'
+                            OR kd.kuadran LIKE'%{$filter['search']}%'
           )";
         }
       }
