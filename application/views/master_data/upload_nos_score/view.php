@@ -18,6 +18,7 @@
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="box-tools pull-right">
+          <a href="<?= base_url('download/template_upload_nos_score.xlsx') ?>" download class="btn bg-green btn-flat">Template</a>
           <?= link_on_data_top(user()->id_group); ?>
         </div>
       </div>

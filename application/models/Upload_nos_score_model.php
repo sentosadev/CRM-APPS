@@ -30,7 +30,7 @@ class Upload_nos_score_model extends CI_Model
                             OR mu.kode_dealer LIKE'%{$filter['search']}%'
                             OR mu.periode_audit LIKE'%{$filter['search']}%'
                             OR dl.nama_dealer LIKE'%{$filter['search']}%'
-                            OR ns.nos_score LIKE'%{$filter['search']}%'
+                            OR ns.nos_grade LIKE'%{$filter['search']}%'
           )";
         }
       }
