@@ -26,6 +26,11 @@ class sumber_prospek_model extends CI_Model
           $where .= " AND mu.id='{$this->db->escape_str($filter['id'])}'";
         }
       }
+      if (isset($filter['id_cdb'])) {
+        if ($filter['id_cdb'] != '') {
+          $where .= " AND mu.id_cdb='{$this->db->escape_str($filter['id_cdb'])}'";
+        }
+      }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {

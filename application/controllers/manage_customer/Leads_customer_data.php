@@ -710,25 +710,6 @@ class Leads_customer_data extends Crm_Controller
       $this->db->trans_commit();
 
       $pesan = '';
-      if ($this->input->post('is_simpan') != NULL) {
-        if ($gr->idProspek == NULL || $gr->idProspek == '') {
-          //Melakukan Pengiriman API 3
-          $data = $this->_post_to_api3($leads_id);
-          $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
-          if ($res_api3['status'] == 1) {
-            $id_prospek = $res_api3['data']['id_prospek'];
-            $pesan = " dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
-            $upd = ['idProspek' => $id_prospek];
-            $this->db->update('leads', $upd, ['leads_id' => $leads_id]);
-          } else {
-            $msg = '';
-            foreach ($res_api3['message'] as $val) {
-              $msg .= $val;
-            }
-            $pesan = " dan gagal melakukan pengiriman API 3. Error Message : " . $msg;
-          }
-        }
-      }
       $response = [
         'status' => 1,
         'pesan' => 'Berhasil menyimpan data ' . $pesan
@@ -742,8 +723,10 @@ class Leads_customer_data extends Crm_Controller
     $this->load->helper('api');
     $this->load->model('dealer_model', 'dlm');
     $this->load->model('kelurahan_model', 'kelm');
+    $this->load->model('sumber_prospek_model', 'sprm');
     $leads = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
-    // send_json($leads);
+    $fp = ['id_cdb' => $leads->sourceData];
+    $sumber_prospek = $this->sprm->getSumberProspekFromOtherDB($fp)->row()->id;
     return [
       'leads_id' => $leads->leads_id,
       'kode_dealer_md' => $leads->assignedDealer,
@@ -770,9 +753,11 @@ class Leads_customer_data extends Crm_Controller
       'status_prospek' => $leads->statusProspek,
       'id_tipe_kendaraan' => $leads->kodeTypeUnit,
       'id_warna' => $leads->kodeWarnaUnit,
-      'sumber_prospek' => $leads->idSumberProspek,
+      'sumber_prospek' => $sumber_prospek,
       'longitude' => $leads->longitude,
       'latitude' => $leads->latitude,
+      'pekerjaan' => $leads->kodePekerjaanKtp,
+      'sub_pekerjaan' => $leads->kodePekerjaan,
       'created_at' => waktu()
     ];
   }
@@ -930,6 +915,8 @@ class Leads_customer_data extends Crm_Controller
   {
     $user = user();
     $leads_id = $this->input->post('leads_id', true);
+    $fl['leads_id'] = $leads_id;
+    $lead = $this->ld_m->getLeads($fl)->row();
     $fg = ['kode_dealer' => $this->input->post('assignedDealer', true)];
     $gr = $this->dealer_m->getDealerForAssigned($fg)->row();
 
@@ -965,19 +952,13 @@ class Leads_customer_data extends Crm_Controller
       send_json($response);
     }
 
-    //Cek Apakah Sudah Stage ID 5
-    $fstg5 = ['leads_id' => $leads_id, 'stageId' => 5];
-    $c_stg5 = $this->ld_m->getLeadsStage($fstg5)->row();
-
     // Set Stage ID 5
     // 5. Dispatch Prospect to Dealer
-    if ($c_stg5 == NULL) {
-      $ins_history_stage = [
-        'leads_id' => $leads_id,
-        'created_at' => waktu(),
-        'stageId' => 5
-      ];
-    }
+    $ins_history_stage = [
+      'leads_id' => $leads_id,
+      'created_at' => waktu(),
+      'stageId' => 5
+    ];
 
     $update = [
       'assignedDealer'        => $this->input->post('assignedDealer', true),
@@ -1000,11 +981,29 @@ class Leads_customer_data extends Crm_Controller
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
       $this->db->trans_commit();
+      $pesan = 'Berhasil melakukan assign dealer ';
+
+      //Melakukan Pengiriman API 3
+      $data = $this->_post_to_api3($leads_id);
+      $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
+      if ($res_api3['status'] == 1) {
+        $id_prospek = $res_api3['data']['id_prospek'];
+        $pesan = ", dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
+        $upd = ['idProspek' => $id_prospek];
+        $this->db->update('leads', $upd, ['leads_id' => $leads_id]);
+      } else {
+        $msg = '';
+        foreach ($res_api3['message'] as $val) {
+          $msg .= $val;
+        }
+        $pesan = ", dan gagal melakukan pengiriman API 3. Error Message : " . $msg;
+      }
+
       $response = [
         'status' => 1,
         'url' => site_url(get_slug())
       ];
-      $msg = ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Berhasil melakukan assign dealer'];
+      $msg = ['icon' => 'success', 'title' => 'Informasi', 'text' => $pesan];
       $this->session->set_flashdata($msg);
     }
     send_json($response);
@@ -1164,11 +1163,29 @@ class Leads_customer_data extends Crm_Controller
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
       $this->db->trans_commit();
+      $pesan = 'Berhasil melakukan reassign dealer untuk Leads ID : ' . $this->input->post('leads_id', true);
+
+      //Melakukan Pengiriman API 3
+      $data = $this->_post_to_api3($leads_id);
+      $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
+      if ($res_api3['status'] == 1) {
+        $id_prospek = $res_api3['data']['id_prospek'];
+        $pesan = ", dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
+        $upd = ['idProspek' => $id_prospek];
+        $this->db->update('leads', $upd, ['leads_id' => $leads_id]);
+      } else {
+        $msg = '';
+        foreach ($res_api3['message'] as $val) {
+          $msg .= $val;
+        }
+        $pesan = ", dan gagal melakukan pengiriman API 3. Error Message : " . $msg;
+      }
+
       $response = [
         'status' => 1,
         'url' => site_url(get_slug())
       ];
-      $msg = ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Berhasil melakukan reassign dealer untuk Leads ID : ' . $this->input->post('leads_id', true)];
+      $msg = ['icon' => 'success', 'title' => 'Informasi', 'text' => $pesan];
       $this->session->set_flashdata($msg);
     }
     send_json($response);

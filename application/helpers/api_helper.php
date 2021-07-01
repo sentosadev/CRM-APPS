@@ -199,9 +199,9 @@ function curlPost($url, $data = NULL, $method = NULL, $headers = NULL)
   if (!empty($headers)) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
   }
-  // send_json($headers);
   $response = curl_exec($ch);
-
+  // echo $response;
+  // die;
   if (curl_error($ch)) {
     trigger_error('Curl Error:' . curl_error($ch));
   }

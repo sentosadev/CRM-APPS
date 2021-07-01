@@ -18,15 +18,19 @@ class Follow_up extends CI_Controller
     $response = ['status' => 0, 'message' => ''];
     if ($validasi['status'] == 1) {
       $post = $validasi['post'];
-      if ($post['stageId'] == 10) {
-        // 10. Create SPK NMS
-        $response = $this->_stageId_10($post);
-      } elseif ($post['stageId'] == 11) {
-        // 11. Create Indent Form
-        $response = $this->_stageId_11($post);
-      } elseif ($post['stageId'] == 12) {
-        // 12. Create Sales Order (after SSU)
-        $response = $this->_stageId_12($post);
+      if (isset($post['stageId'])) {
+        if ($post['stageId'] == 10) {
+          // 10. Create SPK NMS
+          $response = $this->_stageId_10($post);
+        } elseif ($post['stageId'] == 11) {
+          // 11. Create Indent Form
+          $response = $this->_stageId_11($post);
+        } elseif ($post['stageId'] == 12) {
+          // 12. Create Sales Order (after SSU)
+          $response = $this->_stageId_12($post);
+        }
+      } else {
+        $response = $this->_stageId_7_8_9($post);
       }
     }
     $validasi['activity']['method'] = 'POST';
@@ -34,6 +38,116 @@ class Follow_up extends CI_Controller
     $validasi['activity']['receiver'] = 'MDMS';
     insert_api_log($validasi['activity'], $response['status'], $response['message'], NULL);
     send_json($response);
+  }
+
+  function _stageId_7_8_9($post)
+  {
+    // Cek Leads
+    $fc = [
+      'leads_id' => $post['leads_id'],
+      'assignedDealer' => $post['assignedDealer']
+    ];
+    $ld = $this->ld_m->getLeads($fc)->row();
+    $status = 1;
+    $message = '';
+    if ($ld != NULL) {
+      $leads_id = $ld->leads_id;
+      //Cek StageId 1,4,5
+      $list_cek_stage = [1, 4, 5];
+      $stage_belum = [];
+      foreach ($list_cek_stage as $vs) {
+        $lstg = [
+          'leads_id' => $leads_id,
+          'stageId' => $vs
+        ];
+        $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
+        if ($cek_stage == NULL) {
+          $stage_belum[] = $vs;
+        }
+      }
+      //Jika Terpenuhi
+      if (count($stage_belum) == 0) {
+        // Set History Stage ID
+        // Cek Apakah Masuk Stage ID 7
+        // 7. Record Follow Up Result by Salespeople Not Contacted
+        if ($post['id_kategori_status_komunikasi'] != '4') {
+          $stageId = 7;
+        } else {
+          // Cek Apakah Masuk Stage ID 8
+          // 8. Record Follow Up Result by Salespeople Contacted & Prospect
+          if ($post['kodeHasilStatusFollowUp'] == '1') {
+            $stageId = 8;
+            // Cek Apakah Masuk Stage ID 9
+            // 9. Record Follow Up Result by Salespeople Not Deal
+          } elseif ($post['kodeHasilStatusFollowUp'] == '4') {
+            $stageId = 9;
+          }
+        }
+        $insert_history_stage = [
+          'leads_id'   => $leads_id,
+          'stageId'    => $stageId,
+          'created_at' => waktu(),
+        ];
+        $update_leads = [
+          'stageId_' . $stageId . '_processed_at' => waktu(),
+          'stageId_' . $stageId . '_processed_by_user_d_nms' => 0,
+        ];
+      }
+
+      //Cek Last FollowUp
+      $ffol = [
+        'leads_id' => $leads_id,
+        'assignedDealer' => $ld->assignedDealer,
+        'select' => 'count'
+      ];
+      $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
+      $ins_fol_up = [
+        'followUpID'                          => $this->ld_m->getFollowUpID(),
+        'followUpKe'                          => $count_fol + 1,
+        'leads_id'                            => $post['leads_id'],
+        'pic'                                 => $post['pic'],
+        'tglFollowUp'                         => $post['tglFollowUp'],
+        'keteranganFollowUp'                  => $post['keteranganFollowUp'],
+        'tglNextFollowUp'                     => $post['tglNextFollowUp'],
+        'keteranganNextFollowUp'              => $post['keteranganNextFollowUp'],
+        'id_media_kontak_fu'                  => $post['id_media_kontak_fu'],
+        'id_status_fu'                        => $post['id_status_fu'],
+        'assignedDealer'                      => $post['assignedDealer'],
+        'kodeHasilStatusFollowUp'             => $post['kodeHasilStatusFollowUp'],
+        'kodeAlasanNotProspectNotDeal'        => $post['kodeAlasanNotProspectNotDeal'],
+        'keteranganLainnyaNotProspectNotDeal' => $post['keteranganLainnyaNotProspectNotDeal'],
+        'created_at'                          => waktu()
+      ];
+
+      $tes = [
+        'ins_fol_up' => $ins_fol_up,
+        'update_leads' => isset($update_leads) ? $update_leads : NULL,
+        'insert_history_stage' => isset($insert_history_stage) ? $insert_history_stage : NULL
+      ];
+      // send_json($tes);
+
+      if (isset($insert_history_stage)) {
+        $this->db->trans_begin();
+        $this->db->insert('leads_history_stage', $insert_history_stage);
+        $this->db->insert('leads_follow_up', $ins_fol_up);
+        $cond = ['leads_id' => $leads_id];
+        $this->db->update('leads', $update_leads, $cond);
+        if ($this->db->trans_status() === FALSE) {
+          $this->db->trans_rollback();
+        } else {
+          $this->db->trans_commit();
+          $status = 1;
+        }
+      } else {
+        $status = 0;
+        $stage = implode(', ', $stage_belum);
+        $message = "Stage $stage belum diproses";
+      }
+    } else {
+      $status = 0;
+      $message = 'Leads ID tidak ditemukan';
+    }
+    return ['status' => $status, 'message' => $message];
   }
 
   function _stageId_10($post)
@@ -70,7 +184,6 @@ class Follow_up extends CI_Controller
           'leads_id' => $leads_id,
           'stageId' => 10,
           'created_at' => waktu(),
-          'created_by' => $leads['id_user'],
         ];
       }
 
@@ -99,7 +212,9 @@ class Follow_up extends CI_Controller
         'tglFollowUp'             => $post['fol_up']['tglFollowUp'],
         'kodeHasilStatusFollowUp' => $post['fol_up']['kodeHasilStatusFollowUp'],
         'id_status_fu'            => $post['fol_up']['id_status_fu'],
-        'created_at'              => waktu()
+        'assignedDealer'          => $ld->assignedDealer,
+        'created_at'              => waktu(),
+        'leads_id' => $leads_id
       ];
 
       $tes = [
@@ -108,10 +223,11 @@ class Follow_up extends CI_Controller
         'insert_history_stage' => isset($insert_history_stage) ? $insert_history_stage : ''
       ];
       // send_json($tes);
-      if (isset($ins_leads_history_stage)) {
+      if (isset($insert_history_stage)) {
         $this->db->trans_begin();
-        $cond = ['leads_id' => $leads_id];
+        $this->db->insert('leads_history_stage', $insert_history_stage);
         $this->db->insert('leads_follow_up', $ins_fol_up);
+        $cond = ['leads_id' => $leads_id];
         $this->db->update('leads', $update_leads, $cond);
         if ($this->db->trans_status() === FALSE) {
           $this->db->trans_rollback();
@@ -130,6 +246,7 @@ class Follow_up extends CI_Controller
     }
     return ['status' => $status, 'message' => $message];
   }
+
   function _stageId_11($post)
   {
     // 10. Create Indent
@@ -163,8 +280,7 @@ class Follow_up extends CI_Controller
         $insert_history_stage = [
           'leads_id' => $leads_id,
           'stageId' => 11,
-          'created_at' => waktu(),
-          'created_by' => $leads['id_user'],
+          'created_at' => waktu()
         ];
       }
 
@@ -195,7 +311,9 @@ class Follow_up extends CI_Controller
         'kodeHasilStatusFollowUp' => $post['fol_up']['kodeHasilStatusFollowUp'],
         'id_status_fu'            => $post['fol_up']['id_status_fu'],
         'tglNextFollowUp'         => $post['fol_up']['tglNextFollowUp'],
-        'created_at'              => waktu()
+        'assignedDealer'          => $ld->assignedDealer,
+        'created_at'              => waktu(),
+        'leads_id' => $leads_id
       ];
 
       $tes = [
@@ -204,10 +322,11 @@ class Follow_up extends CI_Controller
         'insert_history_stage' => isset($insert_history_stage) ? $insert_history_stage : ''
       ];
       // send_json($tes);
-      if (isset($ins_leads_history_stage)) {
+      if (isset($insert_history_stage)) {
         $this->db->trans_begin();
-        $cond = ['leads_id' => $leads_id];
+        $this->db->insert('leads_history_stage', $insert_history_stage);
         $this->db->insert('leads_follow_up', $ins_fol_up);
+        $cond = ['leads_id' => $leads_id];
         $this->db->update('leads', $update_leads, $cond);
         if ($this->db->trans_status() === FALSE) {
           $this->db->trans_rollback();
@@ -259,7 +378,6 @@ class Follow_up extends CI_Controller
           'leads_id'   => $leads_id,
           'stageId'    => $post['stageId'],
           'created_at' => waktu(),
-          'created_by' => $leads['id_user'],
         ];
       }
 
@@ -289,7 +407,9 @@ class Follow_up extends CI_Controller
         'tglFollowUp'             => $post['fol_up']['tglFollowUp'],
         'kodeHasilStatusFollowUp' => $post['fol_up']['kodeHasilStatusFollowUp'],
         'id_status_fu'            => $post['fol_up']['id_status_fu'],
-        'created_at'              => waktu()
+        'created_at'              => waktu(),
+        'assignedDealer'          => $ld->assignedDealer,
+        'leads_id' => $leads_id
       ];
 
       $tes = [
@@ -298,10 +418,11 @@ class Follow_up extends CI_Controller
         'insert_history_stage' => isset($insert_history_stage) ? $insert_history_stage : ''
       ];
       // send_json($tes);
-      if (isset($ins_leads_history_stage)) {
+      if (isset($insert_history_stage)) {
         $this->db->trans_begin();
-        $cond = ['leads_id' => $leads_id];
+        $this->db->insert('leads_history_stage', $insert_history_stage);
         $this->db->insert('leads_follow_up', $ins_fol_up);
+        $cond = ['leads_id' => $leads_id];
         $this->db->update('leads', $update_leads, $cond);
         if ($this->db->trans_status() === FALSE) {
           $this->db->trans_rollback();

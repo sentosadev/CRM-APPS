@@ -18,16 +18,43 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
       <div class="row">
         <?php for ($x = 1; $x <= $max_pertab; $x++) {
           if (!isset($list_follow_up[$fol_up_sekarang])) continue;
+          $is_md = 0;
+          if (isset($list_follow_up[$fol_up_sekarang])) {
+            if ($list_follow_up[$fol_up_sekarang]['assignedDealer'] == '') {
+              $is_md = 1;
+            } else {
+              $is_md = 0;
+            }
+          }
         ?>
           <div class="col-sm-6">
             <div class="form-group">
-              <label class="col-sm-4 control-label">PIC *</label>
-              <div class="form-input">
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" name='pic_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['pic'] : '' ?>' <?= $disabled ?>>
-                  <input type="hidden" class="form-control" name='folup[]' required value='<?= $fol_up_sekarang ?>'>
+              <?php if ($is_md == 1) { ?>
+                <label class="col-sm-4 control-label">PIC MD *</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <select style='width:100%' id='pic_<?= $fol_up_sekarang ?>' class='form-control' name='pic_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                      <option></option>
+                      <?php
+                      $list[1] = 'PIC VE MD';
+                      $list[2] = 'Telemarketer HC3';
+                      foreach ($list as $key => $val) {
+                        $pic = isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['pic'] : '';
+                      ?>
+                        <option value='<?= $key ?>' <?= $key == $pic ? 'selected' : '' ?>><?= $val ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
                 </div>
-              </div>
+              <?php } else { ?>
+                <label class="col-sm-4 control-label">PIC Dealer *</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name='pic_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['pic'] : '' ?>' <?= $disabled ?>>
+                  </div>
+                </div>
+              <?php } ?>
+              <input type="hidden" class="form-control" name='folup[]' required value='<?= $fol_up_sekarang ?>'>
             </div>
             <div class="form-group">
               <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?></label>
@@ -180,11 +207,16 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
 
               $("#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>").on("change", function(e) {
                 data = $("#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>").select2('data')[0];
-                if (data.id == 5) {
-                  $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').show();
-                } else {
+                if (data == undefined) {
                   $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').hide();
-                  $('#keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                  $('#keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').val('');
+                } else {
+                  if (data.id == 5) {
+                    $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').show();
+                  } else {
+                    $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').hide();
+                    $('#keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').val('');
+                  }
                 }
               });
             </script>
@@ -192,7 +224,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Keterangan Alasan Lainnya</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganAlasanLainnya'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" id='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' name='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganAlasanLainnya'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
@@ -234,7 +266,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
   function saveDataFollowUp(el, tabs, position, fu) {
     if (position == 'back') {
       var default_name_button = '<i class = "fa fa-backward"></i> Halaman Sebelumnya';
-    } else if (position == 'back') {
+    } else if (position == 'next') {
       var default_name_button = '<i class = "fa fa-forward"></i> Halaman Berikutnya';
     } else {
       var default_name_button = 'Simpan Follow Up';
@@ -263,12 +295,14 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
       success: function(response) {
         if (response.status == 1) {
           changeTabs(tabs);
-          Swal.fire({
-            icon: 'success',
-            title: '<font>Informasi</font>',
-            html: '<font>' + response.pesan + '</font>',
-            confirmButtonText: 'Tutup',
-          })
+          if (position == 1) {
+            Swal.fire({
+              icon: 'success',
+              title: '<font>Informasi</font>',
+              html: '<font>' + response.pesan + '</font>',
+              confirmButtonText: 'Tutup',
+            })
+          }
         } else {
           Swal.fire({
             icon: 'error',
