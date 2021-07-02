@@ -46,10 +46,16 @@ class Performance_dashboard extends Crm_Controller
         $periodeCreatedLeads[] = convert_date(str_replace(' ', '', $val));
       }
     }
-
+    $post_id_source_leads = $this->input->post('id_source_leads');
+    if (is_array($post_id_source_leads)) {
+      if (in_array('28-29', $post_id_source_leads)) {
+        $post_id_source_leads[] = '28';
+        $post_id_source_leads[] = '29';
+      }
+    }
     $filter = [
       'platformDataIn' => $this->input->post('id_platform_data'),
-      'sourceLeadsIn' => $this->input->post('id_source_leads'),
+      'sourceLeadsIn' => $post_id_source_leads,
       'deskripsiEventIn' => $this->input->post('deskripsiEvent'),
       'periodeCreatedLeads' => $periodeCreatedLeads,
       'kabupatenIn' => $this->input->post('idKabupatenPengajuan'),
