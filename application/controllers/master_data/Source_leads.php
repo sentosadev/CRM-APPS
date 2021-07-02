@@ -37,6 +37,7 @@ class Source_leads extends Crm_Controller
       $sub_array[] = $no;
       $sub_array[] = $rs->id_source_leads;
       $sub_array[] = $rs->source_leads;
+      $sub_array[] = $rs->for_platform_data;
       $sub_array[] = $aktif;
       $sub_array[] = link_on_data_details($params, $user->id_user);
       $data[]      = $sub_array;
@@ -103,10 +104,24 @@ class Source_leads extends Crm_Controller
       'created_by' => $user->id_user,
     ];
 
-    // $tes = ['insert' => $insert];
+    foreach ($this->input->post('id_platform_data') as $pd) {
+      $ins_batch[] = [
+        'id_source_leads' => $post['id_source_leads'],
+        'id_platform_data' => $pd
+      ];
+    }
+
+    $tes = [
+      'insert' => $insert,
+      'ins_batch' => isset($ins_batch) ? $ins_batch : NULL,
+    ];
     // send_json($tes);
     $this->db->trans_begin();
     $this->db->insert('ms_source_leads', $insert);
+    $this->db->delete('ms_source_leads_vs_platform_data', ['id_source_leads' => $post['id_source_leads']]);
+    if (isset($ins_batch)) {
+      $this->db->insert_batch('ms_source_leads_vs_platform_data', $ins_batch);
+    }
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
@@ -129,6 +144,7 @@ class Source_leads extends Crm_Controller
     $row = $this->scl->getSourceLeads($filter)->row();
     if ($row != NULL) {
       $data['row'] = $row;
+      $data['for_platform_data'] = $this->scl->getSourceLeadsPlatformData($filter)->result();
       $this->template_portal($data);
     } else {
       $this->session->set_flashdata(msg_not_found());
@@ -174,10 +190,22 @@ class Source_leads extends Crm_Controller
       'updated_by' => $user->id_user,
     ];
 
+    foreach ($this->input->post('id_platform_data') as $pd) {
+      $ins_batch[] = [
+        'id_source_leads' => $post['id_source_leads'],
+        'id_platform_data' => $pd
+      ];
+    }
+
     // $tes = ['update' => $update, 'data' => $gr];
     // send_json($tes);
     $this->db->trans_begin();
     $this->db->update('ms_source_leads', $update, $fg);
+
+    $this->db->delete('ms_source_leads_vs_platform_data', ['id_source_leads' => $post['id_source_leads']]);
+    if (isset($ins_batch)) {
+      $this->db->insert_batch('ms_source_leads_vs_platform_data', $ins_batch);
+    }
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
@@ -200,6 +228,7 @@ class Source_leads extends Crm_Controller
     $row = $this->scl->getSourceLeads($filter)->row();
     if ($row != NULL) {
       $data['row'] = $row;
+      $data['for_platform_data'] = $this->scl->getSourceLeadsPlatformData($filter)->result();
       $this->template_portal($data);
     } else {
       $this->session->set_flashdata(msg_not_found());

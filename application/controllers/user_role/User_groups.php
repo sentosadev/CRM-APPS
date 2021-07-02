@@ -176,7 +176,7 @@ class User_groups extends Crm_Controller
     ];
 
     $tes = ['update' => $update];
-    send_json($tes);
+    // send_json($tes);
     $this->db->trans_begin();
     $this->db->update('ms_user_groups', $update, $fg);
     if ($this->db->trans_status() === FALSE) {

@@ -10,6 +10,10 @@ class Source_leads_model extends CI_Model
   {
     $where = 'WHERE 1=1';
     $select = '';
+    $for_platform_data = "SELECT GROUP_CONCAT(pd.platform_data) 
+          FROm ms_source_leads_vs_platform_data slpd
+          JOIN ms_platform_data pd ON pd.id_platform_data=slpd.id_platform_data
+          WHERE id_source_leads=mu.id_source_leads";
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);
       if (isset($filter['id_or_source_leads'])) {
@@ -43,7 +47,7 @@ class Source_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_source_leads,mu.source_leads,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by";
+        $select = "mu.id_source_leads,mu.source_leads,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,($for_platform_data) for_platform_data";
       }
     }
 
@@ -68,6 +72,22 @@ class Source_leads_model extends CI_Model
     $where
     $order_data
     $limit
+    ");
+  }
+  function getSourceLeadsPlatformData($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
+      if (isset($filter['id_source_leads'])) {
+        $where .= " AND slpd.id_source_leads='{$filter['id_source_leads']}'";
+      }
+    }
+
+    return $this->db->query("SELECT slpd.id_platform_data,pd.platform_data
+    FROm ms_source_leads_vs_platform_data slpd
+    JOIN ms_platform_data pd ON pd.id_platform_data=slpd.id_platform_data
+    $where
     ");
   }
 }

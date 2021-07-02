@@ -30,6 +30,15 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="col-sm-2 control-label">For Platform Data <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <select class="form-control select2" style="width: 100%;" id='id_platform_data' name='id_platform_data[]' multiple>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-2 control-label">Aktif</label>
               <div class="col-sm-4">
                 <input type="checkbox" class="flat-red" name="aktif" checked>
@@ -55,6 +64,10 @@
     </div>
     <!-- /.box -->
   </section>
+  <?php
+  $data['data'] = ['selectPlatformData'];
+  $this->load->view('additionals/dropdown_platform_data', $data);
+  ?>
   <script>
     $('#submitButton').click(function() {
       // Swal.fire('Any fool can use a computer')

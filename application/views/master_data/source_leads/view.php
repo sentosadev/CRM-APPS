@@ -18,6 +18,7 @@
               <th width='5%'>#</th>
               <th width='15%'>ID Source Leads</th>
               <th>Source Leads</th>
+              <th>For Platform Data</th>
               <th width="8%">Aktif</th>
               <th width="8%">Aksi</th>
             </thead>
@@ -57,11 +58,11 @@
           },
         },
         "columnDefs": [{
-            "targets": [0, 4],
+            "targets": [0, 5],
             "orderable": false
           },
           {
-            "targets": [3, 4],
+            "targets": [4, 5],
             "className": 'text-center'
           },
           // {
