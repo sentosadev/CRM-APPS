@@ -104,11 +104,13 @@ class Source_leads extends Crm_Controller
       'created_by' => $user->id_user,
     ];
 
-    foreach ($this->input->post('id_platform_data') as $pd) {
-      $ins_batch[] = [
-        'id_source_leads' => $post['id_source_leads'],
-        'id_platform_data' => $pd
-      ];
+    if ($this->input->post('id_platform_data') != NULL) {
+      foreach ($this->input->post('id_platform_data') as $pd) {
+        $ins_batch[] = [
+          'id_source_leads' => $post['id_source_leads'],
+          'id_platform_data' => $pd
+        ];
+      }
     }
 
     $tes = [
@@ -190,11 +192,13 @@ class Source_leads extends Crm_Controller
       'updated_by' => $user->id_user,
     ];
 
-    foreach ($this->input->post('id_platform_data') as $pd) {
-      $ins_batch[] = [
-        'id_source_leads' => $post['id_source_leads'],
-        'id_platform_data' => $pd
-      ];
+    if ($this->input->post('id_platform_data') != NULL) {
+      foreach ($this->input->post('id_platform_data') as $pd) {
+        $ins_batch[] = [
+          'id_source_leads' => $post['id_source_leads'],
+          'id_platform_data' => $pd
+        ];
+      }
     }
 
     // $tes = ['update' => $update, 'data' => $gr];

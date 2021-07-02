@@ -37,6 +37,7 @@ class Source_leads_model extends CI_Model
           $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_source_leads LIKE'%{$filter['search']}%'
                             OR mu.source_leads LIKE'%{$filter['search']}%'
+                            OR ($for_platform_data) LIKE'%{$filter['search']}%'
           )";
         }
       }
@@ -53,7 +54,7 @@ class Source_leads_model extends CI_Model
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null, 'id_source_leads', 'source_leads', null];
+      $order_column = [null, 'id_source_leads', 'source_leads', "($for_platform_data)", 'mu.aktif', null];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
