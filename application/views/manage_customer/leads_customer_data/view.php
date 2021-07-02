@@ -285,13 +285,13 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
         }
       },
       "columnDefs": [{
-          "targets": [0, 1, 2, 3, 4, 5, 6],
+          "targets": [0, 18],
           "orderable": false
         },
-        // {
-        //   "targets": [0, 6, 7],
-        //   "className": 'text-center'
-        // },
+        {
+          "targets": [16, 17, 18],
+          "className": 'text-center'
+        },
         // {
         //   "targets": [3],
         //   "className": 'text-right'

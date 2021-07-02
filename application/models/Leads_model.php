@@ -339,6 +339,11 @@ class Leads_model extends CI_Model
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( stl.leads_id LIKE'%{$filter['search']}%'
+                            OR stl.nama LIKE'%{$filter['search']}%'
+                            OR stl.assignedDealer LIKE'%{$filter['search']}%'
+                            OR stl.tanggalAssignDealer LIKE'%{$filter['search']}%'
+                            OR stl.kodeDealerSebelumnya LIKE'%{$filter['search']}%'
+                            OR deskripsiEvent LIKE'%{$filter['search']}%'
           )";
         }
       }
@@ -356,7 +361,7 @@ class Leads_model extends CI_Model
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null];
+      $order_column = [null, 'stl.leads_id', 'stl.nama', 'stl.kodeDealerSebelumnya', 'stl.assignedDealer', 'stl.tanggalAssignDealer', 'deskripsiPlatformData', 'deskripsiSourceData', 'deskripsiEvent', 'deskripsiEvent', 'deskripsiStatusKontakFU', "($pernahTerhubung)", 'deskripsiHasilStatusFollowUp', 'jumlahFollowUp', 'tanggalNextFU', 'stl.updated_at', 'ontimeSLA1_desc', 'ontimeSLA2_desc', null];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
