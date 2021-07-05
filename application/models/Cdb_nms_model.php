@@ -73,4 +73,139 @@ class Cdb_nms_model extends CI_Model
     LIMIT 1
     ");
   }
+  function getCDBNMS($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    $select = "spk.id_customer customerId,
+        spk.no_spk,
+        so.tgl_cetak_invoice tanggal_penjualan,
+        so.no_rangka,
+        so.no_mesin,
+        dl.kode_dealer_md kode_dealer,
+        dl.nama_dealer,
+        spk.id_finance_company kodeLeasingSebelumnya,
+        sp.description sumber_prospek,
+        spk.status_hp statusNoHp,
+        prp.sub_pekerjaan idSubPekerjaan,
+        tk.id_tipe_kendaraan,
+        tipe_ahm tipe_ahm,
+        spk.id_warna,
+        wr.warna,
+        spk.harga_on_road harga_otr,
+        spk.tenor,
+        spk.dp_stor dp_gross,
+        spk.dp_stor,
+        'Individu' jenis_customer,
+        prp.jenis_kelamin,
+        spk.tgl_lahir,
+        spk.nama_konsumen,
+        spk.no_ktp,
+        spk.no_kk,
+        spk.alamat,
+        kel.kelurahan,
+        kec.kecamatan,
+        kab.kabupaten,
+        spk.kodepos kode_pos,
+        ag.agama,
+        pbl.pengeluaran,
+        pkj.pekerjaan,
+        '' pekerjaan_saat_ini,
+        pdk.pendidikan,
+        spk.nama_penjamin penanggung_jawab,
+        spk.no_hp,
+        spk.no_telp,
+        cdb.sedia_hub bersedia_hub,
+        merk.merk_sebelumnya merk_motor_sekarang,
+        digunakan.digunakan digunakan_untuk,
+        cdb.menggunakan yang_menggunakan,
+        hobi.hobi,
+        prp.id_flp_md id_flp,
+        sales.nama_lengkap nama_salesman,
+        sales_jbt.jabatan jabatan_salesman,
+        fincoy.finance_company,
+        '' keterangan,
+        spk.email,
+        nama_instansi nama_kantor,
+        alamat_instansi alamat_kantor,
+        '' kelurahan_kantor
+        ";
+    $filter = $this->db->escape_str($filter);
+    if (isset($filter['no_hp'])) {
+      if ($filter['no_hp'] != '') {
+        $where .= " AND spk.no_hp='{$this->db->escape_str($filter['no_hp'])}'";
+      }
+    }
+    if (isset($filter['search'])) {
+      if ($filter['search'] != '') {
+        $filter['search'] = $this->db->escape_str($filter['search']);
+        $where .= " AND ( spk.nama_konsumen LIKE'%{$filter['search']}%'
+                          OR so.tgl_cetak_invoice LIKE'%{$filter['search']}%'
+                          OR dl.kode_dealer_md LIKE'%{$filter['search']}%'
+                          OR spk.no_hp LIKE'%{$filter['search']}%'
+        )";
+      }
+    }
+    if (isset($filter['select'])) {
+      if ($filter['select'] == 'select_kpb') {
+        foreach ($filter['kpb'] as $val) {
+          $kpb_return = "SELECT COUNT(wop.id_jasa) 
+                        FROM tr_h2_wo_dealer_pekerjaan wop
+                        JOIN ms_h2_jasa js ON js.id_jasa=wop.id_jasa
+                        JOIN tr_h2_wo_dealer wo ON wo.id_work_order=wop.id_work_order
+                        JOIN tr_h2_sa_form sa ON sa.id_sa_form=wo.id_sa_form
+                        JOIN ms_customer_h23 cus ON cus.id_customer=sa.id_customer
+                        WHERE cus.no_mesin=so.no_mesin AND js.id_type='ASS$val'
+                        ";
+          $select .= ",($kpb_return) kpb" . $val . "_return";
+        }
+      } else {
+        $select = $filter['select'];
+      }
+    }
+
+    $order_data = '';
+    if (isset($filter['order'])) {
+      $order_column = [null];
+      $order = $filter['order'];
+      if ($order != '') {
+        $order_clm  = $order_column[$order['0']['column']];
+        $order_by   = $order['0']['dir'];
+        $order_data = " ORDER BY $order_clm $order_by ";
+      }
+    }
+
+    $limit = '';
+    if (isset($filter['limit'])) {
+      $limit = $filter['limit'];
+    }
+
+    return $this->db_live->query("SELECT $select
+    FROM tr_cdb AS cdb
+    JOIN tr_spk spk ON spk.no_spk=cdb.no_spk
+    JOIN tr_prospek prp ON prp.id_customer=spk.id_customer
+    JOIN tr_sales_order so ON so.no_spk=spk.no_spk
+    JOIN ms_dealer dl ON dl.id_dealer=spk.id_dealer
+    LEFT JOIN ms_sumber_prospek sp ON sp.id_dms=prp.sumber_prospek
+    JOIN ms_tipe_kendaraan tk ON tk.id_tipe_kendaraan=spk.id_tipe_kendaraan
+    JOIN ms_warna wr ON wr.id_warna=spk.id_warna
+    JOIN ms_kelurahan kel ON kel.id_kelurahan=spk.id_kelurahan
+    JOIN ms_kecamatan kec ON kec.id_kecamatan=spk.id_kecamatan
+    JOIN ms_kabupaten kab ON kab.id_kabupaten=spk.id_kabupaten
+    JOIN ms_provinsi prov ON prov.id_provinsi=spk.id_provinsi
+    LEFT JOIN ms_agama ag ON ag.id_agama=cdb.agama
+    LEFT JOIN ms_pengeluaran_bulan pbl ON pbl.id_pengeluaran_bulan=spk.pengeluaran_bulan
+    LEFT JOIN ms_pekerjaan pkj ON pkj.id_pekerjaan=spk.pekerjaan
+    LEFT JOIN ms_pendidikan pdk ON pdk.id_pendidikan=cdb.pendidikan
+    LEFT JOIN ms_merk_sebelumnya merk ON merk.id_merk_sebelumnya=cdb.merk_sebelumnya
+    LEFT JOIN ms_digunakan digunakan ON digunakan.id_digunakan=cdb.digunakan
+    LEFT JOIN ms_hobi hobi ON hobi.id_hobi=cdb.hobi
+    LEFT JOIN ms_karyawan_dealer sales ON sales.id_karyawan_dealer=prp.id_karyawan_dealer
+    LEFT JOIN ms_jabatan sales_jbt ON sales_jbt.id_jabatan=sales.id_jabatan
+    LEFT JOIN ms_finance_company fincoy ON fincoy.id_finance_company=spk.id_finance_company
+    $where
+    GROUP BY spk.no_spk
+    $order_data
+    $limit
+    ");
+  }
 }
