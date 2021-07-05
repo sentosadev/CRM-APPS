@@ -80,14 +80,6 @@
   </div>
   <!-- /.box -->
 </section>
-<?php $data['data'] = ['selectLeadsId', 'selectStatusFU', 'selectPlatformData', 'selectSourceLeads', 'selectDealerSebelumnya', 'selectAssignedDealer', 'selectDeskripsiEvent', 'selectJumlahFu'];
-$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
-
-<?php $data['data'] = ['selectWarna', 'selectTipe'];
-$this->load->view('additionals/dropdown_series_tipe', $data); ?>
-
-<?php $this->load->view('manage_customer/leads_customer_data/modal_assign_reassign'); ?>
-<?php $this->load->view('manage_customer/leads_customer_data/modal_history'); ?>
 
 <script>
   $(document).ready(function() {

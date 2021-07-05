@@ -208,4 +208,72 @@ class Cdb_nms_model extends CI_Model
     $limit
     ");
   }
+  function getSSUvsKPB($filter = null)
+  {
+    $where = 'WHERE 1=1';
+    $periode_ssu = $filter['periode_ssu'];
+    $get_ssu = "SELECT COUNT(no_mesin) FROM tr_sales_order so WHERE id_dealer=dl.id_dealer 
+    -- AND tgl_cetak_invoice BETWEEN '{$periode_ssu[0]}' AND '{$periode_ssu[1]}'
+    ";
+
+    $select = "dl.kode_dealer_md,nama_dealer, ($get_ssu) ssu";
+    $filter = $this->db->escape_str($filter);
+    if (isset($filter['no_hp'])) {
+      if ($filter['no_hp'] != '') {
+        $where .= " AND spk.no_hp='{$this->db->escape_str($filter['no_hp'])}'";
+      }
+    }
+    if (isset($filter['search'])) {
+      if ($filter['search'] != '') {
+        $filter['search'] = $this->db->escape_str($filter['search']);
+        $where .= " AND ( spk.nama_konsumen LIKE'%{$filter['search']}%'
+                          OR so.tgl_cetak_invoice LIKE'%{$filter['search']}%'
+                          OR dl.kode_dealer_md LIKE'%{$filter['search']}%'
+                          OR spk.no_hp LIKE'%{$filter['search']}%'
+        )";
+      }
+    }
+    if (isset($filter['select'])) {
+      if ($filter['select'] == 'select_kpb') {
+        foreach ($filter['kpb'] as $val) {
+          $kpb_return = "SELECT COUNT(wop.id_jasa) 
+                        FROM tr_h2_wo_dealer_pekerjaan wop
+                        JOIN ms_h2_jasa js ON js.id_jasa=wop.id_jasa
+                        JOIN tr_h2_wo_dealer wo ON wo.id_work_order=wop.id_work_order
+                        JOIN tr_h2_sa_form sa ON sa.id_sa_form=wo.id_sa_form
+                        JOIN ms_customer_h23 cus ON cus.id_customer=sa.id_customer
+                        JOIN tr_sales_order so ON so.no_mesin=cus.no_mesin
+                        WHERE js.id_type='ASS$val' AND wo.id_dealer=dl.id_dealer AND so.id_dealer=dl.id_dealer 
+                        -- AND tgl_cetak_invoice BETWEEN '{$periode_ssu[0]}' AND '{$periode_ssu[1]}'
+                        ";
+          $select .= ",($kpb_return) kpb" . $val . "_return";
+        }
+      } else {
+        $select = $filter['select'];
+      }
+    }
+
+    $order_data = '';
+    if (isset($filter['order'])) {
+      $order_column = [null];
+      $order = $filter['order'];
+      if ($order != '') {
+        $order_clm  = $order_column[$order['0']['column']];
+        $order_by   = $order['0']['dir'];
+        $order_data = " ORDER BY $order_clm $order_by ";
+      }
+    }
+
+    $limit = '';
+    if (isset($filter['limit'])) {
+      $limit = $filter['limit'];
+    }
+
+    return $this->db_live->query("SELECT $select
+    FROM ms_dealer dl
+    $where
+    $order_data
+    $limit
+    ");
+  }
 }

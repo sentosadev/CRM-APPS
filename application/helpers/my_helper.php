@@ -543,3 +543,15 @@ function clean_no_hp($no_hp)
   $no_hp = preg_replace("/[^0-9]+/", "", $no_hp);
   return $no_hp;
 }
+
+function set_periode($input)
+{
+  $periode = explode('-', $input);
+  $periodeSet = NULL;
+  if (count($periode) > 1) {
+    foreach ($periode as $val) {
+      $periodeSet[] = convert_date(str_replace(' ', '', $val));
+    }
+  }
+  return $periodeSet;
+}
