@@ -72,8 +72,8 @@
       },
       "order": [],
       "lengthMenu": [
-        [10, 25, 50, 75, 100],
-        [10, 25, 50, 75, 100]
+        [10, 25, 50, 75, 100,-1],
+        [10, 25, 50, 75, 100,'All']
       ],
       "ajax": {
         url: "<?php echo site_url(get_controller() . '/fetchData'); ?>",

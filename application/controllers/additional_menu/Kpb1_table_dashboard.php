@@ -61,7 +61,9 @@ class Kpb1_table_dashboard extends Crm_Controller
       'kpb' => [1],
       'select' => 'select_kpb',
     ];
-
+    if ($length=='-1') {
+      unset($filter['limit']);
+    }
     if ($this->input->post('periode_ssu') != NULL) {
       $periode_ssu = set_periode($this->input->post('periode_ssu'));
       if ($periode_ssu != NULL) {
