@@ -213,7 +213,7 @@ class Cdb_nms_model extends CI_Model
     $where = 'WHERE 1=1';
     $periode_ssu = $filter['periode_ssu'];
     $get_ssu = "SELECT COUNT(no_mesin) FROM tr_sales_order so WHERE id_dealer=dl.id_dealer 
-    -- AND tgl_cetak_invoice BETWEEN '{$periode_ssu[0]}' AND '{$periode_ssu[1]}'
+    AND tgl_cetak_invoice BETWEEN '{$periode_ssu[0]}' AND '{$periode_ssu[1]}'
     ";
 
     $select = "dl.kode_dealer_md,nama_dealer, ($get_ssu) ssu";
@@ -244,7 +244,7 @@ class Cdb_nms_model extends CI_Model
                         JOIN ms_customer_h23 cus ON cus.id_customer=sa.id_customer
                         JOIN tr_sales_order so ON so.no_mesin=cus.no_mesin
                         WHERE js.id_type='ASS$val' AND wo.id_dealer=dl.id_dealer AND so.id_dealer=dl.id_dealer 
-                        -- AND tgl_cetak_invoice BETWEEN '{$periode_ssu[0]}' AND '{$periode_ssu[1]}'
+                        AND tgl_cetak_invoice BETWEEN '{$periode_ssu[0]}' AND '{$periode_ssu[1]}'
                         ";
           $select .= ",($kpb_return) kpb" . $val . "_return";
         }
