@@ -758,7 +758,8 @@ class Leads_customer_data extends Crm_Controller
       'latitude' => $leads->latitude,
       'pekerjaan' => $leads->kodePekerjaanKtp,
       'sub_pekerjaan' => $leads->kodePekerjaan,
-      'created_at' => waktu()
+      'created_at' => waktu(),
+      'tgl_prospek'=>tanggal()
     ];
   }
 
