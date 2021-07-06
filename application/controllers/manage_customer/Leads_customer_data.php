@@ -981,15 +981,15 @@ class Leads_customer_data extends Crm_Controller
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
-      $pesan = 'Berhasil melakukan assign dealer ';
-
+      $pesan = 'Berhasil melakukan assign dealer';
       //Melakukan Pengiriman API 3
       $data = $this->_post_to_api3($leads_id);
+      // send_json($data);
       $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
       if ($res_api3['status'] == 1) {
         $this->db->trans_commit();
         $id_prospek = $res_api3['data']['id_prospek'];
-        $pesan = ", dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
+        $pesan .= ", dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
         $upd = ['idProspek' => $id_prospek];
         $this->db->update('leads', $upd, ['leads_id' => $leads_id]);
       } else {
@@ -997,7 +997,7 @@ class Leads_customer_data extends Crm_Controller
         foreach ($res_api3['message'] as $val) {
           $msg .= $val;
         }
-        $pesan = ", dan gagal melakukan pengiriman API 3. Error Message : " . $msg;
+        $pesan .= ", dan gagal melakukan pengiriman API 3. Error Message : " . $msg;
       }
 
       $response = [

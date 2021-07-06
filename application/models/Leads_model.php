@@ -172,7 +172,7 @@ class Leads_model extends CI_Model
         " . sql_convert_date('tanggalPengajuan') . " tanggalPengajuanEng,
         " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng,
         " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md
-        ";
+        " ;
 
     if ($filter != null) {
       // Posisi di atas karena skip filter escape tanda kutip (')
