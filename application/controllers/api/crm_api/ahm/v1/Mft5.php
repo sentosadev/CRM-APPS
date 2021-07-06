@@ -22,6 +22,7 @@ class Mft5 extends CI_Controller
     $leads_stage = $this->ld_m->getLeadsStage($fs)->result();
     $list_leads = [];
     $set_err = [];
+    // send_json($leads_stage);
     foreach ($leads_stage as $key => $lds) {
       $error = [];
       $fld = ['leads_id' => $lds->leads_id];
@@ -29,11 +30,14 @@ class Mft5 extends CI_Controller
 
       $fhis = [
         'leads_id' => $lds->leads_id,
-        'assignedDealer' => $ld->assignedDealer,
+        // 'assignedDealer' => $ld->assignedDealer,
         'order' => 'followUpKe DESC'
       ];
       $ld_fol = $this->ld_m->getLeadsFollowUp($fhis)->row();
-
+      if ($ld_fol==NULL) {
+        send_json($lds);
+      }
+      // send_json($ld_fol);
       //Cek noFramePembelianSebelumnya
       if ($ld->noFramePembelianSebelumnya != '') {
         if ((string)$ld->kodeDealerPembelianSebelumnya == '') {
@@ -71,18 +75,18 @@ class Mft5 extends CI_Controller
 
       //Cek tanggalNextFU
       if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
-        if ((string)$ld_fol->tanggalNextFU == '') {
+        if ((string)$ld_fol->tglNextFollowUp == '') {
           $error[] = 'tanggalNextFU';
         }
       } elseif ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3') { //3=Deal
-        if ((string)$ld_fol->tanggalNextFU == '') {
+        if ((string)$ld_fol->tglNextFollowUp == '') {
           $error[] = 'tanggalNextFU';
         }
       }
 
       //Cek statusProspect
       if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
-        if ((string)$ld->statusProspect == '') {
+        if ((string)$ld->statusProspek == '') {
           $error[] = 'statusProspect';
         }
       }
@@ -217,7 +221,7 @@ class Mft5 extends CI_Controller
   function _generatedFileMFT($data, $set_err)
   {
     $content = '';
-    $dir = getenv("DOCUMENT_ROOT") . "/CRM-APPS/generatedFile/mft";
+    $dir = getenv("DOCUMENT_ROOT") . "/crm-apps/generatedFile/mft";
     if (!is_dir($dir)) {
       mkdir($dir, 0777, true);
     }
