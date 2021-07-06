@@ -166,16 +166,16 @@ function insert_api_log($activity, $status, $message, $data)
   $CI = &get_instance();
   $insert = [
     'api_key' => $activity['api_key'],
-    'endpoint' => $activity['endpoint'],
-    'post_data' => $activity['post_data'],
+    'endpoint' => isset($activity['endpoint']) ? $activity['endpoint'] : '',
+    'post_data' => isset($activity['post_data']) ? $activity['post_data'] : '',
     'user_agent' => get_user_agent(),
-    'sender' => $activity['sender'],
-    'receiver' => $activity['receiver'],
-    'method' => $activity['method'],
-    'ip_address' => $activity['ip_address'],
-    'request_time' => $activity['request_time'],
-    'http_response_code' => $activity['http_response_code'],
-    'status' => $status,
+    'sender' => isset($activity['sender']) ? $activity['sender'] : '',
+    'receiver' => isset($activity['receiver']) ? $activity['receiver'] : '',
+    'method' => isset($activity['method']) ? $activity['method'] : '',
+    'ip_address' => isset($activity['ip_address']) ? $activity['ip_address'] : '',
+    'request_time' => isset($activity['request_time']) ? $activity['request_time'] : '',
+    'http_response_code' => isset($activity['http_response_code']) ? $activity['http_response_code'] : '',
+    'status' => (string)$status,
     'message' => $message,
     'response_data' => json_encode($data),
 
@@ -188,7 +188,7 @@ function curlPost($url, $data = NULL, $method = NULL, $headers = NULL)
 {
   $ch = curl_init($url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+  // send_json($url);
   if (!empty($data)) {
     if ($method == 'json_post') {
       $data = json_encode($data);

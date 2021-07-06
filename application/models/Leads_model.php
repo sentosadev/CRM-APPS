@@ -455,26 +455,27 @@ class Leads_model extends CI_Model
     $dmy = gmdate("dmY", time() + 60 * 60 * 7);
     $get_data  = $this->db->query("SELECT * FROM (
       (SELECT
-          RIGHT (leads_id, 6) leads_id,
-          created_at
+          RIGHT (leads_id, 6) leads_id
         FROM
           leads
-        ORDER BY created_at DESC
+        ORDER BY leads_id_int DESC
         LIMIT 1)
         UNION ALL
         (SELECT
-          RIGHT (leads_id, 6) leads_id, created_at
+          RIGHT (leads_id, 6) leads_id
         FROM
           upload_leads
-        ORDER BY created_at DESC
-        LIMIT 1)
-      ) AS tabel ORDER BY created_at DESC LIMIT 1");
+        ORDER BY id_leads_int DESC LIMIT 1)
+      ) AS tabel ORDER BY leads_id DESC LIMIT 1");
     if ($get_data->num_rows() > 0) {
       $row = $get_data->row();
       $new_kode = 'E20/' . $dmy . '/' . sprintf("%'.06d", $row->leads_id + 1);
       $i = 0;
       while ($i < 1) {
         $cek = $this->db->get_where('leads', ['leads_id' => $new_kode])->num_rows();
+        if ($cek>0) {
+          $cek = $this->db->get_where('upload_leads', ['leads_id' => $new_kode])->num_rows();
+        }
         if ($cek > 0) {
           $new_kode   = 'E20/' . $dmy . '/' . sprintf("%'.06d", substr($new_kode, -6) + 1);
           $i = 0;

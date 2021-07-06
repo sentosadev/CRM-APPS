@@ -4,6 +4,7 @@ class Upload_leads_model extends CI_Model
   public function __construct()
   {
     parent::__construct();
+    $this->load->helper('api');
   }
 
   function getLeads($filter = null)
@@ -21,9 +22,9 @@ class Upload_leads_model extends CI_Model
         $email = $filter['no_hp_or_email'][1];
         $where .= " AND (mu.no_hp='$no_hp' OR mu.email='$email')";
       }
-      if (isset($filter['is_send_to_ve'])) {
-        if ($filter['is_send_to_ve'] != '') {
-          $where .= " AND mu.is_send_to_ve={$this->db->escape_str($filter['is_send_to_ve'])}";
+      if (isset($filter['acceptedVe'])) {
+        if ($filter['acceptedVe'] != '') {
+          $where .= " AND mu.acceptedVe={$this->db->escape_str($filter['acceptedVe'])}";
         }
       }
       $filter = $this->db->escape_str($filter);
@@ -60,13 +61,13 @@ class Upload_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,is_send_to_ve,mu.leads_id";
+        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,acceptedVe,mu.leads_id";
       }
     }
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null,'leads_id', 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', null];
+      $order_column = [null, 'leads_id', 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', null];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
@@ -90,25 +91,25 @@ class Upload_leads_model extends CI_Model
     $limit
     ");
   }
-  function getEventCodeInvitation($kode_md, $id_kabupaten_kota)
+  function getEventCodeInvitation($kode_md, $kode_dealer)
   {
     $ym = tahun_bulan();
     $cek = $this->db->query("SELECT RIGHT(event_code_invitation,3) event_code_invitation FROM upload_leads WHERE LEFT(created_at,7)='$ym' ORDER BY created_at DESC LIMIT 1");
     if ($cek->num_rows() > 0) {
       $row = $cek->row();
-      $new_kode = $kode_md . '/' . $id_kabupaten_kota . '/' . $ym . '/' . sprintf("%'.03d", $row->event_code_invitation + 1);
+      $new_kode = $kode_md . '/' . $kode_dealer . '/' . $ym . '/' . sprintf("%'.03d", $row->event_code_invitation + 1);
       $i = 0;
       while ($i < 1) {
         $cek = $this->db->get_where('upload_leads', ['event_code_invitation' => $new_kode])->num_rows();
         if ($cek > 0) {
-          $new_kode   = $kode_md . '/' . $id_kabupaten_kota . '/' . $ym . '/' . sprintf("%'.03d", substr($new_kode, -6) + 1);
+          $new_kode   = $kode_md . '/' . $kode_dealer . '/' . $ym . '/' . sprintf("%'.03d", substr($new_kode, -3) + 1);
           $i = 0;
         } else {
           $i++;
         }
       }
     } else {
-      $new_kode   = $kode_md . '/' . $id_kabupaten_kota . '/' . $ym . '/001';
+      $new_kode   = $kode_md . '/' . $kode_dealer . '/' . $ym . '/001';
     }
     return strtoupper($new_kode);
   }
@@ -132,5 +133,59 @@ class Upload_leads_model extends CI_Model
       $new_kode   = 'UPLDS-' . random_hex(10);
     }
     return strtoupper($new_kode);
+  }
+
+  function send_api1()
+  {
+    $api_routes = api_routes_by_code('api_1');
+    $api_key    = api_key('mdms', 've');
+    $url = $api_routes->external_url;
+    $fl = ['acceptedVe' => 0];
+    $leads = $this->getLeads($fl);
+    $data = [];
+    foreach ($leads->result() as $rs) {
+      $data[] = [
+        'nama' => $rs->nama,
+        'noHP' => $rs->no_hp,
+        'email' => $rs->email,
+        'eventCodeInvitation' => $rs->event_code_invitation,
+      ];
+    }
+
+    $request_time = time();
+    $header = [
+      'X-Request-Time' => $request_time,
+      'CRM-API-Key' => $api_key->api_key,
+      'CRM-API-Token' => hash('sha256', $api_key->api_key . $api_key->secret_key . $request_time),
+    ];
+
+    $this->db->trans_begin();
+    $new_data['invitedCustomers'] = $data;
+    $data = json_encode($new_data);
+    $result = json_decode(curlPost($url, $data, $header), true);
+    if (isset($result['data']['invitedCustomers'])) {
+      foreach ($result['data']['invitedCustomers'] as $rd) {
+        $updates_leads[] = [
+          'event_code_invitation' => $rd['eventCodeInvitation'],
+          'errorMessageFromVe' => $rd['errorMessage'],
+          'acceptedVe' => $rd['accepted'] == 'Y' ? 1 : 0,
+          'send_to_ve_at' => waktu()
+        ];
+      }
+    }
+    if (isset($updates_leads)) {
+      $this->db->update_batch('upload_leads', $updates_leads, 'event_code_invitation');
+    }
+    $validasi['activity']['method']   = 'POST';
+    $validasi['activity']['sender']   = 'MDMS';
+    $validasi['activity']['receiver'] = 'VS';
+    $validasi['activity']['api_key']  = $api_key->api_key;
+    insert_api_log($validasi['activity'], $result['status'], $result['message'], $result['data']);
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+    } else {
+      $this->db->trans_commit();
+      return $result;
+    }
   }
 }

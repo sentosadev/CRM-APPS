@@ -159,7 +159,7 @@ class Upload_leads extends Crm_Controller
     $save   = [];
     $error = [];
     $this->db->trans_begin();
-    $uploadId=$this->udm_m->getUploadId();
+    $uploadId = $this->udm_m->getUploadId();
     foreach ($reader->getSheetIterator() as $sheet) {
       $numRow = 1;
       if ($sheet->getIndex() === 0) {
@@ -212,8 +212,9 @@ class Upload_leads extends Crm_Controller
             } else {
               $id_platform_data = $cek_pd->id_platform_data;
             }
+            $kodeDealerSebelumnya = $cdb_nms == NULL ? NULL : $cdb_nms->kodeDealerSebelumnya;
 
-            $event_code_invitation = $this->udm_m->getEventCodeInvitation($row[0], $id_kabupaten_kota);
+            $event_code_invitation = $this->udm_m->getEventCodeInvitation($row[0], $kodeDealerSebelumnya);
 
             // Cek event_code_invitation
             $cek_duplikat = $this->_cekDuplikatEventCodeInvitation($event_code_invitation);
@@ -221,7 +222,7 @@ class Upload_leads extends Crm_Controller
               $error[$baris][] = 'Duplikat event Code Invitation';
             }
 
-            $leads_id=$this->ldm->getLeadsID();
+            $leads_id = $this->ldm->getLeadsID();
             $data = [
               'totalDataSource' => $totalDataSource,
               'uploadId' => $uploadId,
@@ -239,7 +240,7 @@ class Upload_leads extends Crm_Controller
               'created_at'    => waktu(),
               'created_by' => $user->id_user,
               'path_upload_file' => $path_file,
-              'kodeDealerSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeDealerSebelumnya,
+              'kodeDealerSebelumnya' => $kodeDealerSebelumnya,
               'customerId' => $cdb_nms == NULL ? NULL : $cdb_nms->customerId,
               'alamat' => $cdb_nms == NULL ? NULL : $cdb_nms->alamat,
               'idProvinsi' => $cdb_nms == NULL ? NULL : $cdb_nms->idProvinsi,
@@ -307,6 +308,7 @@ class Upload_leads extends Crm_Controller
         $response = ['status' => 0, 'pesan' => "Terjadi kesalahan pada baris : $imp_baris."];
       } else {
         $this->db->trans_commit();
+        $this->udm_m->send_api1();
         $response = [
           'status' => 1,
           'url' => site_url(get_slug())
