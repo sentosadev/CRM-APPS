@@ -42,6 +42,8 @@ class Upload_leads_model extends CI_Model
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
           $where .= " AND ( mu.id_leads_int LIKE'%{$filter['search']}%'
+                            OR mu.leads_id LIKE'%{$filter['search']}%'
+                            OR mu.event_code_invitation LIKE'%{$filter['search']}%'
                             OR mu.kode_md LIKE'%{$filter['search']}%'
                             OR mu.nama LIKE'%{$filter['search']}%'
                             OR mu.no_hp LIKE'%{$filter['search']}%'
@@ -58,13 +60,13 @@ class Upload_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,is_send_to_ve";
+        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,is_send_to_ve,mu.leads_id";
       }
     }
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null, 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', null];
+      $order_column = [null,'leads_id', 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', null];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
@@ -107,6 +109,27 @@ class Upload_leads_model extends CI_Model
       }
     } else {
       $new_kode   = $kode_md . '/' . $id_kabupaten_kota . '/' . $ym . '/001';
+    }
+    return strtoupper($new_kode);
+  }
+
+  function getUploadId()
+  {
+    $get_data  = $this->db->query("SELECT uploadId FROM upload_leads LIMIT 0,1");
+    if ($get_data->num_rows() > 0) {
+      $new_kode = 'UPLDS-' . random_hex(10);
+      $i = 0;
+      while ($i < 1) {
+        $cek = $this->db->get_where('upload_leads', ['uploadId' => $new_kode])->num_rows();
+        if ($cek > 0) {
+          $new_kode   = 'UPLDS-' . random_hex(10);
+          $i = 0;
+        } else {
+          $i++;
+        }
+      }
+    } else {
+      $new_kode   = 'UPLDS-' . random_hex(10);
     }
     return strtoupper($new_kode);
   }

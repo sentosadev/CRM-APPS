@@ -453,8 +453,22 @@ class Leads_model extends CI_Model
   function getLeadsID()
   {
     $dmy = gmdate("dmY", time() + 60 * 60 * 7);
-    $get_data  = $this->db->query("SELECT RIGHT(leads_id,6)leads_id FROM leads 
-                  ORDER BY created_at DESC LIMIT 0,1");
+    $get_data  = $this->db->query("SELECT * FROM (
+      (SELECT
+          RIGHT (leads_id, 6) leads_id,
+          created_at
+        FROM
+          leads
+        ORDER BY created_at DESC
+        LIMIT 1)
+        UNION ALL
+        (SELECT
+          RIGHT (leads_id, 6) leads_id, created_at
+        FROM
+          upload_leads
+        ORDER BY created_at DESC
+        LIMIT 1)
+      ) AS tabel ORDER BY created_at DESC LIMIT 1");
     if ($get_data->num_rows() > 0) {
       $row = $get_data->row();
       $new_kode = 'E20/' . $dmy . '/' . sprintf("%'.06d", $row->leads_id + 1);

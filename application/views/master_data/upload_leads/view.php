@@ -28,6 +28,7 @@
         <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
           <thead>
             <th width='5%'>#</th>
+            <th>Leads ID</th>
             <th>Event Code Invitation</th>
             <th>Deskripsi Event</th>
             <th>Kode MD</th>

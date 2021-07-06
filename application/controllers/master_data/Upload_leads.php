@@ -25,6 +25,7 @@ class Upload_leads extends Crm_Controller
     if (!logged_in()) redirect('auth/login');
     $this->load->model('upload_leads_model', 'udm_m');
     $this->load->model('Cdb_nms_model', 'cdb_nms');
+    $this->load->model('leads_model', 'ldm');
   }
 
   public function index()
@@ -51,6 +52,7 @@ class Upload_leads extends Crm_Controller
 
       $sub_array   = array();
       $sub_array[] = $no;
+      $sub_array[] = $rs->leads_id;
       $sub_array[] = $rs->event_code_invitation;
       $sub_array[] = $rs->deskripsi_event;
       $sub_array[] = $rs->kode_md;
@@ -157,15 +159,19 @@ class Upload_leads extends Crm_Controller
     $save   = [];
     $error = [];
     $this->db->trans_begin();
+    $uploadId=$this->udm_m->getUploadId();
     foreach ($reader->getSheetIterator() as $sheet) {
       $numRow = 1;
       if ($sheet->getIndex() === 0) {
         //looping pembacaan row dalam sheet
         $baris = 1;
         $deskripsi_event = '';
+        $totalDataSource = 0;
         foreach ($sheet->getRowIterator() as $row) {
           if ($numRow == 1) {
             $deskripsi_event = $row[1];
+          } elseif ($numRow == 2) {
+            $totalDataSource = $row[1];
           } elseif ($numRow > 3) {
             if ((string)$row[0] == '') break; //Berhentikan Perulanan Untuk Baris Selanjutnya.
             if ((string)$row[1] == '') $error[$baris][] = 'Nama Konsumen Kosong';
@@ -215,7 +221,11 @@ class Upload_leads extends Crm_Controller
               $error[$baris][] = 'Duplikat event Code Invitation';
             }
 
+            $leads_id=$this->ldm->getLeadsID();
             $data = [
+              'totalDataSource' => $totalDataSource,
+              'uploadId' => $uploadId,
+              'leads_id' => $leads_id,
               'event_code_invitation' => $event_code_invitation,
               'deskripsi_event' => $deskripsi_event,
               'kode_md' => $row[0],
