@@ -61,7 +61,7 @@ class Upload_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,acceptedVe,mu.leads_id";
+        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,acceptedVe,mu.leads_id,errorMessageFromVe";
       }
     }
 
@@ -94,22 +94,23 @@ class Upload_leads_model extends CI_Model
   function getEventCodeInvitation($kode_md, $kode_dealer)
   {
     $ym = tahun_bulan();
+    $rpl_ym = str_replace('-', '/', $ym);
     $cek = $this->db->query("SELECT RIGHT(event_code_invitation,3) event_code_invitation FROM upload_leads WHERE LEFT(created_at,7)='$ym' ORDER BY created_at DESC LIMIT 1");
     if ($cek->num_rows() > 0) {
       $row = $cek->row();
-      $new_kode = $kode_md . '/' . $kode_dealer . '/' . $ym . '/' . sprintf("%'.03d", $row->event_code_invitation + 1);
+      $new_kode = $kode_md . '/' . $kode_dealer . '/' . $rpl_ym . '/' . sprintf("%'.03d", $row->event_code_invitation + 1);
       $i = 0;
       while ($i < 1) {
         $cek = $this->db->get_where('upload_leads', ['event_code_invitation' => $new_kode])->num_rows();
         if ($cek > 0) {
-          $new_kode   = $kode_md . '/' . $kode_dealer . '/' . $ym . '/' . sprintf("%'.03d", substr($new_kode, -3) + 1);
+          $new_kode   = $kode_md . '/' . $kode_dealer . '/' . $rpl_ym . '/' . sprintf("%'.03d", substr($new_kode, -3) + 1);
           $i = 0;
         } else {
           $i++;
         }
       }
     } else {
-      $new_kode   = $kode_md . '/' . $kode_dealer . '/' . $ym . '/001';
+      $new_kode   = $kode_md . '/' . $kode_dealer . '/' . $rpl_ym . '/001';
     }
     return strtoupper($new_kode);
   }

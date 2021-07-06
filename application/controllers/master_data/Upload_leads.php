@@ -50,6 +50,12 @@ class Upload_leads extends Crm_Controller
       //   $aktif = '<i class="fa fa-check"></i>';
       // }
 
+      if ($rs->acceptedVe == 1) {
+        $status_api1 = '<label class="label label-success">Accepted</label>';
+      } else {
+        $status_api1 = '<label class="label label-danger">Not Accepted</label> <br>' . '<label class="label label-danger">' . $rs->errorMessageFromVe . '</label>';
+      }
+
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->leads_id;
@@ -63,6 +69,7 @@ class Upload_leads extends Crm_Controller
       $sub_array[] = $rs->kabupaten_kota;
       $sub_array[] = $rs->source_leads;
       $sub_array[] = $rs->platform_data;
+      $sub_array[] = $status_api1;
       // $sub_array[] = link_on_data_details($params, $user->id_user);
       $data[]      = $sub_array;
       $no++;

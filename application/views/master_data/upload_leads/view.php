@@ -39,6 +39,7 @@
             <th>Kabupaten</th>
             <th>Source Data</th>
             <th>Platform Data</th>
+            <th>Status API1</th>
           </thead>
         </table>
       </div>
@@ -159,7 +160,7 @@
     var dataTable = $('.serverside-tables').DataTable({
       "processing": true,
       "serverSide": true,
-      // "scrollX": true,
+      "scrollX": true,
       "language": {
         "infoFiltered": "",
         "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
