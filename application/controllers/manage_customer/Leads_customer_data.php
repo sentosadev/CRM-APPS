@@ -980,13 +980,13 @@ class Leads_customer_data extends Crm_Controller
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
-      $this->db->trans_commit();
       $pesan = 'Berhasil melakukan assign dealer ';
 
       //Melakukan Pengiriman API 3
       $data = $this->_post_to_api3($leads_id);
       $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
       if ($res_api3['status'] == 1) {
+        $this->db->trans_commit();
         $id_prospek = $res_api3['data']['id_prospek'];
         $pesan = ", dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
         $upd = ['idProspek' => $id_prospek];
@@ -1162,13 +1162,13 @@ class Leads_customer_data extends Crm_Controller
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
-      $this->db->trans_commit();
       $pesan = 'Berhasil melakukan reassign dealer untuk Leads ID : ' . $this->input->post('leads_id', true);
 
       //Melakukan Pengiriman API 3
       $data = $this->_post_to_api3($leads_id);
       $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
       if ($res_api3['status'] == 1) {
+      $this->db->trans_commit();
         $id_prospek = $res_api3['data']['id_prospek'];
         $pesan = ", dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
         $upd = ['idProspek' => $id_prospek];
