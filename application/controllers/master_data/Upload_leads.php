@@ -266,7 +266,7 @@ class Upload_leads extends Crm_Controller
               'idAgama' => $cdb_nms == NULL ? NULL : $cdb_nms->idAgama,
               'tanggalSalesSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->tanggalSalesSebelumnya,
               'kodeLeasingSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeLeasingSebelumnya,
-              'kodeEvent' => NULL,
+              'event_code_invitation' => NULL,
             ];
             //tambahkan array $data ke $save
             array_push($save, $data);

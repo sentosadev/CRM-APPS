@@ -23,6 +23,12 @@ class Upload_leads_model extends CI_Model
         $email = $filter['no_hp_or_email'][1];
         $where .= " AND (mu.no_hp='$no_hp' OR mu.email='$email')";
       }
+      if (isset($filter['no_hp_or_email_or_event_code_invitation'])) {
+        $no_hp = $filter['no_hp_or_email_or_event_code_invitation'][0];
+        $email = $filter['no_hp_or_email_or_event_code_invitation'][1];
+        $eventCodeInvitation = $filter['no_hp_or_email_or_event_code_invitation'][2];
+        $where .= " AND (mu.no_hp='$no_hp' OR mu.email='$email' OR mu.event_code_invitation='$eventCodeInvitation')";
+      }
       if (isset($filter['acceptedVe'])) {
         if ($filter['acceptedVe'] != '') {
           $where .= " AND mu.acceptedVe={$this->db->escape_str($filter['acceptedVe'])}";

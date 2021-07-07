@@ -71,21 +71,24 @@ class Lead extends CI_Controller
 
       //Cek Apakah Pernah RO CDB
       $cdb = $this->cdb_nms->getOneCDBNMS($fcdb)->row();
-      //Cek Apakah Konsumen Invited
-      $cek_invited = $this->udm_m->getLeads($fcdb)->row();
-      $eventCodeInvitation = '';
-      if ($cek_invited != NULL) {
-        $sourceData = 28;
-        $eventCodeInvitation = $cek_invited->event_code_invitation;
-      }
 
+      //Cek Apakah Konsumen Invited
+      $eventCodeInvitation = $pst['eventCodeInvitation'];
+      $fciv['no_hp_or_email_or_event_code_invitation'] = [$no_hp, $email, $eventCodeInvitation];
+      $cek_invited = $this->udm_m->getLeads($fciv)->row();
+      $leads_id_invited = '';
+      if ($cek_invited != NULL) {
+        $eventCodeInvitation = $cek_invited->event_code_invitation;
+        $leads_id_invited = $cek_invited->leads_id;
+      }
+      // send_json($cek_invited);
       $setleads = [
         'setleads' => 1,
       ];
       $this->db->update('staging_table_leads', $setleads, ['stage_id' => $pst['stage_id']]);
 
       if ((string)$pst['leads_id'] == '') {
-        $leads_id = $this->ld_m->getLeadsID();
+        $leads_id = $leads_id_invited == '' ? $this->ld_m->getLeadsID() : $leads_id_invited;
         $insert = [
           'leads_id' => $leads_id,
           'customerId' => $this->ld_m->getCustomerID(),
