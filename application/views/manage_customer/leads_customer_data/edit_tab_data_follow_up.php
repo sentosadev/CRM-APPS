@@ -130,12 +130,16 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               var $eventSelect<?= $fol_up_sekarang ?> = $("#id_status_fu_<?= $fol_up_sekarang ?>");
               $eventSelect<?= $fol_up_sekarang ?>.on("change", function(e) {
                 data = $eventSelect<?= $fol_up_sekarang ?>.select2('data')[0];
-                $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val(data.kategori);
-                if (data.idKategori == 4) {
-                  $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').show();
+                if (data != undefined) {
+                  $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val(data.kategori);
+                  if (data.idKategori == 4) {
+                    $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').show();
+                  } else {
+                    $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').hide();
+                    $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                  }
                 } else {
-                  $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').hide();
-                  $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                  $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val('');
                 }
               });
             </script>

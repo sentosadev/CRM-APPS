@@ -337,6 +337,9 @@ if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
           }
         });
       });
+      $(document.body).on("change", "#id_media_kontak_fu_<?= $i ?>", function() {
+        $('#id_status_fu_<?= $i ?>').val(null).trigger('change');
+      });
     </script>
 <?php }
 } ?>
@@ -355,6 +358,7 @@ if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
             delay: 100,
             data: function(params) {
               return {
+                id_media_kontak_fu: $('#id_media_kontak_fu_<?= $i ?>').val(),
                 searchTerm: params.term, // search term
               };
             },

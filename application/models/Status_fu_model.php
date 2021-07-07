@@ -39,6 +39,11 @@ class Status_fu_model extends CI_Model
           $where .= " AND mu.id_kategori_status_komunikasi !='{$this->db->escape_str($filter['id_kategori_status_komunikasi_not'])}'";
         }
       }
+      if (isset($filter['id_media_kontak_fu'])) {
+        if ($filter['id_media_kontak_fu'] != '') {
+          $where .= " AND mu.id_media_kontak_fu='{$filter['id_media_kontak_fu']}'";
+        }
+      }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);

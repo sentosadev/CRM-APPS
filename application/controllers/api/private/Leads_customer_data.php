@@ -28,7 +28,11 @@ class Leads_customer_data extends CI_Controller
     if (isset($_POST['searchTerm'])) {
       $search = $_POST['searchTerm'];
     }
+
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    if (isset($_POST['id_media_kontak_fu'])) {
+      $filter['id_media_kontak_fu'] = $_POST['id_media_kontak_fu'];
+    }
     $response = $this->lm->getStatusFU($filter)->result();
     $res_ = [];
     foreach ($response as $rs) {
