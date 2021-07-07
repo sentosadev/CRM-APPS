@@ -282,6 +282,7 @@ class Users extends Crm_Controller
       'aktif'        => isset($_POST['aktif']) ? 1 : 0,
       'updated_at'   => waktu(),
       'updated_by'   => $user->id_user,
+      'main_dealer_or_dealer' => $this->input->post('main_dealer_or_dealer')
     ];
 
     if ($post['password'] != '') {

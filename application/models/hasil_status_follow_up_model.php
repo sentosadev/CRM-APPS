@@ -11,6 +11,9 @@ class Hasil_status_follow_up_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     if ($filter != null) {
+      if (isset($filter['kodeHasilStatusFollowUpIn'])) {
+        $where .= " AND mu.kodeHasilStatusFollowUp IN ({$filter['kodeHasilStatusFollowUpIn']})";
+      }
       $filter = $this->db->escape_str($filter);
       if (isset($filter['kodeHasilStatusFollowUp'])) {
         $where .= " AND mu.kodeHasilStatusFollowUp='{$this->db->escape_str($filter['kodeHasilStatusFollowUp'])}'";
