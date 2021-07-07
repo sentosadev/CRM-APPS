@@ -68,7 +68,7 @@ class Upload_leads_model extends CI_Model
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null, 'leads_id', 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', null];
+      $order_column = [null, 'leads_id', 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', 'mu.acceptedVe', "($status_api2)"];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
