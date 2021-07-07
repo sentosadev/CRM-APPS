@@ -75,6 +75,7 @@
        timePickerSeconds: true,
        isInvalidDate: false,
        autoUpdateInput: false,
+       startDate: moment().startOf('seconds'),
        locale: {
          cancelLabel: 'Clear',
          format: 'DD MMMM YYYY HH:mm:ss',
