@@ -172,7 +172,7 @@ class Leads_model extends CI_Model
         " . sql_convert_date('tanggalPengajuan') . " tanggalPengajuanEng,
         " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng,
         " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md
-        " ;
+        ";
 
     if ($filter != null) {
       // Posisi di atas karena skip filter escape tanda kutip (')
@@ -410,19 +410,49 @@ class Leads_model extends CI_Model
   function getStagingTableVSMainTable($filter)
   {
     $where = "WHERE 1=1";
+    $concat_desc_tipe_warna = "CONCAT(deskripsi_tipe,' - ',IFNULL(deskripsi_warna,'')) ";
+    $status_api2 = "CASE WHEN stl.setleads=0 THEN 'New' WHEN stl.setleads=1 THEN 'Inprogress' END ";
 
     if (isset($filter['noHP'])) {
       if ($filter['noHP'] != '') {
         $where .= " AND stl.noHP='{$this->db->escape_str($filter['noHP'])}'";
       }
     }
+
     if (isset($filter['mainTableNULL'])) {
       if ($filter['mainTableNULL'] != '') {
         $where .= " AND stl.setleads=0";
       }
     }
-    return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id
-    FROM staging_table_leads stl 
+    if (isset($filter['mainTableLeadsIDNULL'])) {
+      if ($filter['mainTableLeadsIDNULL'] != '') {
+        $where .= " AND tl.leads_id IS NULL";
+      }
+    }
+
+    if (isset($filter['search'])) {
+      if ($filter['search'] != '') {
+        $filter['search'] = $this->db->escape_str($filter['search']);
+        $where .= " AND ( stl.nama LIKE'%{$filter['search']}%'
+                          OR stl.noHP LIKE'%{$filter['search']}%'
+                          OR stl.noTelp LIKE'%{$filter['search']}%'
+                          OR stl.email LIKE'%{$filter['search']}%'
+                          OR pld.platform_data LIKE'%{$filter['search']}%'
+                          OR sc.source_leads LIKE'%{$filter['search']}%'
+                          OR stl.deskripsiEvent LIKE'%{$filter['search']}%'
+                          OR ($concat_desc_tipe_warna) LIKE'%{$filter['search']}%'
+                          OR ($status_api2) LIKE'%{$filter['search']}%'
+        )";
+      }
+    }
+
+    return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id,pld.platform_data descPlatformData,sc.source_leads descSourceLeads,tp.deskripsi_tipe,wr.deskripsi_warna,$concat_desc_tipe_warna concat_desc_tipe_warna,
+    $status_api2 status_api2
+    FROM staging_table_leads stl
+    JOIN ms_platform_data pld ON pld.id_platform_data=stl.platformData
+    JOIN ms_source_leads sc ON sc.id_source_leads=stl.sourceData
+    LEFT JOIN ms_maintain_tipe tp ON tp.kode_tipe=stl.kodeTypeUnit
+    LEFT JOIN ms_maintain_warna wr ON wr.kode_warna=stl.kodeTypeUnit
     LEFT JOIN leads tl ON tl.noHP=stl.noHP
     $where
     ");
@@ -473,7 +503,7 @@ class Leads_model extends CI_Model
       $i = 0;
       while ($i < 1) {
         $cek = $this->db->get_where('leads', ['leads_id' => $new_kode])->num_rows();
-        if ($cek>0) {
+        if ($cek > 0) {
           $cek = $this->db->get_where('upload_leads', ['leads_id' => $new_kode])->num_rows();
         }
         if ($cek > 0) {
