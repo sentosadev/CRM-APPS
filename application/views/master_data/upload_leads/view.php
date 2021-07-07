@@ -40,6 +40,7 @@
             <th>Source Data</th>
             <th>Platform Data</th>
             <th>Status API1</th>
+            <th>Status API2</th>
           </thead>
         </table>
       </div>

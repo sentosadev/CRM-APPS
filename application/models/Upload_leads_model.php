@@ -11,6 +11,7 @@ class Upload_leads_model extends CI_Model
   {
     $where = 'WHERE 1=1';
     $select = '';
+    $status_api2 = "CASE WHEN stl.noHP IS NULL THEN '' WHEN stl.setleads='1' THEN 'Done' WHEN stl.setleads='0' THEN 'New' END";
     if ($filter != null) {
       if (isset($filter['id_leads_int'])) {
         if ($filter['id_leads_int'] != '') {
@@ -61,7 +62,7 @@ class Upload_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,acceptedVe,mu.leads_id,errorMessageFromVe";
+        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,acceptedVe,mu.leads_id,errorMessageFromVe,($status_api2) status_api2";
       }
     }
 
@@ -86,6 +87,7 @@ class Upload_leads_model extends CI_Model
     JOIN ms_maintain_kabupaten_kota kab ON kab.id_kabupaten_kota=mu.id_kabupaten_kota
     JOIN ms_source_leads sc ON sc.id_source_leads=mu.id_source_leads
     JOIN ms_platform_data pd ON pd.id_platform_data=mu.id_platform_data
+    LEFT JOIN staging_table_leads stl ON stl.noHP=mu.no_hp
     $where
     $order_data
     $limit

@@ -73,12 +73,10 @@ class Lead extends CI_Controller
       $cdb = $this->cdb_nms->getOneCDBNMS($fcdb)->row();
       //Cek Apakah Konsumen Invited
       $cek_invited = $this->udm_m->getLeads($fcdb)->row();
+      $eventCodeInvitation = '';
       if ($cek_invited != NULL) {
         $sourceData = 28;
         $eventCodeInvitation = $cek_invited->event_code_invitation;
-        if ($eventCodeInvitation != clear_removed_html($pst['eventCodeInvitation'])) {
-          $eventCodeInvitation = clear_removed_html($pst['eventCodeInvitation']);
-        }
       }
 
       $setleads = [

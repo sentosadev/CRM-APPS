@@ -55,6 +55,12 @@ class Upload_leads extends Crm_Controller
       } else {
         $status_api1 = '<label class="label label-danger">Not Accepted</label> <br>' . '<label class="label label-danger">' . $rs->errorMessageFromVe . '</label>';
       }
+      $status_api2 = '';
+      if ($rs->status_api2 == 'New') {
+        $status_api2 = '<label class="label label-primary">New</label>';
+      } elseif ($rs->status_api2 == 'Done') {
+        $status_api2 = '<label class="label label-success">Done</label>';
+      }
 
       $sub_array   = array();
       $sub_array[] = $no;
@@ -70,6 +76,7 @@ class Upload_leads extends Crm_Controller
       $sub_array[] = $rs->source_leads;
       $sub_array[] = $rs->platform_data;
       $sub_array[] = $status_api1;
+      $sub_array[] = $status_api2;
       // $sub_array[] = link_on_data_details($params, $user->id_user);
       $data[]      = $sub_array;
       $no++;
