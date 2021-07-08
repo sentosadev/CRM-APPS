@@ -229,7 +229,7 @@ class Upload_leads extends Crm_Controller
             $kodeDealerSebelumnya = $cdb_nms == NULL ? NULL : $cdb_nms->kodeDealerSebelumnya;
 
             $event_code_invitation = $this->udm_m->getEventCodeInvitation($row[0], $kodeDealerSebelumnya);
-
+            // send_json($event_code_invitation);
             // Cek event_code_invitation
             $cek_duplikat = $this->_cekDuplikatEventCodeInvitation($event_code_invitation);
             if ($cek_duplikat == true) {
@@ -266,7 +266,6 @@ class Upload_leads extends Crm_Controller
               'idAgama' => $cdb_nms == NULL ? NULL : $cdb_nms->idAgama,
               'tanggalSalesSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->tanggalSalesSebelumnya,
               'kodeLeasingSebelumnya' => $cdb_nms == NULL ? NULL : $cdb_nms->kodeLeasingSebelumnya,
-              'event_code_invitation' => NULL,
             ];
             //tambahkan array $data ke $save
             array_push($save, $data);
