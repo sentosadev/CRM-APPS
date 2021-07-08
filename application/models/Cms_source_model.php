@@ -39,8 +39,8 @@ class Cms_source_model extends CI_Model
       }
 
       if (isset($filter['select'])) {
-        if ($filter['select'] == 'login_mobile') {
-          $select = "id_user,email,username,nama_lengkap";
+        if ($filter['select'] == 'dropdown') {
+          $select = "mu.kode_cms_source id, deskripsi_cms_source text";
         } else {
           $select = $filter['select'];
         }

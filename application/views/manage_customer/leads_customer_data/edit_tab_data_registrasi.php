@@ -26,7 +26,9 @@
       <label class="col-sm-2 control-label">Kategori Modul Leads</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='kategoriModulLeads' value='<?= $row->kategoriModulLeads ?>' <?= $disabled ?>>
+          <select style='width:100%' id="cmsSource" class='form-control' name='cmsSource' <?= $disabled ?> required>
+            <option value='<?= $row->cmsSource ?>'><?= $row->deskripsiCmsSource ?></option>
+          </select>
         </div>
       </div>
     </div>
@@ -129,18 +131,6 @@
           <input type="text" class="form-control" name='eventCodeInvitation' required value='<?= $row->eventCodeInvitation ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Status No. Handphone *</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="statusNoHp" class='form-control' name='statusNoHp' <?= $disabled ?> required>
-            <option value=""></option>
-            <?php $list = ['1' => 'Pra Bayar(Isi Ulang)', '2' => 'Pasca Bayar/Billing/Tagihan'];
-            foreach ($list as $key => $val) { ?>
-              <option value='<?= $key ?>' <?= $key == $row->statusNoHp ? 'selected' : '' ?>><?= $val ?></option>
-            <?php } ?>
-          </select>
-        </div>
-      </div>
     </div>
   </form>
   <div class="form-group">
@@ -152,6 +142,10 @@
 <?php
 $data['data'] = ['selectKabupatenKotaFromOtherDb2'];
 $this->load->view('additionals/dropdown_wilayah', $data);
+
+$data['data'] = ['selectCmsSource'];
+$this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
+
 ?>
 <script>
   function saveRegistrasi() {

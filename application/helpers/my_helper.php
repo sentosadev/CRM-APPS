@@ -555,3 +555,9 @@ function set_periode($input)
   }
   return $periodeSet;
 }
+
+
+function dMYHIS_en()
+{
+  return gmdate("d F Y H:i:s", time() + 60 * 60 * 7);
+}

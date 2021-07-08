@@ -730,3 +730,31 @@ if (in_array('selectPICDealerMulti', $data)) {
     </script>
 <?php }
 } ?>
+
+<?php
+if (in_array('selectCmsSource', $data)) { ?>
+  <script>
+    $(document).ready(function() {
+      $("#cmsSource").select2({
+        // minimumInputLength: 2,
+        ajax: {
+          url: "<?= site_url('api/private/leads_customer_data/selectCmsSource') ?>",
+          type: "POST",
+          dataType: 'json',
+          delay: 100,
+          data: function(params) {
+            return {
+              searchTerm: params.term, // search term
+            };
+          },
+          processResults: function(response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+    });
+  </script>
+<?php } ?>

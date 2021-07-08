@@ -173,7 +173,7 @@ class Leads_customer_data extends Crm_Controller
 
     $update = [
       'tanggalRegistrasi' => convert_datetime($this->input->post('tanggalRegistrasi', true)),
-      'kategoriModulLeads' => $this->input->post('kategoriModulLeads', true),
+      'cmsSource' => $this->input->post('cmsSource', true),
       'deskripsiEvent' => $this->input->post('deskripsiEvent', true),
       'tanggalVisitBooth' => convert_datetime($this->input->post('tanggalVisitBooth', true)),
       'nama' => $this->input->post('nama', true),

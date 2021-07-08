@@ -260,4 +260,16 @@ class Leads_customer_data extends CI_Controller
     }
     send_json($res);
   }
+
+  function selectCmsSource()
+  {
+    $this->load->model('cms_source_model', 'cms_m');
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    $response = $this->cms_m->getCMSSource($filter)->result();
+    send_json($response);
+  }
 }
