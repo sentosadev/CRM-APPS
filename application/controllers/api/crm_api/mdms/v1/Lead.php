@@ -75,6 +75,8 @@ class Lead extends CI_Controller
       //Cek Apakah Konsumen Invited
       $eventCodeInvitation = $pst['eventCodeInvitation'];
       $fciv['no_hp_or_email_or_event_code_invitation'] = [$no_hp, $email, $eventCodeInvitation];
+      $fciv['id_platform_data'] = $pst['platformData'];
+      $fciv['id_source_leads'] = $sourceData;
       $cek_invited = $this->udm_m->getLeads($fciv)->row();
       $leads_id_invited = '';
       if ($cek_invited != NULL) {

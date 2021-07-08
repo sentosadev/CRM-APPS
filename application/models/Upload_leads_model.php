@@ -46,6 +46,16 @@ class Upload_leads_model extends CI_Model
           $where .= " AND mu.status='{$this->db->escape_str($filter['status'])}'";
         }
       }
+      if (isset($filter['id_source_leads'])) {
+        if ($filter['id_source_leads'] != '') {
+          $where .= " AND mu.id_source_leads='{$this->db->escape_str($filter['id_source_leads'])}'";
+        }
+      }
+      if (isset($filter['id_platform_data'])) {
+        if ($filter['id_platform_data'] != '') {
+          $where .= " AND mu.id_platform_data='{$this->db->escape_str($filter['id_platform_data'])}'";
+        }
+      }
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
