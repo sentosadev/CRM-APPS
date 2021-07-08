@@ -30,14 +30,10 @@ class Mft5 extends CI_Controller
 
       $fhis = [
         'leads_id' => $lds->leads_id,
-        // 'assignedDealer' => $ld->assignedDealer,
+        'assignedDealer' => (string)$ld->assignedDealer,
         'order' => 'followUpKe DESC'
       ];
       $ld_fol = $this->ld_m->getLeadsFollowUp($fhis)->row();
-      if ($ld_fol==NULL) {
-        send_json($lds);
-      }
-      // send_json($ld_fol);
       //Cek noFramePembelianSebelumnya
       if ($ld->noFramePembelianSebelumnya != '') {
         if ((string)$ld->kodeDealerPembelianSebelumnya == '') {
@@ -45,92 +41,104 @@ class Mft5 extends CI_Controller
         }
       }
 
-      // Cek alasanTidakKeDealerSebelumnya
+      // Cek alasanReAssignDealer
+      $alasanTidakKeDealerSebelumnya = '';
       if ((string)$ld->kodeDealerSebelumnya != '') {
-        if ((string)$ld->alasanTidakKeDealerSebelumnya == '' && $ld->kodeDealerSebelumnya != $ld->assignedDealer) {
-          $error[] = 'alasanTidakKeDealerSebelumnya';
+        if ($ld->kodeDealerSebelumnya != $ld->assignedDealer) {
+          $fhad = [
+            'leads_id' => $lds->leads_id,
+            'alasanReAssignDealerNotNULL' => true
+          ];
+          $cek_alasan = $this->ld_m->getLeadsHistoryAssignedDealer($fhad)->row();
+          if ($cek_alasan == NULL) {
+            $error[] = 'alasanTidakKeDealerSebelumnya';
+          } else {
+            $alasanTidakKeDealerSebelumnya = $cek_alasan->alasanReAssignDealer;
+          }
         }
       }
 
-      // Cek kodeHasilStatusFollowUp  
-      if ((string)strtolower($ld_fol->kategori_status_komunikasi) == 'contacted') {
-        if ((string)$ld_fol->kodeHasilStatusFollowUp == '') {
-          $error[] = 'kodeHasilStatusFollowUp';
+      if ($ld_fol != NULL) {
+        // Cek kodeHasilStatusFollowUp  
+        if ((string)strtolower($ld_fol->kategori_status_komunikasi) == 'contacted') {
+          if ((string)$ld_fol->kodeHasilStatusFollowUp == '') {
+            $error[] = 'kodeHasilStatusFollowUp';
+          }
         }
-      }
 
-      //Cek alasanNotProspectNotDeal
-      if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '2' || (string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '4') { //2=Not Prospect, 4=Not Deal
-        if ((string)$ld_fol->alasanNotProspectNotDeal == '') {
-          $error[] = 'alasanNotProspectNotDeal';
+        //Cek alasanNotProspectNotDeal
+        if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '2' || (string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '4') { //2=Not Prospect, 4=Not Deal
+          if ((string)$ld_fol->alasanNotProspectNotDeal == '') {
+            $error[] = 'alasanNotProspectNotDeal';
+          }
         }
-      }
 
-      //Cek keteranganLainnyaNotProspectNotDeal
-      if ((string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '5') { //5=Lainnya
-        if ((string)$ld_fol->keteranganLainnyaNotProspectNotDeal == '') {
-          $error[] = 'keteranganLainnyaNotProspectNotDeal';
+        //Cek keteranganLainnyaNotProspectNotDeal
+        if ((string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '5') { //5=Lainnya
+          if ((string)$ld_fol->keteranganLainnyaNotProspectNotDeal == '') {
+            $error[] = 'keteranganLainnyaNotProspectNotDeal';
+          }
         }
-      }
 
-      //Cek tanggalNextFU
-      if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
-        if ((string)$ld_fol->tglNextFollowUp == '') {
-          $error[] = 'tanggalNextFU';
+        //Cek tanggalNextFU
+        if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
+          if ((string)$ld_fol->tglNextFollowUp == '') {
+            $error[] = 'tanggalNextFU';
+          }
+        } elseif ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3') { //3=Deal
+          if ((string)$ld_fol->tglNextFollowUp == '') {
+            $error[] = 'tanggalNextFU';
+          }
         }
-      } elseif ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3') { //3=Deal
-        if ((string)$ld_fol->tglNextFollowUp == '') {
-          $error[] = 'tanggalNextFU';
-        }
-      }
 
-      //Cek statusProspect
-      if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
-        if ((string)$ld->statusProspek == '') {
-          $error[] = 'statusProspect';
+        //Cek statusProspect
+        if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
+          if ((string)$ld->statusProspek == '') {
+            $error[] = 'statusProspect';
+          }
         }
-      }
 
-      //Cek kodeTypeUnitProspect & kodeWarnaUnitProspect
-      if ((string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '3' || (string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '9') {
-        // 3 =Tidak ada stok di Dealer
-        // 9=Indent  unit terlalu lama
-        if ((string)$ld->kodeTypeUnitProspect == '') {
-          $error[] = 'kodeTypeUnitProspect';
-        } elseif ((string)$ld->kodeWarnaUnitProspect == '') {
-          $error[] = 'kodeWarnaUnitProspect';
+        //Cek kodeTypeUnitProspect & kodeWarnaUnitProspect
+        if ((string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '3' || (string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '9') {
+          // 3 =Tidak ada stok di Dealer
+          // 9=Indent  unit terlalu lama
+          if ((string)$ld->kodeTypeUnitProspect == '') {
+            $error[] = 'kodeTypeUnitProspect';
+          } elseif ((string)$ld->kodeWarnaUnitProspect == '') {
+            $error[] = 'kodeWarnaUnitProspect';
+          }
         }
-      }
 
-      //Cek ontimeSLA1
-      if ((string)strtolower($ld_fol->is_md) == '1' && $ld_fol->followUpKe == '1') {
-        if ((string)$ld->ontimeSLA1 == '') {
-          $error[] = 'ontimeSLA1';
+        //Cek ontimeSLA1
+        if ((string)strtolower($ld_fol->is_md) == '1' && $ld_fol->followUpKe == '1') {
+          if ((string)$ld->ontimeSLA1 == '') {
+            $error[] = 'ontimeSLA1';
+          }
         }
-      }
 
-      //Cek ontimeSLA2
-      if ((string)strtolower($ld_fol->is_md) == '0' && $ld_fol->followUpKe == '1') {
-        if ((string)$ld->ontimeSLA2 == '') {
-          $error[] = 'ontimeSLA2';
+        //Cek ontimeSLA2
+        if ((string)strtolower($ld_fol->is_md) == '0' && $ld_fol->followUpKe == '1') {
+          if ((string)$ld->ontimeSLA2 == '') {
+            $error[] = 'ontimeSLA2';
+          }
         }
-      }
 
-      // kodeTypeUnitDeal && kodeWarnaUnitDeal && metodePembayaranDeal
-      if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3') { //3=Deal
-        if ((string)$ld->kodeTypeUnitDeal == '') {
-          $error[] = 'kodeTypeUnitDeal';
-        } elseif ((string)$ld->kodeWarnaUnitDeal == '') {
-          $error[] = 'kodeWarnaUnitDeal';
-        } elseif ((string)$ld->metodePembayaranDeal == '') {
-          $error[] = 'metodePembayaranDeal';
+        // kodeTypeUnitDeal && kodeWarnaUnitDeal && metodePembayaranDeal
+        if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3') { //3=Deal
+          if ((string)$ld->kodeTypeUnitDeal == '') {
+            $error[] = 'kodeTypeUnitDeal';
+          } elseif ((string)$ld->kodeWarnaUnitDeal == '') {
+            $error[] = 'kodeWarnaUnitDeal';
+          } elseif ((string)$ld->metodePembayaranDeal == '') {
+            $error[] = 'metodePembayaranDeal';
+          }
         }
-      }
 
-      // kodeLeasingDeal
-      if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3' && (strtolower($ld->metodePembayaranDeal) == 'kredit' || strtolower($ld->metodePembayaranDeal) == 'credit') && (string)$ld->frameNo != '') { //3=Deal
-        if ((string)$ld->kodeLeasingDeal == '') {
-          $error[] = 'kodeLeasingDeal';
+        // kodeLeasingDeal
+        if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3' && (strtolower($ld->metodePembayaranDeal) == 'kredit' || strtolower($ld->metodePembayaranDeal) == 'credit') && (string)$ld->frameNo != '') { //3=Deal
+          if ((string)$ld->kodeLeasingDeal == '') {
+            $error[] = 'kodeLeasingDeal';
+          }
         }
       }
 
@@ -153,7 +161,7 @@ class Mft5 extends CI_Controller
         'kodeMD' => 'E20',
         'assignedDealer' => $ld->assignedDealer,
         'tanggalAssignDealer' => $ld->tanggalAssignDealer,
-        'alasanTidakKeDealerSebelumnya' => $ld->alasanPindahDealer,
+        'alasanTidakKeDealerSebelumnya' => $alasanTidakKeDealerSebelumnya,
         'followUpID' => $ld_fol == NULL ? '' : $ld_fol->followUpID,
         'tanggalFollowUp' => $ld_fol == NULL ? '' : $ld_fol->tglFollowUp,
         'kodeStatusKontakFU' => $ld_fol == NULL ? '' : $ld_fol->id_status_fu,
@@ -246,7 +254,7 @@ class Mft5 extends CI_Controller
     }
     fwrite($fp, $content);
     fclose($fp);
-
+    echo $content;
     // Log MFT5
     $log = [
       'api_key' => '0',

@@ -596,9 +596,7 @@ class Leads_model extends CI_Model
         }
       }
       if (isset($filter['assignedDealer'])) {
-        if ($filter['assignedDealer'] != '') {
-          $where .= " AND lfu.assignedDealer='{$this->db->escape_str($filter['assignedDealer'])}'";
-        }
+        $where .= " AND lfu.assignedDealer='{$this->db->escape_str($filter['assignedDealer'])}'";
       }
       if (isset($filter['followUpKe'])) {
         if ($filter['followUpKe'] != '') {
@@ -724,6 +722,9 @@ class Leads_model extends CI_Model
         if ($filter['assignedDealer'] != '') {
           $where .= " AND lhad.assignedDealer='{$this->db->escape_str($filter['assignedDealer'])}'";
         }
+      }
+      if (isset($filter['alasanReAssignDealerNotNULL'])) {
+        $where .= " AND IFNULL(lhad.alasanReAssignDealer,'')!=''";
       }
 
       if (isset($filter['search'])) {
@@ -859,7 +860,10 @@ class Leads_model extends CI_Model
     if (isset($filter['leads_id'])) {
       $where .= " AND leads_id='{$filter['leads_id']}'";
     }
-    return $this->db->query("SELECT leads_id,stageId FROM leads_history_stage $where");
+    return $this->db->query("SELECT  lhs.leads_id,stageId 
+    FROM leads_history_stage lhs
+    JOIN leads ld ON ld.leads_id=lhs.leads_id
+    $where");
   }
 
   function setOntimeSLA1_detik($customerActionDate, $tglFollowUp)
