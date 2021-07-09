@@ -74,6 +74,12 @@
         var previewElement;
         return (previewElement = file.previewElement) != null ? (previewElement.parentNode.removeChild(file.previewElement)) : (void 0);
       },
+      acceptedFiles: ".xlsx",
+      maxFiles: 1,
+      maxfilesexceeded: function(file) {
+        this.removeAllFiles();
+        this.addFile(file);
+      }
 
     });
 
