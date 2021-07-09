@@ -858,7 +858,7 @@ class Leads_model extends CI_Model
     }
 
     if (isset($filter['leads_id'])) {
-      $where .= " AND leads_id='{$filter['leads_id']}'";
+      $where .= " AND lhs.leads_id='{$filter['leads_id']}'";
     }
     return $this->db->query("SELECT  lhs.leads_id,stageId 
     FROM leads_history_stage lhs

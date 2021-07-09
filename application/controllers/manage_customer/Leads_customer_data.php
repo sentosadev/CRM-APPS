@@ -41,20 +41,23 @@ class Leads_customer_data extends Crm_Controller
       } else {
         $btnAssign = $rs->assignedDealer . '</br>';
       }
+      if ($rs->deskripsiHasilStatusFollowUp == 'Prospect') {
+        $skip_if = [
+          'assign' => [
+            [$rs->assignedDealer, '!=', '']
+          ],
+          'reassign' => [
+            [$rs->assignedDealer, '==', '']
+          ]
+        ];
+        $btnAssign .= link_assign_reassign($rs->leads_id, $user->id_group, $skip_if);
+      }
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->leads_id;
       $sub_array[] = $rs->nama;
       $sub_array[] = $rs->kodeDealerSebelumnya;
-      $skip_if = [
-        'assign' => [
-          [$rs->assignedDealer, '!=', '']
-        ],
-        'reassign' => [
-          [$rs->assignedDealer, '==', '']
-        ]
-      ];
-      $sub_array[] = $btnAssign . link_assign_reassign($rs->leads_id, $user->id_group, $skip_if);
+      $sub_array[] = $btnAssign;
       $sub_array[] = $rs->tanggalAssignDealer;
       $sub_array[] = $rs->deskripsiPlatformData;
       $sub_array[] = $rs->deskripsiSourceData;
@@ -962,14 +965,26 @@ class Leads_customer_data extends Crm_Controller
     ];
 
     $update = [
-      'assignedDealer'        => $this->input->post('assignedDealer', true),
+      'assignedDealer'      => $this->input->post('assignedDealer', true),
       'tanggalAssignDealer' => waktu(),
-      'assignedDealerBy' => $user->id_user,
+      'assignedDealerBy'    => $user->id_user,
+    ];
+
+    // Insert History Assigned Dealer
+    $insert_history_assigned = [
+      'leads_id'             => $leads_id,
+      'assignedKe'           => 1,
+      'assignedDealer'       => $this->input->post('assignedDealer', true),
+      'tanggalAssignDealer'  => waktu(),
+      'assignedDealerBy'     => $user->id_user,
+      'created_at'           => waktu(),
+      'created_by'           => $user->id_user,
     ];
 
     $tes = [
       'update' => $update,
-      'ins_history_stage' => $ins_history_stage
+      'ins_history_stage' => $ins_history_stage,
+      'insert_history_assigned' => $insert_history_assigned
     ];
     // send_json($tes);
     $this->db->trans_begin();
@@ -977,6 +992,7 @@ class Leads_customer_data extends Crm_Controller
     if (isset($ins_history_stage)) {
       $this->db->insert('leads_history_stage', $ins_history_stage);
     };
+    $this->db->insert('leads_history_assigned_dealer', $insert_history_assigned);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
