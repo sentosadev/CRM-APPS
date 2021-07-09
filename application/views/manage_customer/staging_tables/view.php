@@ -26,6 +26,7 @@
             <th>Source Leads</th>
             <th>Tipe & Warna Motor</th>
             <th>Deskripsi Event</th>
+            <th>Created At</th>
             <th>Status API2</th>
           </thead>
         </table>
@@ -74,7 +75,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           "orderable": false
         },
         {
-          "targets": [9],
+          "targets": [10],
           "className": 'text-center'
         },
         // // { "targets":[0],"checkboxes":{'selectRow':true}}

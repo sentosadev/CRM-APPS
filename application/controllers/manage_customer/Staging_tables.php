@@ -48,6 +48,7 @@ class Staging_tables extends Crm_Controller
       $sub_array[] = $rs->descSourceLeads;
       $sub_array[] = $rs->concat_desc_tipe_warna;
       $sub_array[] = $rs->deskripsiEvent;
+      $sub_array[] = $rs->created_at;
       $sub_array[] = $status_api2;
       $data[]      = $sub_array;
       $no++;
@@ -72,7 +73,7 @@ class Staging_tables extends Crm_Controller
       'order'  => isset($_POST['order']) ? $_POST['order'] : '',
       'search' => $this->input->post('search')['value'],
       'order_column' => 'view',
-      'mainTableLeadsIDNULL' => true
+      'mainTableNULL' => true
     ];
     if ($this->input->post('id_platform_data_multi')) {
       $filter['platformDataIn'] = $this->input->post('id_platform_data_multi');
