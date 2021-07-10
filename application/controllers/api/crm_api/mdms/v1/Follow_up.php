@@ -119,6 +119,14 @@ class Follow_up extends CI_Controller
         'created_at'                          => waktu()
       ];
 
+      if ($ld->ontimeSLA2 == 0 || (string)$ld->ontimeSLA2 == '') {
+        // Update ontimeSLA2
+        $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($ld->tanggalAssignDealer, $post['tglFollowUp']);
+        $update_leads['leads_id'] = $leads_id;
+        $update_leads['ontimeSLA2_detik'] = $ontimeSLA2_detik;
+        $update_leads['ontimeSLA2'] = $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $ld->assignedDealer);
+      }
+
       $tes = [
         'ins_fol_up' => $ins_fol_up,
         'update_leads' => isset($update_leads) ? $update_leads : NULL,
