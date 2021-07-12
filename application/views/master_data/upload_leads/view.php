@@ -18,6 +18,7 @@
   <div class="box box-default">
     <div class="box-header with-border">
       <div class="box-tools pull-right">
+        <button id="btnDetailKesalahanUploadTerakhir" class="btn btn-danger btn-flat" onclick="showModalErrorUploads()"><i class="fa fa-cross"></i> Detail Kesalahan Upload Terakhir</button>
         <a href="<?= base_url('download/template_upload_leads.xlsx') ?>" download class="btn bg-green btn-flat">Template</a>
         <?= link_on_data_top(user()->id_group); ?>
       </div>
@@ -53,8 +54,10 @@
   </div>
   <!-- /.box -->
 </section>
+<?php $this->load->view('additionals/modal_errors'); ?>
 <script>
   var path_upload_file = '';
+  var set_errors = [];
   Dropzone.autoDiscover = false;
   var myDropzone = new Dropzone("#my-Dropzone", {
     url: "<?php echo site_url(get_controller() . '/uploadFile') ?>",
@@ -115,6 +118,8 @@
         }
         $.ajax({
           beforeSend: function() {
+            set_errors = [];
+            setButtonDetailKesalahanTerakhir();
             $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
             $(el).attr('disabled', true);
           },
@@ -130,16 +135,28 @@
             if (response.status == 1) {
               window.location = response.url;
             } else {
+              for (x of response.errors) {
+                set_errors.push(x);
+              }
+              setButtonDetailKesalahanTerakhir();
               Swal.fire({
                 icon: 'error',
                 title: '<font color="white">Peringatan</font>',
                 html: '<font color="white">' + response.pesan + '</font>',
                 background: '#dd4b39',
-                confirmButtonColor: '#cc3422',
-                confirmButtonText: 'Tutup',
+                cancelButtonColor: '#cc3422',
+                cancelButtonText: 'Tutup',
+                showCancelButton: true,
+                confirmButtonColor: '#2242ccde',
+                confirmButtonText: 'Detail Kesalahan',
                 iconColor: 'white'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  showModalErrorUploads()
+                }
               })
               $(el).attr('disabled', false);
+
             }
             $(el).html('<i class="fa fa-upload"></i> Upload');
           },
@@ -202,5 +219,8 @@
         // // { "targets":[2,4,5], "searchable": false } 
       ],
     });
+
+    //Cek Error
+    setButtonDetailKesalahanTerakhir();
   });
 </script>

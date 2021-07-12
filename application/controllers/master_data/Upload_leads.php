@@ -182,16 +182,23 @@ class Upload_leads extends Crm_Controller
         $deskripsi_event = '';
         $totalDataSource = 0;
         foreach ($sheet->getRowIterator() as $row) {
+          $cek[] = $row;
           if ($numRow == 1) {
             $deskripsi_event = $row[1];
           } elseif ($numRow == 2) {
             $totalDataSource = $row[1];
           } elseif ($numRow > 3) {
-            if ((string)$row[0] == '') break; //Berhentikan Perulanan Untuk Baris Selanjutnya.
+            if ((string)$row[0] == '') $error[$baris][] = 'Kode MD Kosong';
             if ((string)$row[1] == '') $error[$baris][] = 'Nama Konsumen Kosong';
-            if ((string)$row[2] == '') $error[$baris][] = 'No. HP Kosong';
-
-            $no_hp = clean_no_hp($row[2]);
+            if ((string)$row[2] == '') {
+              $error[$baris][] = 'No. HP Kosong';
+            } else {
+              $no_hp = clean_no_hp($row[2]);
+              $err_no_hp = cek_error_no_hp($no_hp);
+              if ($err_no_hp) {
+                $error[$baris][] = $err_no_hp;
+              }
+            }
             $fcdb['no_hp_or_email'] = [$no_hp, $row[4]];
             $cdb_nms = $this->cdb_nms->getOneCDBNMS($fcdb)->row();
 
@@ -199,12 +206,12 @@ class Upload_leads extends Crm_Controller
             $fk = ['id_or_name_kabupaten' => $row[5]];
             $cek_kab = $this->kab_m->getKabupatenKotaFromOtherDb($fk)->row();
             $id_kabupaten_kota = '';
-            if ($cek_kab == NULL) {
-              $error[$baris][] = 'Kabupaten tidak ditemukan';
-            } else {
-              $id_kabupaten_kota = $cek_kab->id_kabupaten;
-              $this->id_kabupaten[] = $id_kabupaten_kota;
-            }
+            // if ($cek_kab == NULL) {
+            //   $error[$baris][] = 'Kabupaten tidak ditemukan';
+            // } else {
+            //   $id_kabupaten_kota = $cek_kab->id_kabupaten;
+            //   $this->id_kabupaten[] = $id_kabupaten_kota;
+            // }
 
             //Cek Source Leads
             $fk = ['id_or_source_leads' => $row[6]];
@@ -291,6 +298,7 @@ class Upload_leads extends Crm_Controller
           }
           $numRow++;
         }
+        // send_json($cek);
       }
     }
     $reader->close();
@@ -318,7 +326,12 @@ class Upload_leads extends Crm_Controller
     } else {
       if (count($error) > 0) {
         $imp_baris = implode(', ', array_keys($error));
-        $response = ['status' => 0, 'pesan' => "Terjadi kesalahan pada baris : $imp_baris."];
+        $errors = set_errors($error);
+        $response = [
+          'status' => 0,
+          'pesan' => "Terjadi kesalahan pada baris : $imp_baris.",
+          'errors' => $errors
+        ];
       } else {
         $this->db->trans_commit();
         $this->udm_m->send_api1();

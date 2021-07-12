@@ -556,8 +556,31 @@ function set_periode($input)
   return $periodeSet;
 }
 
-
 function dMYHIS_en()
 {
   return gmdate("d F Y H:i:s", time() + 60 * 60 * 7);
+}
+
+function set_errors($error)
+{
+  $set_errors = [];
+  foreach ($error as $key => $val) {
+    $err = "<ul>";
+    foreach ($val as $v) {
+      $err .= "<li>$v</li>";
+    }
+    $err .= "</ul>";
+    $set_errors[] = ['<b>' . $key . '</b>', $err];
+  }
+  return $set_errors;
+}
+
+
+function cek_error_no_hp($no_hp)
+{
+  if (strlen($no_hp) < 10) {
+    return 'No. HP kurang dari 10 karakter';
+  } elseif (strlen($no_hp) > 15) {
+    return 'No. HP kurang dari 15 karakter';
+  }
 }
