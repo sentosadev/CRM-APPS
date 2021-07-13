@@ -120,8 +120,10 @@ class Leads_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = '';
     $jumlah_fu = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=stl.leads_id";
+    $jumlah_fu_d = "SELECT COUNT(leads_id) FROM leads_follow_up fud WHERE leads_id=stl.leads_id AND fud.assignedDealer=stl.assignedDealer";
+    $jumlah_interaksi = "SELECT COUNT(leads_id) FROM leads_interaksi WHERE leads_id=stl.leads_id";
 
-    $tgl_follow_up_md = "SELECT tglFollowUp FROM leads_follow_up WHERE leads_id=stl.leads_id AND (assignedDealer='' OR assignedDealer IS NULL)ORDER BY followUpKe LIMIT 1";
+    $tgl_follow_up_md = "SELECT tglFollowUp FROM leads_follow_up WHERE leads_id=stl.leads_id AND (assignedDealer='' OR assignedDealer IS NULL) ORDER BY followUpKe LIMIT 1";
 
     $status_fu = "SELECT deskripsi_status_fu 
                   FROM leads_follow_up lfup
@@ -140,6 +142,14 @@ class Leads_model extends CI_Model
     $hasil_fu = "SELECT deskripsiHasilStatusFollowUp 
                   FROM leads_follow_up lfup
                   JOIN ms_hasil_status_follow_up hsfu ON hsfu.kodeHasilStatusFollowUp=lfup.kodeHasilStatusFollowUp
+                  WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
+
+    $last_kodeHasilStatusFollowUp = "SELECT lfup.kodeHasilStatusFollowUp 
+                  FROM leads_follow_up lfup
+                  WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
+
+    $last_tanggalNextFU = "SELECT lfup.tglNextFollowUp 
+                  FROM leads_follow_up lfup
                   WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
 
     $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
@@ -162,6 +172,7 @@ class Leads_model extends CI_Model
         idKecamatanKantor,kec_kantor.kecamatan deskripsiKecamatanKantor,pkjk.golden_time,pkjk.script_guide,stl.assignedDealerBy,prioritasProspekCustomer,kodePekerjaanKtp,pkjk.pekerjaan deskripsiPekerjaanKtp,jenisKewarganegaraan,noKK,npwp,idJenisMotorYangDimilikiSekarang,jenisMotorYangDimilikiSekarang,idMerkMotorYangDimilikiSekarang,merkMotorYangDimilikiSekarang,yangMenggunakanSepedaMotor,statusProspek,longitude,latitude,jenisCustomer,idSumberProspek,sumberProspek,rencanaPembayaran,statusNoHp,tempatLahir,tanggalLahir,alamat,id_karyawan_dealer,idProspek,tanggalAssignDealer,
         ($status_fu) deskripsiStatusKontakFU,
         ($hasil_fu) deskripsiHasilStatusFollowUp,
+        ($last_kodeHasilStatusFollowUp) kodeHasilStatusFollowUp,
         ($tanggalNextFU) tanggalNextFU,pengeluaran,preferensiPromoDiminatiCustomer,
         CASE WHEN ($pernahTerhubung)=4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
         kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
@@ -239,7 +250,7 @@ class Leads_model extends CI_Model
       if (isset($filter['periode_next_fu'])) {
         if ($filter['periode_next_fu'] != '') {
           $next_fu = $filter['periode_next_fu'];
-          $where .= " AND stl.tanggalNextFU BETWEEN '{$next_fu[0]}' AND '{$next_fu[1]}' ";
+          $where .= " AND ($last_tanggalNextFU) BETWEEN '{$next_fu[0]}' AND '{$next_fu[1]}' ";
         }
       }
       if (isset($filter['periodeCreatedLeads'])) {
@@ -333,6 +344,39 @@ class Leads_model extends CI_Model
         if ($filter['assignedDealerIsNULL'] == true) {
           $where .= " AND IFNULL(stl.assignedDealer,'')=''";
         }
+      }
+
+      if (isset($filter['kodeHasilStatusFollowUpIn'])) {
+        if ($filter['kodeHasilStatusFollowUpIn'] != '') {
+          $filter['kodeHasilStatusFollowUpIn'] = arr_sql($filter['kodeHasilStatusFollowUpIn']);
+          $where .= " AND ($last_kodeHasilStatusFollowUp) IN({$filter['kodeHasilStatusFollowUpIn']})";
+        }
+      }
+      if (isset($filter['ontimeSLA2_multi'])) {
+        if ($filter['ontimeSLA2_multi'] != '') {
+          $filter['ontimeSLA2_multi'] = arr_sql($filter['ontimeSLA2_multi']);
+          $where .= " AND stl.ontimeSLA2 IN({$filter['ontimeSLA2_multi']})";
+        }
+      }
+
+      if (isset($filter['jumlah_fu_md'])) {
+        $where .= " AND IFNULL(($jumlah_fu),0)={$filter['jumlah_fu_md']}";
+      }
+
+      if (isset($filter['interaksi_lebih_dari'])) {
+        $where .= " AND IFNULL(($jumlah_interaksi),0)>{$filter['interaksi_lebih_dari']}";
+      }
+
+      if (isset($filter['ontimeSLA1'])) {
+        $where .= " AND stl.ontimeSLA1={$filter['ontimeSLA1']}";
+      }
+
+      if (isset($filter['ontimeSLA2'])) {
+        $where .= " AND stl.ontimeSLA2={$filter['ontimeSLA2']}";
+      }
+
+      if (isset($filter['jumlah_fu_d'])) {
+        $where .= " AND IFNULL(($jumlah_fu_d),0)={$filter['jumlah_fu_d']}";
       }
 
       if (isset($filter['search'])) {

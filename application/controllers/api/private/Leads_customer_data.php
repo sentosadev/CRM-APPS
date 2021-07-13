@@ -272,4 +272,19 @@ class Leads_customer_data extends CI_Controller
     $response = $this->cms_m->getCMSSource($filter)->result();
     send_json($response);
   }
+
+  function selectHasilStatusFollowUpAll()
+  {
+    $this->load->model('hasil_status_follow_up_model', 'lm');
+    $this->load->helper('authit_helper');
+
+    $search = null;
+    if (isset($_POST['searchTerm'])) {
+      $search = $_POST['searchTerm'];
+    }
+
+    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    $response = $this->lm->getHasilStatusFollowUp($filter)->result();
+    send_json($response);
+  }
 }

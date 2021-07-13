@@ -3,8 +3,79 @@
     $('.select2').select2()
   })
 </script>
+<style>
+  .padding-td {
+    padding-right: 5px;
+    text-align: center;
+    width: 10%;
+  }
+</style>
 <section class="content">
   <!-- SELECT2 EXAMPLE -->
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12">
+      <table style="width:100%">
+        <tbody>
+          <tr>
+            <td class="padding-td">
+              <div class="small-box bg-gray"'>
+                <div class="inner" style="padding-bottom:0px"data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+                  <p style=' min-height:65px'>Leads belum FU MD (workload) <br>&nbsp;</p>
+                <h3 class="card_view" id="data_source"><?= $mon['belum_fu_md'] ?></h3>
+              </div>
+              <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+    </div>
+    </td>
+    <td class="padding-td">
+      <div class="small-box bg-gray">
+        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+          <p style='min-height:65px'>Leads Need FU <br>&nbsp;</p>
+          <h3 class="card_view" id="data_source"><?= $mon['need_fu'] ?></h3>
+        </div>
+        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+      </div>
+    </td>
+    <td class="padding-td">
+      <div class="small-box bg-gray">
+        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+          <p style='min-height:65px'>Leads belum Assign Dealer <br>&nbsp;</p>
+          <h3 class="card_view" id="data_source"><?= $mon['belum_assign_dealer'] ?></h3>
+        </div>
+        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+      </div>
+    </td>
+    <td class="padding-td">
+      <div class="small-box bg-gray">
+        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+          <p style='min-height:65px'>Leads yang melewati SLA MD <br>&nbsp;</p>
+          <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_md'] ?></h3>
+        </div>
+        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+      </div>
+    </td>
+    <td class="padding-td">
+      <div class="small-box bg-gray">
+        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+          <p style='min-height:65px'>Leads yang melewati SLA D <br>&nbsp;</p>
+          <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_d'] ?></h3>
+        </div>
+        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+      </div>
+    </td>
+    <td class="padding-td">
+      <div class="small-box bg-gray">
+        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+          <p style='min-height:65px'>Leads Multi-Interaction <br>&nbsp;</p>
+          <h3 class="card_view" id="data_source"><?= $mon['multi_interaksi'] ?></h3>
+        </div>
+        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+      </div>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+  </div>
+  </div>
   <div class="box box-default">
     <div class="box-header with-border">
       <div class="box-tools pull-right">
@@ -31,7 +102,7 @@
                   <label class="col-sm-2 control-label">Leads ID</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" id='leads_id' multiple>
+                      <select class="form-control select2" style="width: 100%;" id=' leads_id' multiple>
                       </select>
                     </div>
                   </div>
@@ -65,11 +136,10 @@
                   </script>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">Warna</label>
+                  <label class="col-sm-2 control-label">No. HP</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" id="id_warna" multiple>
-                      </select>
+                      <input class='form-control' id='noHP' onkeypress="only_number(event)">
                     </div>
                   </div>
                   <label class="col-sm-2 control-label">Status FU</label>
@@ -91,7 +161,7 @@
                   <label class="col-sm-2 control-label">Hasil FU</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
+                      <select class="form-control select2" style="width: 100%;" id='kodeHasilStatusFollowUp' multiple>
                         <option value=''>- Pilih -</option>
                       </select>
                     </div>
@@ -177,8 +247,10 @@
                   <label class="col-sm-2 control-label">Overdue D</label>
                   <div class="form-input">
                     <div class="col-sm-4">
-                      <select class="form-control select2" style="width: 100%;" name='id_group' multiple>
+                      <select class="form-control select2" style="width: 100%;" id='ontimeSLA2_multi' multiple>
                         <option value=''>- Pilih -</option>
+                        <option value='1'>On Track</option>
+                        <option value='0'>Overdue</option>
                       </select>
                     </div>
                   </div>
@@ -228,10 +300,10 @@
   </div>
   <!-- /.box -->
 </section>
-<?php $data['data'] = ['selectLeadsId', 'selectStatusFU', 'selectPlatformData', 'selectSourceLeads', 'selectDealerSebelumnya', 'selectAssignedDealer', 'selectDeskripsiEvent', 'selectJumlahFu'];
+<?php $data['data'] = ['selectLeadsId', 'selectStatusFU', 'selectPlatformData', 'selectSourceLeads', 'selectDealerSebelumnya', 'selectAssignedDealer', 'selectDeskripsiEvent', 'selectJumlahFu', 'selectHasilStatusFollowUp'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 
-<?php $data['data'] = ['selectWarna', 'selectTipe'];
+<?php $data['data'] = ['selectTipe'];
 $this->load->view('additionals/dropdown_series_tipe', $data); ?>
 
 <?php $this->load->view('manage_customer/leads_customer_data/modal_assign_reassign'); ?>
@@ -261,7 +333,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           d.id_source_leads_multi = $('#id_source_leads').val()
           d.kode_dealer_sebelumnya_multi = $('#kodeDealerSebelumnya').val()
           d.assigned_dealer_multi = $('#searchAssignedDealer').val()
-          d.kode_warna_multi = $('#id_warna').val()
+          d.noHP = $('#noHP').val()
           d.kode_type_motor_multi = $('#id_tipe').val()
           d.leads_id_multi = $('#leads_id').val()
           d.deskripsi_event_multi = $('#deskripsiEvent').val()
@@ -269,6 +341,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           d.jumlah_fu = $('#jumlah_fu').val()
           d.start_next_fu = $('#start_next_fu').val()
           d.end_next_fu = $('#end_next_fu').val()
+          d.kodeHasilStatusFollowUpMulti = $('#kodeHasilStatusFollowUp').val()
+          d.ontimeSLA2_multi = $('#ontimeSLA2_multi').val()
           return d;
         },
       },

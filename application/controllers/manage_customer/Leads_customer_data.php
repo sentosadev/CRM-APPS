@@ -18,6 +18,46 @@ class Leads_customer_data extends Crm_Controller
   {
     $data['title'] = $this->title;
     $data['file']  = 'view';
+    $belum_fu_md = [
+      'select' => 'count',
+      'jumlah_fu_md' => 0
+    ];
+
+    $need_fu = [
+      'kodeHasilStatusFollowUpNotIn' => "3, 4",
+      'is_dealer' => true,
+      'not_contacted' => true,
+    ];
+    $belum_assign_dealer = [
+      'select' => 'count',
+      'assignedDealerIsNULL' => true,
+      'last_kodeHasilStatusFollowUp' => 1
+    ];
+    $multi_interaksi = [
+      'select' => 'count',
+      'interaksi_lebih_dari' => 1
+    ];
+    $lewat_sla_md = [
+      'select' => 'count',
+      'ontimeSLA1' => 0,
+      'jumlah_fu_md' => 0,
+    ];
+
+    $lewat_sla_d = [
+      'select' => 'count',
+      'ontimeSLA2' => 0,
+      'jumlah_fu_d' => 0,
+    ];
+
+    $monitoring = [
+      'belum_fu_md' => $this->ld_m->getLeads($belum_fu_md)->row()->count,
+      'need_fu' => $this->ld_m->getCountLeadsVsFollowUp($need_fu)->row()->count,
+      'belum_assign_dealer' => $this->ld_m->getLeads($belum_assign_dealer)->row()->count,
+      'lewat_sla_md' => $this->ld_m->getLeads($lewat_sla_md)->row()->count,
+      'lewat_sla_d' => $this->ld_m->getLeads($lewat_sla_d)->row()->count,
+      'multi_interaksi' => $this->ld_m->getLeads($multi_interaksi)->row()->count,
+    ];
+    $data['mon'] = $monitoring;
     $this->template_portal($data);
   }
 
@@ -109,8 +149,8 @@ class Leads_customer_data extends Crm_Controller
     if ($this->input->post('assigned_dealer_multi')) {
       $filter['assignedDealerIn'] = $this->input->post('assigned_dealer_multi');
     }
-    if ($this->input->post('kode_warna_multi')) {
-      $filter['kodeWarnaUnitIn'] = $this->input->post('kode_warna_multi');
+    if ($this->input->post('noHP')) {
+      $filter['noHP'] = $this->input->post('noHP');
     }
     if ($this->input->post('leads_id_multi')) {
       $filter['leads_idIn'] = $this->input->post('leads_id_multi');
@@ -126,6 +166,12 @@ class Leads_customer_data extends Crm_Controller
     }
     if ($this->input->post('jumlah_fu')) {
       $filter['jumlah_fu_in'] = $this->input->post('jumlah_fu');
+    }
+    if ($this->input->post('kodeHasilStatusFollowUpMulti')) {
+      $filter['kodeHasilStatusFollowUpIn'] = $this->input->post('kodeHasilStatusFollowUpMulti');
+    }
+    if ($this->input->post('ontimeSLA2_multi')) {
+      $filter['ontimeSLA2_multi'] = $this->input->post('ontimeSLA2_multi');
     }
     if ($this->input->post('start_next_fu') && $this->input->post('end_next_fu')) {
       $filter['periode_next_fu'] = [$this->input->post('start_next_fu'), $this->input->post('end_next_fu')];
