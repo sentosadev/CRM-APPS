@@ -505,24 +505,34 @@ function date_iso_8601_to_datetime($date)
   return date('Y-m-d H:i:s', strtotime($date));
 }
 
-function selisih_hari($start, $end)
+function selisih_2tanggal($start, $end)
 {
   $tgl1 = new DateTime(substr($start, 0, 10));
   $tgl2 = new DateTime(substr($end, 0, 10));
-  return $tgl2->diff($tgl1)->d;
-}
-
-function selisih_menit($start, $end)
-{
-  $tgl1 = new DateTime(substr($start, 0, 10));
-  $tgl2 = new DateTime(substr($end, 0, 10));
-  return $tgl2->diff($tgl1)->i;
+  return $tgl2->diff($tgl1);
 }
 function selisih_detik($start, $end)
 {
   $tgl1 = strtotime($start);
   $tgl2 = strtotime($end);
   return $tgl2 - $tgl1;
+}
+
+function detik_ke_menit($detik)
+{
+  return round($detik / 60);
+}
+
+function detik_ke_jam($detik)
+{
+  $menit = detik_ke_menit($detik);
+  return round($menit / 60);
+}
+
+function detik_ke_hari($detik)
+{
+  $jam = detik_ke_jam($detik);
+  return round($jam / 24);
 }
 
 function convert_date($val)

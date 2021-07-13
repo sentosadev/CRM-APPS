@@ -12,6 +12,8 @@ class Leads_api_model extends CI_Model
     $this->load->model('warna_model', 'wrm');
     $this->load->model('series_model', 'srm');
     $this->load->model('series_dan_tipe_model', 'srtpm');
+    $this->load->model('Platform_data_model', 'pd_m');
+    $this->load->model('Source_leads_model', 'sl_m');
   }
 
   function insertStagingTables($post)
@@ -27,6 +29,7 @@ class Leads_api_model extends CI_Model
     $insert_warna_motor  = [];
     $insert_series_motor = [];
     $insert_series_tipe_motor = [];
+    $now = waktu();
 
     foreach ($post as $pst) {
       //Cek No HP
@@ -34,6 +37,8 @@ class Leads_api_model extends CI_Model
       $cek = $this->ld_m->getStagingLeads(['noHP' => $noHP])->num_rows();
       if (strlen($noHP) > 15) {
         $reject[$noHP] = 'Jumlah karakter melebihi batas';
+      } elseif (strlen($noHP) < 10) {
+        $reject[$noHP] = 'Jumlah karakter kurang';
       } elseif ($noHP == '') {
         $reject[$noHP] = 'No. HP Wajib Diisi';
       }
@@ -51,6 +56,39 @@ class Leads_api_model extends CI_Model
         $cek = $this->ld_m->getLeads($fl)->num_rows();
         if ($cek > 0) {
           $reject[$noHP] = 'Source Ref ID sudah ada';
+        }
+      }
+
+      //Cek customerActionDate
+      if ($pst['customerActionDate'] == '') {
+        $reject[$noHP] = 'Customer Action Date Wajib Diisi';
+      } else {
+        $customerActionDate = date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate']));
+        $selisih = selisih_detik($customerActionDate, $now);
+        if ($selisih < 0) {
+          $reject[$noHP] = 'Customer Action Date Lebih Besar Dari Tanggal Sekarang';
+        }
+      }
+
+      //Cek sourceData
+      if ($pst['sourceData'] == '') {
+        $reject[$noHP] = 'Source Data Wajib Diisi';
+      } else {
+        $fsl = ['id_source_leads' => $pst['sourceData']];
+        $cek_source = $this->sl_m->getSourceLeads($fsl)->num_rows();
+        if ($cek_source == 0) {
+          $reject[$noHP] = 'Source Data tidak ditemukan';
+        }
+      }
+
+      //Cek platformData
+      if ($pst['platformData'] == '') {
+        $reject[$noHP] = 'Platform Data Wajib Diisi';
+      } else {
+        $fpl = ['id_platform_data' => $pst['platformData']];
+        $cek_pfd = $this->pd_m->getPlatformData($fpl)->num_rows();
+        if ($cek_pfd == 0) {
+          $reject[$noHP] = 'Platform Data tidak ditemukan';
         }
       }
 
