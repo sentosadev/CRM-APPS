@@ -73,10 +73,18 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">No. KTP *</label>
+      <label class="col-sm-2 control-label">No. KTP</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='noKtp' required value='<?= $row->noKtp ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='noKtp' value='<?= $row->noKtp ?>' <?= $disabled ?>>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Frame No. Sebelumnya</label>
+      <div class="form-input">
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name='noFramePembelianSebelumnya' value='<?= $row->noFramePembelianSebelumnya ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -85,7 +93,6 @@
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control datepicker" name='tanggalPembelianTerakhir' value='<?= $row->tanggalPembelianTerakhir ?>' <?= $disabled ?>>
-
         </div>
       </div>
       <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP)</label>
@@ -146,7 +153,7 @@
     </div>
     <div class="form-group">
       <div class="col-sm-6 col-md-6">
-        <label class="col-sm-4 control-label">Alamat *</label>
+        <label class="col-sm-4 control-label">Alamat</label>
         <div class="form-input">
           <div class="col-sm-8">
             <textarea class='form-control' rows=5 name='alamat'><?= $row->alamat ?></textarea>
@@ -169,7 +176,9 @@
           <label class="col-sm-4 control-label">Pengeluaran</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <input type="text" class="form-control" name='pengeluaran' value='<?= $row->pengeluaran ?>' <?= $disabled ?>>
+              <select style='width:100%' id="pengeluaran" class='form-control' name='pengeluaran' <?= $disabled ?> required>
+                <option value='<?= $row->pengeluaran ?>'><?= $row->deskripsiPengeluaran ?></option>
+              </select>
             </div>
           </div>
         </div>
@@ -204,10 +213,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kecamatan Domisili *</label>
+      <label class="col-sm-2 control-label">Kecamatan Domisili</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kecamatan_from_other_db" class='form-control' name='kecamatan' <?= $disabled ?> required>
+          <select style='width:100%' id="id_kecamatan_from_other_db" class='form-control' name='kecamatan' <?= $disabled ?>>
             <option value='<?= $row->kecamatan ?>'><?= $row->deskripsiKecamatanDomisili ?></option>
           </select>
         </div>
@@ -220,10 +229,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kelurahan Domisili *</label>
+      <label class="col-sm-2 control-label">Kelurahan Domisili</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?> required>
+          <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?>>
             <option value='<?= $row->kelurahan ?>'><?= $row->deskripsiKelurahanDomisili ?></option>
           </select>
         </div>
@@ -287,7 +296,7 @@
         <div class="col-sm-4">
           <select style='width:100%' id="statusProspek" class='form-control' name='statusProspek' <?= $disabled ?> required>
             <option></option>
-            <?php $list = ['Low', 'Hot', 'Not Deal', 'Deal'];
+            <?php $list = ['Low', 'Medium', 'Hot'];
             foreach ($list as $val) { ?>
               <option value='<?= $val ?>' <?= $val == $row->statusProspek ? 'selected' : '' ?>><?= $val ?></option>
             <?php } ?>
@@ -296,16 +305,16 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Longitude *</label>
+      <label class="col-sm-2 control-label">Longitude</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="number" class="form-control" name='longitude' required value='<?= $row->longitude ?>' <?= $disabled ?>>
+          <input type="number" class="form-control" name='longitude' value='<?= $row->longitude ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Latitude *</label>
+      <label class="col-sm-2 control-label">Latitude</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="number" class="form-control" id='latitude' name='latitude' required value='<?= $row->latitude ?>' <?= $disabled ?>>
+          <input type="number" class="form-control" id='latitude' name='latitude' value='<?= $row->latitude ?>' <?= $disabled ?>>
 
         </div>
       </div>
@@ -325,16 +334,16 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Tempat Lahir *</label>
+      <label class="col-sm-2 control-label">Tempat Lahir</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='tempatLahir' required value='<?= $row->tempatLahir ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='tempatLahir' value='<?= $row->tempatLahir ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Tgl. Lahir *</label>
+      <label class="col-sm-2 control-label">Tgl. Lahir</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datepicker" id='tanggalLahir' name='tanggalLahir' required value='<?= $row->tanggalLahir ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datepicker" id='tanggalLahir' name='tanggalLahir' value='<?= $row->tanggalLahir ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -351,20 +360,12 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Sumber Prospek *</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="idSumberProspek" class='form-control' name='idSumberProspek' <?= $disabled ?> required>
-            <option value='<?= $row->idSumberProspek ?>'><?= $row->sumberProspek ?></option>
-          </select>
-        </div>
-      </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Jenis Kewarganegaraan *</label>
+      <label class="col-sm-2 control-label">Jenis Kewarganegaraan</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="jenisKewarganegaraan" class='form-control' name='jenisKewarganegaraan' <?= $disabled ?> required>
+          <select style='width:100%' id="jenisKewarganegaraan" class='form-control' name='jenisKewarganegaraan' <?= $disabled ?>>
             <option value=""></option>
             <?php $list = ['WNA' => 'WNA', 'WNI' => 'WNI'];
             foreach ($list as $key => $val) { ?>
@@ -373,10 +374,10 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Rencana Pembayaran *</label>
+      <label class="col-sm-2 control-label">Rencana Pembayaran</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="rencanaPembayaran" class='form-control' name='rencanaPembayaran' <?= $disabled ?> required>
+          <select style='width:100%' id="rencanaPembayaran" class='form-control' name='rencanaPembayaran' <?= $disabled ?>>
             <option value=""></option>
             <?php $list = ['cash' => 'Cash', 'kredit' => 'Kredit'];
             foreach ($list as $key => $val) { ?>
@@ -409,7 +410,7 @@
 </div>
 <?php
 
-$data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan', 'selectPlatformData', 'selectSourceLeads'];
+$data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan', 'selectPlatformData', 'selectSourceLeads', 'selectPengeluaran'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
 
 $data['data'] = ['selectProvinsiFromOtherDb', 'selectKabupatenKotaFromOtherDb', 'selectKecamatanFromOtherDb', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];
@@ -433,49 +434,89 @@ $this->load->view('additionals/dropdown_wilayah', $data);
       return false;
     <?php } ?>
 
-    $.ajax({
-      beforeSend: function() {
-        $(set_id).html('<i class="fa fa-spinner fa-spin"></i> Process');
-        $(set_id).attr('disabled', true);
-      },
-      enctype: 'multipart/form-data',
-      url: '<?= site_url(get_controller() . '/saveEditPendukungProbing_1') ?>',
-      type: "POST",
-      data: val_form_data_pendukung_probing_1,
-      processData: false,
-      contentType: false,
-      // cache: false,
-      dataType: 'JSON',
-      success: function(response) {
-        if (response.status == 1) {
-          changeTabs(tabs);
+    $('#form_data_pendukung_probing_1').validate({
+      highlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().addClass(errorClass);
         } else {
+          $(element).parents('.form-input').addClass('has-error');
+        }
+      },
+      unhighlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().removeClass(errorClass);
+        } else {
+          $(element).parents('.form-input').removeClass('has-error');
+        }
+      },
+      errorPlacement: function(error, element) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          element = $("#select2-" + elem.attr("id") + "-container").parent();
+          error.insertAfter(element);
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    })
+    if ($('#form_data_pendukung_probing_1').valid()) // check if form is valid
+    {
+      $.ajax({
+        beforeSend: function() {
+          $(set_id).html('<i class="fa fa-spinner fa-spin"></i> Process');
+          $(set_id).attr('disabled', true);
+        },
+        enctype: 'multipart/form-data',
+        url: '<?= site_url(get_controller() . '/saveEditPendukungProbing_1') ?>',
+        type: "POST",
+        data: val_form_data_pendukung_probing_1,
+        processData: false,
+        contentType: false,
+        // cache: false,
+        dataType: 'JSON',
+        success: function(response) {
+          if (response.status == 1) {
+            changeTabs(tabs);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: '<font color="white">Peringatan</font>',
+              html: '<font color="white">' + response.pesan + '</font>',
+              background: '#dd4b39',
+              confirmButtonColor: '#cc3422',
+              confirmButtonText: 'Tutup',
+              iconColor: 'white'
+            })
+          }
+          $(set_id).attr('disabled', false);
+          $(set_id).html(default_name_button);
+        },
+        error: function() {
           Swal.fire({
             icon: 'error',
             title: '<font color="white">Peringatan</font>',
-            html: '<font color="white">' + response.pesan + '</font>',
+            html: '<font color="white">Telah terjadi kesalahan !</font>',
             background: '#dd4b39',
             confirmButtonColor: '#cc3422',
             confirmButtonText: 'Tutup',
             iconColor: 'white'
           })
+          $(set_id).html(default_name_button);
+          $(set_id).attr('disabled', false);
         }
-        $(set_id).attr('disabled', false);
-        $(set_id).html(default_name_button);
-      },
-      error: function() {
-        Swal.fire({
-          icon: 'error',
-          title: '<font color="white">Peringatan</font>',
-          html: '<font color="white">Telah terjadi kesalahan !</font>',
-          background: '#dd4b39',
-          confirmButtonColor: '#cc3422',
-          confirmButtonText: 'Tutup',
-          iconColor: 'white'
-        })
-        $(set_id).html(default_name_button);
-        $(set_id).attr('disabled', false);
-      }
-    });
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: '<font color="white">Peringatan</font>',
+        html: '<font color="white">Silahkan lengkapi field yang wajib diisi</font>',
+        background: '#dd4b39',
+        confirmButtonColor: '#cc3422',
+        confirmButtonText: 'Tutup',
+        iconColor: 'white'
+      })
+    }
   }
 </script>

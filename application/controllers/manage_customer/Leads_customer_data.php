@@ -375,6 +375,7 @@ class Leads_customer_data extends Crm_Controller
     $this->load->model('kabupaten_kota_model', 'kab');
     $this->load->model('kecamatan_model', 'kec');
     $this->load->model('kelurahan_model', 'kel');
+    $this->load->model('pengeluaran_model', 'plm');
     //Cek Data
     if ($gr == NULL) {
       $result = [
@@ -479,6 +480,12 @@ class Leads_customer_data extends Crm_Controller
     //Sinkron Tabel Kelurahan
     $arr_id_kelurahan = [$this->input->post('kelurahan', true)];
 
+    //Sinkron Tabel Kelurahan
+    $arr_id_kelurahan = [$this->input->post('kelurahan', true)];
+
+    //Sinkron Tabel pengeluaran
+    $arr_id_pengeluaran = [$this->input->post('pengeluaran', true)];
+
     $tes = [
       'update' => $update
     ];
@@ -493,6 +500,7 @@ class Leads_customer_data extends Crm_Controller
     $this->kab->sinkronTabelKabupaten($arr_id_kabupaten_kota, $user);
     $this->kec->sinkronTabelKecamatan($arr_id_kecamatan, $user);
     $this->kel->sinkronTabelKelurahan($arr_id_kelurahan, $user);
+    $this->plm->sinkronTabelPengeluaran($arr_id_pengeluaran, $user);
     $this->db->update('leads', $update, $fg);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();

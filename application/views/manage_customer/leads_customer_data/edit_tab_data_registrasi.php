@@ -6,13 +6,13 @@
       <label class="col-sm-2 control-label">Leads ID</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='leads_id' required value='<?= $row->leads_id ?>' disabled>
+          <input type="text" class="form-control" name='leads_id' value='<?= $row->leads_id ?>' disabled>
         </div>
       </div>
       <label class="col-sm-2 control-label">Tanggal Registrasi</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datetimepicker" name='tanggalRegistrasi' required value='<?= $row->tanggalRegistrasiEng ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datetimepicker" name='tanggalRegistrasi' value='<?= $row->tanggalRegistrasiEng ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -20,13 +20,13 @@
       <label class="col-sm-2 control-label">Customer ID</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='customerId' required value='<?= $row->customerId ?>' disabled>
+          <input type="text" class="form-control" name='customerId' value='<?= $row->customerId ?>' disabled>
         </div>
       </div>
       <label class="col-sm-2 control-label">Kategori Modul Leads</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="cmsSource" class='form-control' name='cmsSource' <?= $disabled ?> required>
+          <select style='width:100%' id="cmsSource" class='form-control' name='cmsSource' <?= $disabled ?>>
             <option value='<?= $row->cmsSource ?>'><?= $row->deskripsiCmsSource ?></option>
           </select>
         </div>
@@ -50,13 +50,13 @@
       <label class="col-sm-2 control-label">Nama *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" id='nama' name='nama' required value='<?= $row->nama ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" required id='nama' name='nama' value='<?= $row->nama ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Segmen Produk</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="segmenProduk" class='form-control' name='segmenProduk' <?= $disabled ?> required>
+          <select style='width:100%' id="segmenProduk" class='form-control' name='segmenProduk' <?= $disabled ?>>
             <option value=""></option>
             <?php $list = ['C' => 'Cub', 'M' => 'Matic', 'S' => 'Sport'];
             foreach ($list as $key => $val) { ?>
@@ -70,7 +70,7 @@
       <label class="col-sm-2 control-label">No. HP Pendaftaran *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='noHP' required value='<?= $row->noHP ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='noHP' required value='<?= $row->noHP ?>' <?= $disabled ?> onkeypress="only_number(event)">
         </div>
       </div>
       <label class="col-sm-2 control-label">Tgl. Download Brosur</label>
@@ -112,7 +112,7 @@
       <label class="col-sm-2 control-label">Kota / Kabupaten</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kabupaten_kota_from_other_db_2" class='form-control' name='kabupaten' <?= $disabled ?> required>
+          <select style='width:100%' id="id_kabupaten_kota_from_other_db_2" class='form-control' name='kabupaten' <?= $disabled ?>>
             <option value='<?= $row->kabupaten ?>'><?= $row->deskripsiKabupatenKotaDomisili ?></option>
           </select>
         </div>
@@ -125,10 +125,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Event Code Invitation *</label>
+      <label class="col-sm-2 control-label">Event Code Invitation</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='eventCodeInvitation' required value='<?= $row->eventCodeInvitation ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='eventCodeInvitation' value='<?= $row->eventCodeInvitation ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -155,49 +155,90 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
       changeTabs('pengajuan_kontak_sales');
       return false;
     <?php } ?>
-    $.ajax({
-      beforeSend: function() {
-        $('#nextTo_pengajuan_kontak_sales').html('<i class="fa fa-spinner fa-spin"></i> Process');
-        $('#nextTo_pengajuan_kontak_sales').attr('disabled', true);
-      },
-      enctype: 'multipart/form-data',
-      url: '<?= site_url(get_controller() . '/saveEditRegistrasi') ?>',
-      type: "POST",
-      data: val_form_registrasi,
-      processData: false,
-      contentType: false,
-      // cache: false,
-      dataType: 'JSON',
-      success: function(response) {
-        if (response.status == 1) {
-          changeTabs('pengajuan_kontak_sales');
+    $('#form_registrasi').validate({
+      highlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().addClass(errorClass);
         } else {
+          $(element).parents('.form-input').addClass('has-error');
+        }
+      },
+      unhighlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().removeClass(errorClass);
+        } else {
+          $(element).parents('.form-input').removeClass('has-error');
+        }
+      },
+      errorPlacement: function(error, element) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          element = $("#select2-" + elem.attr("id") + "-container").parent();
+          error.insertAfter(element);
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    })
+
+    if ($('#form_registrasi').valid()) // check if form is valid
+    {
+      $.ajax({
+        beforeSend: function() {
+          $('#nextTo_pengajuan_kontak_sales').html('<i class="fa fa-spinner fa-spin"></i> Process');
+          $('#nextTo_pengajuan_kontak_sales').attr('disabled', true);
+        },
+        enctype: 'multipart/form-data',
+        url: '<?= site_url(get_controller() . '/saveEditRegistrasi') ?>',
+        type: "POST",
+        data: val_form_registrasi,
+        processData: false,
+        contentType: false,
+        // cache: false,
+        dataType: 'JSON',
+        success: function(response) {
+          if (response.status == 1) {
+            changeTabs('pengajuan_kontak_sales');
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: '<font color="white">Peringatan</font>',
+              html: '<font color="white">' + response.pesan + '</font>',
+              background: '#dd4b39',
+              confirmButtonColor: '#cc3422',
+              confirmButtonText: 'Tutup',
+              iconColor: 'white'
+            })
+          }
+          $('#nextTo_pengajuan_kontak_sales').attr('disabled', false);
+          $('#nextTo_pengajuan_kontak_sales').html('<i class="fa fa-forward"></i> Halaman Berikutnya');
+        },
+        error: function() {
           Swal.fire({
             icon: 'error',
             title: '<font color="white">Peringatan</font>',
-            html: '<font color="white">' + response.pesan + '</font>',
+            html: '<font color="white">Telah terjadi kesalahan !</font>',
             background: '#dd4b39',
             confirmButtonColor: '#cc3422',
             confirmButtonText: 'Tutup',
             iconColor: 'white'
           })
+          $('#nextTo_pengajuan_kontak_sales').html('<i class="fa fa-forward"></i> Halaman Berikutnya');
+          $('#nextTo_pengajuan_kontak_sales').attr('disabled', false);
         }
-        $('#nextTo_pengajuan_kontak_sales').attr('disabled', false);
-        $('#nextTo_pengajuan_kontak_sales').html('<i class="fa fa-forward"></i> Halaman Berikutnya');
-      },
-      error: function() {
-        Swal.fire({
-          icon: 'error',
-          title: '<font color="white">Peringatan</font>',
-          html: '<font color="white">Telah terjadi kesalahan !</font>',
-          background: '#dd4b39',
-          confirmButtonColor: '#cc3422',
-          confirmButtonText: 'Tutup',
-          iconColor: 'white'
-        })
-        $('#nextTo_pengajuan_kontak_sales').html('<i class="fa fa-forward"></i> Halaman Berikutnya');
-        $('#nextTo_pengajuan_kontak_sales').attr('disabled', false);
-      }
-    });
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: '<font color="white">Peringatan</font>',
+        html: '<font color="white">Silahkan lengkapi field yang wajib diisi</font>',
+        background: '#dd4b39',
+        confirmButtonColor: '#cc3422',
+        confirmButtonText: 'Tutup',
+        iconColor: 'white'
+      })
+    }
   }
 </script>

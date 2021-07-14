@@ -173,9 +173,10 @@ class Leads_model extends CI_Model
         ($status_fu) deskripsiStatusKontakFU,
         ($hasil_fu) deskripsiHasilStatusFollowUp,
         ($last_kodeHasilStatusFollowUp) kodeHasilStatusFollowUp,
-        ($tanggalNextFU) tanggalNextFU,pengeluaran,preferensiPromoDiminatiCustomer,
+        ($tanggalNextFU) tanggalNextFU,preferensiPromoDiminatiCustomer,
         CASE WHEN ($pernahTerhubung)=4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
         kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
+        plm.pengeluaran deskripsiPengeluaran,stl.pengeluaran,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
         " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
         " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
@@ -444,6 +445,7 @@ class Leads_model extends CI_Model
     LEFT JOIN ms_maintain_provinsi prov_pengajuan ON prov_pengajuan.id_provinsi=stl.idProvinsiPengajuan
     LEFT JOIN ms_maintain_kabupaten_kota kab_pengajuan ON kab_pengajuan.id_kabupaten_kota=stl.idKabupatenPengajuan
     LEFT JOIN ms_maintain_cms_source mcs ON mcs.kode_cms_source=stl.cmsSource
+    LEFT JOIN ms_pengeluaran plm ON plm.id_pengeluaran=stl.pengeluaran
     $where
     $group_by
     $order_data
