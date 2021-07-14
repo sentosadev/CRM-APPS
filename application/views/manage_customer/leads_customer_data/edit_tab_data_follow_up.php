@@ -68,15 +68,15 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Keterangan Follow Up <?= $fol_up_sekarang ?></label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name='keteranganFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" name='keteranganFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganFollowUp'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Media Komunikasi Fol. Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Media Komunikasi Fol. Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_media_kontak_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_media_kontak_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="id_media_kontak_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_media_kontak_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?> required>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['id_media_kontak_fu'] ?>'><?= $lfu['media_kontak_fu'] ?></option>
@@ -89,7 +89,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Tgl. Next Follow Up</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datepicker" name='tglNextFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control datepicker" name='tglNextFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
@@ -97,7 +97,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Keterangan Next Action Follow Up</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name='keteranganNextFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganNextFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" name='keteranganNextFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganNextFollowUp'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
@@ -106,7 +106,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Status Komunikasi Fol. Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_status_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_status_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="id_status_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_status_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?> required>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['id_status_fu'] ?>'><?= $lfu['status_fu'] ?></option>

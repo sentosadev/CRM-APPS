@@ -528,8 +528,9 @@ class Leads_customer_data extends Crm_Controller
       ];
       send_json($result);
     }
-    if ($this->input->post('folup', true) != NULL) {
-      foreach ($this->input->post('folup', true) as $i) {
+    $list_folup = $this->input->post('folup', true);
+    if ($list_folup != NULL) {
+      foreach ($list_folup as $i) {
         $fg['followUpKe'] = $i;
         $fg['assignedDealer'] = (string)$gr->assignedDealer;
         $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
@@ -550,6 +551,30 @@ class Leads_customer_data extends Crm_Controller
           'updated_at'    => waktu(),
           'updated_by' => $user->id_user,
         ];
+
+        //Cek TglFollowUp Apakah Lebih Kecil Dari CustomerActionDate
+        $i_1 = $i - 1;
+        $tglFolUpSebelumnya = convert_datetime($this->input->post('tglFollowUp_' . $i_1, true));
+        $cek_fol_act = selisih_detik($tglFolUpSebelumnya, $upd_fol['tglFollowUp']);
+        if ($cek_fol_act < 1) {
+          $response = [
+            'status' => 0,
+            'pesan' => "Tanggal Follow Up $i lebih kecil dari Tanggal Follow Up $i_1"
+          ];
+          send_json($response);
+        }
+
+        //Cek Tanggal Follow Up Apakah Lebih Kecil Dari Tanggal Follow Up Sebelumnya
+        if (count($list_folup) > 1) {
+          $cek_fol_act = selisih_detik($gr->customerActionDate, $upd_fol['tglFollowUp']);
+          if ($cek_fol_act < 1) {
+            $response = [
+              'status' => 0,
+              'pesan' => "Tanggal Follow Up $i lebih kecil dari customer Action Date"
+            ];
+            send_json($response);
+          }
+        }
         if ($cek->created_at == '') {
           $upd_fol['created_at'] = waktu();
           $upd_fol['created_by'] = $user->id_user;
@@ -731,7 +756,7 @@ class Leads_customer_data extends Crm_Controller
       'upd_leads' => isset($upd_leads) ? $upd_leads : NULL,
       'history_stage_id' => isset($history_stage_id) ? $history_stage_id : NULL,
     ];
-    // send_json($tes);
+    send_json($tes);
 
     $this->db->trans_begin();
 
@@ -872,6 +897,8 @@ class Leads_customer_data extends Crm_Controller
       'leads_id' => $leads_id,
       'followUpKe' => $followUpKe,
       'assignedDealer' => $get_lead->assignedDealer,
+      'id_status_fu' => null,
+      'id_media_kontak_fu' => null,
     ];
     if ($followUpKe > 1) {
       $fol_sebelumnya = $followUpKe - 1;
