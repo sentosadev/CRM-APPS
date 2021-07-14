@@ -345,7 +345,7 @@ if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
 } ?>
 
 <?php
-if (in_array('selectMediaKomunikasiFolupMulti', $data)) {
+if (in_array('selectStatusKomunikasiFolUpMulti', $data)) {
   for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
     <script>
       $(document).ready(function() {

@@ -30,9 +30,7 @@ class Upload_leads_model extends CI_Model
         $where .= " AND (mu.no_hp='$no_hp' OR mu.email='$email' OR mu.event_code_invitation='$eventCodeInvitation')";
       }
       if (isset($filter['acceptedVe'])) {
-        if ($filter['acceptedVe'] != '') {
-          $where .= " AND mu.acceptedVe={$this->db->escape_str($filter['acceptedVe'])}";
-        }
+        $where .= " AND mu.acceptedVe={$this->db->escape_str($filter['acceptedVe'])}";
       }
       $filter = $this->db->escape_str($filter);
       if (isset($filter['event_code_invitation'])) {
@@ -106,6 +104,7 @@ class Upload_leads_model extends CI_Model
     LEFT JOIN staging_table_leads stl ON stl.noHP=mu.no_hp
     $where
     $order_data
+    GROUP BY mu.leads_id
     $limit
     ");
   }
@@ -154,11 +153,12 @@ class Upload_leads_model extends CI_Model
     return strtoupper($new_kode);
   }
 
-  function send_api1()
+  function send_api1($post = null)
   {
     $api_routes = api_routes_by_code('api_1');
     $api_key    = api_key('mdms', 've');
     $url = $api_routes->external_url;
+
     $fl = ['acceptedVe' => 0];
     $leads = $this->getLeads($fl);
     $data = [];
@@ -179,9 +179,9 @@ class Upload_leads_model extends CI_Model
     ];
 
     $this->db->trans_begin();
-    $new_data['invitedCustomers'] = $data;
+    $new_data['invitedCustomers'] = $data; //ganti $data jika ambil dari upload leads
     $data = json_encode($new_data);
-    $result = json_decode(curlPost($url, $data, $header), true);
+    $result = json_decode(curlPost($url, $data, 'POST', $header), true);
     if (isset($result['data']['invitedCustomers'])) {
       foreach ($result['data']['invitedCustomers'] as $rd) {
         $updates_leads[] = [

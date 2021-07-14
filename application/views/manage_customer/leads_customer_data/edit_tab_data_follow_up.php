@@ -178,11 +178,13 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
 
               $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").on("change", function(e) {
                 data = $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").select2('data')[0];
-                if (data.id == 2 || data.id == 4) {
-                  $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
-                } else {
-                  $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').hide();
-                  $('#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                if (data != undefined) {
+                  if (data.id == 2 || data.id == 4) {
+                    $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
+                  } else {
+                    $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').hide();
+                    $('#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                  }
                 }
               });
             </script>

@@ -189,6 +189,7 @@ function curlPost($url, $data = NULL, $method = NULL, $headers = NULL)
   $ch = curl_init($url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   // send_json($url);
+  // send_json(['body' => json_decode($data), 'header' => $headers]);
   if (!empty($data)) {
     if ($method == 'json_post') {
       $data = json_encode($data);

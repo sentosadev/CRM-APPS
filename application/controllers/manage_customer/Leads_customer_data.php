@@ -31,6 +31,7 @@ class Leads_customer_data extends Crm_Controller
     $belum_assign_dealer = [
       'select' => 'count',
       'assignedDealerIsNULL' => true,
+      'kodeHasilStatusFollowUpIn' => [1],
       'last_kodeHasilStatusFollowUp' => 1
     ];
     $multi_interaksi = [

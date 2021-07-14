@@ -14,8 +14,9 @@ class Invited_customer extends CI_Controller
 
   public function index()
   {
-    $result = $this->ld_m->send_api1();
-    send_json($result);
+    $validasi = request_validation();
+    $this->ld_m->send_api1();
+    // send_json($result);
   }
 
   function dummy()

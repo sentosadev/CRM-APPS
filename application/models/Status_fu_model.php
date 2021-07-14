@@ -41,7 +41,7 @@ class Status_fu_model extends CI_Model
       }
       if (isset($filter['id_media_kontak_fu'])) {
         if ($filter['id_media_kontak_fu'] != '') {
-          $where .= " AND mu.id_media_kontak_fu='{$filter['id_media_kontak_fu']}'";
+          $where .= " AND mdks.id_media_kontak_fu='{$filter['id_media_kontak_fu']}'";
         }
       }
       if (isset($filter['search'])) {
@@ -55,12 +55,12 @@ class Status_fu_model extends CI_Model
       }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
-          $select = "id_status_fu id,deskripsi_status_fu text,kategori_status_komunikasi AS kategori,mu.id_kategori_status_komunikasi idKategori";
+          $select = "mu.id_status_fu id,deskripsi_status_fu text,kategori_status_komunikasi AS kategori,mu.id_kategori_status_komunikasi idKategori";
         } else {
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_status_fu,mu.deskripsi_status_fu,mdk.media_kontak_fu,mu.id_media_kontak_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,mu.id_kategori_status_komunikasi,kategori_status_komunikasi";
+        $select = "mu.id_status_fu,mu.deskripsi_status_fu,mdk.media_kontak_fu,mdk.id_media_kontak_fu,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,mu.id_kategori_status_komunikasi,kategori_status_komunikasi";
       }
     }
 
@@ -83,7 +83,8 @@ class Status_fu_model extends CI_Model
     return $this->db->query("SELECT $select
     FROM ms_status_fu AS mu
     JOIN ms_kategori_status_komunikasi ksk ON ksk.id_kategori_status_komunikasi=mu.id_kategori_status_komunikasi
-    JOIN ms_media_kontak_fu mdk ON mdk.id_media_kontak_fu=mu.id_media_kontak_fu
+    JOIN ms_media_kontak_vs_status_fu mdks ON mdks.id_status_fu=mu.id_status_fu
+    JOIN ms_media_kontak_fu mdk ON mdk.id_media_kontak_fu=mdks.id_media_kontak_fu
     $where
     $order_data
     $limit

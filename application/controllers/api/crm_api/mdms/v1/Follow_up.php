@@ -42,6 +42,7 @@ class Follow_up extends CI_Controller
 
   function _stageId_7_8_9($post)
   {
+    // send_json($post);
     // Cek Leads
     $fc = [
       'leads_id' => $post['leads_id'],
@@ -83,63 +84,66 @@ class Follow_up extends CI_Controller
             $stageId = 9;
           }
         }
-        $insert_history_stage = [
-          'leads_id'   => $leads_id,
-          'stageId'    => $stageId,
-          'created_at' => waktu(),
+        if (isset($stageId)) {
+          $insert_history_stage = [
+            'leads_id'   => $leads_id,
+            'stageId'    => $stageId,
+            'created_at' => waktu(),
+          ];
+          $update_leads = [
+            'stageId_' . $stageId . '_processed_at' => waktu(),
+            'stageId_' . $stageId . '_processed_by_user_d_nms' => 0,
+          ];
+        }
+
+        //Cek Last FollowUp
+        $ffol = [
+          'leads_id' => $leads_id,
+          'assignedDealer' => $ld->assignedDealer,
+          'select' => 'count'
         ];
-        $update_leads = [
-          'stageId_' . $stageId . '_processed_at' => waktu(),
-          'stageId_' . $stageId . '_processed_by_user_d_nms' => 0,
+        $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
+        $ins_fol_up = [
+          'followUpID'                          => $this->ld_m->getFollowUpID(),
+          'followUpKe'                          => $count_fol + 1,
+          'leads_id'                            => $post['leads_id'],
+          'pic'                                 => $post['pic'],
+          'tglFollowUp'                         => $post['tglFollowUp'],
+          'keteranganFollowUp'                  => $post['keteranganFollowUp'],
+          'tglNextFollowUp'                     => $post['tglNextFollowUp'],
+          'keteranganNextFollowUp'              => $post['keteranganNextFollowUp'],
+          'id_media_kontak_fu'                  => $post['id_media_kontak_fu'],
+          'id_status_fu'                        => $post['id_status_fu'],
+          'assignedDealer'                      => $post['assignedDealer'],
+          'kodeHasilStatusFollowUp'             => $post['kodeHasilStatusFollowUp'],
+          'kodeAlasanNotProspectNotDeal'        => $post['kodeAlasanNotProspectNotDeal'],
+          'keteranganLainnyaNotProspectNotDeal' => $post['keteranganLainnyaNotProspectNotDeal'],
+          'created_at'                          => waktu()
         ];
-      }
 
-      //Cek Last FollowUp
-      $ffol = [
-        'leads_id' => $leads_id,
-        'assignedDealer' => $ld->assignedDealer,
-        'select' => 'count'
-      ];
-      $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
-      $ins_fol_up = [
-        'followUpID'                          => $this->ld_m->getFollowUpID(),
-        'followUpKe'                          => $count_fol + 1,
-        'leads_id'                            => $post['leads_id'],
-        'pic'                                 => $post['pic'],
-        'tglFollowUp'                         => $post['tglFollowUp'],
-        'keteranganFollowUp'                  => $post['keteranganFollowUp'],
-        'tglNextFollowUp'                     => $post['tglNextFollowUp'],
-        'keteranganNextFollowUp'              => $post['keteranganNextFollowUp'],
-        'id_media_kontak_fu'                  => $post['id_media_kontak_fu'],
-        'id_status_fu'                        => $post['id_status_fu'],
-        'assignedDealer'                      => $post['assignedDealer'],
-        'kodeHasilStatusFollowUp'             => $post['kodeHasilStatusFollowUp'],
-        'kodeAlasanNotProspectNotDeal'        => $post['kodeAlasanNotProspectNotDeal'],
-        'keteranganLainnyaNotProspectNotDeal' => $post['keteranganLainnyaNotProspectNotDeal'],
-        'created_at'                          => waktu()
-      ];
+        if ($ld->ontimeSLA2 == 0 || (string)$ld->ontimeSLA2 == '') {
+          // Update ontimeSLA2
+          $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($ld->tanggalAssignDealer, $post['tglFollowUp']);
+          $update_leads['leads_id'] = $leads_id;
+          $update_leads['ontimeSLA2_detik'] = $ontimeSLA2_detik;
+          $update_leads['ontimeSLA2'] = $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $ld->assignedDealer);
+        }
 
-      if ($ld->ontimeSLA2 == 0 || (string)$ld->ontimeSLA2 == '') {
-        // Update ontimeSLA2
-        $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($ld->tanggalAssignDealer, $post['tglFollowUp']);
-        $update_leads['leads_id'] = $leads_id;
-        $update_leads['ontimeSLA2_detik'] = $ontimeSLA2_detik;
-        $update_leads['ontimeSLA2'] = $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $ld->assignedDealer);
-      }
-
-      $tes = [
-        'ins_fol_up' => $ins_fol_up,
-        'update_leads' => isset($update_leads) ? $update_leads : NULL,
-        'insert_history_stage' => isset($insert_history_stage) ? $insert_history_stage : NULL
-      ];
-      // send_json($tes);
-
-      if (isset($insert_history_stage)) {
+        $tes = [
+          'ins_fol_up' => $ins_fol_up,
+          'update_leads' => isset($update_leads) ? $update_leads : NULL,
+          'insert_history_stage' => isset($insert_history_stage) ? $insert_history_stage : NULL
+        ];
+        // send_json($tes);
         $this->db->trans_begin();
-        $this->db->insert('leads_history_stage', $insert_history_stage);
+        if (isset($insert_history_stage)) {
+          $this->db->insert('leads_history_stage', $insert_history_stage);
+        }
         $this->db->insert('leads_follow_up', $ins_fol_up);
-        $cond = ['leads_id' => $leads_id];
-        $this->db->update('leads', $update_leads, $cond);
+        if (isset($update_leads)) {
+          $cond = ['leads_id' => $leads_id];
+          $this->db->update('leads', $update_leads, $cond);
+        }
         if ($this->db->trans_status() === FALSE) {
           $this->db->trans_rollback();
         } else {
