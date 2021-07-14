@@ -70,6 +70,11 @@
       font-size: 200%;
       margin-bottom: 15px;
     }
+
+    .error {
+      border-color: #a94442 !important;
+      color: #a94442 !important;
+    }
   </style>
   <!-- jQuery 3 -->
   <script src="<?= base_url('assets/') ?>components/jquery/dist/jquery.min.js"></script>

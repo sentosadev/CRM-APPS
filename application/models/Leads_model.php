@@ -1229,7 +1229,9 @@ class Leads_model extends CI_Model
     $select = "ldi.leads_id,ldi.interaksi_id,ldi.nama,ldi.noHP,ldi.email,ldi.customerType,ldi.eventCodeInvitation,ldi.customerActionDate,ldi.idKabupaten,ldi.cmsSource,ldi.segmentMotor,ldi.seriesMotor,ldi.deskripsiEvent,ldi.kodeTypeUnit,ldi.kodeWarnaUnit,ldi.minatRidingTest,ldi.jadwalRidingTest,ldi.sourceData,ldi.platformData,ldi.noTelp,ldi.assignedDealer,ldi.sourceRefID,ldi.idProvinsi,ldi.idKelurahan,ldi.idKecamatan,ldi.frameNoPembelianSebelumnya,ldi.keterangan,ldi.promoUnit,ldi.facebook,ldi.instagram,ldi.twitter,ldi.created_at,
     CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,
     CASE WHEN mpd.id_platform_data IS NULL THEN platformData ELSE mpd.platform_data END deskripsiPlatformData,
-    CASE WHEN cs.kode_cms_source IS NULL THEN cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource
+    CASE WHEN cs.kode_cms_source IS NULL THEN cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,
+    CASE WHEN minatRidingTest=1 THEN 'Ya' WHEN minatRidingTest=0 THEN 'Tidak' Else '-' END minatRidingTestDesc,
+    prov.provinsi,kab.kabupaten_kota kabupaten,kec.kecamatan,kel.kelurahan
       ";
 
     if ($filter != null) {
@@ -1279,6 +1281,10 @@ class Leads_model extends CI_Model
   LEFT JOIN ms_maintain_tipe tpu ON tpu.kode_tipe=ldi.kodeTypeUnit
   LEFT JOIN ms_maintain_warna twu ON twu.kode_warna=ldi.kodeWarnaUnit
   LEFT JOIN ms_maintain_cms_source cs ON cs.kode_cms_source=ldi.cmsSource
+  LEFT JOIN ms_maintain_provinsi prov ON prov.id_provinsi=ldi.idProvinsi
+  LEFT JOIN ms_maintain_kabupaten_kota kab ON kab.id_kabupaten_kota=ldi.idKabupaten
+  LEFT JOIN ms_maintain_kecamatan kec ON kec.id_kecamatan=ldi.idKecamatan
+  LEFT JOIN ms_maintain_kelurahan kel ON kel.id_kelurahan=ldi.idKelurahan
   $where
   $group_by
   $order_data

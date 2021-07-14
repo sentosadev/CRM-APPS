@@ -33,7 +33,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 <label class="col-sm-4 control-label">PIC MD *</label>
                 <div class="form-input">
                   <div class="col-sm-8">
-                    <select style='width:100%' id='pic_<?= $fol_up_sekarang ?>' class='form-control' name='pic_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                    <select style='width:100%' id='pic_<?= $fol_up_sekarang ?>' class='form-control' name='pic_<?= $fol_up_sekarang ?>' <?= $disabled ?> required>
                       <option></option>
                       <?php
                       $list[1] = 'PIC VE MD';
@@ -57,10 +57,10 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <input type="hidden" class="form-control" name='folup[]' required value='<?= $fol_up_sekarang ?>'>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datetimepicker" name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] == '' ? dMYHIS_en() : $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : dMYHIS_en() ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control datetimepicker" name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] == '' ? dMYHIS_en() : $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : dMYHIS_en() ?>' <?= $disabled ?> required>
                 </div>
               </div>
             </div>
@@ -227,7 +227,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               });
             </script>
             <div class="form-group" id="input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>">
-              <label class="col-sm-4 control-label">Keterangan Alasan Lainnya</label>
+              <label class="col-sm-4 control-label">Keterangan Alasan Lainnya *</label>
               <div class="form-input">
                 <div class="col-sm-8">
                   <input type="text" class="form-control" id='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' name='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganAlasanLainnya'] : '' ?>' <?= $disabled ?>>
@@ -285,58 +285,98 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
       changeTabs(tabs);
       return false;
     <?php } ?>
-    $.ajax({
-      beforeSend: function() {
-        $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
-        $(el).attr('disabled', true);
+    $('#form_data_follow_up_' + fu).validate({
+      highlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().addClass(errorClass);
+        } else {
+          $(element).parents('.form-input').addClass('has-error');
+        }
       },
-      enctype: 'multipart/form-data',
-      url: '<?= site_url(get_controller() . '/saveEditFollowUp') ?>',
-      type: "POST",
-      data: val_form_follow_up,
-      processData: false,
-      contentType: false,
-      // cache: false,
-      dataType: 'JSON',
-      success: function(response) {
-        if (response.status == 1) {
-          changeTabs(tabs);
-          if (position == 1) {
+      unhighlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().removeClass(errorClass);
+        } else {
+          $(element).parents('.form-input').removeClass('has-error');
+        }
+      },
+      errorPlacement: function(error, element) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          element = $("#select2-" + elem.attr("id") + "-container").parent();
+          error.insertAfter(element);
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    })
+    if ($('#form_data_follow_up_' + fu).valid()) // check if form is valid
+    {
+      $.ajax({
+        beforeSend: function() {
+          $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+          $(el).attr('disabled', true);
+        },
+        enctype: 'multipart/form-data',
+        url: '<?= site_url(get_controller() . '/saveEditFollowUp') ?>',
+        type: "POST",
+        data: val_form_follow_up,
+        processData: false,
+        contentType: false,
+        // cache: false,
+        dataType: 'JSON',
+        success: function(response) {
+          if (response.status == 1) {
+            changeTabs(tabs);
+            if (position == 1) {
+              Swal.fire({
+                icon: 'success',
+                title: '<font>Informasi</font>',
+                html: '<font>' + response.pesan + '</font>',
+                confirmButtonText: 'Tutup',
+              })
+            }
+          } else {
             Swal.fire({
-              icon: 'success',
-              title: '<font>Informasi</font>',
-              html: '<font>' + response.pesan + '</font>',
+              icon: 'error',
+              title: '<font color="white">Peringatan</font>',
+              html: '<font color="white">' + response.pesan + '</font>',
+              background: '#dd4b39',
+              confirmButtonColor: '#cc3422',
               confirmButtonText: 'Tutup',
+              iconColor: 'white'
             })
           }
-        } else {
+          $(el).attr('disabled', false);
+          $(el).html(default_name_button);
+        },
+        error: function() {
           Swal.fire({
             icon: 'error',
             title: '<font color="white">Peringatan</font>',
-            html: '<font color="white">' + response.pesan + '</font>',
+            html: '<font color="white">Telah terjadi kesalahan !</font>',
             background: '#dd4b39',
             confirmButtonColor: '#cc3422',
             confirmButtonText: 'Tutup',
             iconColor: 'white'
           })
+          $(el).html(default_name_button);
+          $(el).attr('disabled', false);
         }
-        $(el).attr('disabled', false);
-        $(el).html(default_name_button);
-      },
-      error: function() {
-        Swal.fire({
-          icon: 'error',
-          title: '<font color="white">Peringatan</font>',
-          html: '<font color="white">Telah terjadi kesalahan !</font>',
-          background: '#dd4b39',
-          confirmButtonColor: '#cc3422',
-          confirmButtonText: 'Tutup',
-          iconColor: 'white'
-        })
-        $(el).html(default_name_button);
-        $(el).attr('disabled', false);
-      }
-    });
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: '<font color="white">Peringatan</font>',
+        html: '<font color="white">Silahkan lengkapi field yang wajib diisi</font>',
+        background: '#dd4b39',
+        confirmButtonColor: '#cc3422',
+        confirmButtonText: 'Tutup',
+        iconColor: 'white'
+      })
+    }
   }
 
   function tambahDataFollowUp(el, fu, tabs_no) {
