@@ -810,7 +810,7 @@ class Leads_customer_data extends Crm_Controller
     $leads = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
     $fp = ['id_cdb' => $leads->sourceData];
     $sumber_prospek = $this->sprm->getSumberProspekFromOtherDB($fp)->row()->id;
-    return [
+    $prospek = [
       'leads_id' => $leads->leads_id,
       'kode_dealer_md' => $leads->assignedDealer,
       'id_karyawan_dealer' => $leads->id_karyawan_dealer,
@@ -844,6 +844,9 @@ class Leads_customer_data extends Crm_Controller
       'created_at' => waktu(),
       'tgl_prospek' => tanggal()
     ];
+    $ld = ['leads_id' => $leads->leads_id];
+    $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
+    return ['prospek' => $prospek, 'interaksi' => $interaksi];
   }
 
   public function detail()
@@ -1081,8 +1084,8 @@ class Leads_customer_data extends Crm_Controller
     } else {
       //Melakukan Pengiriman API 3
       $data = $this->_post_to_api3($leads_id);
-      // send_json($data);
       $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
+      // send_json($res_api3);
       if ($res_api3['status'] == 1) {
         $this->db->trans_commit();
         $id_prospek = $res_api3['data']['id_prospek'];
@@ -1094,7 +1097,7 @@ class Leads_customer_data extends Crm_Controller
         foreach ($res_api3['message'] as $val) {
           $msg .= $val;
         }
-        $pesan = "Gagal melakukan assigned Dealer dan mengirim API3. Error Message API3 : " . $msg;
+        $pesan = "Gagal melakukan assigned Dealer dan mengirim API 3. Error Message API 3 : " . $msg;
       }
 
       $response = [
@@ -1277,7 +1280,7 @@ class Leads_customer_data extends Crm_Controller
         foreach ($res_api3['message'] as $val) {
           $msg .= $val;
         }
-        $pesan = "Gagal melakukan re-assigned Dealer dan mengirim API3. Error Message API3 : " . $msg;
+        $pesan = "Gagal melakukan re-assigned Dealer dan mengirim API 3. Error Message API 3 : " . $msg;
       }
 
       $response = [
