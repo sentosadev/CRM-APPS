@@ -180,6 +180,7 @@ class Leads_customer_data extends Crm_Controller
     if (user()->kode_dealer != NULL) {
       $filter['assignedDealer'] = user()->kode_dealer;
     }
+    $filter['show_hasil_fu_not_prospect'] = $this->input->post('show_hasil_fu_not_prospect');
     if ($recordsFiltered == true) {
       return $this->ld_m->getLeads($filter)->num_rows();
     } else {

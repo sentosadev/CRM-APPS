@@ -18,63 +18,63 @@
         <tbody>
           <tr>
             <td class="padding-td">
-              <div class="small-box bg-gray"'>
-                <div class="inner" style="padding-bottom:0px"data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+              <div class="small-box bg-gray">
+                <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
                   <p style=' min-height:65px'>Leads belum FU MD (workload) <br>&nbsp;</p>
-                <h3 class="card_view" id="data_source"><?= $mon['belum_fu_md'] ?></h3>
+                  <h3 class="card_view" id="data_source"><?= $mon['belum_fu_md'] ?></h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
               </div>
-              <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+            </td>
+            <td class="padding-td">
+              <div class="small-box bg-gray">
+                <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+                  <p style='min-height:65px'>Leads Need FU <br>&nbsp;</p>
+                  <h3 class="card_view" id="data_source"><?= $mon['need_fu'] ?></h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+              </div>
+            </td>
+            <td class="padding-td">
+              <div class="small-box bg-gray">
+                <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+                  <p style='min-height:65px'>Leads belum Assign Dealer <br>&nbsp;</p>
+                  <h3 class="card_view" id="data_source"><?= $mon['belum_assign_dealer'] ?></h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+              </div>
+            </td>
+            <td class="padding-td">
+              <div class="small-box bg-gray">
+                <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+                  <p style='min-height:65px'>Leads yang melewati SLA MD <br>&nbsp;</p>
+                  <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_md'] ?></h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+              </div>
+            </td>
+            <td class="padding-td">
+              <div class="small-box bg-gray">
+                <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+                  <p style='min-height:65px'>Leads yang melewati SLA D <br>&nbsp;</p>
+                  <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_d'] ?></h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+              </div>
+            </td>
+            <td class="padding-td">
+              <div class="small-box bg-gray">
+                <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
+                  <p style='min-height:65px'>Leads Multi-Interaction <br>&nbsp;</p>
+                  <h3 class="card_view" id="data_source"><?= $mon['multi_interaksi'] ?></h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    </td>
-    <td class="padding-td">
-      <div class="small-box bg-gray">
-        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
-          <p style='min-height:65px'>Leads Need FU <br>&nbsp;</p>
-          <h3 class="card_view" id="data_source"><?= $mon['need_fu'] ?></h3>
-        </div>
-        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
-      </div>
-    </td>
-    <td class="padding-td">
-      <div class="small-box bg-gray">
-        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
-          <p style='min-height:65px'>Leads belum Assign Dealer <br>&nbsp;</p>
-          <h3 class="card_view" id="data_source"><?= $mon['belum_assign_dealer'] ?></h3>
-        </div>
-        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
-      </div>
-    </td>
-    <td class="padding-td">
-      <div class="small-box bg-gray">
-        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
-          <p style='min-height:65px'>Leads yang melewati SLA MD <br>&nbsp;</p>
-          <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_md'] ?></h3>
-        </div>
-        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
-      </div>
-    </td>
-    <td class="padding-td">
-      <div class="small-box bg-gray">
-        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
-          <p style='min-height:65px'>Leads yang melewati SLA D <br>&nbsp;</p>
-          <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_d'] ?></h3>
-        </div>
-        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
-      </div>
-    </td>
-    <td class="padding-td">
-      <div class="small-box bg-gray">
-        <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
-          <p style='min-height:65px'>Leads Multi-Interaction <br>&nbsp;</p>
-          <h3 class="card_view" id="data_source"><?= $mon['multi_interaksi'] ?></h3>
-        </div>
-        <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen"></div>
-      </div>
-    </td>
-    </tr>
-    </tbody>
-    </table>
-  </div>
   </div>
   <div class="box box-default">
     <div class="box-header with-border">
@@ -97,7 +97,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <div class="form-horizontal">
+              <form class="form-horizontal" id="form_search_leads">
                 <div class="form-group">
                   <label class="col-sm-2 control-label">Leads ID</label>
                   <div class="form-input">
@@ -255,7 +255,20 @@
                     </div>
                   </div>
                 </div>
-              </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Tampilkan Hasil FU Not Prospect</label>
+                  <div class="form-input">
+                    <div class="form-input">
+                      <div class="col-sm-1">
+                        <input type="radio" name="show_hasil_fu_not_prospect" value="1" class="flat-red" style="position: absolute; opacity: 0;"> Ya
+                      </div>
+                      <div class="col-sm-3">
+                        <input type="radio" name="show_hasil_fu_not_prospect" value="0" class="flat-red" style="position: absolute; opacity: 0;" checked> Tidak
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
             <div class="box-footer" align='center'>
               <button class='btn btn-primary' type="button" onclick="search()"><i class="fa fa-search"></i></button>
@@ -343,6 +356,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           d.end_next_fu = $('#end_next_fu').val()
           d.kodeHasilStatusFollowUpMulti = $('#kodeHasilStatusFollowUp').val()
           d.ontimeSLA2_multi = $('#ontimeSLA2_multi').val()
+          d.show_hasil_fu_not_prospect = $('input[name=show_hasil_fu_not_prospect]:checked', '#form_search_leads').val()
           return d;
         },
       },

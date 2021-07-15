@@ -55,7 +55,7 @@ function request_validation($action = NULL)
   // sleep(11); # contoh command sleep untuk delay 11 detik di server penerima
   $curr_unix_time = time(); # ambil waktu saat ini dalam bentuk Unix Timestamp UTC (tidak terpengaruh zona waktu)
   // $curr_unix_time = 1567645682; # contoh hasil fungsi time() untuk Thursday, 05-Sep-19 01:08:02 UTC (GMT)
-  $token_exp_secs = 10; # atur batas waktu token untuk keperluan validasi
+  $token_exp_secs = 120; # atur batas waktu token untuk keperluan validasi
 
   # atur response default jika validasi gagal
   $res = array(
@@ -146,7 +146,7 @@ function request_validation($action = NULL)
       );
     }
   }
-
+  // send_json($res);
   $res['activity'] = [
     'endpoint'           => isset($_SERVER['SCRIPT_URI']) ? $_SERVER['SCRIPT_URI'] : $_SERVER['REQUEST_URI'],
     'post_data'          => isset($post_raw_json) ? $post_raw_json : 0,

@@ -379,6 +379,15 @@ class Leads_model extends CI_Model
       if (isset($filter['jumlah_fu_d'])) {
         $where .= " AND IFNULL(($jumlah_fu_d),0)={$filter['jumlah_fu_d']}";
       }
+      if (isset($filter['show_hasil_fu_not_prospect'])) {
+        $fs = $filter['show_hasil_fu_not_prospect'];
+        $where .= " AND 
+                        CASE WHEN $fs=0 THEN
+                          CASE WHEN IFNULL(($last_kodeHasilStatusFollowUp),0)=2 THEN 0 ELSE 1 END 
+                        ELSE 1
+                        END = 1  
+                        ";
+      }
 
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
