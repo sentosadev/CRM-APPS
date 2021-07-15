@@ -756,7 +756,7 @@ class Leads_customer_data extends Crm_Controller
       'upd_leads' => isset($upd_leads) ? $upd_leads : NULL,
       'history_stage_id' => isset($history_stage_id) ? $history_stage_id : NULL,
     ];
-    send_json($tes);
+    // send_json($tes);
 
     $this->db->trans_begin();
 
