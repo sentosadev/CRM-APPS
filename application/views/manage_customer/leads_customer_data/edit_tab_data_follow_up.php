@@ -86,10 +86,10 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Tgl. Next Follow Up</label>
+              <label class="col-sm-4 control-label">Tgl. Next Follow Up <span id="tglNextFollowUpLabel_<?= $fol_up_sekarang ?>"></span></label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datepicker" name='tglNextFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control datepicker" id='tglNextFollowUp_<?= $fol_up_sekarang ?>' name='tglNextFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
@@ -173,15 +173,27 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 kodeHasilStatusFollowUp = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['kodeHasilStatusFollowUp'] : '' ?>';
                 if (kodeHasilStatusFollowUp == 4 || kodeHasilStatusFollowUp == 2) {
                   $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
+                  $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').removeAttr('required');
+                  $('#tglNextFollowUpLabel_<?= $fol_up_sekarang ?>').html('');
+                } else {
+                  if (kodeHasilStatusFollowUp == 1) {
+                    $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').attr('required', 'required');
+                    $('#tglNextFollowUpLabel_<?= $fol_up_sekarang ?>').html('*');
+                  }
                 }
               })
 
               $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").on("change", function(e) {
                 data = $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").select2('data')[0];
+                $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').removeAttr('required');
                 if (data != undefined) {
                   if (data.id == 2 || data.id == 4) {
                     $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
                   } else {
+                    if (data.id == 1) {
+                      $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').attr('required', 'required');
+                      $('#tglNextFollowUpLabel_<?= $fol_up_sekarang ?>').html('*');
+                    }
                     $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').hide();
                     $('#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').val(null).trigger('change');
                   }
