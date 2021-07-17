@@ -42,9 +42,9 @@
                   </div>
                   <div class="form-group">
                     <div class="form-input">
-                      <label class="col-sm-6 control-label">Thresholad actual avg assigned leads per salespeople : </label>
+                      <label class="col-sm-6 control-label">Threshold actual avg assigned leads per salespeople <span id="threshold_per_salespeople_label">*</span> : </label>
                       <div class="col-sm-3">
-                        <input type="text" class="form-control" name="threshold_per_salespeople" id='threshold_per_salespeople'>
+                        <input type="text" class="form-control" name="threshold_per_salespeople" id='threshold_per_salespeople' required>
                       </div>
                     </div>
                   </div>
@@ -78,6 +78,7 @@
                       <th>Channel Mapping</th>
                       <th>NOS Score</th>
                       <th>CRM Score</th>
+                      <th>Sales People On Duty</th>
                       <th>Workload</th>
                       <th>Action</th>
                     </thead>
@@ -173,7 +174,7 @@
                   </div>
                   <div class="form-group">
                     <div class="form-input">
-                      <label class="col-sm-6 control-label">Thresholad actual avg assigned leads per salespeople : </label>
+                      <label class="col-sm-6 control-label">Threshold actual avg assigned leads per salespeople : </label>
                       <div class="col-sm-3">
                         <input type="text" class="form-control" name='reassign_threshold_per_salespeople' id='reassign_threshold_per_salespeople'>
                       </div>
@@ -209,6 +210,7 @@
                       <th>Channel Mapping</th>
                       <th>NOS Score</th>
                       <th>CRM Score</th>
+                      <th>Sales People On Duty</th>
                       <th>Workload</th>
                       <th>Action</th>
                     </thead>
@@ -248,9 +250,13 @@
   // Assign
   $('#workload_dealer').on('ifChecked', function(el) {
     $('#threshold_per_salespeople').attr('disabled', false);
+    $('#threshold_per_salespeople').attr('required', 'required');
     $('#threshold_per_salespeople').val('');
+    $('#threshold_per_salespeople_label').html('*');
   })
   $('#workload_dealer').on('ifUnchecked', function(el) {
+    $('#threshold_per_salespeople').removeAttr('required');
+    $('#threshold_per_salespeople_label').html('');
     $('#threshold_per_salespeople').attr('disabled', true);
     $('#threshold_per_salespeople').val('');
   })
@@ -268,6 +274,22 @@
   }
 
   function searchAssignDealer() {
+    let workload = $("#workload_dealer").prop("checked");
+    if (workload == true) {
+      let threshold = $('#threshold_per_salespeople').val();
+      if (threshold == '') {
+        Swal.fire({
+          icon: 'error',
+          title: '<font color="white">Peringatan</font>',
+          html: '<font color="white">Silahkan Tentukan Threshold actual avg assigned leads per salespeople</font>',
+          background: '#dd4b39',
+          confirmButtonColor: '#cc3422',
+          confirmButtonText: 'Tutup',
+          iconColor: 'white'
+        });
+        return false;
+      }
+    }
     $('#tbl_assign_dealer').DataTable().ajax.reload();
   }
 
@@ -371,6 +393,22 @@
   }
 
   function searchReAssignDealer() {
+    let workload = $("#workload_dealer").prop("checked");
+    if (workload == true) {
+      let threshold = $('#threshold_per_salespeople').val();
+      if (threshold == '') {
+        Swal.fire({
+          icon: 'error',
+          title: '<font color="white">Peringatan</font>',
+          html: '<font color="white">Silahkan Tentukan Threshold actual avg assigned leads per salespeople</font>',
+          background: '#dd4b39',
+          confirmButtonColor: '#cc3422',
+          confirmButtonText: 'Tutup',
+          iconColor: 'white'
+        });
+        return false;
+      }
+    }
     $('#tbl_reassign_dealer').DataTable().ajax.reload();
   }
 

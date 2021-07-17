@@ -952,6 +952,12 @@ class Leads_customer_data extends Crm_Controller
     $user = user();
     $no = $this->input->post('start') + 1;
     foreach ($fetch_data as $rs) {
+      $fsp = [
+        'select' => 'count',
+        'kode_dealer_md' => $rs->kode_dealer
+      ];
+      $rs->sales_people_on_duty = $this->dealer_m->getSalesPeopleAktif($fsp)->row()->count;
+      $workload_cap = ($rs->sales_people_on_duty * $this->input->post('threshold_per_salespeople')) - $rs->work_load;
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->kode_dealer;
@@ -960,7 +966,8 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->channel_mapping;
       $sub_array[] = $rs->nos_score;
       $sub_array[] = $rs->crm_score;
-      $sub_array[] = $rs->work_load;
+      $sub_array[] = $rs->sales_people_on_duty;
+      $sub_array[] = $workload_cap;
       $sub_array[] = '<button class="btn btn-primary btn-xs btnAssignDealer" onclick="setAssignDealer(this,\'' . $rs->kode_dealer . '\')">Pilih</button>';
       $data[]      = $sub_array;
       $no++;
@@ -988,8 +995,6 @@ class Leads_customer_data extends Crm_Controller
       'dealer_mapping'            => $this->input->post('dealer_mapping'),
       'nos_score'                 => $this->input->post('nos_score'),
       'dealer_crm_score'          => $this->input->post('dealer_crm_score'),
-      'workload_dealer'           => $this->input->post('workload_dealer'),
-      'threshold_per_salespeople' => $this->input->post('threshold_per_salespeople'),
       'leads_id'                  => $this->input->post('leads_id'),
       'order_column'              => 'view',
       'select'                    => 'assign_reassign'
@@ -1118,6 +1123,12 @@ class Leads_customer_data extends Crm_Controller
     $user = user();
     $no = $this->input->post('start') + 1;
     foreach ($fetch_data as $rs) {
+      $fsp = [
+        'select' => 'count',
+        'kode_dealer_md' => $rs->kode_dealer
+      ];
+      $rs->sales_people_on_duty = $this->dealer_m->getSalesPeopleAktif($fsp)->row()->count;
+      $workload_cap = ($rs->sales_people_on_duty * $this->input->post('threshold_per_salespeople')) - $rs->work_load;
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->kode_dealer;
@@ -1126,7 +1137,8 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->channel_mapping;
       $sub_array[] = $rs->nos_score;
       $sub_array[] = $rs->crm_score;
-      $sub_array[] = $rs->work_load;
+      $sub_array[] = $rs->sales_people_on_duty;
+      $sub_array[] = $workload_cap;
       $sub_array[] = '<button class="btn btn-primary btn-xs btnReAssignDealer" onclick="setReAssignDealer(this,\'' . $rs->kode_dealer . '\')">Pilih</button>';
       $data[]      = $sub_array;
       $no++;

@@ -162,13 +162,6 @@ class Dealer_model extends CI_Model
           $where .= " AND ($crm_score) IN('Kuadran 1','Kuadran 2')";
         }
       }
-      if (isset($filter['workload_dealer'])) {
-        $threshold_per_salespeople = (int)$filter['threshold_per_salespeople'];
-        if ($filter['workload_dealer'] == 'true' && $threshold_per_salespeople > 0) {
-          $where .= " AND ($workload)=$threshold_per_salespeople";
-        }
-      }
-
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -267,6 +260,37 @@ class Dealer_model extends CI_Model
     $where
     $order_data
     $limit
+    ");
+  }
+  function getSalesPeopleAktif($filter = null)
+  {
+    $where = "WHERE 1=1 AND IFNULL(id_flp_md,'') <> '' AND mu.active=1 AND mu.id_jabatan IN('JBT-035','JBT-071','JBT-072','JBT-073','JBT-074','JBT-063','JBT-064','JBT-065','JBT-103','JBT-099')";
+    $select = '';
+    if ($filter != null) {
+      $filter = $this->db->escape_str($filter);
+      if (isset($filter['kode_dealer_md'])) {
+        if ($filter['kode_dealer_md'] != '') {
+          $where .= " AND dl.kode_dealer_md='{$this->db->escape_str($filter['kode_dealer_md'])}'";
+        }
+      }
+
+      if (isset($filter['select'])) {
+        if ($filter['select'] == 'dropdown') {
+          $select = "kode_dealer_md id,nama_dealer text";
+        } elseif ($filter['select'] == 'count') {
+          $select = "COUNT(id_karyawan_dealer) count";
+        } else {
+          $select = $filter['select'];
+        }
+      } else {
+        $select = "mu.id_karyawan_dealer, mu.nama_lengkap";
+      }
+    }
+
+    return $this->db_live->query("SELECT $select
+    FROM ms_karyawan_dealer AS mu
+    JOIN ms_dealer dl ON dl.id_dealer=mu.id_dealer
+    $where
     ");
   }
 }
