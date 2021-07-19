@@ -135,26 +135,38 @@
             if (response.status == 1) {
               window.location = response.url;
             } else {
-              for (x of response.errors) {
-                set_errors.push(x);
-              }
-              setButtonDetailKesalahanTerakhir();
-              Swal.fire({
-                icon: 'error',
-                title: '<font color="white">Peringatan</font>',
-                html: '<font color="white">' + response.pesan + '</font>',
-                background: '#dd4b39',
-                cancelButtonColor: '#cc3422',
-                cancelButtonText: 'Tutup',
-                showCancelButton: true,
-                confirmButtonColor: '#2242ccde',
-                confirmButtonText: 'Detail Kesalahan',
-                iconColor: 'white'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  showModalErrorUploads()
+              if (response.errors === undefined) {
+                Swal.fire({
+                  icon: 'error',
+                  title: '<font color="white">Peringatan</font>',
+                  html: '<font color="white">' + response.pesan + '</font>',
+                  background: '#dd4b39',
+                  confirmButtonColor: '#cc3422',
+                  confirmButtonText: 'Tutup',
+                  iconColor: 'white'
+                })
+              } else {
+                for (x of response.errors) {
+                  set_errors.push(x);
                 }
-              })
+                setButtonDetailKesalahanTerakhir();
+                Swal.fire({
+                  icon: 'error',
+                  title: '<font color="white">Peringatan</font>',
+                  html: '<font color="white">' + response.pesan + '</font>',
+                  background: '#dd4b39',
+                  cancelButtonColor: '#cc3422',
+                  cancelButtonText: 'Tutup',
+                  showCancelButton: true,
+                  confirmButtonColor: '#2242ccde',
+                  confirmButtonText: 'Detail Kesalahan',
+                  iconColor: 'white'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    showModalErrorUploads()
+                  }
+                })
+              }
               $(el).attr('disabled', false);
 
             }

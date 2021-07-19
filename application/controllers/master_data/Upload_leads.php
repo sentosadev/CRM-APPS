@@ -166,6 +166,7 @@ class Upload_leads extends Crm_Controller
     $this->load->model('Kabupaten_kota_model', 'kab_m');
     $this->load->model('source_leads_model', 'sl_m');
     $this->load->model('platform_data_model', 'pd_m');
+    $this->load->model('event_model', 'event');
     $path_file = $this->input->post('path');
     $reader = ReaderFactory::create(Type::XLSX); //set Type file xlsx
     $reader->open($path_file); //open file xlsx
@@ -184,9 +185,23 @@ class Upload_leads extends Crm_Controller
         foreach ($sheet->getRowIterator() as $row) {
           $cek[] = $row;
           if ($numRow == 1) {
-            $deskripsi_event = $row[1];
+            // $deskripsi_event = $row[1];
+            $fe = [
+              'nama_deskripsi_kode_event_or_periode' => [$row[1], tanggal()]
+            ];
+            $cek_event = $this->event->getEvent($fe)->row();
+            if ($cek_event == NULL) {
+              $response = ['status' => 0, 'pesan' => 'Deskripsi Event : ' . $row[1] . ' tidak ditemukan'];
+              send_json($response);
+            } else {
+              $deskripsi_event = $cek_event->description;
+            }
           } elseif ($numRow == 2) {
             $totalDataSource = $row[1];
+            if ($totalDataSource == '' || $totalDataSource == 0) {
+              $response = ['status' => 0, 'pesan' => 'Silahkan tentukan nilai dari total data source'];
+              send_json($response);
+            }
           } elseif ($numRow > 3) {
             if ((string)$row[0] == '') $error[$baris][] = 'Kode MD Kosong';
             if ((string)$row[1] == '') $error[$baris][] = 'Nama Konsumen Kosong';
@@ -206,12 +221,12 @@ class Upload_leads extends Crm_Controller
             $fk = ['id_or_name_kabupaten' => $row[5]];
             $cek_kab = $this->kab_m->getKabupatenKotaFromOtherDb($fk)->row();
             $id_kabupaten_kota = '';
-            // if ($cek_kab == NULL) {
-            //   $error[$baris][] = 'Kabupaten tidak ditemukan';
-            // } else {
-            //   $id_kabupaten_kota = $cek_kab->id_kabupaten;
-            //   $this->id_kabupaten[] = $id_kabupaten_kota;
-            // }
+            if ($cek_kab == NULL) {
+              $error[$baris][] = 'Kabupaten tidak ditemukan';
+            } else {
+              $id_kabupaten_kota = $cek_kab->id_kabupaten;
+              $this->id_kabupaten[] = $id_kabupaten_kota;
+            }
 
             //Cek Source Leads
             $fk = ['id_or_source_leads' => $row[6]];
@@ -236,11 +251,16 @@ class Upload_leads extends Crm_Controller
             $kodeDealerSebelumnya = $cdb_nms == NULL ? NULL : $cdb_nms->kodeDealerSebelumnya;
 
             $event_code_invitation = $this->udm_m->getEventCodeInvitation($row[0], $kodeDealerSebelumnya);
-            // send_json($event_code_invitation);
+
             // Cek event_code_invitation
             $cek_duplikat = $this->_cekDuplikatEventCodeInvitation($event_code_invitation);
             if ($cek_duplikat == true) {
               $error[$baris][] = 'Duplikat event Code Invitation';
+            }
+
+            $email = filter_var($row[4], FILTER_SANITIZE_EMAIL);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+              $error[$baris][] = 'Format Email tidak valid';
             }
 
             $leads_id = $this->ldm->getLeadsID();
@@ -254,7 +274,7 @@ class Upload_leads extends Crm_Controller
               'nama' => $row[1],
               'no_hp' => $no_hp,
               'no_telp' => $row[3],
-              'email' => $row[4],
+              'email' => $email,
               'id_kabupaten_kota' => $id_kabupaten_kota,
               'id_source_leads' => $id_source_leads,
               'id_platform_data' => $id_platform_data,

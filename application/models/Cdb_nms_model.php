@@ -148,13 +148,9 @@ class Cdb_nms_model extends CI_Model
     if (isset($filter['select'])) {
       if ($filter['select'] == 'select_kpb') {
         foreach ($filter['kpb'] as $val) {
-          $kpb_return = "SELECT COUNT(wop.id_jasa) 
-                        FROM tr_h2_wo_dealer_pekerjaan wop
-                        JOIN ms_h2_jasa js ON js.id_jasa=wop.id_jasa
-                        JOIN tr_h2_wo_dealer wo ON wo.id_work_order=wop.id_work_order
-                        JOIN tr_h2_sa_form sa ON sa.id_sa_form=wo.id_sa_form
-                        JOIN ms_customer_h23 cus ON cus.id_customer=sa.id_customer
-                        WHERE cus.no_mesin=so.no_mesin AND js.id_type='ASS$val'
+          $kpb_return = "SELECT COUNT(ckpb.id_claim_kpb) 
+                        FROM tr_claim_kpb ckpb
+                        WHERE ckpb.no_mesin=so.no_mesin AND ckpb.kpb_ke=$val
                         ";
           $select .= ",($kpb_return) kpb" . $val . "_return";
         }
@@ -236,14 +232,11 @@ class Cdb_nms_model extends CI_Model
     if (isset($filter['select'])) {
       if ($filter['select'] == 'select_kpb') {
         foreach ($filter['kpb'] as $val) {
-          $kpb_return = "SELECT COUNT(wop.id_jasa) 
-                        FROM tr_h2_wo_dealer_pekerjaan wop
-                        JOIN ms_h2_jasa js ON js.id_jasa=wop.id_jasa
-                        JOIN tr_h2_wo_dealer wo ON wo.id_work_order=wop.id_work_order
-                        JOIN tr_h2_sa_form sa ON sa.id_sa_form=wo.id_sa_form
-                        JOIN ms_customer_h23 cus ON cus.id_customer=sa.id_customer
-                        JOIN tr_sales_order so ON so.no_mesin=cus.no_mesin
-                        WHERE js.id_type='ASS$val' AND wo.id_dealer=dl.id_dealer AND so.id_dealer=dl.id_dealer 
+          $kpb_return = "SELECT COUNT(ckpb.id_claim_kpb) 
+                        FROM tr_claim_kpb ckpb
+                        JOIN tr_sales_order so ON so.no_mesin=ckpb.no_mesin
+                        WHERE ckpb.kpb_ke=$val 
+                        AND so.id_dealer=dl.id_dealer
                         AND tgl_cetak_invoice BETWEEN '{$periode_ssu[0]}' AND '{$periode_ssu[1]}'
                         ";
           $select .= ",($kpb_return) kpb" . $val . "_return";
