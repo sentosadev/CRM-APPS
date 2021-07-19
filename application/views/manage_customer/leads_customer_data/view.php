@@ -397,6 +397,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
 
   function showAssign(ld_id) {
     leads_id = ld_id;
+    setLeadsAssignReassign(leads_id, 'assg');
     $('#modalAssign').modal('show');
     if (load_data_assign_dealer == 0) {
       var dataTable = $('#tbl_assign_dealer').DataTable({
@@ -551,5 +552,57 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
 
   function search() {
     $('.serverside-tables').DataTable().ajax.reload();
+  }
+
+  function setLeadsAssignReassign(id, assg_reassg) {
+    values = {
+      leads_id: id
+    }
+    $.ajax({
+      beforeSend: function() {
+        $('#modal_' + assg_reassg + '_leads_id').val('');
+        $('#modal_' + assg_reassg + '_nama').val('');
+        $('#modal_' + assg_reassg + '_namaDealerPembelianSebelumnya').val('');
+        $('#modal_' + assg_reassg + '_kodeDealerPembelianSebelumnya').val('');
+      },
+      enctype: 'multipart/form-data',
+      url: '<?= site_url(get_controller() . '/getLeadsByLeadsId') ?>',
+      type: "POST",
+      data: values,
+      // processData: false,
+      // contentType: false,
+      cache: false,
+      dataType: 'JSON',
+      success: function(response) {
+        if (response.status == 1) {
+          data = response.data;
+          $('#modal_' + assg_reassg + '_leads_id').val(data.leads_id);
+          $('#modal_' + assg_reassg + '_nama').val(data.nama);
+          $('#modal_' + assg_reassg + '_namaDealerPembelianSebelumnya').val(data.namaDealerPembelianSebelumnya);
+          $('#modal_' + assg_reassg + '_kodeDealerPembelianSebelumnya').val(data.kodeDealerPembelianSebelumnya);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: '<font color="white">Peringatan</font>',
+            html: '<font color="white">' + response.pesan + '</font>',
+            background: '#dd4b39',
+            confirmButtonColor: '#cc3422',
+            confirmButtonText: 'Tutup',
+            iconColor: 'white'
+          })
+        }
+      },
+      error: function() {
+        Swal.fire({
+          icon: 'error',
+          title: '<font color="white">Peringatan</font>',
+          html: '<font color="white">Telah terjadi kesalahan !</font>',
+          background: '#dd4b39',
+          confirmButtonColor: '#cc3422',
+          confirmButtonText: 'Tutup',
+          iconColor: 'white'
+        })
+      }
+    });
   }
 </script>

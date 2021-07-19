@@ -41,7 +41,7 @@
       <label class="col-sm-2 control-label">Alasan Pindah Dealer</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control" name='alasanPindahDealer' value='<?= $row->alasanPindahDealer ?>' <?= $disabled ?>>
+          <input type="text" class="form-control" name='alasanPindahDealer' value='<?= $row->alasanPindahDealer ?>' disabled>
         </div>
       </div>
     </div>

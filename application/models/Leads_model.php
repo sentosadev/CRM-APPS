@@ -164,7 +164,9 @@ class Leads_model extends CI_Model
         idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,
         kab_pengajuan.kabupaten_kota kabupatenPengajuan,idKabupatenPengajuan,
         prov_pengajuan.provinsi provinsiPengajuan,idProvinsiPengajuan,
-        CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, keteranganPreferensiDealerLain, kategoriKonsumen, alasanPindahDealer, kodeDealerSebelumnya,gender,kodeLeasingPembelianSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingPembelianSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,
+        CONCAT(kodeTypeUnit,' - ',deskripsi_tipe) concatKodeTypeUnit,CONCAT(kodeWarnaUnit,' - ',deskripsi_warna) concatKodeWarnaUnit, keteranganPreferensiDealerLain, kategoriKonsumen, 
+        alasan_pindah.alasan alasanPindahDealer,alasanPindahDealerLainnya,
+        kodeDealerSebelumnya,gender,kodeLeasingPembelianSebelumnya,noKtp,tanggalPembelianTerakhir,kodePekerjaan,deskripsiTipeUnitPembelianTerakhir,promoYangDiminatiCustomer,kategoriPreferensiDealer,idPendidikan,namaDealerPreferensiCustomer,idAgama,tanggalRencanaPembelian,kategoriProspect,idKecamatanKantor,namaCommunity,dl_sebelumnya.nama_dealer namaDealerSebelumnya,ls_sebelumnya.leasing namaLeasingPembelianSebelumnya,deskripsiPekerjaan,idPendidikan,pdk.pendidikan deskripsiPendidikan,idAgama,agm.agama deskripsiAgama,
         stl.provinsi,prov_domisili.provinsi deskripsiProvinsiDomisili,
         stl.kabupaten,kab_domisili.kabupaten_kota deskripsiKabupatenKotaDomisili,
         stl.kecamatan,kec_domisili.kecamatan deskripsiKecamatanDomisili,
@@ -455,6 +457,7 @@ class Leads_model extends CI_Model
     LEFT JOIN ms_maintain_kabupaten_kota kab_pengajuan ON kab_pengajuan.id_kabupaten_kota=stl.idKabupatenPengajuan
     LEFT JOIN ms_maintain_cms_source mcs ON mcs.kode_cms_source=stl.cmsSource
     LEFT JOIN ms_pengeluaran plm ON plm.id_pengeluaran=stl.pengeluaran
+    LEFT JOIN setup_alasan_reassigned_pindah_dealer alasan_pindah ON alasan_pindah.id_alasan=stl.alasanPindahDealer
     $where
     $group_by
     $order_data
@@ -801,7 +804,7 @@ class Leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "lhad.id_int,lhad.assignedDealer,assignedKe,lhad.tanggalAssignDealer,lhad.assignedDealerBy,lhad.created_at,lhad.created_by,dl.nama_dealer,alasanReAssignDealer,($tglFollowUp) tglFollowUp,lhad.ontimeSLA2,CASE WHEN lhad.ontimeSLA2=1 THEN 'On Track' WHEN lhad.ontimeSLA2=0 THEN 'Overdue' ELSE '-' END ontimeSLA2_desc";
+        $select = "lhad.id_int,lhad.assignedDealer,assignedKe,lhad.tanggalAssignDealer,lhad.assignedDealerBy,lhad.created_at,lhad.created_by,dl.nama_dealer,als.alasan alasanReAssignDealer,alasanReAssignDealerLainnya,($tglFollowUp) tglFollowUp,lhad.ontimeSLA2,CASE WHEN lhad.ontimeSLA2=1 THEN 'On Track' WHEN lhad.ontimeSLA2=0 THEN 'Overdue' ELSE '-' END ontimeSLA2_desc";
       }
     }
 
@@ -825,6 +828,7 @@ class Leads_model extends CI_Model
     FROM leads_history_assigned_dealer AS lhad
     JOIN leads ld ON ld.leads_id=lhad.leads_id
     JOIN ms_dealer dl ON dl.kode_dealer=lhad.assignedDealer
+    LEFT JOIN setup_alasan_reassigned_pindah_dealer als ON als.id_alasan=lhad.alasanReAssignDealer
     $where
     $order_data
     $limit
