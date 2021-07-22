@@ -242,13 +242,13 @@ class Leads_customer_data extends CI_Controller
 
   function selectDeskripsiEvent()
   {
-    $this->load->model('leads_model', 'sm');
+    $this->load->model('event_model', 'event');
     $search = null;
     if (isset($_POST['searchTerm'])) {
       $search = $_POST['searchTerm'];
     }
-    $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->sm->getDeskripsiEvent($filter)->result();
+    $filter = ['search' => $search, 'select' => 'dropdown', 'is_event_ve' => 1];
+    $response = $this->event->getEvent($filter)->result();
     send_json($response);
   }
   function selectJumlahFu()
