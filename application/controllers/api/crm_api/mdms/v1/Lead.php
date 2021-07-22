@@ -20,29 +20,34 @@ class Lead extends CI_Controller
   public function index()
   {
     $validasi = request_validation();
-    $post = $validasi['post']['leads'];
-    // send_json($post);
-    $insert_st = $this->lda_m->insertStagingTables($post);
-    //Set Data
-    $data = [
-      'batchID' => $insert_st['batchID'],
-    ];
+    if (isset($validasi['post']['leads'])) {
+      $post = $validasi['post']['leads'];
+      $insert_st = $this->lda_m->insertStagingTables($post);
+      //Set Data
+      $data = [
+        'batchID' => $insert_st['batchID'],
+      ];
 
-    //Set Response Leads
-    if (count($insert_st['reject']) == 0) {
-      $status = 1;
-      $message = null;
-      $data['result']['leads'] = 'full_accept';
-    } elseif (count($validasi['post']['leads']) == count($insert_st['reject'])) {
-      $status = 0;
-      $message = null;
-      $data['result']['leads'] = 'full_reject';
+      //Set Response Leads
+      if (count($insert_st['reject']) == 0) {
+        $status = 1;
+        $message = null;
+        $data['result']['leads'] = 'full_accept';
+      } elseif (count($validasi['post']['leads']) == count($insert_st['reject'])) {
+        $status = 0;
+        $message = null;
+        $data['result']['leads'] = 'full_reject';
+      } else {
+        $status = 1;
+        $message = null;
+        $data['result']['leads'] = 'partial_accept';
+      }
+      $data['leads'] = $insert_st['list_leads'];
     } else {
-      $status = 1;
-      $message = null;
-      $data['result']['leads'] = 'partial_accept';
+      $status = 0;
+      $data = NULL;
+      $message = ['post data' => 'Response Body Not Found'];
     }
-    $data['leads'] = $insert_st['list_leads'];
 
     $result = [
       'status' => $status,

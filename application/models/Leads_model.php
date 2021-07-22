@@ -58,6 +58,11 @@ class Leads_model extends CI_Model
           $where .= " AND stl.nama='{$this->db->escape_str($filter['nama'])}'";
         }
       }
+      if (isset($filter['sourceRefID'])) {
+        if ($filter['sourceRefID'] != '') {
+          $where .= " AND stl.sourceRefID='{$this->db->escape_str($filter['sourceRefID'])}'";
+        }
+      }
       if (isset($filter['noHP'])) {
         if ($filter['noHP'] != '') {
           $where .= " AND stl.noHP='{$this->db->escape_str($filter['noHP'])}'";

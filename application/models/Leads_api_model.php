@@ -1,6 +1,8 @@
 <?php
 class Leads_api_model extends CI_Model
 {
+  var $sourceRefID = [];
+  var $noHPMulti = [];
   public function __construct()
   {
     parent::__construct();
@@ -14,6 +16,9 @@ class Leads_api_model extends CI_Model
     $this->load->model('series_dan_tipe_model', 'srtpm');
     $this->load->model('Platform_data_model', 'pd_m');
     $this->load->model('Source_leads_model', 'sl_m');
+    $this->load->model('event_model', 'event');
+    $this->load->model('cms_source_model', 'cms_source');
+    $this->load->model('segmen_model', 'segmen');
   }
 
   function insertStagingTables($post)
@@ -41,6 +46,10 @@ class Leads_api_model extends CI_Model
         $reject[$noHP] = 'Jumlah karakter kurang';
       } elseif ($noHP == '') {
         $reject[$noHP] = 'No. HP Wajib Diisi';
+      } else {
+        if (in_array($noHP, $this->noHPMulti)) {
+          $reject[$noHP] = 'No. HP Sudah Ada';
+        }
       }
 
       //Cek Nama
@@ -90,15 +99,6 @@ class Leads_api_model extends CI_Model
         if ($cek_pfd == 0) {
           $reject[$noHP] = 'Platform Data tidak ditemukan';
         }
-      }
-
-      if (in_array($noHP, array_keys($reject))) {
-        $list_leads[] = [
-          'noHP' => $noHP,
-          'accepted' => 'N',
-          'errorMessage' => $reject[$noHP]
-        ];
-        continue;
       }
 
       //Cek Provinsi
@@ -180,21 +180,110 @@ class Leads_api_model extends CI_Model
         }
       }
 
+      //Cek deskripsiEvent
+      $deskripsiEvent = clear_removed_html($pst['deskripsiEvent']);
+      $fev = [
+        'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, tanggal()]
+      ];
+      $cek_event = $this->event->getEvent($fev)->row();
+      if ($cek_event == null) {
+        $reject[$noHP] = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
+        $deskripsiEvent = null;
+      } else {
+        $deskripsiEvent = $cek_event->description;
+      }
+
+      // validasi sourceRefID
+      $sourceRefID = clear_removed_html($pst['sourceRefID']);
+      if ($sourceRefID != '') {
+        $fsid = ['sourceRefID' => $sourceRefID];
+        $cek_source_ref_id = $this->ld_m->getStagingLeads($fsid)->row();
+        if ($cek_source_ref_id != NULL) {
+          $reject[$noHP] = 'Source Ref ID : ' . $sourceRefID . ' sudah ada';
+          $sourceRefID = '';
+        } else {
+          if (in_array($sourceRefID, $this->sourceRefID)) {
+            $reject[$noHP] = 'Source Ref ID : ' . $sourceRefID . ' sudah ada';
+          } else {
+            $this->sourceRefID[] = $sourceRefID;
+          }
+        }
+      }
+
+      // Cek cmsSource
+      $cmsSource = clear_removed_html($pst['cmsSource']);
+      if ($cmsSource != '') {
+        $fcms = ['kode_cms_source' => $cmsSource];
+        $cek_cms_source = $this->cms_source->getCMSSource($fcms)->row();
+        if ($cek_cms_source == NULL) {
+          $reject[$noHP] = 'CMS Source : ' . $cmsSource . ' tidak ditemukan';
+        }
+      }
+
+      // Cek segmentMotor
+      $segmentMotor = clear_removed_html($pst['segmentMotor']);
+      if ($segmentMotor != '') {
+        $fseg = ['kode_segmen' => $segmentMotor];
+        $cek_cms_source = $this->segmen->getSegmen($fseg)->row();
+        if ($cek_cms_source == NULL) {
+          $reject[$noHP] = 'Segmen Motor : ' . $segmentMotor . ' tidak ditemukan';
+        }
+      } else {
+        $reject[$noHP] = 'Segmen Motor Kosong';
+      }
+
+      // cek customerType
+      $customerType = clear_removed_html($pst['customerType']);
+      if ($customerType == '') {
+        $customerType = 'R';
+      } else {
+        $listCustType = ['R', 'V'];
+        if (!in_array($customerType, $listCustType)) {
+          $reject[$noHP] = 'Customer Type : ' . $customerType . ' tidak ditemukan';
+        }
+      }
+
+      // cek Email
+      $email = clear_removed_html($pst['email']);
+      if ($email != '') {
+        $email = filter_var(clear_removed_html($pst['email']), FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          $reject[$noHP] = 'Format Email tidak valid';
+        }
+      }
+
+      //Cek CustomerActionDate
+      $customerActionDate = clear_removed_html($pst['customerActionDate']);
+      if (cekISO8601Date($customerActionDate)) {
+        $customerActionDate = date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate']));
+      } else {
+        $reject[$noHP] = 'Format Customer Action Date tidak valid';
+      }
+
+      if (in_array($noHP, array_keys($reject))) {
+        $list_leads[] = [
+          'noHP' => $noHP,
+          'accepted' => 'N',
+          'errorMessage' => $reject[$noHP]
+        ];
+        continue;
+      }
+      $this->noHPMulti[] = $noHP;
 
       $insert_batch[] = [
         'batchID' => $batchID,
         'nama' => clear_removed_html($pst['nama']),
         'noHP' => $noHP,
-        'email' => clear_removed_html($pst['email']),
-        'customerType' => clear_removed_html($pst['customerType']),
+        'email' => $email,
+        'customerType' => $customerType,
         'eventCodeInvitation' => clear_removed_html($pst['eventCodeInvitation']),
-        'customerActionDate' => date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate'])),
+        'customerActionDate' => $customerActionDate,
         'kabupaten' => $id_kabupaten,
         'provinsi' => $id_provinsi,
-        'cmsSource' => clear_removed_html($pst['cmsSource']),
-        'segmentMotor' => clear_removed_html($pst['segmentMotor']),
+        'cmsSource' => $cmsSource,
+        'segmentMotor' => $segmentMotor,
         'seriesMotor' => $seriesMotor,
-        'deskripsiEvent' => clear_removed_html($pst['deskripsiEvent']),
+        'deskripsiEvent' => $deskripsiEvent,
         'kodeTypeUnit' => $kodeTypeUnit,
         'kodeWarnaUnit' => $kodeWarnaUnit,
         'minatRidingTest' => clear_removed_html($pst['minatRidingTest']),
@@ -203,7 +292,7 @@ class Leads_api_model extends CI_Model
         'platformData' => clear_removed_html($pst['platformData']),
         'noTelp' => clear_removed_html($pst['noTelp']),
         'assignedDealer' => isset($pst['assignedDealer']) ? clear_removed_html($pst['assignedDealer']) : NULL,
-        'sourceRefID' => clear_removed_html($pst['sourceRefID']),
+        'sourceRefID' => $sourceRefID,
         'provinsi' => $id_provinsi,
         'kelurahan' => $id_kelurahan,
         'kecamatan' => $id_kecamatan,

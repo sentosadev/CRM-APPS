@@ -164,6 +164,9 @@ function request_validation($action = NULL)
 function insert_api_log($activity, $status, $message, $data)
 {
   $CI = &get_instance();
+  if (is_array($message)) {
+    $message = json_encode($message);
+  }
   $insert = [
     'api_key' => $activity['api_key'],
     'endpoint' => isset($activity['endpoint']) ? $activity['endpoint'] : '',
