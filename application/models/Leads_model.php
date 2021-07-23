@@ -475,7 +475,10 @@ class Leads_model extends CI_Model
     $where = "WHERE 1=1";
     $concat_desc_tipe_warna = "CONCAT(deskripsi_tipe,' - ',IFNULL(deskripsi_warna,'')) ";
     $status_api2 = "CASE WHEN stl.setleads=0 THEN 'New' WHEN stl.setleads=1 THEN 'Inprogress' END ";
-
+    $totalInteraksi = "SELECT COUNT(st_it.noHP) 
+                       FROM staging_table_leads st_it 
+                       LEFT JOIN leads ld_it ON ld_it.noHP=st_it.noHP
+                       WHERE st_it.noHP=stl.noHP AND ld_it.noHP IS NULL";
     if (isset($filter['noHP'])) {
       if ($filter['noHP'] != '') {
         $where .= " AND stl.noHP='{$this->db->escape_str($filter['noHP'])}'";
@@ -509,15 +512,23 @@ class Leads_model extends CI_Model
       }
     }
 
+    $group_by = '';
+    if (isset($filter['group_by'])) {
+      $group_by = 'GROUP BY ' . $filter['group_by'];
+    }
+
     return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id,pld.platform_data descPlatformData,sc.source_leads descSourceLeads,tp.deskripsi_tipe,wr.deskripsi_warna,$concat_desc_tipe_warna concat_desc_tipe_warna,
-    $status_api2 status_api2,stl.created_at
+    $status_api2 status_api2,stl.created_at,($totalInteraksi) totalInteraksi,CASE WHEN stl.customerType='V' THEN 'Invited' WHEN stl.customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc,
+    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource
     FROM staging_table_leads stl
     JOIN ms_platform_data pld ON pld.id_platform_data=stl.platformData
     JOIN ms_source_leads sc ON sc.id_source_leads=stl.sourceData
     LEFT JOIN ms_maintain_tipe tp ON tp.kode_tipe=stl.kodeTypeUnit
     LEFT JOIN ms_maintain_warna wr ON wr.kode_warna=stl.kodeTypeUnit
     LEFT JOIN leads tl ON tl.noHP=stl.noHP
+    LEFT JOIN ms_maintain_cms_source cs ON cs.kode_cms_source=stl.cmsSource
     $where
+    $group_by
     ");
   }
 

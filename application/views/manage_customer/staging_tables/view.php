@@ -26,6 +26,7 @@
             <th>Source Leads</th>
             <th>Tipe & Warna Motor</th>
             <th>Deskripsi Event</th>
+            <th>Total Interaksi</th>
             <th>Created At</th>
             <th>Status API2</th>
           </thead>
@@ -44,7 +45,10 @@
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 
 <?php $data['data'] = ['selectWarna', 'selectTipe'];
-$this->load->view('additionals/dropdown_series_tipe', $data); ?>
+$this->load->view('additionals/dropdown_series_tipe', $data);
+
+$this->load->view(get_controller() . '/modal_interaksi', $data);
+?>
 
 <script>
   $(document).ready(function() {
@@ -75,11 +79,14 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           "orderable": false
         },
         {
-          "targets": [10],
+          "targets": [11],
           "className": 'text-center'
         },
         // // { "targets":[0],"checkboxes":{'selectRow':true}}
-        // { "targets":[4],"className":'text-right'}, 
+        {
+          "targets": [9],
+          "className": 'text-center'
+        },
         // // { "targets":[2,4,5], "searchable": false } 
       ],
     });

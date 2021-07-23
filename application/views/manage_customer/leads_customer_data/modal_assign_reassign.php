@@ -131,6 +131,7 @@
                       <th>CRM Score</th>
                       <th>Sales People On Duty</th>
                       <th>Workload</th>
+                      <th>Workload Capacity</th>
                       <th>Action</th>
                     </thead>
                   </table>
@@ -298,6 +299,7 @@
                       <th>CRM Score</th>
                       <th>Sales People On Duty</th>
                       <th>Workload</th>
+                      <th>Workload Capacity</th>
                       <th>Action</th>
                     </thead>
                   </table>

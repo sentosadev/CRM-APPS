@@ -9,7 +9,7 @@ class Event_model extends CI_Model
 
   function getEvent($filter = null)
   {
-    $where = 'WHERE 1=1';
+    $where = "WHERE 1=1 AND ev.status='approved' AND is_event_ve=1 ";
     $select = '';
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);

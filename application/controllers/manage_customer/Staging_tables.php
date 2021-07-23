@@ -24,7 +24,7 @@ class Staging_tables extends Crm_Controller
     $data = array();
     $user = user();
     $no = $this->input->post('start') + 1;
-    foreach ($fetch_data as $rs) {
+    foreach ($fetch_data as $key => $rs) {
       $params      = [
         'get'   => "id = $rs->leads_id"
       ];
@@ -38,6 +38,8 @@ class Staging_tables extends Crm_Controller
       } elseif ($rs->status_api2 == 'Inprogress') {
         $status_api2 = '<label class="label label-info">Inprogress</label>';
       }
+      $btnDetailTotalInteraksi = "<script>no_hp_$key='$rs->noHP'</script>
+      <button class='btn btn-info btn-xs' style='width:50%' onclick=\"showModalInteraksi(this,no_hp_$key,$rs->totalInteraksi)\"><b>$rs->totalInteraksi</b></button>";
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->nama;
@@ -48,6 +50,7 @@ class Staging_tables extends Crm_Controller
       $sub_array[] = $rs->descSourceLeads;
       $sub_array[] = $rs->concat_desc_tipe_warna;
       $sub_array[] = $rs->deskripsiEvent;
+      $sub_array[] = $btnDetailTotalInteraksi;
       $sub_array[] = $rs->created_at;
       $sub_array[] = $status_api2;
       $data[]      = $sub_array;
@@ -73,6 +76,7 @@ class Staging_tables extends Crm_Controller
       'order'  => isset($_POST['order']) ? $_POST['order'] : '',
       'search' => $this->input->post('search')['value'],
       'order_column' => 'view',
+      'group_by' => 'stl.noHP',
       'mainTableNULL' => true
     ];
     if ($this->input->post('id_platform_data_multi')) {
@@ -86,5 +90,48 @@ class Staging_tables extends Crm_Controller
     } else {
       return $this->ld_m->getStagingTableVSMainTable($filter)->result();
     }
+  }
+
+  function getInteraksi()
+  {
+    $noHP = $this->input->post('noHP');
+    $f = [
+      'noHP' => $noHP,
+      'mainTableNULL' => true
+    ];
+    $res_data = $this->ld_m->getStagingTableVSMainTable($f);
+    $data = [];
+    $no = 1;
+    foreach ($res_data->result() as $dt) {
+      $dt = [
+        $no,
+        $dt->nama,
+        $dt->noHP,
+        '',
+        $dt->email,
+        $dt->customerTypeDesc,
+        $dt->eventCodeInvitation,
+        $dt->deskripsiCmsSource,
+        $dt->segmentMotor,
+        $dt->seriesMotor,
+        $dt->concat_desc_tipe_warna,
+        $dt->minatRidingTest == 1 ? 'Ya' : 'Tidak',
+        $dt->jadwalRidingTest,
+        $dt->descSourceLeads,
+        $dt->descPlatformData,
+        $dt->provinsi,
+        $dt->kabupaten,
+        $dt->kecamatan,
+        $dt->kelurahan,
+        $dt->assignedDealer,
+        $dt->noFramePembelianSebelumnya,
+        $dt->keterangan,
+        $dt->promoUnit,
+        $dt->sourceRefID,
+      ];
+      $data[] = $dt;
+      $no++;
+    }
+    send_json(['status' => 1, 'data' => $data]);
   }
 }

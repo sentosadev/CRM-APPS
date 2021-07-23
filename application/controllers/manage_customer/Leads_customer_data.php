@@ -967,6 +967,7 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->nos_score;
       $sub_array[] = $rs->crm_score;
       $sub_array[] = $rs->sales_people_on_duty;
+      $sub_array[] = $rs->work_load;
       $sub_array[] = $workload_cap;
       $sub_array[] = '<button class="btn btn-primary btn-xs btnAssignDealer" onclick="setAssignDealer(this,\'' . $rs->kode_dealer . '\')">Pilih</button>';
       $data[]      = $sub_array;
@@ -1144,6 +1145,7 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->nos_score;
       $sub_array[] = $rs->crm_score;
       $sub_array[] = $rs->sales_people_on_duty;
+      $sub_array[] = $rs->work_load;
       $sub_array[] = $workload_cap;
       $sub_array[] = '<button class="btn btn-primary btn-xs btnReAssignDealer" onclick="setReAssignDealer(this,\'' . $rs->kode_dealer . '\')">Pilih</button>';
       $data[]      = $sub_array;

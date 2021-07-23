@@ -2,7 +2,6 @@
 class Leads_api_model extends CI_Model
 {
   var $sourceRefID = [];
-  var $noHPMulti = [];
   public function __construct()
   {
     parent::__construct();
@@ -19,6 +18,7 @@ class Leads_api_model extends CI_Model
     $this->load->model('event_model', 'event');
     $this->load->model('cms_source_model', 'cms_source');
     $this->load->model('segmen_model', 'segmen');
+    $this->load->model('leads_model', 'ld_m');
   }
 
   function insertStagingTables($post)
@@ -40,64 +40,102 @@ class Leads_api_model extends CI_Model
       //Cek No HP
       $noHP = clean_no_hp($pst['noHP']);
       $cek = $this->ld_m->getStagingLeads(['noHP' => $noHP])->num_rows();
-      if (strlen($noHP) > 15) {
-        $reject[$noHP] = 'Jumlah karakter melebihi batas';
+      $errMessages = '';
+      if ($noHP == '') {
+        $errMsg = 'No. HP Wajib Diisi';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
+      } elseif (strlen($noHP) > 15) {
+        $errMsg = 'Jumlah karakter No. HP melebihi batas';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       } elseif (strlen($noHP) < 10) {
-        $reject[$noHP] = 'Jumlah karakter kurang';
-      } elseif ($noHP == '') {
-        $reject[$noHP] = 'No. HP Wajib Diisi';
-      } else {
-        if (in_array($noHP, $this->noHPMulti)) {
-          $reject[$noHP] = 'No. HP Sudah Ada';
-        }
+        $errMsg = 'Jumlah karakter No. HP kurang';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       }
 
       //Cek Nama
       if (strlen($pst['nama']) > 100) {
-        $reject[$noHP] = 'Jumlah karakter melebihi batas';
+        $errMsg = 'Jumlah karakter melebihi batas';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       } elseif ($pst['nama'] == '') {
-        $reject[$noHP] = 'Nama Wajib Diisi';
+        $errMsg = 'Nama Wajib Diisi';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       }
 
-      //Cek sourceRefID
-      if ($pst['sourceRefID'] != '') {
-        $fl = ['sourceRefID' => $pst['sourceRefID']];
-        $cek = $this->ld_m->getLeads($fl)->num_rows();
-        if ($cek > 0) {
-          $reject[$noHP] = 'Source Ref ID sudah ada';
+      // validasi sourceRefID
+      $sourceRefID = clear_removed_html($pst['sourceRefID']);
+      if ($sourceRefID != '') {
+        $fsid = ['sourceRefID' => $sourceRefID];
+        $cek_source_ref_id = $this->ld_m->getStagingLeads($fsid)->row();
+        if ($cek_source_ref_id != NULL) {
+          $errMsg = 'Source Ref ID : ' . $sourceRefID . ' sudah ada';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
+          $sourceRefID = '';
+        } else {
+          $cek_source_ref_id_in_leads = $this->ld_m->getLeads($fsid)->row();
+          if ($cek_source_ref_id_in_leads != NULL) {
+            $errMsg = 'Source Ref ID : ' . $sourceRefID . ' sudah ada';
+            $reject[$noHP] = $errMsg;
+            $errMessages .= $errMsg . '. ';
+          } else {
+            if (in_array($sourceRefID, $this->sourceRefID)) {
+              $errMsg = 'Source Ref ID : ' . $sourceRefID . ' sudah ada';
+              $reject[$noHP] = $errMsg;
+              $errMessages .= $errMsg . '. ';
+            } else {
+              $this->sourceRefID[] = $sourceRefID;
+            }
+          }
         }
       }
 
       //Cek customerActionDate
       if ($pst['customerActionDate'] == '') {
-        $reject[$noHP] = 'Customer Action Date Wajib Diisi';
+        $errMsg = 'Customer Action Date Wajib Diisi';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       } else {
         $customerActionDate = date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate']));
         $selisih = selisih_detik($customerActionDate, $now);
         if ($selisih < 0) {
-          $reject[$noHP] = 'Customer Action Date Lebih Besar Dari Tanggal Sekarang';
+          $errMsg = 'Customer Action Date Lebih Besar Dari Tanggal Sekarang';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
         }
       }
 
       //Cek sourceData
       if ($pst['sourceData'] == '') {
-        $reject[$noHP] = 'Source Data Wajib Diisi';
+        $errMsg = 'Source Data Wajib Diisi';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       } else {
         $fsl = ['id_source_leads' => $pst['sourceData']];
         $cek_source = $this->sl_m->getSourceLeads($fsl)->num_rows();
         if ($cek_source == 0) {
-          $reject[$noHP] = 'Source Data tidak ditemukan';
+          $errMsg = 'Source Data tidak ditemukan';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
         }
       }
 
       //Cek platformData
       if ($pst['platformData'] == '') {
-        $reject[$noHP] = 'Platform Data Wajib Diisi';
+        $errMsg = 'Platform Data Wajib Diisi';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       } else {
         $fpl = ['id_platform_data' => $pst['platformData']];
         $cek_pfd = $this->pd_m->getPlatformData($fpl)->num_rows();
         if ($cek_pfd == 0) {
-          $reject[$noHP] = 'Platform Data tidak ditemukan';
+          $errMsg = 'Platform Data : ' . $pst['platformData'] . ' tidak ditemukan';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
         }
       }
 
@@ -187,27 +225,12 @@ class Leads_api_model extends CI_Model
       ];
       $cek_event = $this->event->getEvent($fev)->row();
       if ($cek_event == null) {
-        $reject[$noHP] = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
+        $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
         $deskripsiEvent = null;
       } else {
         $deskripsiEvent = $cek_event->description;
-      }
-
-      // validasi sourceRefID
-      $sourceRefID = clear_removed_html($pst['sourceRefID']);
-      if ($sourceRefID != '') {
-        $fsid = ['sourceRefID' => $sourceRefID];
-        $cek_source_ref_id = $this->ld_m->getStagingLeads($fsid)->row();
-        if ($cek_source_ref_id != NULL) {
-          $reject[$noHP] = 'Source Ref ID : ' . $sourceRefID . ' sudah ada';
-          $sourceRefID = '';
-        } else {
-          if (in_array($sourceRefID, $this->sourceRefID)) {
-            $reject[$noHP] = 'Source Ref ID : ' . $sourceRefID . ' sudah ada';
-          } else {
-            $this->sourceRefID[] = $sourceRefID;
-          }
-        }
       }
 
       // Cek cmsSource
@@ -216,7 +239,9 @@ class Leads_api_model extends CI_Model
         $fcms = ['kode_cms_source' => $cmsSource];
         $cek_cms_source = $this->cms_source->getCMSSource($fcms)->row();
         if ($cek_cms_source == NULL) {
-          $reject[$noHP] = 'CMS Source : ' . $cmsSource . ' tidak ditemukan';
+          $errMsg = 'CMS Source : ' . $cmsSource . ' tidak ditemukan';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
         }
       }
 
@@ -226,21 +251,20 @@ class Leads_api_model extends CI_Model
         $fseg = ['kode_segmen' => $segmentMotor];
         $cek_cms_source = $this->segmen->getSegmen($fseg)->row();
         if ($cek_cms_source == NULL) {
-          $reject[$noHP] = 'Segmen Motor : ' . $segmentMotor . ' tidak ditemukan';
+          $errMsg = 'Segmen Motor : ' . $segmentMotor . ' tidak ditemukan';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
         }
       } else {
-        $reject[$noHP] = 'Segmen Motor Kosong';
+        $errMsg = 'Segmen Motor Kosong';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       }
 
       // cek customerType
       $customerType = clear_removed_html($pst['customerType']);
-      if ($customerType == '') {
+      if ($customerType != 'V') {
         $customerType = 'R';
-      } else {
-        $listCustType = ['R', 'V'];
-        if (!in_array($customerType, $listCustType)) {
-          $reject[$noHP] = 'Customer Type : ' . $customerType . ' tidak ditemukan';
-        }
       }
 
       // cek Email
@@ -248,7 +272,9 @@ class Leads_api_model extends CI_Model
       if ($email != '') {
         $email = filter_var(clear_removed_html($pst['email']), FILTER_SANITIZE_EMAIL);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $reject[$noHP] = 'Format Email tidak valid';
+          $errMsg = 'Format Email tidak valid';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
         }
       }
 
@@ -257,18 +283,19 @@ class Leads_api_model extends CI_Model
       if (cekISO8601Date($customerActionDate)) {
         $customerActionDate = date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate']));
       } else {
-        $reject[$noHP] = 'Format Customer Action Date tidak valid';
+        $errMsg = 'Format Customer Action Date tidak valid';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
       }
 
       if (in_array($noHP, array_keys($reject))) {
         $list_leads[] = [
           'noHP' => $noHP,
           'accepted' => 'N',
-          'errorMessage' => $reject[$noHP]
+          'errorMessage' => $errMessages
         ];
         continue;
       }
-      $this->noHPMulti[] = $noHP;
 
       $insert_batch[] = [
         'batchID' => $batchID,

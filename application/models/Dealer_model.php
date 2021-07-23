@@ -111,7 +111,7 @@ class Dealer_model extends CI_Model
                   WHERE assignedDealer=mu.kode_dealer 
                   AND (SELECT COUNT(leads_id) 
                        FROM leads_follow_up lfu 
-                       WHERE leads_id=leads.leads_id)=0
+                       WHERE leads_id=leads.leads_id AND lfu.assignedDealer=mu.kode_dealer)=0
                 ";
     if ($filter != null) {
       $filter = $this->db->escape_str($filter);

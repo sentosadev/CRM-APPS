@@ -429,11 +429,11 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           },
         },
         "columnDefs": [{
-            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "orderable": false
           },
           {
-            "targets": [9],
+            "targets": [10],
             "className": 'text-center'
           },
           // {
@@ -487,11 +487,11 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           },
         },
         "columnDefs": [{
-            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "orderable": false
           },
           {
-            "targets": [9],
+            "targets": [10],
             "className": 'text-center'
           },
           // {
