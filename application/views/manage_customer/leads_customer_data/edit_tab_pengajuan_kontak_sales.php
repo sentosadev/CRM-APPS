@@ -80,10 +80,18 @@
           <label class="col-sm-4 control-label">Minat Riding Test</label>
           <div class="form-input">
             <div class="col-sm-1">
-              <input type="radio" name="minatRidingTest" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 1 ? 'checked' : '' ?> <?= $disabled ?>> Ya
+              <input type="radio" name="minatRidingTest" value="1" class="flat-red minatRidingTest" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 1 ? 'checked' : '' ?> <?= $disabled ?>> Ya
             </div>
             <div class="col-sm-1">
-              <input type="radio" name="minatRidingTest" value="0" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 0 ? 'checked' : '' ?> <?= $disabled ?>> Tidak
+              <input type="radio" name="minatRidingTest" value="0" class="flat-red minatRidingTest" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 0 ? 'checked' : '' ?> <?= $disabled ?>> Tidak
+            </div>
+          </div>
+        </div>
+        <div class="form-group" id="input_jadwalRidingTest" style="display:none">
+          <label class="col-sm-4 control-label">Jadwal Riding Test</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <input type="text" class="form-control datetimepicker" name='jadwalRidingTest' value='<?= $row->jadwalRidingTest ?>' <?= $disabled ?> onkeypress="only_number(event)">
             </div>
           </div>
         </div>
@@ -244,4 +252,20 @@ $this->load->view(get_controller() . '/modal_history_interaksi');
       })
     }
   }
+
+  function cekMinatRidingTest() {
+    $('#input_jadwalRidingTest').hide()
+    $("input[name = 'minatRidingTest']").each(function() {
+      if (this.checked == true && this.value == 1) {
+        $('#input_jadwalRidingTest').show()
+      }
+    })
+  }
+  $(document).ready(function() {
+    cekMinatRidingTest()
+  })
+
+  $('.minatRidingTest').on('ifChanged', function() {
+    cekMinatRidingTest()
+  })
 </script>

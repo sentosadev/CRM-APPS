@@ -20,6 +20,7 @@
               <th>CMS Source</th>
               <th>Segmen Motor</th>
               <th>Series Motor</th>
+              <th>Deskripsi Event</th>
               <th>Kode Unit + Warna Motor</th>
               <th>Minat Riding Test</th>
               <th>Jadwal Riding Test</th>

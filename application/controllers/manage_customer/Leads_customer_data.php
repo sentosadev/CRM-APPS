@@ -313,6 +313,7 @@ class Leads_customer_data extends Crm_Controller
       'kodeTypeUnit' => $kodeTypeUnit,
       'kodeWarnaUnit' => $kodeWarnaUnit,
       'minatRidingTest' => $this->input->post('minatRidingTest', true),
+      'jadwalRidingTest' => convert_datetime($this->input->post('jadwalRidingTest', true)),
       'seriesMotor' => $get_tipe->id_series,
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
@@ -1379,6 +1380,7 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->deskripsiCmsSource;
       $sub_array[] = $rs->segmentMotor;
       $sub_array[] = $rs->seriesMotor;
+      $sub_array[] = $rs->deskripsiEvent;
       $sub_array[] = $rs->kodeTypeUnit . '+' . $rs->kodeWarnaUnit;
       $sub_array[] = $rs->minatRidingTestDesc;
       $sub_array[] = $rs->jadwalRidingTest;
@@ -1389,7 +1391,6 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->kecamatan;
       $sub_array[] = $rs->kelurahan;
       $sub_array[] = '';
-      $sub_array[] = $rs->kelurahan;
       $sub_array[] = $rs->frameNoPembelianSebelumnya;
       $sub_array[] = $rs->keterangan;
       $sub_array[] = $rs->promoUnit;
