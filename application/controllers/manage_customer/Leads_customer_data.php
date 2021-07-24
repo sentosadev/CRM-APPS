@@ -82,23 +82,24 @@ class Leads_customer_data extends Crm_Controller
       } else {
         $btnAssign = $rs->assignedDealer . '</br>';
       }
-      if ($rs->deskripsiHasilStatusFollowUp == 'Prospect') {
-        $skip_if = [
-          'assign' => [
-            [$rs->assignedDealer, '!=', '']
-          ],
-          'reassign' => [
-            [$rs->assignedDealer, '==', '']
-          ]
-        ];
-        $btnAssign .= link_assign_reassign($rs->leads_id, $user->id_group, $skip_if);
+      $skip_if = [
+        'assign' => [
+          [$rs->assignedDealer, '!=', '']
+        ],
+        'reassign' => [
+          [$rs->assignedDealer, '==', '']
+        ]
+      ];
+      $showBtnAssign = link_assign_reassign($rs->leads_id, $user->id_group, $skip_if);
+      if ($rs->need_fu_md == 1 && $rs->deskripsiHasilStatusFollowUp != 'Prospect') {
+        $showBtnAssign = '';
       }
       $sub_array   = array();
       $sub_array[] = $no;
       $sub_array[] = $rs->leads_id;
       $sub_array[] = $rs->nama;
       $sub_array[] = $rs->kodeDealerSebelumnya;
-      $sub_array[] = $btnAssign;
+      $sub_array[] = $btnAssign . $showBtnAssign;
       $sub_array[] = $rs->tanggalAssignDealer;
       $sub_array[] = $rs->deskripsiPlatformData;
       $sub_array[] = $rs->deskripsiSourceData;
@@ -802,54 +803,6 @@ class Leads_customer_data extends Crm_Controller
     send_json($response);
   }
 
-  function _post_to_api3($leads_id)
-  {
-    $this->load->helper('api');
-    $this->load->model('dealer_model', 'dlm');
-    $this->load->model('kelurahan_model', 'kelm');
-    $this->load->model('sumber_prospek_model', 'sprm');
-    $leads = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
-    $fp = ['id_cdb' => $leads->sourceData];
-    $sumber_prospek = $this->sprm->getSumberProspekFromOtherDB($fp)->row()->id;
-    $prospek = [
-      'leads_id' => $leads->leads_id,
-      'kode_dealer_md' => $leads->assignedDealer,
-      'id_karyawan_dealer' => $leads->id_karyawan_dealer,
-      'id_customer' => $leads->customerId,
-      'nama_konsumen' => $leads->nama,
-      'no_ktp' => $leads->noKtp,
-      'no_npwp' => $leads->npwp,
-      'no_kk' => $leads->noKK,
-      'jenis_wn' => $leads->jenisKewarganegaraan,
-      'jenis_kelamin' => $leads->gender == 1 ? 'Pria' : 'Wanita',
-      'tempat_lahir' => $leads->tempatLahir,
-      'tgl_lahir' => $leads->tanggalLahir,
-      'id_kelurahan' => $leads->kelurahan,
-      'alamat' => $leads->alamat,
-      'agama' => $leads->idAgama,
-      'no_hp' => $leads->noHP,
-      'no_telp' => $leads->noTelp,
-      'merk_sebelumnya' => $leads->idMerkMotorYangDimilikiSekarang,
-      'jenis_sebelumnya' => $leads->idJenisMotorYangDimilikiSekarang,
-      'pemakai_motor' => $leads->yangMenggunakanSepedaMotor,
-      'email' => $leads->email,
-      'status_nohp' => $leads->statusNoHp,
-      'status_prospek' => $leads->statusProspek,
-      'id_tipe_kendaraan' => $leads->kodeTypeUnit,
-      'id_warna' => $leads->kodeWarnaUnit,
-      'sumber_prospek' => $sumber_prospek,
-      'longitude' => $leads->longitude,
-      'latitude' => $leads->latitude,
-      'pekerjaan' => $leads->kodePekerjaanKtp,
-      'sub_pekerjaan' => $leads->kodePekerjaan,
-      'created_at' => waktu(),
-      'tgl_prospek' => tanggal()
-    ];
-    $ld = ['leads_id' => $leads->leads_id];
-    $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
-    return ['prospek' => $prospek, 'interaksi' => $interaksi];
-  }
-
   public function detail()
   {
     $data['title'] = $this->title;
@@ -1096,7 +1049,7 @@ class Leads_customer_data extends Crm_Controller
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
       //Melakukan Pengiriman API 3
-      $data = $this->_post_to_api3($leads_id);
+      $data = $this->ld_m->post_to_api3($leads_id);
       $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
       // send_json($res_api3);
       if ($res_api3['status'] == 1) {
@@ -1290,7 +1243,7 @@ class Leads_customer_data extends Crm_Controller
       $pesan = 'Berhasil melakukan reassign dealer untuk Leads ID : ' . $this->input->post('leads_id', true);
 
       //Melakukan Pengiriman API 3
-      $data = $this->_post_to_api3($leads_id);
+      $data = $this->ld_m->post_to_api3($leads_id);
       $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
       if ($res_api3['status'] == 1) {
         $this->db->trans_commit();

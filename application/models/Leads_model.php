@@ -183,7 +183,7 @@ class Leads_model extends CI_Model
         ($tanggalNextFU) tanggalNextFU,preferensiPromoDiminatiCustomer,
         CASE WHEN ($pernahTerhubung)=4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
         kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
-        plm.pengeluaran deskripsiPengeluaran,stl.pengeluaran,
+        plm.pengeluaran deskripsiPengeluaran,stl.pengeluaran,need_fu_md,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
         " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
         " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
@@ -1319,5 +1319,53 @@ class Leads_model extends CI_Model
   $order_data
   $limit
   ");
+  }
+
+  function post_to_api3($leads_id)
+  {
+    $this->load->helper('api');
+    $this->load->model('dealer_model', 'dlm');
+    $this->load->model('kelurahan_model', 'kelm');
+    $this->load->model('sumber_prospek_model', 'sprm');
+    $leads = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
+    $fp = ['id_cdb' => $leads->sourceData];
+    $sumber_prospek = $this->sprm->getSumberProspekFromOtherDB($fp)->row()->id;
+    $prospek = [
+      'leads_id' => $leads->leads_id,
+      'kode_dealer_md' => $leads->assignedDealer,
+      'id_karyawan_dealer' => $leads->id_karyawan_dealer,
+      'id_customer' => $leads->customerId,
+      'nama_konsumen' => $leads->nama,
+      'no_ktp' => $leads->noKtp,
+      'no_npwp' => $leads->npwp,
+      'no_kk' => $leads->noKK,
+      'jenis_wn' => $leads->jenisKewarganegaraan,
+      'jenis_kelamin' => $leads->gender == 1 ? 'Pria' : 'Wanita',
+      'tempat_lahir' => $leads->tempatLahir,
+      'tgl_lahir' => $leads->tanggalLahir,
+      'id_kelurahan' => $leads->kelurahan,
+      'alamat' => $leads->alamat,
+      'agama' => $leads->idAgama,
+      'no_hp' => $leads->noHP,
+      'no_telp' => $leads->noTelp,
+      'merk_sebelumnya' => $leads->idMerkMotorYangDimilikiSekarang,
+      'jenis_sebelumnya' => $leads->idJenisMotorYangDimilikiSekarang,
+      'pemakai_motor' => $leads->yangMenggunakanSepedaMotor,
+      'email' => $leads->email,
+      'status_nohp' => $leads->statusNoHp,
+      'status_prospek' => $leads->statusProspek,
+      'id_tipe_kendaraan' => $leads->kodeTypeUnit,
+      'id_warna' => $leads->kodeWarnaUnit,
+      'sumber_prospek' => $sumber_prospek,
+      'longitude' => $leads->longitude,
+      'latitude' => $leads->latitude,
+      'pekerjaan' => $leads->kodePekerjaanKtp,
+      'sub_pekerjaan' => $leads->kodePekerjaan,
+      'created_at' => waktu(),
+      'tgl_prospek' => tanggal()
+    ];
+    $ld = ['leads_id' => $leads->leads_id];
+    $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
+    return ['prospek' => $prospek, 'interaksi' => $interaksi];
   }
 }

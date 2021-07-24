@@ -15,6 +15,8 @@ class Lead extends CI_Controller
     $this->load->model('leads_api_model', 'lda_m');
     $this->load->model('Cdb_nms_model', 'cdb_nms');
     $this->load->model('upload_leads_model', 'udm_m');
+    $this->load->model('dealer_model', 'dealer');
+    $this->load->model('source_leads_model', 'source_m');
   }
 
   public function index()
@@ -235,6 +237,60 @@ class Lead extends CI_Controller
           'setleads' => 1,
         ];
         $this->db->update('staging_table_leads', $setleads, ['stage_id' => $itr['stage_id']]);
+      }
+
+      //Cek Apakah Perlu Auto Dispatch
+      $assignedDealer = clear_removed_html($pst['assignedDealer']);
+      if ((string)$assignedDealer != '') {
+        $fdl = ['kode_dealer' => $assignedDealer];
+        $cek_dealer = $this->dealer->getDealer($fdl)->row();
+        if ($cek_dealer != null) {
+          // Cek Apakah Source Perlu FU MD
+          $fsl = [
+            'id_source_leads' => clear_removed_html($pst['sourceData']),
+            'need_fu_md' => 1
+          ];
+          $cek_source_need_fu_md = $this->source_m->getSourceLeads($fsl)->row();
+          if ($cek_source_need_fu_md == null) {
+            //Melakukan Pengiriman API 3
+            $data = $this->ld_m->post_to_api3($leads_id);
+            $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
+            if ($res_api3['status'] == 1) {
+              //Membuat History Dispatch Dealer
+              $insert_history_assigned = [
+                'leads_id'             => $leads_id,
+                'assignedKe'           => 1,
+                'assignedDealer'       => $assignedDealer,
+                'tanggalAssignDealer'  => waktu(),
+                'assignedDealerBy'     => 0,
+                'created_at'           => waktu(),
+                'created_by'           => 0,
+                'alasanReAssignDealer'        => '',
+                'alasanReAssignDealerLainnya' => '',
+              ];
+              $this->db->insert('leads_history_assigned_dealer', $insert_history_assigned);
+
+              // Set Stage ID 5
+              // 5. Dispatch Prospect to Dealer
+              $ins_history_stage = [
+                'leads_id' => $leads_id,
+                'created_at' => waktu(),
+                'stageId' => 5
+              ];
+              $this->db->insert('leads_history_stage', $ins_history_stage);
+
+              //Update Leads
+              $update_leads = [
+                'assignedDealer'            => $assignedDealer,
+                'alasanPindahDealer'        => null,
+                'alasanPindahDealerLainnya' => null,
+                'tanggalAssignDealer'       => waktu(),
+                'assignedDealerBy'          => 0,
+              ];
+              $this->db->update('leads', $update_leads, ['leads_id' => $leads_id]);
+            }
+          }
+        }
       }
     }
     //Set Stage Sudah Dibuat Menjadi Leads
