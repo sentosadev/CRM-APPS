@@ -477,6 +477,10 @@ function convert_datetime($val)
     return $val;
   }
 }
+function convert_datetime_str($val)
+{
+  return date("d F Y H:i:s", strtotime($val));
+}
 
 function convert_no_hp($val)
 {

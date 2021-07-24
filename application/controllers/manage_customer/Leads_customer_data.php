@@ -78,10 +78,11 @@ class Leads_customer_data extends Crm_Controller
       // }
 
       if ((string)$rs->assignedDealer == '') {
-        $btnAssign = 'Not-Assigned</br>';
+        $assigned = 'Not-Assigned</br>';
       } else {
-        $btnAssign = $rs->assignedDealer . '</br>';
+        $assigned = $rs->assignedDealer . '</br>';
       }
+
       $skip_if = [
         'assign' => [
           [$rs->assignedDealer, '!=', '']
@@ -99,7 +100,7 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->leads_id;
       $sub_array[] = $rs->nama;
       $sub_array[] = $rs->kodeDealerSebelumnya;
-      $sub_array[] = $btnAssign . $showBtnAssign;
+      $sub_array[] = $assigned . $showBtnAssign;
       $sub_array[] = $rs->tanggalAssignDealer;
       $sub_array[] = $rs->deskripsiPlatformData;
       $sub_array[] = $rs->deskripsiSourceData;
@@ -532,7 +533,11 @@ class Leads_customer_data extends Crm_Controller
     }
     $list_folup = $this->input->post('folup', true);
     if ($list_folup != NULL) {
+      $count_list_folup = count($list_folup);
       foreach ($list_folup as $i) {
+        if ($i < $count_list_folup) {
+          continue;
+        }
         $fg['followUpKe'] = $i;
         $fg['assignedDealer'] = (string)$gr->assignedDealer;
         $cek = $this->ld_m->getLeadsFollowUp($fg)->row();
@@ -554,29 +559,30 @@ class Leads_customer_data extends Crm_Controller
           'updated_by' => $user->id_user,
         ];
 
-        //Cek TglFollowUp Apakah Lebih Kecil Dari CustomerActionDate
-        $i_1 = $i - 1;
-        $tglFolUpSebelumnya = convert_datetime($this->input->post('tglFollowUp_' . $i_1, true));
-        $cek_fol_act = selisih_detik($tglFolUpSebelumnya, $upd_fol['tglFollowUp']);
-        if ($cek_fol_act < 1) {
-          $response = [
-            'status' => 0,
-            'pesan' => "Tanggal Follow Up $i lebih kecil dari Tanggal Follow Up $i_1"
-          ];
-          send_json($response);
-        }
-
         //Cek Tanggal Follow Up Apakah Lebih Kecil Dari Tanggal Follow Up Sebelumnya
         if (count($list_folup) > 1) {
-          $cek_fol_act = selisih_detik($gr->customerActionDate, $upd_fol['tglFollowUp']);
+          $i_1 = $i - 1;
+          $tglFolUpSebelumnya = convert_datetime($this->input->post('tglFollowUp_' . $i_1, true));
+          $cek_fol_act = selisih_detik($tglFolUpSebelumnya, $upd_fol['tglFollowUp']);
           if ($cek_fol_act < 1) {
             $response = [
               'status' => 0,
-              'pesan' => "Tanggal Follow Up $i lebih kecil dari customer Action Date"
+              'pesan' => "Tgl. Follow Up $i Lebih Kecil Dari Tanggal Follow Up $i_1. Tanggal Follow Up $i_1 : " . convert_datetime_str($tglFolUpSebelumnya)
             ];
             send_json($response);
           }
         }
+
+        //Cek TglFollowUp Apakah Lebih Kecil Dari CustomerActionDate
+        $cek_fol_act = selisih_detik($gr->customerActionDate, $upd_fol['tglFollowUp']);
+        if ($cek_fol_act < 1) {
+          $response = [
+            'status' => 0,
+            'pesan' => "Tgl. Follow Up $i Lebih Kecil Dari Customer Action Date. Customer Action Date : " . convert_datetime_str($gr->customerActionDate)
+          ];
+          send_json($response);
+        }
+
         if ($cek->created_at == '') {
           $upd_fol['created_at'] = waktu();
           $upd_fol['created_by'] = $user->id_user;
