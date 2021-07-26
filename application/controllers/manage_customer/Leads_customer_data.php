@@ -18,9 +18,11 @@ class Leads_customer_data extends Crm_Controller
   {
     $data['title'] = $this->title;
     $data['file']  = 'view';
+
     $belum_fu_md = [
       'select' => 'count',
-      'jumlah_fu_md' => 0
+      'jumlah_fu_md' => 0,
+      'need_fu_md' => 1
     ];
 
     $need_fu = [
@@ -28,16 +30,12 @@ class Leads_customer_data extends Crm_Controller
       'is_dealer' => true,
       'not_contacted' => true,
     ];
-    $belum_assign_dealer = [
-      'select' => 'count',
-      'assignedDealerIsNULL' => true,
-      'kodeHasilStatusFollowUpIn' => [1],
-      'last_kodeHasilStatusFollowUp' => 1
-    ];
+
     $multi_interaksi = [
       'select' => 'count',
       'interaksi_lebih_dari' => 1
     ];
+
     $lewat_sla_md = [
       'select' => 'count',
       'ontimeSLA1' => 0,
@@ -53,12 +51,13 @@ class Leads_customer_data extends Crm_Controller
     $monitoring = [
       'belum_fu_md' => $this->ld_m->getLeads($belum_fu_md)->row()->count,
       'need_fu' => $this->ld_m->getCountLeadsVsFollowUp($need_fu)->row()->count,
-      'belum_assign_dealer' => $this->ld_m->getLeads($belum_assign_dealer)->row()->count,
+      'belum_assign_dealer' => $this->ld_m->getLeadsBelumAssignDealer(),
       'lewat_sla_md' => $this->ld_m->getLeads($lewat_sla_md)->row()->count,
       'lewat_sla_d' => $this->ld_m->getLeads($lewat_sla_d)->row()->count,
       'multi_interaksi' => $this->ld_m->getLeads($multi_interaksi)->row()->count,
     ];
     $data['mon'] = $monitoring;
+
     $this->template_portal($data);
   }
 

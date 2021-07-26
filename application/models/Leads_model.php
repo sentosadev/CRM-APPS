@@ -386,6 +386,7 @@ class Leads_model extends CI_Model
       if (isset($filter['jumlah_fu_d'])) {
         $where .= " AND IFNULL(($jumlah_fu_d),0)={$filter['jumlah_fu_d']}";
       }
+
       if (isset($filter['show_hasil_fu_not_prospect'])) {
         $fs = $filter['show_hasil_fu_not_prospect'];
         $where .= " AND 
@@ -394,6 +395,10 @@ class Leads_model extends CI_Model
                         ELSE 1
                         END = 1  
                         ";
+      }
+
+      if (isset($filter['need_fu_md'])) {
+        $where .= " AND need_fu_md={$filter['need_fu_md']}";
       }
 
       if (isset($filter['search'])) {
@@ -1367,5 +1372,27 @@ class Leads_model extends CI_Model
     $ld = ['leads_id' => $leads->leads_id];
     $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
     return ['prospek' => $prospek, 'interaksi' => $interaksi];
+  }
+
+  function getLeadsBelumAssignDealer()
+  {
+    // Cek VE
+    $belum_assign_dealer = [
+      'select' => 'count',
+      'assignedDealerIsNULL' => true,
+      'kodeHasilStatusFollowUpIn' => [1],
+      'last_kodeHasilStatusFollowUp' => 1,
+      'need_fu_md' => 1
+    ];
+    $ve = $this->getLeads($belum_assign_dealer)->row()->count;
+
+    // Cek Non-VE
+    $belum_assign_dealer = [
+      'select' => 'count',
+      'assignedDealerIsNULL' => true,
+      'need_fu_md' => 0
+    ];
+    $non_ve = $this->getLeads($belum_assign_dealer)->row()->count;
+    return $ve + $non_ve;
   }
 }

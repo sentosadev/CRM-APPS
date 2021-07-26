@@ -38,7 +38,7 @@ class Log_api_model extends CI_Model
       }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'request_data') {
-          $select = "request_data";
+          $select = "post_data";
         } elseif ($filter['select'] == 'response_data') {
           $select = "response_data";
         } else {
