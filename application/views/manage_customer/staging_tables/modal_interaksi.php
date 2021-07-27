@@ -17,10 +17,12 @@
               <th>Email</th>
               <th>Customer Type</th>
               <th>Event Code Invitation</th>
+              <th>Customer Action Date</th>
               <th>CMS Source</th>
               <th>Segmen Motor</th>
               <th>Series Motor</th>
               <th>Kode Unit + Warna Motor</th>
+              <th>Deskripsi Event</th>
               <th>Minat Riding Test</th>
               <th>Jadwal Riding Test</th>
               <th>Source Data</th>
@@ -34,6 +36,9 @@
               <th>Keterangan</th>
               <th>Promo Unit</th>
               <th>Source Ref. ID</th>
+              <th>Facebook</th>
+              <th>Instagram</th>
+              <th>Twitter</th>
             </thead>
           </table>
         </div>

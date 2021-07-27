@@ -95,10 +95,10 @@
           <input type="text" class="form-control datepicker" name='tanggalPembelianTerakhir' value='<?= $row->tanggalPembelianTerakhir ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP)</label>
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP) *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaanKtp' <?= $disabled ?>>
+          <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaanKtp' <?= $disabled ?> required>
             <option value='<?= $row->kodePekerjaanKtp ?>'><?= $row->deskripsiPekerjaanKtp ?></option>
           </select>
         </div>
@@ -142,10 +142,10 @@
           <input type="text" class="form-control" name='namaDealerPreferensiCustomer' value='<?= $row->namaDealerPreferensiCustomer ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Pendidikan</label>
+      <label class="col-sm-2 control-label">Pendidikan *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="idPendidikan" class='form-control' name='idPendidikan' <?= $disabled ?>>
+          <select required style='width:100%' id="idPendidikan" class='form-control' name='idPendidikan' <?= $disabled ?>>
             <option value='<?= $row->idPendidikan ?>'><?= $row->deskripsiPendidikan ?></option>
           </select>
         </div>
@@ -213,10 +213,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kecamatan Domisili</label>
+      <label class="col-sm-2 control-label">Kecamatan Domisili *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kecamatan_from_other_db" class='form-control' name='kecamatan' <?= $disabled ?>>
+          <select style='width:100%' id="id_kecamatan_from_other_db" class='form-control' name='kecamatan' <?= $disabled ?> required>
             <option value='<?= $row->kecamatan ?>'><?= $row->deskripsiKecamatanDomisili ?></option>
           </select>
         </div>
@@ -229,10 +229,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kelurahan Domisili</label>
+      <label class="col-sm-2 control-label">Kelurahan Domisili *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?>>
+          <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?> required>
             <option value='<?= $row->kelurahan ?>'><?= $row->deskripsiKelurahanDomisili ?></option>
           </select>
         </div>
@@ -340,10 +340,10 @@
           <input type="text" class="form-control" name='tempatLahir' value='<?= $row->tempatLahir ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Tgl. Lahir</label>
+      <label class="col-sm-2 control-label">Tgl. Lahir *</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datepicker" id='tanggalLahir' name='tanggalLahir' value='<?= $row->tanggalLahir ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datepicker" id='tanggalLahir' name='tanggalLahir' value='<?= $row->tanggalLahir ?>' <?= $disabled ?> required>
         </div>
       </div>
     </div>

@@ -111,10 +111,12 @@ class Staging_tables extends Crm_Controller
         $dt->email,
         $dt->customerTypeDesc,
         $dt->eventCodeInvitation,
+        $dt->customerActionDate,
         $dt->deskripsiCmsSource,
         $dt->segmentMotor,
         $dt->seriesMotor,
         $dt->concat_desc_tipe_warna,
+        $dt->deskripsiEvent,
         $dt->minatRidingTest == 1 ? 'Ya' : 'Tidak',
         $dt->jadwalRidingTest,
         $dt->descSourceLeads,
@@ -128,6 +130,9 @@ class Staging_tables extends Crm_Controller
         $dt->keterangan,
         $dt->promoUnit,
         $dt->sourceRefID,
+        $dt->facebook,
+        $dt->instagram,
+        $dt->twitter,
       ];
       $data[] = $dt;
       $no++;

@@ -1370,17 +1370,20 @@ class Leads_customer_data extends Crm_Controller
     foreach ($fetch_data as $rs) {
       $sub_array   = array();
       $sub_array[] = $no;
+      $sub_array[] = $rs->leads_id;
+      $sub_array[] = $rs->interaksi_id;
       $sub_array[] = $rs->nama;
       $sub_array[] = $rs->noHP;
       $sub_array[] = $rs->noTelp;
       $sub_array[] = $rs->email;
       $sub_array[] = $rs->customerType;
       $sub_array[] = $rs->eventCodeInvitation;
+      $sub_array[] = $rs->customerActionDate;
       $sub_array[] = $rs->deskripsiCmsSource;
       $sub_array[] = $rs->segmentMotor;
       $sub_array[] = $rs->seriesMotor;
-      $sub_array[] = $rs->deskripsiEvent;
       $sub_array[] = $rs->kodeTypeUnit . '+' . $rs->kodeWarnaUnit;
+      $sub_array[] = $rs->deskripsiEvent;
       $sub_array[] = $rs->minatRidingTestDesc;
       $sub_array[] = $rs->jadwalRidingTest;
       $sub_array[] = $rs->deskripsiSourceData;
@@ -1389,11 +1392,14 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->kabupaten;
       $sub_array[] = $rs->kecamatan;
       $sub_array[] = $rs->kelurahan;
-      $sub_array[] = '';
+      $sub_array[] = $rs->assignedDealer;
       $sub_array[] = $rs->frameNoPembelianSebelumnya;
       $sub_array[] = $rs->keterangan;
       $sub_array[] = $rs->promoUnit;
       $sub_array[] = $rs->sourceRefID;
+      $sub_array[] = $rs->facebook;
+      $sub_array[] = $rs->instagram;
+      $sub_array[] = $rs->twitter;
       $data[]      = $sub_array;
       $no++;
     }

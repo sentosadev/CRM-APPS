@@ -91,7 +91,7 @@
           <label class="col-sm-4 control-label">Jadwal Riding Test</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <input type="text" class="form-control datetimepicker" name='jadwalRidingTest' value='<?= $row->jadwalRidingTest ?>' <?= $disabled ?> onkeypress="only_number(event)">
+              <input type="text" class="form-control datetimepicker" name='jadwalRidingTest' value='<?= $row->jadwalRidingTestEng ?>' <?= $disabled ?> onkeypress="only_number(event)">
             </div>
           </div>
         </div>
