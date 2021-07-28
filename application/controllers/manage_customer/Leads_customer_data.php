@@ -12,6 +12,7 @@ class Leads_customer_data extends Crm_Controller
     $this->load->model('Dealer_model', 'dealer_m');
     $this->load->model('status_fu_model', 'sfu_m');
     $this->load->model('hasil_status_follow_up_model', 'hfu_m');
+    $this->load->helper('sla');
   }
 
   public function index()
@@ -71,10 +72,6 @@ class Leads_customer_data extends Crm_Controller
       $params      = [
         'get'   => "id = $rs->leads_id"
       ];
-      $aktif = '';
-      // if ($rs->aktif == 1) {
-      //   $aktif = '<i class="fa fa-check"></i>';
-      // }
 
       if ((string)$rs->assignedDealer == '') {
         $assigned = 'Not-Assigned</br>';
@@ -596,22 +593,24 @@ class Leads_customer_data extends Crm_Controller
         if ($i == 1) {
           if ((string)$gr->assignedDealer == '') { //Is MD
             // Update ontimeSLA1
-            if ($gr->ontimeSLA1 == 0 || (string)$gr->ontimeSLA1 == NULL) {
-              $ontimeSLA1_detik = $this->ld_m->setOntimeSLA1_detik($gr->customerActionDate, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
+            if ($gr->ontimeSLA1 == 0 || (string)$gr->ontimeSLA1 == '' || $gr->ontimeSLA1 == null) {
+              $tglFolUp = convert_datetime($this->input->post('tglFollowUp_' . $i, true));
+              $ontimeSLA1_detik = $this->ld_m->setOntimeSLA1_detik($gr->customerActionDate, $tglFolUp);
               $upd_leads = [
                 'leads_id' => $leads_id,
                 'ontimeSLA1_detik' => $ontimeSLA1_detik,
-                'ontimeSLA1' => $this->ld_m->setOntimeSLA1($ontimeSLA1_detik),
+                'ontimeSLA1' => $this->ld_m->setOntimeSLA1($tglFolUp, $gr->batasOntimeSLA1),
               ];
             }
           } else {
             if ($gr->ontimeSLA2 == 0 || (string)$gr->ontimeSLA2 == NULL) {
               // Update ontimeSLA2
-              $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($gr->tanggalAssignDealer, convert_datetime($this->input->post('tglFollowUp_' . $i, true)));
+              $tglFolUp = convert_datetime($this->input->post('tglFollowUp_' . $i, true));
+              $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($gr->tanggalAssignDealer, $tglFolUp);
               $upd_leads = [
                 'leads_id' => $leads_id,
                 'ontimeSLA2_detik' => $ontimeSLA2_detik,
-                'ontimeSLA2' => $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $cek->assignedDealer),
+                'ontimeSLA2' => $this->ld_m->setOntimeSLA2($tglFolUp, $gr->batasOntimeSLA2),
               ];
             }
           }
@@ -1015,14 +1014,19 @@ class Leads_customer_data extends Crm_Controller
       'stageId' => 5
     ];
 
-    $alasan_pindah_dealer = $this->input->post('alasanPindahDealer', true);
+    $assignDealer              = $this->input->post('assignedDealer', true);
+    $alasan_pindah_dealer      = $this->input->post('alasanPindahDealer', true);
     $alasanPindahDealerLainnya = $this->input->post('alasanPindahDealerLainnya', true);
+    $tanggalAssignDealer       = waktu();
+    $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla);
+
     $update = [
-      'assignedDealer'            => $this->input->post('assignedDealer', true),
+      'assignedDealer'            => $assignDealer,
       'alasanPindahDealer'        => $alasan_pindah_dealer      == '' ? NULL : $alasan_pindah_dealer,
       'alasanPindahDealerLainnya' => $alasanPindahDealerLainnya == '' ? NULL : $alasanPindahDealerLainnya,
-      'tanggalAssignDealer'       => waktu(),
+      'tanggalAssignDealer'       => $tanggalAssignDealer,
       'assignedDealerBy'          => $user->id_user,
+      'batasOntimeSLA2'           => $batasSLA2
     ];
 
     // Insert History Assigned Dealer
@@ -1208,11 +1212,16 @@ class Leads_customer_data extends Crm_Controller
       ];
     }
 
+    $assignDealer              = $this->input->post('assignedDealer', true);
+    $tanggalAssignDealer       = waktu();
+    $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla);
+
     $update = [
       'kodeDealerSebelumnya' => $lead->assignedDealer,
-      'assignedDealer'       => $this->input->post('assignedDealer', true),
-      'tanggalAssignDealer'  => waktu(),
+      'assignedDealer'       => $assignDealer,
+      'tanggalAssignDealer'  => $tanggalAssignDealer,
       'assignedDealerBy'     => $user->id_user,
+      'batasOntimeSLA2'      => $batasSLA2
     ];
 
     // Insert History Assigned Dealer
@@ -1229,7 +1238,7 @@ class Leads_customer_data extends Crm_Controller
       'alasanReAssignDealer' => $this->input->post('alasanReAssignDealer', true),
       'alasanReAssignDealerLainnya' => $alasanReAssignDealerLainnya == '' ? NULL : $alasanReAssignDealerLainnya,
     ];
-
+    // send_json($lead);
     $tes = [
       'update' => $update,
       'insert_history_assigned' => $insert_history_assigned,
@@ -1447,5 +1456,22 @@ class Leads_customer_data extends Crm_Controller
       $response = ['status' => 1, 'data' => $data];
     }
     send_json($response);
+  }
+  function _batasSLA2($kode_dealer, $actionDate, $sla)
+  {
+    $actionTimeStr = date('Y-m-d\TH:i', strtotime($actionDate)); // date('Y-m-d\TH:i');
+    $SLAStr = $sla; // '15 hours';
+    $operatingHour = operatingHour($kode_dealer);
+    if ($operatingHour) {
+      $cek = calculateDeadline($actionTimeStr, $SLAStr, $operatingHour);
+      if ($cek) {
+        return $cek->format('Y-m-d H:i:s');
+      } else {
+        return null;
+      }
+    } else {
+      $response = ['status' => 0, 'pesan' => 'Jam operasional Kode Dealer : ' . $kode_dealer . ' belum ditentukan'];
+      send_json($response);
+    }
   }
 }

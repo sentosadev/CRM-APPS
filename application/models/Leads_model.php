@@ -157,6 +157,46 @@ class Leads_model extends CI_Model
                   FROM leads_follow_up lfup
                   WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
 
+    $ontimeSLA1 = "CASE 
+                    WHEN IFNULL(ontimeSLA1,'') = '' THEN 
+                      CASE WHEN IFNULL(sla,'') = '' THEN 1
+                        ELSE 
+                          CASE WHEN TIMEDIFF(batasOntimeSLA1,now()) < 0 THEN 0 ELSE 1 END
+                      END
+                    ELSE ontimeSLA1
+                    END
+                  ";
+
+    $ontimeSLA1_desc = "CASE WHEN ontimeSLA1=1 THEN 'On Track' 
+                            WHEN ontimeSLA1=0 THEN 'Overdue' 
+                            ELSE 
+                              CASE WHEN IFNULL(sla,'') = '' THEN '-'
+                                   ELSE 
+                                    CASE WHEN TIMEDIFF(batasOntimeSLA1,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                              END
+                        END
+                        ";
+
+    $ontimeSLA2 = "CASE 
+                    WHEN IFNULL(ontimeSLA2,'') = '' THEN 
+                      CASE WHEN IFNULL(sla,'') = '' THEN 1
+                        ELSE 
+                          CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 0 ELSE 1 END
+                      END
+                    ELSE ontimeSLA2
+                    END
+                  ";
+
+    $ontimeSLA2_desc = "CASE WHEN ontimeSLA2=1 THEN 'On Track' 
+                            WHEN ontimeSLA2=0 THEN 'Overdue' 
+                            ELSE 
+                              CASE WHEN IFNULL(sla,'') = '' THEN '-'
+                                   ELSE 
+                                    CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                              END
+                        END
+                        ";
+
     $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
         CASE WHEN minatRidingTest=1 THEN 'Ya' WHEN minatRidingTest=0 THEN 'Tidak' Else '-' END minatRidingTestDesc,
         CASE WHEN msl.id_source_leads IS NULL THEN sourceData ELSE msl.source_leads END deskripsiSourceData,sourceData,
@@ -164,8 +204,10 @@ class Leads_model extends CI_Model
         CASE WHEN mcs.kode_cms_source IS NULL THEN cmsSource ELSE mcs.deskripsi_cms_source END deskripsiCmsSource,cmsSource,
         noTelp,assignedDealer,sourceRefID,noFramePembelianSebelumnya,keterangan,promoUnit,facebook,instagram,twitter,stl.created_at,leads_id,leads_id_int,
         ($jumlah_fu) jumlahFollowUp,
-        ontimeSLA1, CASE WHEN ontimeSLA1=1 THEN 'On Track' WHEN ontimeSLA1=0 THEN 'Overdue' ELSE '-' END ontimeSLA1_desc,
-        ontimeSLA2,CASE WHEN ontimeSLA2=1 THEN 'On Track' WHEN ontimeSLA2=0 THEN 'Overdue' ELSE '-' END ontimeSLA2_desc,
+        ($ontimeSLA1) ontimeSLA1, 
+        ($ontimeSLA1_desc) ontimeSLA1_desc,
+        ($ontimeSLA2) ontimeSLA2,
+        ($ontimeSLA2_desc) ontimeSLA2_desc,
         idSPK,kodeIndent,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,metodePembayaranDeal,kodeLeasingDeal,frameNo,stl.updated_at,tanggalRegistrasi,customerId,kategoriModulLeads,tanggalVisitBooth,segmenProduk,tanggalDownloadBrosur,seriesBrosur,tanggalWishlist,seriesWishlist,tanggalPengajuan,namaPengajuan,tanggalKontakSales,noHpPengajuan,emailPengajuan,
         kab_pengajuan.kabupaten_kota kabupatenPengajuan,idKabupatenPengajuan,
         prov_pengajuan.provinsi provinsiPengajuan,idProvinsiPengajuan,
@@ -181,9 +223,9 @@ class Leads_model extends CI_Model
         ($hasil_fu) deskripsiHasilStatusFollowUp,
         ($last_kodeHasilStatusFollowUp) kodeHasilStatusFollowUp,
         ($tanggalNextFU) tanggalNextFU,preferensiPromoDiminatiCustomer,
-        CASE WHEN ($pernahTerhubung)=4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
+        CASE WHEN ($pernahTerhubung) = 4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
         kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
-        plm.pengeluaran deskripsiPengeluaran,stl.pengeluaran,need_fu_md,
+        plm.pengeluaran deskripsiPengeluaran,stl.pengeluaran,need_fu_md,mcs.sla,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
         " . sql_convert_date('tanggalVisitBooth') . " tanggalVisitBoothEng,
         " . sql_convert_date('tanggalWishlist') . " tanggalWishlistEng,
@@ -954,15 +996,13 @@ class Leads_model extends CI_Model
     return $selisih;
   }
 
-  function setOntimeSLA1($detik)
+  function setOntimeSLA1($tglFolUp, $batasSLA1)
   {
-    $operasional = $this->db->get_where('ms_jam_operasional', ['kode_dealer' => NULL, 'aktif' => 1])->row();
-    $timeInSeconds = strtotime($operasional->total_jam) - strtotime('TODAY');
-    $selisih = $timeInSeconds - $detik;
-    if ($selisih < 0) {
-      $return = 0;
-    } else {
+    $selisih = tanggal_lebih_kecil($tglFolUp, $batasSLA1);
+    if ($selisih == true) {
       $return = 1;
+    } else {
+      $return = 0;
     }
     return $return;
   }
@@ -973,15 +1013,13 @@ class Leads_model extends CI_Model
     return $selisih;
   }
 
-  function setOntimeSLA2($detik, $kode_dealer)
+  function setOntimeSLA2($tglFolUp, $batasSLA2)
   {
-    $operasional = $this->db->get_where('ms_jam_operasional', ['kode_dealer' => $kode_dealer, 'aktif' => 1])->row();
-    $timeInSeconds = strtotime($operasional->total_jam) - strtotime('TODAY');
-    $selisih = $timeInSeconds - $detik;
-    if ($selisih < 0) {
-      $return = 0;
-    } else {
+    $selisih = tanggal_lebih_kecil($tglFolUp, $batasSLA2);
+    if ($selisih == true) {
       $return = 1;
+    } else {
+      $return = 0;
     }
     return $return;
   }

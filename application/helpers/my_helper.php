@@ -607,3 +607,13 @@ function cekISO8601Date($dateStr)
     return FALSE;
   }
 }
+
+
+function tanggal_lebih_kecil($awal, $akhir)
+{
+  if (strtotime($awal) < strtotime($akhir)) {
+    return true;
+  } else {
+    return false;
+  }
+}

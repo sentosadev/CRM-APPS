@@ -126,7 +126,7 @@ class Follow_up extends CI_Controller
           $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($ld->tanggalAssignDealer, $post['tglFollowUp']);
           $update_leads['leads_id'] = $leads_id;
           $update_leads['ontimeSLA2_detik'] = $ontimeSLA2_detik;
-          $update_leads['ontimeSLA2'] = $this->ld_m->setOntimeSLA2($ontimeSLA2_detik, $ld->assignedDealer);
+          $update_leads['ontimeSLA2'] = $this->ld_m->setOntimeSLA2($post['tglFollowUp'], $ld->batasOntimeSLA2);
         }
 
         $tes = [
