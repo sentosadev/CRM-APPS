@@ -11,6 +11,7 @@ class Lead extends CI_Controller
   {
     parent::__construct();
     $this->load->helper('api');
+    $this->load->helper('sla');
     $this->load->model('leads_model', 'ld_m');
     $this->load->model('leads_api_model', 'lda_m');
     $this->load->model('Cdb_nms_model', 'cdb_nms');
@@ -93,7 +94,10 @@ class Lead extends CI_Controller
         $eventCodeInvitation = $cek_invited->event_code_invitation;
         $leads_id_invited = $cek_invited->leads_id;
       }
-      // send_json($cek_invited);
+
+      //Cek Batas SLA 1 => MD
+      $batasSLA1 = $this->_batasSLA1(clear_removed_html($pst['customerActionDate']), $pst['sla']);
+
       if ((string)$pst['leads_id'] == '') {
         $leads_id = $leads_id_invited == '' ? $this->ld_m->getLeadsID() : $leads_id_invited;
         $insert = [
@@ -141,6 +145,7 @@ class Lead extends CI_Controller
           'gender' => $cdb == NULL ? NULL : $cdb->gender,
           'statusNoHp' => $cdb == NULL ? NULL : $cdb->statusNoHp,
           'deskripsiTipeUnitPembelianTerakhir' => $cdb == NULL ? NULL : $cdb->deskripsiTipeUnitPembelianTerakhir,
+          'batasOntimeSLA1' => $batasSLA1
         ];
         $this->db->insert('leads', $insert);
         //Set Stage ID 1
@@ -184,6 +189,7 @@ class Lead extends CI_Controller
           'instagram' => clear_removed_html($pst['instagram']),
           'twitter' => clear_removed_html($pst['twitter']),
           'created_at' => waktu(),
+          'batasOntimeSLA1' => $batasSLA1
         ];
         $this->db->update('leads', $update, ['leads_id' => $leads_id]);
       }
@@ -293,11 +299,14 @@ class Lead extends CI_Controller
         }
       }
     }
+
     //Set Stage Sudah Dibuat Menjadi Leads
-    $setleads = [
-      'setleads' => 1,
-    ];
-    $this->db->update('staging_table_leads', $setleads, ['stage_id' => $pst['stage_id']]);
+    if (isset($pst)) {
+      $setleads = [
+        'setleads' => 1,
+      ];
+      $this->db->update('staging_table_leads', $setleads, ['stage_id' => $pst['stage_id']]);
+    }
 
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
@@ -318,5 +327,22 @@ class Lead extends CI_Controller
     })->everyMinute(2);
 
     $scheduler->run();
+  }
+
+  function _batasSLA1($customerActionDate, $sla)
+  {
+    $actionTimeStr = date('Y-m-d\TH:i', strtotime($customerActionDate)); // date('Y-m-d\TH:i');
+    $SLAStr = $sla; // '15 hours';
+    $operatingHour = operatingHour();
+    if ($operatingHour) {
+      $cek = calculateDeadline($actionTimeStr, $SLAStr, $operatingHour);
+      if ($cek) {
+        return $cek->format('Y-m-d H:i:s');
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 }

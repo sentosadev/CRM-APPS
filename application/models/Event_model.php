@@ -23,8 +23,8 @@ class Event_model extends CI_Model
                           )
           ";
       }
-      if (isset($filter['is_event_ve'])) {
-        $where .= " AND is_event_ve='{$filter['is_event_ve']}'";
+      if (isset($filter['nama_deskripsi_event'])) {
+        $where .= " AND (ev.nama_event='{$filter['nama_deskripsi_event']}' OR ev.description='{$filter['nama_deskripsi_event']}')";
       }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {

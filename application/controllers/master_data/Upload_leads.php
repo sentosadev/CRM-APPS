@@ -185,20 +185,23 @@ class Upload_leads extends Crm_Controller
         foreach ($sheet->getRowIterator() as $row) {
           $cek[] = $row;
           if ($numRow == 1) {
-            // $deskripsi_event = $row[1];
-            $fe = [
-              'nama_deskripsi_kode_event_or_periode' => [$row[1], tanggal()]
-            ];
+
+            if ((string)$row[1] == '') {
+              $response = ['status' => 0, 'pesan' => 'Silahkan tentukan deskripsi event'];
+              send_json($response);
+            }
+
+            $fe = ['nama_deskripsi_event' => $row[1]];
             $cek_event = $this->event->getEvent($fe)->row();
             if ($cek_event == NULL) {
               $response = ['status' => 0, 'pesan' => 'Deskripsi Event : ' . $row[1] . ' tidak ditemukan'];
               send_json($response);
             } else {
-              $deskripsi_event = $cek_event->description;
+              $deskripsi_event = $cek_event->nama_event;
             }
           } elseif ($numRow == 2) {
-            $totalDataSource = $row[1];
-            if ($totalDataSource == '' || $totalDataSource == 0) {
+            $totalDataSource = (string)$row[1];
+            if ($totalDataSource == '') {
               $response = ['status' => 0, 'pesan' => 'Silahkan tentukan nilai dari total data source'];
               send_json($response);
             }

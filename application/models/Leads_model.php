@@ -191,7 +191,8 @@ class Leads_model extends CI_Model
         " . sql_convert_date('tanggalPengajuan') . " tanggalPengajuanEng,
         " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng,
         " . sql_convert_date('jadwalRidingTest') . " jadwalRidingTestEng,
-        " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md
+        " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md,
+        batasOntimeSLA1
         ";
 
     if ($filter != null) {
@@ -525,7 +526,7 @@ class Leads_model extends CI_Model
 
     return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id,pld.platform_data descPlatformData,sc.source_leads descSourceLeads,tp.deskripsi_tipe,wr.deskripsi_warna,$concat_desc_tipe_warna concat_desc_tipe_warna,
     $status_api2 status_api2,stl.created_at,($totalInteraksi) totalInteraksi,CASE WHEN stl.customerType='V' THEN 'Invited' WHEN stl.customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc,
-    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate
+    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate,cs.sla
     FROM staging_table_leads stl
     JOIN ms_platform_data pld ON pld.id_platform_data=stl.platformData
     JOIN ms_source_leads sc ON sc.id_source_leads=stl.sourceData

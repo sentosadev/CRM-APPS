@@ -116,11 +116,17 @@ class Leads_api_model extends CI_Model
         $errMessages .= $errMsg . '. ';
       } else {
         $fsl = ['id_source_leads' => $pst['sourceData']];
-        $cek_source = $this->sl_m->getSourceLeads($fsl)->num_rows();
-        if ($cek_source == 0) {
+        $cek_source = $this->sl_m->getSourceLeads($fsl)->row();
+        if ($cek_source == null) {
           $errMsg = 'Source Data tidak ditemukan';
           $reject[$noHP] = $errMsg;
           $errMessages .= $errMsg . '. ';
+        } else {
+          if ($pst['sourceData'] == 28 || $pst['sourceData'] == 29) {
+            $is_source_ve = true;
+          } else {
+            $is_source_ve = false;
+          }
         }
       }
 
@@ -218,21 +224,6 @@ class Leads_api_model extends CI_Model
         }
       }
 
-      //Cek deskripsiEvent
-      $deskripsiEvent = clear_removed_html($pst['deskripsiEvent']);
-      $fev = [
-        'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, tanggal()]
-      ];
-      $cek_event = $this->event->getEvent($fev)->row();
-      if ($cek_event == null) {
-        $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
-        $reject[$noHP] = $errMsg;
-        $errMessages .= $errMsg . '. ';
-        $deskripsiEvent = null;
-      } else {
-        $deskripsiEvent = $cek_event->description;
-      }
-
       // Cek cmsSource
       $cmsSource = clear_removed_html($pst['cmsSource']);
       if ($cmsSource != '') {
@@ -286,6 +277,37 @@ class Leads_api_model extends CI_Model
         $errMsg = 'Format Customer Action Date tidak valid';
         $reject[$noHP] = $errMsg;
         $errMessages .= $errMsg . '. ';
+      }
+
+      //Cek deskripsiEvent
+      $deskripsiEvent = clear_removed_html($pst['deskripsiEvent']);
+      $tglCustActDate = substr($customerActionDate, 0, 10);
+      if ($is_source_ve == true) {
+        $fev = [
+          'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, $tglCustActDate]
+        ];
+        $cek_event = $this->event->getEvent($fev)->row();
+        if ($cek_event == null) {
+          $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
+        } else {
+          $deskripsiEvent = $cek_event->description;
+        }
+      } else {
+        if ($deskripsiEvent != '') {
+          $fev = [
+            'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, $tglCustActDate]
+          ];
+          $cek_event = $this->event->getEvent($fev)->row();
+          if ($cek_event == null) {
+            $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
+            $reject[$noHP] = $errMsg;
+            $errMessages .= $errMsg . '. ';
+          } else {
+            $deskripsiEvent = $cek_event->description;
+          }
+        }
       }
 
       if (in_array($noHP, array_keys($reject))) {
