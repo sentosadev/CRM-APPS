@@ -101,7 +101,7 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $rs->deskripsiPlatformData;
       $sub_array[] = $rs->deskripsiSourceData;
       $sub_array[] = $rs->deskripsiEvent;
-      $sub_array[] = '-';
+      $sub_array[] = $rs->periodeAwalEventId . '<br> s/d<br> ' . $rs->periodeAkhirEventId;
       $sub_array[] = $rs->deskripsiStatusKontakFU;
       $sub_array[] = $rs->pernahTerhubung;
       $sub_array[] = $rs->deskripsiHasilStatusFollowUp;
@@ -174,6 +174,9 @@ class Leads_customer_data extends Crm_Controller
     }
     if ($this->input->post('start_next_fu') && $this->input->post('end_next_fu')) {
       $filter['periode_next_fu'] = [$this->input->post('start_next_fu'), $this->input->post('end_next_fu')];
+    }
+    if ($this->input->post('start_periode_event') && $this->input->post('end_periode_event')) {
+      $filter['periode_event'] = [$this->input->post('start_periode_event'), $this->input->post('end_periode_event')];
     }
     if (user()->kode_dealer != NULL) {
       $filter['assignedDealer'] = user()->kode_dealer;
@@ -586,7 +589,9 @@ class Leads_customer_data extends Crm_Controller
           unset($upd_fol['updated_at']);
           unset($upd_fol['updated_by']);
         }
-
+        if ((string)$upd_fol['tglNextFollowUp'] != '') {
+          $upd_fol['statusProspek'] = setStatusProspek($upd_fol['tglFollowUp'], $upd_fol['tglNextFollowUp']);
+        }
         $upd_fol_up[] = $upd_fol;
 
         //Cek Apakah FollowUpKe=1

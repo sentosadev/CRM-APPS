@@ -145,7 +145,9 @@ class Lead extends CI_Controller
           'gender' => $cdb == NULL ? NULL : $cdb->gender,
           'statusNoHp' => $cdb == NULL ? NULL : $cdb->statusNoHp,
           'deskripsiTipeUnitPembelianTerakhir' => $cdb == NULL ? NULL : $cdb->deskripsiTipeUnitPembelianTerakhir,
-          'batasOntimeSLA1' => $batasSLA1
+          'batasOntimeSLA1' => $batasSLA1,
+          'periodeAwalEvent' => clear_removed_html($pst['periodeAwalEvent']),
+          'periodeAkhirEvent' => clear_removed_html($pst['periodeAkhirEvent']),
         ];
         $this->db->insert('leads', $insert);
         //Set Stage ID 1
@@ -195,7 +197,7 @@ class Lead extends CI_Controller
       }
 
       //Insert Interaksi
-      //Cek Interaksi Di Tabel Staging;
+      //Cek Interaksi Di Tabel Staging; (Karena Data Pertama Tidak Disimpan Ke Interaksi)
       $fc = [
         'mainTableNULL' => true,
         'noHP' => $pst['noHP']
@@ -243,6 +245,50 @@ class Lead extends CI_Controller
           'setleads' => 1,
         ];
         $this->db->update('staging_table_leads', $setleads, ['stage_id' => $itr['stage_id']]);
+      }
+
+      //Cek Interaksi Di Tabel Staging Interaksi;
+      $fc = [
+        'noHP_noTelp_email' => [$pst['noHP'], $pst['noTelp'], $pst['email']]
+      ];
+      $dt_interaksi = $this->ld_m->getStagingTableInteraksi($fc)->result_array();
+      foreach ($dt_interaksi as $itr) {
+        $interaksi_id = $this->ld_m->getInteraksiID();
+        $insert_interaksi = [
+          'leads_id' => $leads_id,
+          'interaksi_id' => $interaksi_id,
+          'nama' => clear_removed_html($itr['nama']),
+          'noHP' => clear_removed_html($itr['noHP']),
+          'email' => clear_removed_html($itr['email']),
+          'customerType' => clear_removed_html($itr['customerType']),
+          'eventCodeInvitation' => clear_removed_html($itr['eventCodeInvitation']),
+          'customerActionDate' => clear_removed_html($itr['customerActionDate']),
+          'idKabupaten' => clear_removed_html($itr['kabupaten']),
+          'cmsSource' => clear_removed_html($itr['cmsSource']),
+          'segmentMotor' => clear_removed_html($itr['segmentMotor']),
+          'seriesMotor' => clear_removed_html($itr['seriesMotor']),
+          'deskripsiEvent' => clear_removed_html($itr['deskripsiEvent']),
+          'kodeTypeUnit' => clear_removed_html($itr['kodeTypeUnit']),
+          'kodeWarnaUnit' => clear_removed_html($itr['kodeWarnaUnit']),
+          'minatRidingTest' => clear_removed_html($itr['minatRidingTest']),
+          'jadwalRidingTest' => clear_removed_html($itr['jadwalRidingTest']) == '' ? NULL : clear_removed_html($itr['jadwalRidingTest']),
+          'sourceData' => clear_removed_html($itr['sourceData']),
+          'platformData' => clear_removed_html($itr['platformData']),
+          'noTelp' => clear_removed_html($itr['noTelp']),
+          'assignedDealer' => clear_removed_html($itr['assignedDealer']),
+          'sourceRefID' => clear_removed_html($itr['sourceRefID']),
+          'idProvinsi' => clear_removed_html($itr['provinsi']),
+          'idKelurahan' => clear_removed_html($itr['kelurahan']),
+          'idKecamatan' => clear_removed_html($itr['kecamatan']),
+          'frameNoPembelianSebelumnya' => clear_removed_html($itr['noFramePembelianSebelumnya']),
+          'keterangan' => clear_removed_html($itr['keterangan']),
+          'promoUnit' => clear_removed_html($itr['promoUnit']),
+          'facebook' => clear_removed_html($itr['facebook']),
+          'instagram' => clear_removed_html($itr['instagram']),
+          'twitter' => clear_removed_html($itr['twitter']),
+          'created_at' => waktu(),
+        ];
+        $this->db->insert('leads_interaksi', $insert_interaksi);
       }
 
       //Cek Apakah Perlu Auto Dispatch

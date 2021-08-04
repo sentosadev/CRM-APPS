@@ -357,6 +357,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           d.kodeHasilStatusFollowUpMulti = $('#kodeHasilStatusFollowUp').val()
           d.ontimeSLA2_multi = $('#ontimeSLA2_multi').val()
           d.show_hasil_fu_not_prospect = $('input[name=show_hasil_fu_not_prospect]:checked', '#form_search_leads').val()
+          d.start_periode_event = $('#start_periode_event').val()
+          d.end_periode_event = $('#end_periode_event').val()
           return d;
         },
       },

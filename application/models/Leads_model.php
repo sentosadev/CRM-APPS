@@ -58,21 +58,30 @@ class Leads_model extends CI_Model
           $where .= " AND stl.nama='{$this->db->escape_str($filter['nama'])}'";
         }
       }
+
       if (isset($filter['sourceRefID'])) {
         if ($filter['sourceRefID'] != '') {
           $where .= " AND stl.sourceRefID='{$this->db->escape_str($filter['sourceRefID'])}'";
         }
       }
+
       if (isset($filter['noHP'])) {
         if ($filter['noHP'] != '') {
           $where .= " AND stl.noHP='{$this->db->escape_str($filter['noHP'])}'";
         }
       }
+
       if (isset($filter['status'])) {
         if ($filter['status'] != '') {
           $where .= " AND stl.status='{$this->db->escape_str($filter['status'])}'";
         }
       }
+
+      if (isset($filter['noHP_noTelp_email'])) {
+        $fil = $filter['noHP_noTelp_email'];
+        $where .= " AND (stl.noHP='{$fil[0]}' OR stl.noTelp='{$fil[1]}' OR stl.email='{$fil[2]}') ";
+      }
+
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -85,6 +94,7 @@ class Leads_model extends CI_Model
           )";
         }
       }
+
       if (isset($filter['select'])) {
         if ($filter['select'] == 'count') {
           $select = "COUNT(stage_id) count";
@@ -234,7 +244,9 @@ class Leads_model extends CI_Model
         " . sql_convert_date('tanggalKontakSales') . " tanggalKontakSalesEng,
         " . sql_convert_date('jadwalRidingTest') . " jadwalRidingTestEng,
         " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md,
-        batasOntimeSLA1
+        " . sql_convert_date_dmy('stl.periodeAwalEvent') . " periodeAwalEventId,
+        " . sql_convert_date_dmy('stl.periodeAkhirEvent') . " periodeAkhirEventId,
+        batasOntimeSLA1,stl.periodeAwalEvent,stl.periodeAkhirEvent
         ";
 
     if ($filter != null) {
@@ -311,7 +323,12 @@ class Leads_model extends CI_Model
           $where .= " AND LEFT(stl.created_at,10) BETWEEN '{$created[0]}' AND '{$created[1]}' ";
         }
       }
-
+      if (isset($filter['periode_event'])) {
+        if ($filter['periode_event'] != '') {
+          $prd = $filter['periode_event'];
+          $where .= " AND ('{$prd[0]}' BETWEEN stl.periodeAwalEvent AND stl.periodeAkhirEvent OR '{$prd[1]}' BETWEEN stl.periodeAwalEvent AND stl.periodeAkhirEvent)";
+        }
+      }
       if (isset($filter['kabupatenIn'])) {
         if ($filter['kabupatenIn'] != '') {
           $filter['kabupatenIn'] = arr_sql($filter['kabupatenIn']);
@@ -420,11 +437,11 @@ class Leads_model extends CI_Model
       }
 
       if (isset($filter['ontimeSLA1'])) {
-        $where .= " AND stl.ontimeSLA1={$filter['ontimeSLA1']}";
+        $where .= " AND ($ontimeSLA1)={$filter['ontimeSLA1']}";
       }
 
       if (isset($filter['ontimeSLA2'])) {
-        $where .= " AND stl.ontimeSLA2={$filter['ontimeSLA2']}";
+        $where .= " AND ($ontimeSLA2)={$filter['ontimeSLA2']}";
       }
 
       if (isset($filter['jumlah_fu_d'])) {
@@ -471,7 +488,7 @@ class Leads_model extends CI_Model
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null, 'stl.leads_id', 'stl.nama', 'stl.kodeDealerSebelumnya', 'stl.assignedDealer', 'stl.tanggalAssignDealer', 'deskripsiPlatformData', 'deskripsiSourceData', 'deskripsiEvent', 'deskripsiEvent', 'deskripsiStatusKontakFU', "($pernahTerhubung)", 'deskripsiHasilStatusFollowUp', 'jumlahFollowUp', 'tanggalNextFU', 'stl.updated_at', 'ontimeSLA1_desc', 'ontimeSLA2_desc', null];
+      $order_column = [null, 'stl.leads_id', 'stl.nama', 'stl.kodeDealerSebelumnya', 'stl.assignedDealer', 'stl.tanggalAssignDealer', 'deskripsiPlatformData', 'deskripsiSourceData', 'deskripsiEvent', 'stl.periodeAwalEvent', 'deskripsiStatusKontakFU', "($pernahTerhubung)", 'deskripsiHasilStatusFollowUp', 'jumlahFollowUp', 'tanggalNextFU', 'stl.updated_at', 'ontimeSLA1_desc', 'ontimeSLA2_desc', null];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
@@ -524,10 +541,9 @@ class Leads_model extends CI_Model
     $where = "WHERE 1=1";
     $concat_desc_tipe_warna = "CONCAT(deskripsi_tipe,' - ',IFNULL(deskripsi_warna,'')) ";
     $status_api2 = "CASE WHEN stl.setleads=0 THEN 'New' WHEN stl.setleads=1 THEN 'Inprogress' END ";
-    $totalInteraksi = "SELECT COUNT(st_it.noHP) 
-                       FROM staging_table_leads st_it 
-                       LEFT JOIN leads ld_it ON ld_it.noHP=st_it.noHP
-                       WHERE st_it.noHP=stl.noHP AND ld_it.noHP IS NULL";
+    $totalInteraksi = "SELECT COUNT(stli.interaksi_id)+1
+                       FROM staging_table_leads_interaksi stli
+                       WHERE (stli.noHP=stl.noHP OR stli.noTelp=stl.noTelp OR stli.email=stl.email)";
     if (isset($filter['noHP'])) {
       if ($filter['noHP'] != '') {
         $where .= " AND stl.noHP='{$this->db->escape_str($filter['noHP'])}'";
@@ -568,8 +584,54 @@ class Leads_model extends CI_Model
 
     return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id,pld.platform_data descPlatformData,sc.source_leads descSourceLeads,tp.deskripsi_tipe,wr.deskripsi_warna,$concat_desc_tipe_warna concat_desc_tipe_warna,
     $status_api2 status_api2,stl.created_at,($totalInteraksi) totalInteraksi,CASE WHEN stl.customerType='V' THEN 'Invited' WHEN stl.customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc,
-    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate,cs.sla
+    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate,cs.sla,stl.periodeAwalEvent,stl.periodeAkhirEvent
     FROM staging_table_leads stl
+    JOIN ms_platform_data pld ON pld.id_platform_data=stl.platformData
+    JOIN ms_source_leads sc ON sc.id_source_leads=stl.sourceData
+    LEFT JOIN ms_maintain_tipe tp ON tp.kode_tipe=stl.kodeTypeUnit
+    LEFT JOIN ms_maintain_warna wr ON wr.kode_warna=stl.kodeTypeUnit
+    LEFT JOIN leads tl ON tl.noHP=stl.noHP
+    LEFT JOIN ms_maintain_cms_source cs ON cs.kode_cms_source=stl.cmsSource
+    $where
+    $group_by
+    ");
+  }
+  function getStagingTableInteraksi($filter)
+  {
+    $where = "WHERE 1=1";
+    $concat_desc_tipe_warna = "CONCAT(deskripsi_tipe,' - ',IFNULL(deskripsi_warna,'')) ";
+    $status_api2 = "CASE WHEN stl.setleads=0 THEN 'New' WHEN stl.setleads=1 THEN 'Inprogress' END ";
+
+    if (isset($filter['noHP_noTelp_email'])) {
+      $fl = $filter['noHP_noTelp_email'];
+      $where .= " AND (stl.noHP='{$fl[0]}' OR stl.noTelp='{$fl[1]}' OR stl.email='{$fl[2]}')";
+    }
+
+    if (isset($filter['search'])) {
+      if ($filter['search'] != '') {
+        $filter['search'] = $this->db->escape_str($filter['search']);
+        $where .= " AND ( stl.nama LIKE'%{$filter['search']}%'
+                          OR stl.noHP LIKE'%{$filter['search']}%'
+                          OR stl.noTelp LIKE'%{$filter['search']}%'
+                          OR stl.email LIKE'%{$filter['search']}%'
+                          OR pld.platform_data LIKE'%{$filter['search']}%'
+                          OR sc.source_leads LIKE'%{$filter['search']}%'
+                          OR stl.deskripsiEvent LIKE'%{$filter['search']}%'
+                          OR ($concat_desc_tipe_warna) LIKE'%{$filter['search']}%'
+                          OR ($status_api2) LIKE'%{$filter['search']}%'
+        )";
+      }
+    }
+
+    $group_by = '';
+    if (isset($filter['group_by'])) {
+      $group_by = 'GROUP BY ' . $filter['group_by'];
+    }
+
+    return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.interaksi_id,pld.platform_data descPlatformData,sc.source_leads descSourceLeads,tp.deskripsi_tipe,wr.deskripsi_warna,$concat_desc_tipe_warna concat_desc_tipe_warna,
+    $status_api2 status_api2,stl.created_at,CASE WHEN stl.customerType='V' THEN 'Invited' WHEN stl.customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc,
+    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate,cs.sla
+    FROM staging_table_leads_interaksi stl
     JOIN ms_platform_data pld ON pld.id_platform_data=stl.platformData
     JOIN ms_source_leads sc ON sc.id_source_leads=stl.sourceData
     LEFT JOIN ms_maintain_tipe tp ON tp.kode_tipe=stl.kodeTypeUnit
@@ -782,7 +844,7 @@ class Leads_model extends CI_Model
         CASE WHEN lfu.tglFollowUp='0000-00-00 00:00:00' THEN '' ELSE ($tglFollowUpFormated) END tglFollowUpFormated,
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
         CASE WHEN lfu.created_at='0000-00-00 00:00:00' THEN '' ELSE lfu.created_at END created_at,
-        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,$is_md is_md,dl_assg.nama_dealer namaDealerFollowUp,sts.id_kategori_status_komunikasi";
+        lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.keteranganAlasanLainnya,lfu.noHP,lfu.email,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,$is_md is_md,dl_assg.nama_dealer namaDealerFollowUp,sts.id_kategori_status_komunikasi,lfu.statusProspek";
       }
     }
 

@@ -28,7 +28,7 @@ class Event_model extends CI_Model
       }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
-          $select = "ev.kode_event id, description text";
+          $select = "ev.kode_event id, nama_event text";
         } else {
           $select = $filter['select'];
         }

@@ -502,6 +502,10 @@ function sql_convert_date($field)
 {
   return "DATE_FORMAT($field,'%d %M %Y %H:%i:%s')";
 }
+function sql_convert_date_dmy($field)
+{
+  return "DATE_FORMAT($field,'%d/%m/%Y')";
+}
 
 
 function date_iso_8601_to_datetime($date)
@@ -608,7 +612,6 @@ function cekISO8601Date($dateStr)
   }
 }
 
-
 function tanggal_lebih_kecil($awal, $akhir)
 {
   if (strtotime($awal) < strtotime($akhir)) {
@@ -616,4 +619,17 @@ function tanggal_lebih_kecil($awal, $akhir)
   } else {
     return false;
   }
+}
+
+function setStatusProspek($start, $end)
+{
+  $selisih = selisih_2tanggal($start, $end)->days;
+  if ($selisih < 14) {
+    $status = 'Hot';
+  } elseif ($selisih >= 14 && $selisih <= 28) {
+    $status = 'Medium';
+  } else {
+    $status = 'Low';
+  }
+  return $status;
 }

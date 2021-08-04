@@ -181,6 +181,7 @@ class Upload_leads extends Crm_Controller
         //looping pembacaan row dalam sheet
         $baris = 1;
         $deskripsi_event = '';
+        $kode_event = '';
         $totalDataSource = 0;
         foreach ($sheet->getRowIterator() as $row) {
           $cek[] = $row;
@@ -198,6 +199,7 @@ class Upload_leads extends Crm_Controller
               send_json($response);
             } else {
               $deskripsi_event = $cek_event->nama_event;
+              $kode_event = $cek_event->kode_event;
             }
           } elseif ($numRow == 2) {
             $totalDataSource = (string)$row[1];
@@ -273,6 +275,7 @@ class Upload_leads extends Crm_Controller
               'leads_id' => $leads_id,
               'event_code_invitation' => $event_code_invitation,
               'deskripsi_event' => $deskripsi_event,
+              'kode_event' => $kode_event,
               'kode_md' => $row[0],
               'nama' => $row[1],
               'no_hp' => $no_hp,

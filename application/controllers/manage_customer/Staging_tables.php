@@ -76,7 +76,7 @@ class Staging_tables extends Crm_Controller
       'order'  => isset($_POST['order']) ? $_POST['order'] : '',
       'search' => $this->input->post('search')['value'],
       'order_column' => 'view',
-      'group_by' => 'stl.noHP',
+      'group_by' => 'stl.noHP,stl.email,stl.noTelp',
       'mainTableNULL' => true
     ];
     if ($this->input->post('id_platform_data_multi')) {
@@ -99,9 +99,43 @@ class Staging_tables extends Crm_Controller
       'noHP' => $noHP,
       'mainTableNULL' => true
     ];
-    $res_data = $this->ld_m->getStagingTableVSMainTable($f);
-    $data = [];
-    $no = 1;
+    $row = $this->ld_m->getStagingTableVSMainTable($f)->row();
+    $dt = [
+      1,
+      $row->nama,
+      $row->noHP,
+      '',
+      $row->email,
+      $row->customerTypeDesc,
+      $row->eventCodeInvitation,
+      $row->customerActionDate,
+      $row->deskripsiCmsSource,
+      $row->segmentMotor,
+      $row->seriesMotor,
+      $row->concat_desc_tipe_warna,
+      $row->deskripsiEvent,
+      $row->minatRidingTest == 1 ? 'Ya' : 'Tidak',
+      $row->jadwalRidingTest,
+      $row->descSourceLeads,
+      $row->descPlatformData,
+      $row->provinsi,
+      $row->kabupaten,
+      $row->kecamatan,
+      $row->kelurahan,
+      $row->assignedDealer,
+      $row->noFramePembelianSebelumnya,
+      $row->keterangan,
+      $row->promoUnit,
+      $row->sourceRefID,
+      $row->facebook,
+      $row->instagram,
+      $row->twitter,
+    ];
+    $data[] = $dt;
+
+    $f = ['noHP_noTelp_email' => [$row->noHP, $row->noTelp, $row->email]];
+    $res_data = $this->ld_m->getStagingTableInteraksi($f);
+    $no = 2;
     foreach ($res_data->result() as $dt) {
       $dt = [
         $no,

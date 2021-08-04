@@ -64,7 +64,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datetimepicker" name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] == '' ? dMYHIS_en() : $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : dMYHIS_en() ?>' <?= $disabled ?> required <?= $set_disabled == 'disabled' ? 'readonly' : '' ?>>
+                  <input type="text" class="form-control datetimepicker" id='tglFollowUp_<?= $fol_up_sekarang ?>' name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] == '' ? dMYHIS_en() : $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : dMYHIS_en() ?>' <?= $disabled ?> required <?= $set_disabled == 'disabled' ? 'readonly' : '' ?>>
                 </div>
               </div>
             </div>
@@ -94,6 +94,54 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <div class="form-input">
                 <div class="col-sm-8">
                   <input type="text" class="form-control datepicker" id='tglNextFollowUp_<?= $fol_up_sekarang ?>' name='tglNextFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?> <?= $set_disabled ?>>
+                </div>
+              </div>
+            </div>
+            <script>
+              var statusProspek = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['statusProspek'] : '' ?>';
+              $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').on('apply.daterangepicker', function(ev, picker) {
+                let tgl_folup = $('#tglFollowUp_<?= $fol_up_sekarang ?>').val();
+                let new_dt = new Date(tgl_folup);
+                var date = new_dt.getDate();
+                var month = new_dt.getMonth(); //Be careful! January is 0 not 1
+                var year = new_dt.getFullYear();
+                tgl_folup = (month + 1) + "-" + date + "-" + year;
+
+                let tgl_next = picker.startDate.format('YYYY-MM-DD');
+                let next = new Date(tgl_next);
+                var date = next.getDate();
+                var month = next.getMonth(); //Be careful! January is 0 not 1
+                var year = next.getFullYear();
+                tgl_next = (month + 1) + "-" + date + "-" + year;
+                selisih = hitungSelisihHari(tgl_folup, tgl_next);
+                if (selisih < 14) {
+                  statusProspek = 'Hot';
+                } else if (selisih >= 14 && selisih <= 28) {
+                  statusProspek = 'Medium';
+                } else if (selisih > 28) {
+                  statusProspek = 'Low';
+                }
+                $('#statusProspek_<?= $fol_up_sekarang ?>').val(statusProspek);
+              });
+
+              function hitungSelisihHari(tgl1, tgl2) {
+                // varibel miliday sebagai pembagi untuk menghasilkan hari
+                var miliday = 24 * 60 * 60 * 1000;
+                //buat object Date
+                var tanggal1 = new Date(tgl1);
+                var tanggal2 = new Date(tgl2);
+                // Date.parse akan menghasilkan nilai bernilai integer dalam bentuk milisecond
+                var tglPertama = Date.parse(tanggal1);
+                var tglKedua = Date.parse(tanggal2);
+                var selisih = (tglKedua - tglPertama) / miliday;
+                return selisih;
+              }
+            </script>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Status Prospek <span id="inputStatusProspek_<?= $fol_up_sekarang ?>"></span></label>
+              <div class="form-input">
+                <div class="col-sm-8">
+                  <input type="text" class="form-control datepicker" id='statusProspek_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['statusProspek'] : '' ?>' readonly>
                 </div>
               </div>
             </div>
@@ -296,6 +344,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     }
     var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
     val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
+    val_form_follow_up.append('statusProspek', statusProspek);
 
     <?php if ($disabled == 'disabled') { ?>
       changeTabs(tabs);
@@ -507,6 +556,8 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
     val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
     val_form_follow_up.append('is_simpan', true);
+    val_form_follow_up.append('statusProspek', statusProspek);
+
 
     $.ajax({
       beforeSend: function() {

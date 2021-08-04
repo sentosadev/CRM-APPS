@@ -19,6 +19,7 @@ class Leads_api_model extends CI_Model
     $this->load->model('cms_source_model', 'cms_source');
     $this->load->model('segmen_model', 'segmen');
     $this->load->model('leads_model', 'ld_m');
+    $this->load->model('upload_leads_model', 'upload_leads');
   }
 
   function insertStagingTables($post)
@@ -35,11 +36,12 @@ class Leads_api_model extends CI_Model
     $insert_series_motor = [];
     $insert_series_tipe_motor = [];
     $now = waktu();
+    $this->db->trans_begin();
 
     foreach ($post as $pst) {
+
       //Cek No HP
       $noHP = clean_no_hp($pst['noHP']);
-      $cek = $this->ld_m->getStagingLeads(['noHP' => $noHP])->num_rows();
       $errMessages = '';
       if ($noHP == '') {
         $errMsg = 'No. HP Wajib Diisi';
@@ -53,6 +55,20 @@ class Leads_api_model extends CI_Model
         $errMsg = 'Jumlah karakter No. HP kurang';
         $reject[$noHP] = $errMsg;
         $errMessages .= $errMsg . '. ';
+      }
+
+      // Cek NoTelp
+      $noTelp = clean_no_hp(clear_removed_html($pst['noTelp']));
+
+      // cek Email
+      $email = clear_removed_html($pst['email']);
+      if ($email != '') {
+        $email = filter_var(clear_removed_html($pst['email']), FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          $errMsg = 'Format Email tidak valid';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
+        }
       }
 
       //Cek Nama
@@ -100,12 +116,90 @@ class Leads_api_model extends CI_Model
         $reject[$noHP] = $errMsg;
         $errMessages .= $errMsg . '. ';
       } else {
+        //Cek CustomerActionDate
+        $customerActionDate = clear_removed_html($pst['customerActionDate']);
+        if (cekISO8601Date($customerActionDate)) {
+          $customerActionDate = date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate']));
+        } else {
+          $errMsg = 'Format Customer Action Date tidak valid';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
+        }
+
         $customerActionDate = date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate']));
         $selisih = selisih_detik($customerActionDate, $now);
         if ($selisih < 0) {
           $errMsg = 'Customer Action Date Lebih Besar Dari Tanggal Sekarang';
           $reject[$noHP] = $errMsg;
           $errMessages .= $errMsg . '. ';
+        }
+      }
+
+      //Cek deskripsiEvent
+      $kode_event = null;
+      $deskripsiEvent = clear_removed_html($pst['deskripsiEvent']);
+      $tglCustActDate = substr($customerActionDate, 0, 10);
+      $fev = [
+        'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, $tglCustActDate]
+      ];
+      $cek_event = $this->event->getEvent($fev)->row();
+      if ($cek_event == null) {
+        $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
+        $reject[$noHP] = $errMsg;
+        $errMessages .= $errMsg . '. ';
+      } else {
+        $kode_event        = $cek_event->kode_event;
+        $deskripsiEvent    = $cek_event->nama_event;
+        $periodeAwalEvent  = $cek_event->start_date;
+        $periodeAkhirEvent = $cek_event->end_date;
+      }
+
+      //Cek Apakah Ada Pada Tabel Invited Leads
+      $eventCodeInvitation = clear_removed_html($pst['eventCodeInvitation']);
+      $finv = [
+        'event_code_invitation' => $eventCodeInvitation
+      ];
+      if ($eventCodeInvitation == '') {
+        $finv = [
+          'no_hp_or_email_or_event_code_invitation' => [$noHP, $email, $eventCodeInvitation]
+        ];
+      }
+      $cek_invited = $this->upload_leads->getLeads($finv)->row();
+      if ($cek_invited != null) {
+        $eventCodeInvitation = $cek_invited->event_code_invitation;
+        $pst['sourceData'] = $cek_invited->id_source_leads;
+        $pst['customerType'] = 'V';
+
+        if ($pst['sourceData'] == 29) {
+          $pst['sourceData'] = 28;
+        }
+
+        if ($kode_event != $cek_invited->kode_event) {
+          //Set Sebagai Bukan Invited Karena Event Yang Di Upload Berbeda Dengan Event Berjalan
+          $pst['sourceData'] = 29;
+          $pst['customerType'] = 'R';
+        }
+      } else {
+        //Cek Apakah Ada Pada Tabel Invited Leads
+        $eventCodeInvitation = clear_removed_html($pst['eventCodeInvitation']);
+        $finv = [
+          'no_hp_or_email_or_event_code_invitation' => [$noHP, $email, $eventCodeInvitation]
+        ];
+        $cek_invited = $this->upload_leads->getLeads($finv)->row();
+        if ($cek_invited != null) {
+          $eventCodeInvitation = $cek_invited->event_code_invitation;
+          $pst['sourceData']   = $cek_invited->id_source_leads;
+          $pst['customerType'] = 'V';
+
+          if ($pst['sourceData'] == 29) {
+            $pst['sourceData'] = 28;
+          }
+
+          if ($kode_event != $cek_invited->kode_event) {
+            //Set Sebagai Bukan Invited Karena Event Yang Di Upload Berbeda Dengan Event Berjalan
+            $pst['sourceData'] = 29;
+            $pst['customerType'] = 'R';
+          }
         }
       }
 
@@ -121,12 +215,6 @@ class Leads_api_model extends CI_Model
           $errMsg = 'Source Data tidak ditemukan';
           $reject[$noHP] = $errMsg;
           $errMessages .= $errMsg . '. ';
-        } else {
-          if ($pst['sourceData'] == 28 || $pst['sourceData'] == 29) {
-            $is_source_ve = true;
-          } else {
-            $is_source_ve = false;
-          }
         }
       }
 
@@ -258,58 +346,6 @@ class Leads_api_model extends CI_Model
         $customerType = 'R';
       }
 
-      // cek Email
-      $email = clear_removed_html($pst['email']);
-      if ($email != '') {
-        $email = filter_var(clear_removed_html($pst['email']), FILTER_SANITIZE_EMAIL);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $errMsg = 'Format Email tidak valid';
-          $reject[$noHP] = $errMsg;
-          $errMessages .= $errMsg . '. ';
-        }
-      }
-
-      //Cek CustomerActionDate
-      $customerActionDate = clear_removed_html($pst['customerActionDate']);
-      if (cekISO8601Date($customerActionDate)) {
-        $customerActionDate = date_iso_8601_to_datetime(clear_removed_html($pst['customerActionDate']));
-      } else {
-        $errMsg = 'Format Customer Action Date tidak valid';
-        $reject[$noHP] = $errMsg;
-        $errMessages .= $errMsg . '. ';
-      }
-
-      //Cek deskripsiEvent
-      $deskripsiEvent = clear_removed_html($pst['deskripsiEvent']);
-      $tglCustActDate = substr($customerActionDate, 0, 10);
-      if ($is_source_ve == true) {
-        $fev = [
-          'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, $tglCustActDate]
-        ];
-        $cek_event = $this->event->getEvent($fev)->row();
-        if ($cek_event == null) {
-          $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
-          $reject[$noHP] = $errMsg;
-          $errMessages .= $errMsg . '. ';
-        } else {
-          $deskripsiEvent = $cek_event->description;
-        }
-      } else {
-        if ($deskripsiEvent != '') {
-          $fev = [
-            'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, $tglCustActDate]
-          ];
-          $cek_event = $this->event->getEvent($fev)->row();
-          if ($cek_event == null) {
-            $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
-            $reject[$noHP] = $errMsg;
-            $errMessages .= $errMsg . '. ';
-          } else {
-            $deskripsiEvent = $cek_event->description;
-          }
-        }
-      }
-
       if (in_array($noHP, array_keys($reject))) {
         $list_leads[] = [
           'noHP' => $noHP,
@@ -319,13 +355,13 @@ class Leads_api_model extends CI_Model
         continue;
       }
 
-      $insert_batch[] = [
+      $ins_staging = [
         'batchID' => $batchID,
         'nama' => clear_removed_html($pst['nama']),
         'noHP' => $noHP,
         'email' => $email,
         'customerType' => $customerType,
-        'eventCodeInvitation' => clear_removed_html($pst['eventCodeInvitation']),
+        'eventCodeInvitation' => $eventCodeInvitation,
         'customerActionDate' => $customerActionDate,
         'kabupaten' => $id_kabupaten,
         'provinsi' => $id_provinsi,
@@ -339,7 +375,7 @@ class Leads_api_model extends CI_Model
         'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']) == '' ? NULL : clear_removed_html($pst['jadwalRidingTest']),
         'sourceData' => clear_removed_html($pst['sourceData']),
         'platformData' => clear_removed_html($pst['platformData']),
-        'noTelp' => clear_removed_html($pst['noTelp']),
+        'noTelp' => $noTelp,
         'assignedDealer' => isset($pst['assignedDealer']) ? clear_removed_html($pst['assignedDealer']) : NULL,
         'sourceRefID' => $sourceRefID,
         'provinsi' => $id_provinsi,
@@ -354,54 +390,65 @@ class Leads_api_model extends CI_Model
         'created_at' => waktu(),
       ];
 
+      if (isset($periodeAwalEvent)) {
+        $ins_staging['periodeAwalEvent'] = $periodeAwalEvent;
+        $ins_staging['periodeAkhirEvent'] = $periodeAkhirEvent;
+      }
+      //Cek NoHP, NoTelp & Email apakah sudah ada di tabel staging. Jika Ada Simpan Ke Interaksi
+      $fsdobel = [
+        'noHP_noTelp_email' => [$noHP, $noTelp, $email]
+      ];
+      $cek_dobel = $this->ld_m->getStagingLeads($fsdobel)->row();
+      if ($cek_dobel != null) {
+        $this->db->insert('staging_table_leads_interaksi', $ins_staging);
+        continue;
+      } else {
+        $this->db->insert('staging_table_leads', $ins_staging);
+      }
       $list_leads[] = [
         'noHP' => $noHP,
         'accepted' => 'Y',
         'errorMessage' => ''
       ];
     }
-    // send_json(($insert_batch));
-    if (isset($insert_batch)) {
-      $this->db->trans_begin();
-      if (count($insert_provinsi) > 0) {
-        $this->prov->sinkronTabelProvinsi($insert_provinsi);
-      }
-      if (count($insert_kabupaten) > 0) {
-        $this->kab->sinkronTabelKabupaten($insert_kabupaten);
-      }
-      if (count($insert_kecamatan) > 0) {
-        $this->kec->sinkronTabelKecamatan($insert_kecamatan);
-      }
-      if (count($insert_kelurahan) > 0) {
-        $this->kel->sinkronTabelKelurahan($insert_kelurahan);
-      }
-      if (count($insert_tipe_motor) > 0) {
-        $this->tpm->sinkronTabelTipe($insert_tipe_motor);
-      }
-      if (count($insert_warna_motor) > 0) {
-        $this->wrm->sinkronTabelWarna($insert_warna_motor);
-      }
-      if (count($insert_series_motor) > 0) {
-        $this->srm->sinkronTabelSeries($insert_series_motor);
-      }
-      if (count($insert_series_tipe_motor) > 0) {
-        foreach ($insert_series_tipe_motor as $srtm) {
-          $explode = explode('-', $srtm);
-          $params = [
-            'kode_series' => $explode[0],
-            'kode_tipe' => $explode[1],
-            'kode_warna' => $explode[2],
-          ];
-          $this->srtpm->sinkronTabelSeriesTipe($params);
-        }
-      }
-      $this->db->insert_batch('staging_table_leads', $insert_batch);
-      if ($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-      } else {
-        $this->db->trans_commit();
+    if (count($insert_provinsi) > 0) {
+      $this->prov->sinkronTabelProvinsi($insert_provinsi);
+    }
+    if (count($insert_kabupaten) > 0) {
+      $this->kab->sinkronTabelKabupaten($insert_kabupaten);
+    }
+    if (count($insert_kecamatan) > 0) {
+      $this->kec->sinkronTabelKecamatan($insert_kecamatan);
+    }
+    if (count($insert_kelurahan) > 0) {
+      $this->kel->sinkronTabelKelurahan($insert_kelurahan);
+    }
+    if (count($insert_tipe_motor) > 0) {
+      $this->tpm->sinkronTabelTipe($insert_tipe_motor);
+    }
+    if (count($insert_warna_motor) > 0) {
+      $this->wrm->sinkronTabelWarna($insert_warna_motor);
+    }
+    if (count($insert_series_motor) > 0) {
+      $this->srm->sinkronTabelSeries($insert_series_motor);
+    }
+    if (count($insert_series_tipe_motor) > 0) {
+      foreach ($insert_series_tipe_motor as $srtm) {
+        $explode = explode('-', $srtm);
+        $params = [
+          'kode_series' => $explode[0],
+          'kode_tipe' => $explode[1],
+          'kode_warna' => $explode[2],
+        ];
+        $this->srtpm->sinkronTabelSeriesTipe($params);
       }
     }
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+    } else {
+      $this->db->trans_commit();
+    }
+
     return [
       'batchID' => $batchID,
       'reject' => $reject,
