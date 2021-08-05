@@ -78,8 +78,22 @@ class Leads_model extends CI_Model
       }
 
       if (isset($filter['noHP_noTelp_email'])) {
-        $fil = $filter['noHP_noTelp_email'];
-        $where .= " AND (stl.noHP='{$fil[0]}' OR stl.noTelp='{$fil[1]}' OR stl.email='{$fil[2]}') ";
+        $noHP = $filter['noHP_noTelp_email'][0];
+        $noTelp = $filter['noHP_noTelp_email'][1];
+        $email = $filter['noHP_noTelp_email'][2];
+        if ($noHP != '') {
+          $whr[] = "stl.noHP='$noHP'";
+        }
+        if ($noTelp != '') {
+          $whr[] = "stl.noTelp='$noTelp'";
+        }
+        if ($email != '') {
+          $whr[] = "stl.email='$email'";
+        }
+        if (isset($whr)) {
+          $set_whr = implode(" OR ", $whr);
+          $where .= " AND ($set_whr)";
+        }
       }
 
       if (isset($filter['search'])) {

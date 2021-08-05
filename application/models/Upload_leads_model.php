@@ -29,6 +29,32 @@ class Upload_leads_model extends CI_Model
         $eventCodeInvitation = $filter['no_hp_or_email_or_event_code_invitation'][2];
         $where .= " AND (mu.no_hp='$no_hp' OR mu.email='$email' OR mu.event_code_invitation='$eventCodeInvitation')";
       }
+      if (isset($filter['no_hp_or_no_telp_email_or_event_code_invitation'])) {
+        $no_hp = $filter['no_hp_or_no_telp_email_or_event_code_invitation'][0];
+        $no_telp = $filter['no_hp_or_no_telp_email_or_event_code_invitation'][1];
+        $email = $filter['no_hp_or_no_telp_email_or_event_code_invitation'][2];
+        $eventCodeInvitation = $filter['no_hp_or_no_telp_email_or_event_code_invitation'][3];
+        if ($no_hp != '') {
+          $whr[] = "mu.no_hp='$no_hp'";
+        }
+
+        if ($no_telp != '') {
+          $whr[] = "mu.no_telp='$no_telp'";
+        }
+
+        if ($email != '') {
+          $whr[] = "mu.email='$email'";
+        }
+
+        if ($eventCodeInvitation != '') {
+          $whr[] = "mu.event_code_invitation='$eventCodeInvitation'";
+        }
+
+        if (isset($whr)) {
+          $set_whr = implode(" OR ", $whr);
+          $where .= " AND ($set_whr)";
+        }
+      }
       if (isset($filter['acceptedVe'])) {
         $where .= " AND mu.acceptedVe={$this->db->escape_str($filter['acceptedVe'])}";
       }

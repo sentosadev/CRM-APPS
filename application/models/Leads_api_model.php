@@ -161,7 +161,7 @@ class Leads_api_model extends CI_Model
       ];
       if ($eventCodeInvitation == '') {
         $finv = [
-          'no_hp_or_email_or_event_code_invitation' => [$noHP, $email, $eventCodeInvitation]
+          'no_hp_or_no_telp_email_or_event_code_invitation' => [$noHP, $noTelp, $email, $eventCodeInvitation]
         ];
       }
       $cek_invited = $this->upload_leads->getLeads($finv)->row();
@@ -183,7 +183,7 @@ class Leads_api_model extends CI_Model
         //Cek Apakah Ada Pada Tabel Invited Leads
         $eventCodeInvitation = clear_removed_html($pst['eventCodeInvitation']);
         $finv = [
-          'no_hp_or_email_or_event_code_invitation' => [$noHP, $email, $eventCodeInvitation]
+          'no_hp_or_no_telp_email_or_event_code_invitation' => [$noHP, $noTelp, $email, $eventCodeInvitation]
         ];
         $cek_invited = $this->upload_leads->getLeads($finv)->row();
         if ($cek_invited != null) {
@@ -375,7 +375,7 @@ class Leads_api_model extends CI_Model
         'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']) == '' ? NULL : clear_removed_html($pst['jadwalRidingTest']),
         'sourceData' => clear_removed_html($pst['sourceData']),
         'platformData' => clear_removed_html($pst['platformData']),
-        'noTelp' => $noTelp,
+        'noTelp' => $noTelp == '' ? null : $noTelp,
         'assignedDealer' => isset($pst['assignedDealer']) ? clear_removed_html($pst['assignedDealer']) : NULL,
         'sourceRefID' => $sourceRefID,
         'provinsi' => $id_provinsi,
