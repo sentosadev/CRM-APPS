@@ -1,5 +1,13 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+//load Spout Library
+require_once APPPATH . '/third_party/Spout/Autoloader/autoload.php';
+
+//lets Use the Spout Namespaces
+use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Common\Type;
+
 class Leads_customer_data extends Crm_Controller
 {
   var $title  = "Leads Customer Data";
@@ -1478,5 +1486,169 @@ class Leads_customer_data extends Crm_Controller
       $response = ['status' => 0, 'pesan' => 'Jam operasional Kode Dealer : ' . $kode_dealer . ' belum ditentukan'];
       send_json($response);
     }
+  }
+
+  public function download_leads_non_ve()
+  {
+    $header = ['Leads ID', 'Kode Dealer'];
+    $leads = $this->ld_m->getLeadsNonVEBelumAssignedDealer();
+    foreach ($leads->result() as $rs) {
+      $data[] = [$rs->leads_id];
+    }
+
+    if (isset($data)) {
+      $writer = WriterFactory::create(Type::XLSX);
+      $file = 'leads-non-ve-' . strtotime(waktu());
+      $writer->openToBrowser("$file.xlsx");
+      $writer->addRow($header);
+      $writer->addRows($data);
+      $writer->close();
+    } else {
+      $this->session->set_flashdata(msg_not_found());
+      redirect(site_url('manage-customer/leads-customer-data'));
+    }
+  }
+
+  public function upload_leads_non_ve()
+  {
+    $this->load->library('upload');
+    $ym = date('Y/m');
+    $y_m = date('y-m');
+    $path = "./uploads/leads_non-ve/" . $ym;
+    if (!is_dir($path)) {
+      mkdir($path, 0777, true);
+    }
+
+    $config['upload_path']   = $path;
+    $config['allowed_types'] = '*';
+    $config['max_size']      = '1024';
+    $config['remove_spaces'] = TRUE;
+    $config['overwrite']     = TRUE;
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload('file_upload')) {
+      $new_path = substr($path, 2, 40);
+      $filename = $this->upload->file_name;
+      $path_file = $new_path . '/' . $filename;
+    } else {
+      $err = clear_removed_html($this->security->xss_clean($this->upload->display_errors()));
+      $response = ['icon' => 'error', 'title' => 'Peringatan', 'pesan' => $err];
+      send_json($response);
+    }
+    $reader = ReaderFactory::create(Type::XLSX); //set Type file xlsx
+    $reader->open($path_file); //open file xlsx
+    //siapkan variabel array kosong untuk menampung variabel array data
+    $save   = [];
+    $error = [];
+    $user = user();
+
+    foreach ($reader->getSheetIterator() as $sheet) {
+      $numRow = 0;
+      if ($sheet->getIndex() === 0) {
+        //looping pembacaan row dalam sheet
+        foreach ($sheet->getRowIterator() as $row) {
+          if ($numRow > 0) {
+            if ($row[0] == '') break;
+            //Cek Leads
+            $leads = $this->ld_m->getLeadsNonVEBelumAssignedDealer($row[0])->row();
+            if ($leads == null) {
+              $error[] = 'Leads ID : ' . $row[0] . ' tidak ditemukan';
+            } else {
+              //Cek Dealer
+              if (isset($row[1])) {
+                $fdl = ['kode_dealer' => $row[1]];
+                $dl = $this->dealer_m->getDealer($fdl)->row();
+                if ($dl == null) {
+                  $error[] = 'Kode Dealer' . $row[1] . ' tidak ditemukan';
+                } else {
+                  $data = [
+                    'leads_id' => $row[0],
+                    'kode_dealer' => $row[1],
+                  ];
+                  array_push($save, $data);
+                }
+              } else {
+                $error[] = 'Kode Dealer belum diisi';
+              }
+            }
+          }
+          $numRow++;
+        }
+      }
+    }
+    $reader->close();
+    if (count($error) == 0) {
+      $response_sukses = [];
+      $response_error = [];
+      foreach ($save as $dt) {
+        $leads_id       = $dt['leads_id'];
+        $fl['leads_id'] = $leads_id;
+        $lead = $this->ld_m->getLeads($fl)->row();
+        $assignDealer              = $dt['kode_dealer'];
+        $tanggalAssignDealer       = waktu();
+        $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla);
+
+        $update = [
+          'assignedDealer'            => $assignDealer,
+          'tanggalAssignDealer'       => $tanggalAssignDealer,
+          'assignedDealerBy'          => $user->id_user,
+          'batasOntimeSLA2'           => $batasSLA2
+        ];
+
+        // Insert History Assigned Dealer
+        $f_asg = ['leads_id' => $leads_id];
+        $insert_history_assigned = [
+          'leads_id'             => $leads_id,
+          'assignedKe'           => $this->ld_m->getLeadsHistoryAssignedDealer($f_asg)->num_rows() + 1,
+          'assignedDealer'       => $assignDealer,
+          'tanggalAssignDealer'  => waktu(),
+          'assignedDealerBy'     => $user->id_user,
+          'created_at'           => waktu(),
+          'created_by'           => $user->id_user,
+        ];
+
+        $ins_history_stage = [
+          'leads_id' => $leads_id,
+          'created_at' => waktu(),
+          'stageId' => 5
+        ];
+        $this->db->trans_begin();
+        $this->db->update('leads', $update, ['leads_id' => $leads_id]);
+        if (isset($ins_history_stage)) {
+          $this->db->insert('leads_history_stage', $ins_history_stage);
+        };
+        $this->db->insert('leads_history_assigned_dealer', $insert_history_assigned);
+        if ($this->db->trans_status() === FALSE) {
+          $this->db->trans_rollback();
+          $response_error[] = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !. Leads ID : ' . $leads_id];
+        } else {
+          //Melakukan Pengiriman API 3
+          $data = $this->ld_m->post_to_api3($leads_id);
+          $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
+          // send_json($res_api3);
+          if ($res_api3['status'] == 1) {
+            $this->db->trans_commit();
+            $id_prospek = $res_api3['data']['id_prospek'];
+            $pesan = "Berhasil melakukan assigned Dealer Leads ID : $leads_id, dan berhasil melakukan pengiriman API 3. ID Prospek : " . $id_prospek;
+            $response_sukses[] = ['status' => 1, 'pesan' => $pesan];
+            $upd = ['idProspek' => $id_prospek];
+            $this->db->update('leads', $upd, ['leads_id' => $leads_id]);
+          } else {
+            $msg = '';
+            foreach ($res_api3['message'] as $val) {
+              $msg .= $val;
+            }
+            $pesan = "Gagal melakukan assigned Dealer dan mengirim API 3. Error Message API 3 : " . $msg;
+            $response_error[] = ['status' => 0, 'pesan' => $pesan];
+          }
+        }
+      }
+      $pesan = "Data berhasil upload : " . count($response_sukses) . ". Data gagal upload : " . count($response_error);
+      $pesan = ['icon' => 'success', 'title' => 'Informasi', 'text' => $pesan];
+      $this->session->set_flashdata($pesan);
+      $response = ['status' => 1];
+    } else {
+      $response = ['status' => 0, 'pesan' => 'Terjadi Error', 'list' => $error];
+    }
+    send_json($response);
   }
 }

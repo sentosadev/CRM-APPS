@@ -1511,4 +1511,19 @@ class Leads_model extends CI_Model
     $non_ve = $this->getLeads($belum_assign_dealer)->row()->count;
     return $ve + $non_ve;
   }
+
+  function getLeadsNonVEBelumAssignedDealer($leads_id = null)
+  {
+    $where = '';
+    if ($leads_id != null) {
+      $where = " AND ld.leads_id='$leads_id'";
+    }
+    return $this->db->query("SELECT leads_id 
+            FROM leads ld
+            WHERE IFNULL(assignedDealer,'')='' 
+            -- AND sourceData NOT IN(28,29)
+            AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
+            $where
+          ");
+  }
 }
