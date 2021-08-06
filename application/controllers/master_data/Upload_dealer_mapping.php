@@ -42,7 +42,7 @@ class Upload_dealer_mapping extends Crm_Controller
       $sub_array[] = $rs->kode_dealer;
       $sub_array[] = $rs->nama_dealer;
       $sub_array[] = $rs->periode_audit;
-      $sub_array[] = $rs->dealer_score;
+      $sub_array[] = $rs->dealer_score_desc;
       // $sub_array[] = link_on_data_details($params, $user->id_user);
       $data[]      = $sub_array;
       $no++;
@@ -144,10 +144,21 @@ class Upload_dealer_mapping extends Crm_Controller
               $kode_dealer = $cek->kode_dealer;
             }
 
+
+            //Cek Dealer Score
+            $fk = ['id_or_nama_score' => $row[2]];
+            $cek_score = $this->udm_m->getDealerMappingScore($fk)->row();
+            $dealer_score = null;
+            if ($cek_score == NULL) {
+              $error[$numRow][] = "Dealer score '{$row[2]}' tidak ditemukan";
+            } else {
+              $dealer_score = $cek_score->id_score;
+            }
+
             $data = [
               'kode_dealer' => $kode_dealer,
               'periode_audit' => $row[1],
-              'dealer_score' => $row[2],
+              'dealer_score' => $dealer_score,
               'created_at'    => waktu(),
               'created_by' => $user->id_user,
               'path_upload_file' => $path_file

@@ -90,23 +90,7 @@ class Dealer_model extends CI_Model
     $select = '';
 
     $tahun_bulan = tahun_bulan();
-    $territory_data = "SELECT id_kecamatan FROM upload_territory_data WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit";
 
-    $territory_data_desc = "SELECT kecamatan FROM upload_territory_data
-                      JOIN ms_maintain_kecamatan kec ON kec.id_kecamatan=upload_territory_data.id_kecamatan
-                      WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
-
-
-    $dealer_mapping = "SELECT kode_dealer FROM upload_dealer_mapping WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan'";
-    $dealer_mapping_desc = "SELECT dealer_score FROM upload_dealer_mapping WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
-
-    $nos_score = "SELECT ns.nos_grade FROM upload_nos_score uns
-                  JOIN ms_nos_grade ns ON ns.id_nos_grade=uns.id_nos_grade
-                  WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
-
-    $crm_score = "SELECT kd.kuadran FROM upload_dealer_crm_scoring dcs
-                  JOIN ms_kuadran kd ON kd.id_kuadran=dcs.id_kuadran
-                  WHERE kode_dealer=mu.kode_dealer AND periode_audit<='$tahun_bulan' ORDER BY periode_audit DESC LIMIT 1";
     $workload = " SELECT COUNT(leads_id) FROM leads 
                   WHERE assignedDealer=mu.kode_dealer 
                   AND (SELECT COUNT(leads_id) 
@@ -141,27 +125,31 @@ class Dealer_model extends CI_Model
           $where .= " AND mu.aktif='{$this->db->escape_str($filter['aktif'])}'";
         }
       }
-      if (isset($filter['territory_data_vs_leads'])) {
-        if ($filter['territory_data_vs_leads'] == 'true') {
-          $leads_id = $filter['leads_id'];
-          $where .= " AND (SELECT kecamatan FROM leads WHERE leads_id='$leads_id') IN ($territory_data)";
-        }
-      }
-      if (isset($filter['dealer_mapping'])) {
-        if ($filter['dealer_mapping'] == 'true') {
-          $where .= " AND mu.kode_dealer IN ($dealer_mapping)";
-        }
-      }
+
       if (isset($filter['nos_score'])) {
         if ($filter['nos_score'] == 'true') {
-          $where .= " AND ($nos_score) IN('Silver','Gold','Platinum')";
+          $where .= " AND nos.kode_dealer IS NOT NULL";
         }
       }
       if (isset($filter['dealer_crm_score'])) {
         if ($filter['dealer_crm_score'] == 'true') {
-          $where .= " AND ($crm_score) IN('Kuadran 1','Kuadran 2')";
+          $where .= " AND dcs.kode_dealer IS NOT NULL";
         }
       }
+
+      if (isset($filter['dealer_mapping'])) {
+        if ($filter['dealer_mapping'] == 'true') {
+          $where .= " AND udm.kode_dealer IS NOT NULL";
+        }
+      }
+
+      if (isset($filter['territory_data_vs_leads'])) {
+        if ($filter['territory_data_vs_leads'] == 'true') {
+          $leads_id = $filter['leads_id'];
+          $where .= " AND kab_ter.id_kabupaten_kota IS NOT NULL AND (SELECT kabupaten FROM leads WHERE leads_id='$leads_id')=kab_ter.id_kabupaten_kota";
+        }
+      }
+
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -175,7 +163,7 @@ class Dealer_model extends CI_Model
           $select = "kode_dealer id,nama_dealer text";
         }
         if ($filter['select'] == 'assign_reassign') {
-          $select = "mu.id_dealer, mu.kode_dealer,mu.nama_dealer,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,($territory_data_desc) territory_data,($dealer_mapping_desc) channel_mapping,($nos_score) nos_score,($crm_score) crm_score,($workload) work_load";
+          $select = "mu.id_dealer, mu.kode_dealer,mu.nama_dealer,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,CONCAT(ring.ring,' - ',kab_ter.kabupaten_kota) territory_data,dealer_mapping_score channel_mapping,nos_grade nos_score,kd.kuadran crm_score,($workload) work_load";
         } else {
           $select = $filter['select'];
         }
@@ -194,6 +182,37 @@ class Dealer_model extends CI_Model
         $order_data = " ORDER BY $order_clm $order_by ";
       }
     }
+    if (isset($filter['order_column'])) {
+
+      if (isset($filter['territory_data_vs_leads'])) {
+        if ($filter['territory_data_vs_leads'] == 'true') {
+          $ord[] = "ring.ring";
+        }
+      }
+
+      if (isset($filter['dealer_mapping'])) {
+        if ($filter['dealer_mapping'] == 'true') {
+          $ord[] = "dms.urutan";
+        }
+      }
+
+      if (isset($filter['nos_score'])) {
+        if ($filter['nos_score'] == 'true') {
+          $ord[] = "nos.id_nos_grade";
+        }
+      }
+
+      if (isset($filter['crm_score'])) {
+        if ($filter['crm_score'] == 'true') {
+          $ord[] = "kd.kuadran";
+        }
+      }
+
+      if (isset($ord)) {
+        $ord = implode(', ', $ord);
+        $order_data = "ORDER BY $ord ASC";
+      }
+    }
 
     $limit = '';
     if (isset($filter['limit'])) {
@@ -202,7 +221,17 @@ class Dealer_model extends CI_Model
 
     return $this->db->query("SELECT $select
     FROM ms_dealer AS mu
+    LEFT JOIN upload_dealer_mapping udm ON udm.kode_dealer=mu.kode_dealer AND udm.periode_audit<='$tahun_bulan'
+    LEFT JOIN setup_dealer_mapping_score dms ON dms.id_score=udm.dealer_score
+    LEFT JOIN upload_nos_score nos ON nos.kode_dealer=mu.kode_dealer AND nos.periode_audit<='$tahun_bulan'
+    LEFT JOIN ms_nos_grade nos_score ON nos_score.id_nos_grade=nos.id_nos_grade
+    LEFT JOIN upload_dealer_crm_scoring dcs ON dcs.kode_dealer=mu.kode_dealer AND dcs.periode_audit<='$tahun_bulan'
+    LEFT JOIN ms_kuadran kd ON kd.id_kuadran=dcs.id_kuadran
+    LEFT JOIN upload_territory_data utd ON utd.kode_dealer=mu.kode_dealer AND utd.periode_audit<='$tahun_bulan'
+    LEFT JOIN ms_ring ring ON ring.id_ring=utd.id_ring
+    LEFT JOIN ms_maintain_kabupaten_kota kab_ter ON kab_ter.id_kabupaten_kota=utd.id_kabupaten_kota
     $where
+    GROUP BY mu.kode_dealer
     $order_data
     $limit
     ");

@@ -98,6 +98,8 @@ class Lead extends CI_Controller
       //Cek Batas SLA 1 => MD
       $batasSLA1 = $this->_batasSLA1(clear_removed_html($pst['customerActionDate']), $pst['sla']);
 
+      $noTelp = clear_removed_html($pst['noTelp']) == '' ? null : clear_removed_html($pst['noTelp']);
+
       if ((string)$pst['leads_id'] == '') {
         $leads_id = $leads_id_invited == '' ? $this->ld_m->getLeadsID() : $leads_id_invited;
         $insert = [
@@ -121,7 +123,7 @@ class Lead extends CI_Controller
           'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']) == '' ? NULL : clear_removed_html($pst['jadwalRidingTest']),
           'sourceData' => $sourceData,
           'platformData' => clear_removed_html($pst['platformData']),
-          'noTelp' => clear_removed_html($pst['noTelp']),
+          'noTelp' => $noTelp,
           'assignedDealer' => clear_removed_html($pst['assignedDealer']),
           'sourceRefID' => clear_removed_html($pst['sourceRefID']),
           'provinsi' => $cdb == NULL ? clear_removed_html($pst['provinsi']) : $cdb->idProvinsi,

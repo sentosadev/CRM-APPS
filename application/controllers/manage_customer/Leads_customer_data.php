@@ -960,7 +960,7 @@ class Leads_customer_data extends Crm_Controller
       'nos_score'                 => $this->input->post('nos_score'),
       'dealer_crm_score'          => $this->input->post('dealer_crm_score'),
       'leads_id'                  => $this->input->post('leads_id'),
-      'order_column'              => 'view',
+      'order_column'              => 'assign_reassign',
       'select'                    => 'assign_reassign'
     ];
     if ($recordsFiltered == true) {
@@ -1145,7 +1145,7 @@ class Leads_customer_data extends Crm_Controller
       'workload_dealer'           => $this->input->post('workload_dealer'),
       'threshold_per_salespeople' => $this->input->post('threshold_per_salespeople'),
       'leads_id'                  => $this->input->post('leads_id'),
-      'order_column'              => 'view',
+      'order_column'              => 'assign_reassign',
       'select'                    => 'assign_reassign'
     ];
     if ($recordsFiltered == true) {
