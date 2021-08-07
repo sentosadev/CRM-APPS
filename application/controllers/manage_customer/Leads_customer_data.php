@@ -31,7 +31,8 @@ class Leads_customer_data extends Crm_Controller
     $belum_fu_md = [
       'select' => 'count',
       'jumlah_fu_md' => 0,
-      'need_fu_md' => 1
+      'need_fu_md' => 1,
+      'assignedDealerIsNULL' => true
     ];
 
     $need_fu = [
@@ -190,6 +191,45 @@ class Leads_customer_data extends Crm_Controller
       $filter['assignedDealer'] = user()->kode_dealer;
     }
     $filter['show_hasil_fu_not_prospect'] = $this->input->post('show_hasil_fu_not_prospect');
+
+    if ($this->input->post('filterBelumFUMD') == 'true') {
+      $filter['jumlah_fu_md'] = 0;
+      $filter['need_fu_md'] = 1;
+      $filter['assignedDealerIsNULL'] = true;
+    }
+
+    if ($this->input->post('leadsNeedFU') == 'true') {
+      $need_fu['kodeHasilStatusFollowUpNotIn'] = "3, 4";
+      $need_fu['is_dealer'] = true;
+      $need_fu['not_contacted'] = true;
+      $need_fu['select'] = true;
+      $cek = $this->ld_m->getCountLeadsVsFollowUp($need_fu)->result();
+      $leads_need = [];
+      foreach ($cek as $ck) {
+        $leads_need[] = $ck->leads_id;
+      }
+      $filter['leads_id_in'] = $leads_need;
+    }
+
+    if ($this->input->post('belumAssignDealer') == 'true') {
+      $leads_need = $this->ld_m->getLeadsBelumAssignDealer(true);
+      $filter['leads_id_in'] = $leads_need;
+    }
+
+    if ($this->input->post('melewatiSLAMD') == 'true') {
+      $filter['ontimeSLA1'] = 0;
+      $filter['jumlah_fu_md'] = 0;
+    }
+
+    if ($this->input->post('melewatiSLADealer') == 'true') {
+      $filter['ontimeSLA2'] = 0;
+      $filter['jumlah_fu_md'] = 0;
+    }
+
+    if ($this->input->post('leadsMultiInteraction') == 'true') {
+      $filter['interaksi_lebih_dari'] = 1;
+    }
+
     if ($recordsFiltered == true) {
       return $this->ld_m->getLeads($filter)->num_rows();
     } else {

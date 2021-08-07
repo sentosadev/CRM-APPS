@@ -146,6 +146,7 @@ class Leads_model extends CI_Model
 
   function getLeads($filter = null)
   {
+    // send_json($filter);
     $where = 'WHERE 1=1';
     $select = '';
     $jumlah_fu = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=stl.leads_id";
@@ -354,6 +355,13 @@ class Leads_model extends CI_Model
         if ($filter['seriesMotorIn'] != '') {
           $filter['seriesMotorIn'] = arr_sql($filter['seriesMotorIn']);
           $where .= " AND stl.seriesMotor IN({$filter['seriesMotorIn']})";
+        }
+      }
+
+      if (isset($filter['leads_id_in'])) {
+        if ($filter['leads_id_in'] != '') {
+          $filter['leads_id_in'] = arr_sql($filter['leads_id_in']);
+          $where .= " AND stl.leads_id IN({$filter['leads_id_in']})";
         }
       }
 
@@ -1339,7 +1347,12 @@ class Leads_model extends CI_Model
     if (isset($filter['group_by'])) {
       $group_by = "GROUP BY " . $filter['group_by'];
     }
-    return $this->db->query("SELECT COUNT(DISTINCT ld.leads_id) count,ld.customerType
+    if (isset($filter['select'])) {
+      $select = "ld.leads_id";
+    } else {
+      $select = "COUNT(DISTINCT ld.leads_id) count,ld.customerType";
+    }
+    return $this->db->query("SELECT $select
     FROM leads ld
     LEFT JOIN ms_dealer dl ON dl.kode_dealer=ld.assignedDealer
     $where $group_by
@@ -1490,26 +1503,45 @@ class Leads_model extends CI_Model
     return ['prospek' => $prospek, 'interaksi' => $interaksi];
   }
 
-  function getLeadsBelumAssignDealer()
+  function getLeadsBelumAssignDealer($select = false)
   {
+    $leads = [];
     // Cek VE
     $belum_assign_dealer = [
-      'select' => 'count',
       'assignedDealerIsNULL' => true,
       'kodeHasilStatusFollowUpIn' => [1],
       'last_kodeHasilStatusFollowUp' => 1,
       'need_fu_md' => 1
     ];
-    $ve = $this->getLeads($belum_assign_dealer)->row()->count;
+    if ($select == false) {
+      $belum_assign_dealer['select'] = 'count';
+    }
+    $ve = $this->getLeads($belum_assign_dealer);
+    if ($select == false) {
+      $ve = $ve->row()->count;
+    } else {
+      foreach ($ve->result() as $v) {
+        $leads[] = $v->leads_id;
+      }
+    }
 
     // Cek Non-VE
     $belum_assign_dealer = [
-      'select' => 'count',
       'assignedDealerIsNULL' => true,
       'need_fu_md' => 0
     ];
-    $non_ve = $this->getLeads($belum_assign_dealer)->row()->count;
-    return $ve + $non_ve;
+    if ($select == false) {
+      $belum_assign_dealer['select'] = 'count';
+    }
+    $non_ve = $this->getLeads($belum_assign_dealer);
+    if ($select == false) {
+      return $ve + $non_ve->row()->count;
+    } else {
+      foreach ($non_ve->result() as $v) {
+        $leads[] = $v->leads_id;
+      }
+      return $leads;
+    }
   }
 
   function getLeadsNonVEBelumAssignedDealer($leads_id = null)
@@ -1520,8 +1552,8 @@ class Leads_model extends CI_Model
     }
     return $this->db->query("SELECT leads_id 
             FROM leads ld
-            WHERE IFNULL(assignedDealer,'')='' 
-            -- AND sourceData NOT IN(28,29)
+            WHERE 
+            AND sourceData NOT IN(28,29)
             AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
             $where
           ");

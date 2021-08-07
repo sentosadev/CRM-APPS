@@ -9,6 +9,10 @@
     text-align: center;
     width: 10%;
   }
+
+  .bg-gray-selected {
+    background-color: #6a6b6d !important;
+  }
 </style>
 <section class="content">
   <!-- SELECT2 EXAMPLE -->
@@ -18,7 +22,7 @@
         <tbody>
           <tr>
             <td class="padding-td">
-              <div class="small-box bg-gray">
+              <div class="small-box bg-gray" onclick="setFilterBelumFUMD()" id="filterBelumFUMD">
                 <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
                   <p style=' min-height:65px'>Leads belum FU MD (workload) <br>&nbsp;</p>
                   <h3 class="card_view" id="data_source"><?= $mon['belum_fu_md'] ?></h3>
@@ -27,7 +31,7 @@
               </div>
             </td>
             <td class="padding-td">
-              <div class="small-box bg-gray">
+              <div class="small-box bg-gray" onclick="setLeadsNeedFU()" id="leadsNeedFU">
                 <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
                   <p style='min-height:65px'>Leads Need FU <br>&nbsp;</p>
                   <h3 class="card_view" id="data_source"><?= $mon['need_fu'] ?></h3>
@@ -36,7 +40,7 @@
               </div>
             </td>
             <td class="padding-td">
-              <div class="small-box bg-gray">
+              <div class="small-box bg-gray" onclick="setBelumAssignDealer()" id="belumAssignDealer">
                 <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
                   <p style='min-height:65px'>Leads belum Assign Dealer <br>&nbsp;</p>
                   <h3 class="card_view" id="data_source"><?= $mon['belum_assign_dealer'] ?></h3>
@@ -45,7 +49,7 @@
               </div>
             </td>
             <td class="padding-td">
-              <div class="small-box bg-gray">
+              <div class="small-box bg-gray" onclick="setMelewatiSLAMD()" id="melewatiSLAMD">
                 <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
                   <p style='min-height:65px'>Leads yang melewati SLA MD <br>&nbsp;</p>
                   <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_md'] ?></h3>
@@ -54,7 +58,7 @@
               </div>
             </td>
             <td class="padding-td">
-              <div class="small-box bg-gray">
+              <div class="small-box bg-gray" onclick="setMelewatiSLADealer()" id="melewatiSLADealer">
                 <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
                   <p style='min-height:65px'>Leads yang melewati SLA D <br>&nbsp;</p>
                   <h3 class="card_view" id="data_source"><?= $mon['lewat_sla_d'] ?></h3>
@@ -63,7 +67,7 @@
               </div>
             </td>
             <td class="padding-td">
-              <div class="small-box bg-gray">
+              <div class="small-box bg-gray" onclick="setLeadsMultiInteraction()" id="leadsMultiInteraction">
                 <div class="inner" style="padding-bottom:0px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="">
                   <p style='min-height:65px'>Leads Multi-Interaction <br>&nbsp;</p>
                   <h3 class="card_view" id="data_source"><?= $mon['multi_interaksi'] ?></h3>
@@ -362,6 +366,12 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           d.show_hasil_fu_not_prospect = $('input[name=show_hasil_fu_not_prospect]:checked', '#form_search_leads').val()
           d.start_periode_event = $('#start_periode_event').val()
           d.end_periode_event = $('#end_periode_event').val()
+          d.filterBelumFUMD = filterBelumFUMD;
+          d.leadsNeedFU = leadsNeedFU;
+          d.belumAssignDealer = belumAssignDealer;
+          d.melewatiSLAMD = melewatiSLAMD;
+          d.melewatiSLADealer = melewatiSLADealer;
+          d.leadsMultiInteraction = leadsMultiInteraction;
           return d;
         },
       },
@@ -609,5 +619,130 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
         })
       }
     });
+  }
+
+  var filterBelumFUMD = false;
+
+  function setFilterBelumFUMD() {
+    if (filterBelumFUMD == false) {
+      filterBelumFUMD = true;
+    } else {
+      filterBelumFUMD = false;
+    }
+    resetAllHeader('filterBelumFUMD', filterBelumFUMD);
+    search();
+  }
+
+  var leadsNeedFU = false;
+
+  function setLeadsNeedFU() {
+    if (leadsNeedFU == false) {
+      leadsNeedFU = true;
+    } else {
+      leadsNeedFU = false;
+    }
+    resetAllHeader('leadsNeedFU', leadsNeedFU);
+    search();
+  }
+
+  var belumAssignDealer = false;
+
+  function setBelumAssignDealer() {
+    if (belumAssignDealer == false) {
+      belumAssignDealer = true;
+    } else {
+      belumAssignDealer = false;
+    }
+    resetAllHeader('belumAssignDealer', belumAssignDealer);
+    search();
+  }
+
+  var melewatiSLAMD = false;
+
+  function setMelewatiSLAMD() {
+    if (melewatiSLAMD == false) {
+      melewatiSLAMD = true;
+    } else {
+      melewatiSLAMD = false;
+    }
+    resetAllHeader('melewatiSLAMD', melewatiSLAMD);
+    search();
+  }
+
+  var melewatiSLADealer = false;
+
+  function setMelewatiSLADealer() {
+    if (melewatiSLADealer == false) {
+      melewatiSLADealer = true;
+    } else {
+      melewatiSLADealer = false;
+    }
+    resetAllHeader('melewatiSLADealer', melewatiSLADealer);
+    search();
+  }
+
+  var leadsMultiInteraction = false;
+
+  function setLeadsMultiInteraction() {
+    if (leadsMultiInteraction == false) {
+      leadsMultiInteraction = true;
+    } else {
+      leadsMultiInteraction = false;
+    }
+    resetAllHeader('leadsMultiInteraction', leadsMultiInteraction);
+    search();
+  }
+
+  function resetAllHeader(except, val) {
+    $('.small-box').removeClass('bg-gray-selected');
+    $('.small-box').addClass('bg-gray');
+
+    filterBelumFUMD = false;
+    leadsNeedFU = false;
+    belumAssignDealer = false;
+    melewatiSLAMD = false;
+    melewatiSLADealer = false;
+    leadsMultiInteraction = false;
+    if (except == 'filterBelumFUMD') {
+      filterBelumFUMD = val;
+      if (val == true) {
+        $('#filterBelumFUMD').addClass('bg-gray-selected');
+      }
+    }
+
+    if (except == 'leadsNeedFU') {
+      leadsNeedFU = val;
+      if (val == true) {
+        $('#leadsNeedFU').addClass('bg-gray-selected');
+      }
+    }
+
+    if (except == 'belumAssignDealer') {
+      belumAssignDealer = val;
+      if (val == true) {
+        $('#belumAssignDealer').addClass('bg-gray-selected');
+      }
+    }
+
+    if (except == 'melewatiSLAMD') {
+      melewatiSLAMD = val;
+      if (val == true) {
+        $('#melewatiSLAMD').addClass('bg-gray-selected');
+      }
+    }
+
+    if (except == 'melewatiSLADealer') {
+      melewatiSLADealer = val;
+      if (val == true) {
+        $('#melewatiSLADealer').addClass('bg-gray-selected');
+      }
+    }
+
+    if (except == 'leadsMultiInteraction') {
+      leadsMultiInteraction = val;
+      if (val == true) {
+        $('#leadsMultiInteraction').addClass('bg-gray-selected');
+      }
+    }
   }
 </script>

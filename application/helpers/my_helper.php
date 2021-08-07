@@ -68,7 +68,11 @@ function arr_sql($arr)
   foreach ($arr as $val) {
     $res[] = "'$val'";
   }
-  return implode(',', $res);
+  if (isset($res)) {
+    return implode(',', $res);
+  } else {
+    return "'-'";
+  }
 }
 
 function send_json($arr)
