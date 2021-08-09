@@ -78,6 +78,7 @@ class Cdb_nms_model extends CI_Model
     $where = 'WHERE 1=1';
     $select = "spk.id_customer customerId,
         spk.no_spk,
+        DATE_FORMAT(so.tgl_cetak_invoice,'%m-%Y') bulan_penjualan,
         so.tgl_cetak_invoice tanggal_penjualan,
         so.no_rangka,
         so.no_mesin,
@@ -105,6 +106,7 @@ class Cdb_nms_model extends CI_Model
         kel.kelurahan,
         kec.kecamatan,
         kab.kabupaten,
+        prov.provinsi,
         spk.kodepos kode_pos,
         ag.agama,
         pbl.pengeluaran,
@@ -134,6 +136,11 @@ class Cdb_nms_model extends CI_Model
       if ($filter['no_hp'] != '') {
         $where .= " AND spk.no_hp='{$this->db->escape_str($filter['no_hp'])}'";
       }
+    }
+
+    if (isset($filter['periode'])) {
+      $periode = $filter['periode'];
+      $where .= " AND LEFT(so.tgl_cetak_invoice,10) BETWEEN '{$this->db->escape_str($periode[0])}' AND '{$this->db->escape_str($periode[1])}'";
     }
     if (isset($filter['search'])) {
       if ($filter['search'] != '') {

@@ -146,7 +146,6 @@ class Leads_model extends CI_Model
 
   function getLeads($filter = null)
   {
-    // send_json($filter);
     $where = 'WHERE 1=1';
     $select = '';
     $jumlah_fu = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=stl.leads_id";
@@ -186,7 +185,11 @@ class Leads_model extends CI_Model
                     WHEN IFNULL(ontimeSLA1,'') = '' THEN 
                       CASE WHEN IFNULL(sla,'') = '' THEN 1
                         ELSE 
-                          CASE WHEN TIMEDIFF(batasOntimeSLA1,now()) < 0 THEN 0 ELSE 1 END
+                          CASE WHEN IFNULL(batasOntimeSLA1,'')=''
+                            THEN CASE WHEN TIMEDIFF(customerActionDate,now()) < 0 THEN 0 ELSE 1 END
+                          ELSE
+                            CASE WHEN TIMEDIFF(batasOntimeSLA1,now()) < 0 THEN 0 ELSE 1 END
+                          END
                       END
                     ELSE ontimeSLA1
                     END
@@ -196,8 +199,12 @@ class Leads_model extends CI_Model
                             WHEN ontimeSLA1=0 THEN 'Overdue' 
                             ELSE 
                               CASE WHEN IFNULL(sla,'') = '' THEN '-'
-                                   ELSE 
+                                ELSE 
+                                  CASE WHEN IFNULL(batasOntimeSLA1,'')=''
+                                    THEN CASE WHEN TIMEDIFF(customerActionDate,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                                  ELSE
                                     CASE WHEN TIMEDIFF(batasOntimeSLA1,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                                  END
                               END
                         END
                         ";
@@ -206,7 +213,11 @@ class Leads_model extends CI_Model
                     WHEN IFNULL(ontimeSLA2,'') = '' THEN 
                       CASE WHEN IFNULL(sla,'') = '' THEN 1
                         ELSE 
-                          CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 0 ELSE 1 END
+                          CASE WHEN IFNULL(batasOntimeSLA2,'')='' THEN
+                            CASE WHEN TIMEDIFF(stl.assignedDealer,now()) < 0 THEN 0 ELSE 1 END
+                          ELSE
+                            CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 0 ELSE 1 END
+                          END
                       END
                     ELSE ontimeSLA2
                     END
@@ -217,7 +228,11 @@ class Leads_model extends CI_Model
                             ELSE 
                               CASE WHEN IFNULL(sla,'') = '' THEN '-'
                                    ELSE 
-                                    CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                                    CASE WHEN IFNULL(batasOntimeSLA2,'')='' THEN
+                                      CASE WHEN TIMEDIFF(stl.assignedDealer,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                                    ELSE
+                                      CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                                    END
                               END
                         END
                         ";
@@ -1496,7 +1511,8 @@ class Leads_model extends CI_Model
       'pekerjaan' => $leads->kodePekerjaanKtp,
       'sub_pekerjaan' => $leads->kodePekerjaan,
       'created_at' => waktu(),
-      'tgl_prospek' => tanggal()
+      'tgl_prospek' => tanggal(),
+      'noFramePembelianSebelumnya' => $leads->noFramePembelianSebelumnya,
     ];
     $ld = ['leads_id' => $leads->leads_id];
     $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
@@ -1552,8 +1568,7 @@ class Leads_model extends CI_Model
     }
     return $this->db->query("SELECT leads_id 
             FROM leads ld
-            WHERE 
-            AND sourceData NOT IN(28,29)
+            WHERE sourceData NOT IN(28,29)
             AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
             $where
           ");
