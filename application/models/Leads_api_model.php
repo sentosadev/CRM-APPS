@@ -334,10 +334,6 @@ class Leads_api_model extends CI_Model
           $reject[$noHP] = $errMsg;
           $errMessages .= $errMsg . '. ';
         }
-      } else {
-        $errMsg = 'Segmen Motor Kosong';
-        $reject[$noHP] = $errMsg;
-        $errMessages .= $errMsg . '. ';
       }
 
       // cek customerType
