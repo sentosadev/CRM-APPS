@@ -211,6 +211,7 @@ class Cdb_nms_model extends CI_Model
     $limit
     ");
   }
+
   function getSSUvsKPB($filter = null)
   {
     $where = 'WHERE 1=1';
