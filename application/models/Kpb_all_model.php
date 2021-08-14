@@ -10,7 +10,7 @@ class Kpb_all_model extends CI_Model
   function getSSU($filter = null)
   {
     $where = 'WHERE 1=1';
-    $select = "so.no_mesin, dl.kode_dealer_md";
+    $select = "so.no_mesin, dl.kode_dealer_md,spk.no_hp,spk.no_ktp,spk.no_kk";
     $filter = $this->db->escape_str($filter);
 
     if (isset($filter['periode'])) {
@@ -22,6 +22,16 @@ class Kpb_all_model extends CI_Model
       $kode_dealers = arr_sql($filter['kode_dealer_in']);
       $where .= " AND dl.kode_dealer_md IN($kode_dealers)";
     }
+    if (isset($filter['tahun_pembelian'])) {
+      $where .= " AND LEFT(so.tgl_cetak_invoice,4)='{$filter['tahun_pembelian']}'";
+    }
+
+    if (isset($filter['no_hp_no_ktp_no_kk'])) {
+      $no_hp = $filter['no_hp_no_ktp_no_kk'][0];
+      $no_ktp = $filter['no_hp_no_ktp_no_kk'][1];
+      $no_kk = $filter['no_hp_no_ktp_no_kk'][2];
+      $where .= " AND (spk.no_hp='$no_hp' OR spk.no_ktp='$no_ktp' OR spk.no_kk='$no_kk') ";
+    }
 
     if (isset($filter['select'])) {
       if ($filter['select'] == 'select_kpb') {
@@ -32,6 +42,7 @@ class Kpb_all_model extends CI_Model
 
     return $this->db_live->query("SELECT $select
     FROM tr_sales_order AS so
+    JOIN tr_spk spk ON spk.no_spk=so.no_spk
     JOIN ms_dealer dl ON dl.id_dealer=so.id_dealer
     $where
     ");

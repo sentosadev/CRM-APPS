@@ -51,9 +51,9 @@ class Kpb_all extends Crm_Controller
       }
     }
     for ($i = 1; $i <= 4; $i++) {
-      $own = number_format(@($kpb[$i][0] / $kpb[$i][0]) * 100, 0);
-      $other = number_format(@($kpb[$i][1] / $kpb[$i][1]) * 100, 0);
-      $not = number_format(@($kpb[$i][2] / $kpb[$i][2]) * 100, 0);
+      $own = number_format(@($kpb[$i][0] / $kpb[$i][3]) * 100, 0);
+      $other = number_format(@($kpb[$i][1] / $kpb[$i][3]) * 100, 0);
+      $not = number_format(@($kpb[$i][2] / $kpb[$i][3]) * 100, 0);
       $tables[] = ['KPB ' . $i, $kpb[$i][0], $own, $kpb[$i][1], $other, $kpb[$i][2], $not, $kpb[$i][3]];
     }
     $response = [
