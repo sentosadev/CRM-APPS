@@ -73,7 +73,7 @@ class Lead extends CI_Controller
       'group_by' => 'stl.noHP'
     ];
     $data = $this->ld_m->getStagingTableVSMainTable($fc)->result_array();
-    // send_json($data);
+
     $this->db->trans_begin();
     foreach ($data as $pst) {
       $no_hp = clean_no_hp(clear_removed_html($pst['noHP']));

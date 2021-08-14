@@ -372,7 +372,7 @@ class Leads_api_model extends CI_Model
         'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']) == '' ? NULL : clear_removed_html($pst['jadwalRidingTest']),
         'sourceData' => clear_removed_html($pst['sourceData']),
         'platformData' => clear_removed_html($pst['platformData']),
-        'noTelp' => $noTelp == '' ? null : $noTelp,
+        'noTelp' => $noTelp ?: null,
         'assignedDealer' => isset($pst['assignedDealer']) ? clear_removed_html($pst['assignedDealer']) : NULL,
         'sourceRefID' => $sourceRefID,
         'provinsi' => $id_provinsi,
