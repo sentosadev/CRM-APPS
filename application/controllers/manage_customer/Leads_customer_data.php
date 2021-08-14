@@ -37,7 +37,6 @@ class Leads_customer_data extends Crm_Controller
 
     $need_fu = [
       'kodeHasilStatusFollowUpNotIn' => "3, 4",
-      'is_dealer' => true,
       'not_contacted' => true,
     ];
 
@@ -200,7 +199,6 @@ class Leads_customer_data extends Crm_Controller
 
     if ($this->input->post('leadsNeedFU') == 'true') {
       $need_fu['kodeHasilStatusFollowUpNotIn'] = "3, 4";
-      $need_fu['is_dealer'] = true;
       $need_fu['not_contacted'] = true;
       $need_fu['select'] = true;
       $cek = $this->ld_m->getCountLeadsVsFollowUp($need_fu)->result();
@@ -223,7 +221,7 @@ class Leads_customer_data extends Crm_Controller
 
     if ($this->input->post('melewatiSLADealer') == 'true') {
       $filter['ontimeSLA2'] = 0;
-      $filter['jumlah_fu_md'] = 0;
+      $filter['jumlah_fu_d'] = 0;
     }
 
     if ($this->input->post('leadsMultiInteraction') == 'true') {
