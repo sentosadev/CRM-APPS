@@ -276,7 +276,7 @@ class Leads_model extends CI_Model
         " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md,
         " . sql_convert_date_dmy('stl.periodeAwalEvent') . " periodeAwalEventId,
         " . sql_convert_date_dmy('stl.periodeAkhirEvent') . " periodeAkhirEventId,
-        batasOntimeSLA1,stl.periodeAwalEvent,stl.periodeAkhirEvent
+        batasOntimeSLA1,stl.periodeAwalEvent,stl.periodeAkhirEvent,batasOnTimeSLA2
         ";
 
     if ($filter != null) {
@@ -1513,6 +1513,11 @@ class Leads_model extends CI_Model
       'created_at' => waktu(),
       'tgl_prospek' => tanggal(),
       'noFramePembelianSebelumnya' => $leads->noFramePembelianSebelumnya,
+      'facebook' => $leads->facebook,
+      'instagram' => $leads->instagram,
+      'twitter' => $leads->twitter,
+      'customerType' => $leads->customerType,
+      'batasOnTimeSLA2' => $leads->batasOnTimeSLA2,
     ];
     $ld = ['leads_id' => $leads->leads_id];
     $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();

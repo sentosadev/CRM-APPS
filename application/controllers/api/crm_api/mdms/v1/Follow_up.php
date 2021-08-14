@@ -36,6 +36,7 @@ class Follow_up extends CI_Controller
     $validasi['activity']['method'] = 'POST';
     $validasi['activity']['sender'] = 'NMS';
     $validasi['activity']['receiver'] = 'MDMS';
+    $validasi['activity']['api_module'] = 'API 4';
     insert_api_log($validasi['activity'], $response['status'], $response['message'], NULL);
     send_json($response);
   }

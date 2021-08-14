@@ -171,6 +171,7 @@ function insert_api_log($activity, $status, $message, $data)
     'api_key' => $activity['api_key'],
     'endpoint' => isset($activity['endpoint']) ? $activity['endpoint'] : '',
     'post_data' => isset($activity['post_data']) ? $activity['post_data'] : '',
+    'api_module' => isset($activity['api_module']) ? $activity['api_module'] : null,
     'user_agent' => get_user_agent(),
     'sender' => isset($activity['sender']) ? $activity['sender'] : '',
     'receiver' => isset($activity['receiver']) ? $activity['receiver'] : '',
@@ -181,7 +182,7 @@ function insert_api_log($activity, $status, $message, $data)
     'status' => (string)$status,
     'message' => $message,
     'response_data' => json_encode($data),
-
+    'created_at' => waktu()
   ];
   $CI->db->insert('ms_api_access_log', $insert);
 }
@@ -257,5 +258,18 @@ function send_api_post($data, $sender, $receiver, $api_code)
     "CRM-API-Key:$api_key->api_key",
     "CRM-API-Token:$hash",
   ];
-  return json_decode(curlPost($url, $data, 'json_post', $header), true);
+  $result = json_decode(curlPost($url, $data, 'json_post', $header), true);
+  $api_module = '';
+  if ($api_code == 'api_3') {
+    $api_module = 'API 3';
+  }
+  $validasi['activity']['method']     = 'POST';
+  $validasi['activity']['sender']     = $sender;
+  $validasi['activity']['receiver']   = $receiver;
+  $validasi['activity']['api_key']    = $api_key->api_key;
+  $validasi['activity']['api_module'] = $api_module;
+  $validasi['activity']['post_data']  = json_encode($data);
+  $msg = isset($result['message']) ? json_encode($result['message']) : null;
+  insert_api_log($validasi['activity'], $result['status'], $msg, null);
+  return $result;
 }

@@ -225,6 +225,7 @@ class Upload_leads_model extends CI_Model
     $validasi['activity']['sender']   = 'MDMS';
     $validasi['activity']['receiver'] = 'VS';
     $validasi['activity']['api_key']  = $api_key->api_key;
+    $validasi['activity']['api_module']  = 'API 1';
     insert_api_log($validasi['activity'], $result['status'], $result['message'], $result['data']);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();

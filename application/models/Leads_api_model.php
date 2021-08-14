@@ -70,6 +70,7 @@ class Leads_api_model extends CI_Model
           $errMessages .= $errMsg . '. ';
         }
       }
+      $email = $email == '' ? null : $email;
 
       //Cek Nama
       if (strlen($pst['nama']) > 100) {

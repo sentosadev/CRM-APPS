@@ -61,6 +61,7 @@ class Lead extends CI_Controller
     $validasi['activity']['method'] = 'POST';
     $validasi['activity']['sender'] = 'VE';
     $validasi['activity']['receiver'] = 'MDMS';
+    $validasi['activity']['api_module'] = 'API 2';
     insert_api_log($validasi['activity'], $status, $message, $data);
     send_json($result);
   }

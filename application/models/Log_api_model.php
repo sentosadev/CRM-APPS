@@ -49,9 +49,9 @@ class Log_api_model extends CI_Model
       }
     }
 
-    $order_data = '';
+    $order_data = 'ORDER BY created_at DESC';
     if (isset($filter['order'])) {
-      $order_column = [null, 'leads_id', 'event_code_invitation', 'deskripsi_event', 'ma.kode_md', 'ma.nama', 'ma.no_hp', 'ma.no_telp', 'ma.email', 'kabupaten_kota', 'source_leads', 'platform_data', 'ma.acceptedVe'];
+      $order_column = [null, 'api_module', 'sender', 'receiver', 'method', 'response_code', 'request_data', 'response_data', 'status', 'message', 'created_at'];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
