@@ -6,7 +6,7 @@
       <label class="col-sm-2 control-label">Platform Data</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_platform_data" class='form-control' name='platformData' <?= $disabled ?>>
+          <select style='width:100%' id="id_platform_data" class='form-control' name='platformData' <?= $disabled ?> <?= $row->platform_for != 'MD' ? 'disabled' : '' ?>>
             <option value='<?= $row->platformData ?>'><?= $row->deskripsiPlatformData ?></option>
           </select>
         </div>
@@ -16,7 +16,7 @@
       <label class="col-sm-2 control-label">Source Data</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_source_leads" class='form-control' name='sourceData' <?= $disabled ?>>
+          <select style='width:100%' id="id_source_leads" class='form-control' name='sourceData' <?= $disabled ?> <?= $row->platform_for != 'MD' ? 'disabled' : '' ?>>
             <option value='<?= $row->sourceData ?>'><?= $row->deskripsiSourceData ?></option>
           </select>
         </div>
@@ -410,7 +410,7 @@
 </div>
 <?php
 
-$data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan', 'selectPlatformData', 'selectSourceLeads', 'selectPengeluaran'];
+$data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan', 'selectPlatformData', 'selectSourceLeads', 'filterSourceLeadsByPlatformData', 'selectPengeluaran'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
 
 $data['data'] = ['selectProvinsiFromOtherDb', 'selectKabupatenKotaFromOtherDb', 'selectKecamatanFromOtherDb', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];

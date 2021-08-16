@@ -32,6 +32,11 @@ class Source_leads_model extends CI_Model
           $where .= " AND mu.need_fu_md='{$filter['need_fu_md']}'";
         }
       }
+      if (isset($filter['id_platform_data'])) {
+        if ($filter['id_platform_data'] != '') {
+          $where .= " AND id_source_leads IN(SELECT id_source_leads from ms_source_leads_vs_platform_data WHERE id_platform_data='{$filter['id_platform_data']}')";
+        }
+      }
 
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {

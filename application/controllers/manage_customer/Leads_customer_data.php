@@ -535,6 +535,12 @@ class Leads_customer_data extends Crm_Controller
     //Sinkron Tabel pengeluaran
     $arr_id_pengeluaran = [$this->input->post('pengeluaran', true)];
 
+    //Cek Platform Data
+    if ($gr->platform_for != 'MD') {
+      unset($update['platformData']);
+      unset($update['sourceData']);
+    }
+
     $tes = [
       'update' => $update
     ];

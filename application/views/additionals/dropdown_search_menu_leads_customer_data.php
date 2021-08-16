@@ -97,6 +97,9 @@ if (in_array('selectSourceLeads', $data)) { ?>
           data: function(params) {
             return {
               searchTerm: params.term, // search term
+              <?php if (in_array('filterSourceLeadsByPlatformData', $data)) { ?>
+                id_platform_data: $('#id_platform_data').val()
+              <?php } ?>
             };
           },
           processResults: function(response) {

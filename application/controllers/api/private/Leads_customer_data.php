@@ -64,6 +64,9 @@ class Leads_customer_data extends CI_Controller
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
+    if (isset($_POST['id_platform_data'])) {
+      $filter['id_platform_data'] = $this->input->post('id_platform_data');
+    }
     $response = $this->lm->getSourceLeads($filter)->result();
     send_json($response);
   }
