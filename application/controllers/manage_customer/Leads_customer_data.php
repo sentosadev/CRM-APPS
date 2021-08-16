@@ -587,7 +587,7 @@ class Leads_customer_data extends Crm_Controller
     if ($list_folup != NULL) {
       $count_list_folup = count($list_folup);
       foreach ($list_folup as $i) {
-        if ($i < $count_list_folup) {
+        if ($i < $count_list_folup || $this->input->post('id_status_fu_' . $i, true) == null) {
           continue;
         }
         $fg['followUpKe'] = $i;
@@ -821,7 +821,6 @@ class Leads_customer_data extends Crm_Controller
       'history_stage_id' => isset($history_stage_id) ? $history_stage_id : NULL,
     ];
     // send_json($tes);
-
     $this->db->trans_begin();
 
     if (isset($ins_fol_up)) {
@@ -855,8 +854,24 @@ class Leads_customer_data extends Crm_Controller
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
       $this->db->trans_commit();
-
+      //Cek Apakah Gagal Dihubungi Sebanyak 3x
+      $ffol = [
+        'leads_id' => $gr->leads_id,
+        'select' => 'count',
+        'id_kategori_status_komunikasi_not' => 4
+      ];
+      $cek_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
       $pesan = '';
+      if ($cek_fol == 3) {
+        $flast = [
+          'leads_id' => $gr->leads_id,
+          'order' => "followUpID DESC"
+        ];
+        $last_fu = $this->ld_m->getLeadsFollowUp($flast)->row()->followUpID;
+        $upd_fu = ['kodeHasilStatusFollowUp' => 2];
+        $this->db->update('leads_follow_up', $upd_fu, ['followUpID' => $last_fu]);
+        $pesan = ". Leads ID Auto Not Prospect";
+      }
       $response = [
         'status' => 1,
         'pesan' => 'Berhasil menyimpan data ' . $pesan

@@ -865,6 +865,11 @@ class Leads_model extends CI_Model
           $where .= " AND IFNULL(lfu.assignedDealer,'')!=''";
         }
       }
+      if (isset($filter['id_kategori_status_komunikasi_not'])) {
+        if ($filter['id_kategori_status_komunikasi_not'] != '') {
+          $where .= " AND ksk.id_kategori_status_komunikasi!='{$this->db->escape_str($filter['id_kategori_status_komunikasi_not'])}'";
+        }
+      }
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
