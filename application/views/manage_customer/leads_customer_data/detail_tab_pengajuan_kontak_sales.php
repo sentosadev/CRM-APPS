@@ -6,13 +6,13 @@
       <label class="col-sm-2 control-label">Tanggal Pengajuan</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datetimepicker" name='tanggalPengajuan' required value='<?= $row->tanggalPengajuanEng ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datetimepicker" name='tanggalPengajuan' value='<?= $row->tanggalPengajuanEng ?>' <?= $disabled ?>>
         </div>
       </div>
       <label class="col-sm-2 control-label">Tanggal Kontak Sales</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <input type="text" class="form-control datetimepicker" name='tanggalKontakSales' required value='<?= $row->tanggalKontakSalesEng ?>' <?= $disabled ?>>
+          <input type="text" class="form-control datetimepicker" name='tanggalKontakSales' value='<?= $row->tanggalKontakSalesEng ?>' <?= $disabled ?>>
         </div>
       </div>
     </div>
@@ -20,7 +20,7 @@
       <label class="col-sm-2 control-label">Nama Pengajuan (Salesman)</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style="width:100%" id="id_karyawan_dealer" class='form-control' name='id_karyawan_dealer' <?= $disabled ?> required>
+          <select style="width:100%" id="id_karyawan_dealer" class='form-control' name='id_karyawan_dealer' <?= $disabled ?>>
             <option value='<?= $row->id_karyawan_dealer ?>'><?= $row->namaPengajuan ?></option>
           </select>
         </div>
@@ -32,7 +32,7 @@
           <label class="col-sm-4 control-label">No. HP Pengajuan</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <input type="text" class="form-control" name='noHpPengajuan' required value='<?= $row->noHpPengajuan ?>' <?= $disabled ?> onkeypress="only_number(event)">
+              <input type="text" class="form-control" name='noHpPengajuan' value='<?= $row->noHpPengajuan ?>' <?= $disabled ?> onkeypress="only_number(event)">
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@
           <label class="col-sm-4 control-label">Provinsi Pengajuan</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select id="idProvinsiPengajuan" class='form-control' name='idProvinsiPengajuan' style='width:100%' <?= $disabled ?>>
+              <select id="idProvinsiPengajuan" class='form-control' name='idProvinsiPengajuan' style='width:100%'>
                 <option value='<?= $row->idProvinsiPengajuan ?>'><?= $row->provinsiPengajuan ?></option>
               </select>
             </div>
@@ -50,7 +50,7 @@
           <label class="col-sm-4 control-label">Kota/Kabupaten Pengajuan</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select id="idKabupatenPengajuan" class='form-control' name='idKabupatenPengajuan' style='width:100%' <?= $disabled ?>>
+              <select id="idKabupatenPengajuan" class='form-control' name='idKabupatenPengajuan' style='width:100%'>
                 <option value='<?= $row->idKabupatenPengajuan ?>'><?= $row->kabupatenPengajuan ?></option>
               </select>
             </div>
@@ -80,10 +80,18 @@
           <label class="col-sm-4 control-label">Minat Riding Test</label>
           <div class="form-input">
             <div class="col-sm-1">
-              <input type="radio" name="minatRidingTest" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 1 ? 'checked' : '' ?> <?= $disabled ?>> Ya
+              <input type="radio" name="minatRidingTest" value="1" class="flat-red minatRidingTest" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 1 ? 'checked' : '' ?> <?= $disabled ?>> Ya
             </div>
             <div class="col-sm-1">
-              <input type="radio" name="minatRidingTest" value="0" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 0 ? 'checked' : '' ?> <?= $disabled ?>> Tidak
+              <input type="radio" name="minatRidingTest" value="0" class="flat-red minatRidingTest" style="position: absolute; opacity: 0;" <?= $row->minatRidingTest == 0 ? 'checked' : '' ?> <?= $disabled ?>> Tidak
+            </div>
+          </div>
+        </div>
+        <div class="form-group" id="input_jadwalRidingTest" style="display:none">
+          <label class="col-sm-4 control-label">Jadwal Riding Test</label>
+          <div class="form-input">
+            <div class="col-sm-8">
+              <input type="text" class="form-control datetimepicker" name='jadwalRidingTest' value='<?= $row->jadwalRidingTestEng ?>' <?= $disabled ?> onkeypress="only_number(event)">
             </div>
           </div>
         </div>
@@ -158,49 +166,106 @@ $this->load->view(get_controller() . '/modal_history_interaksi');
       changeTabs(tabs);
       return false;
     <?php } ?>
-    $.ajax({
-      beforeSend: function() {
-        $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
-        $(el).attr('disabled', true);
-      },
-      enctype: 'multipart/form-data',
-      url: '<?= site_url(get_controller() . '/saveEditPengajuanKontakSales') ?>',
-      type: "POST",
-      data: val_form_pengajuan_kontak_sales,
-      processData: false,
-      contentType: false,
-      // cache: false,
-      dataType: 'JSON',
-      success: function(response) {
-        if (response.status == 1) {
-          changeTabs(tabs);
+
+    $('#form_pengajuan_kontak_sales').validate({
+      highlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().addClass(errorClass);
         } else {
+          $(element).parents('.form-input').addClass('has-error');
+        }
+      },
+      unhighlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().removeClass(errorClass);
+        } else {
+          $(element).parents('.form-input').removeClass('has-error');
+        }
+      },
+      errorPlacement: function(error, element) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          element = $("#select2-" + elem.attr("id") + "-container").parent();
+          error.insertAfter(element);
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    })
+    if ($('#form_pengajuan_kontak_sales').valid()) // check if form is valid
+    {
+      $.ajax({
+        beforeSend: function() {
+          $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+          $(el).attr('disabled', true);
+        },
+        enctype: 'multipart/form-data',
+        url: '<?= site_url(get_controller() . '/saveEditPengajuanKontakSales') ?>',
+        type: "POST",
+        data: val_form_pengajuan_kontak_sales,
+        processData: false,
+        contentType: false,
+        // cache: false,
+        dataType: 'JSON',
+        success: function(response) {
+          if (response.status == 1) {
+            changeTabs(tabs);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: '<font color="white">Peringatan</font>',
+              html: '<font color="white">' + response.pesan + '</font>',
+              background: '#dd4b39',
+              confirmButtonColor: '#cc3422',
+              confirmButtonText: 'Tutup',
+              iconColor: 'white'
+            })
+          }
+          $(el).attr('disabled', false);
+          $(el).html(default_name_button);
+        },
+        error: function() {
           Swal.fire({
             icon: 'error',
             title: '<font color="white">Peringatan</font>',
-            html: '<font color="white">' + response.pesan + '</font>',
+            html: '<font color="white">Telah terjadi kesalahan !</font>',
             background: '#dd4b39',
             confirmButtonColor: '#cc3422',
             confirmButtonText: 'Tutup',
             iconColor: 'white'
           })
+          $(el).html(default_name_button);
+          $(el).attr('disabled', false);
         }
-        $(el).attr('disabled', false);
-        $(el).html(default_name_button);
-      },
-      error: function() {
-        Swal.fire({
-          icon: 'error',
-          title: '<font color="white">Peringatan</font>',
-          html: '<font color="white">Telah terjadi kesalahan !</font>',
-          background: '#dd4b39',
-          confirmButtonColor: '#cc3422',
-          confirmButtonText: 'Tutup',
-          iconColor: 'white'
-        })
-        $(el).html(default_name_button);
-        $(el).attr('disabled', false);
-      }
-    });
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: '<font color="white">Peringatan</font>',
+        html: '<font color="white">Silahkan lengkapi field yang wajib diisi</font>',
+        background: '#dd4b39',
+        confirmButtonColor: '#cc3422',
+        confirmButtonText: 'Tutup',
+        iconColor: 'white'
+      })
+    }
   }
+
+  function cekMinatRidingTest() {
+    $('#input_jadwalRidingTest').hide()
+    $("input[name = 'minatRidingTest']").each(function() {
+      if (this.checked == true && this.value == 1) {
+        $('#input_jadwalRidingTest').show()
+      }
+    })
+  }
+  $(document).ready(function() {
+    cekMinatRidingTest()
+  })
+
+  $('.minatRidingTest').on('ifChanged', function() {
+    cekMinatRidingTest()
+  })
 </script>

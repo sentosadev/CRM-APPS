@@ -18,23 +18,53 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
       <div class="row">
         <?php for ($x = 1; $x <= $max_pertab; $x++) {
           if (!isset($list_follow_up[$fol_up_sekarang])) continue;
+          $is_md = 0;
+          if (isset($list_follow_up[$fol_up_sekarang])) {
+            if ($list_follow_up[$fol_up_sekarang]['assignedDealer'] == '') {
+              $is_md = 1;
+            } else {
+              $is_md = 0;
+            }
+          }
+          $set_disabled = '';
+          if ($fol_up_sekarang < $total_fol_up) {
+            $set_disabled = 'disabled';
+          }
         ?>
           <div class="col-sm-6">
             <div class="form-group">
-              <label class="col-sm-4 control-label">PIC *</label>
-              <div class="form-input">
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" name='pic_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['pic'] : '' ?>' <?= $disabled ?>>
-
-                  <input type="hidden" class="form-control" name='folup[]' required value='<?= $fol_up_sekarang ?>'>
+              <?php if ($is_md == 1) { ?>
+                <label class="col-sm-4 control-label">PIC MD *</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <select style='width:100%' id='pic_<?= $fol_up_sekarang ?>' class='form-control' name='pic_<?= $fol_up_sekarang ?>' <?= $disabled ?> required <?= $set_disabled ?>>
+                      <option></option>
+                      <?php
+                      $list[1] = 'PIC VE MD';
+                      $list[2] = 'Telemarketer HC3';
+                      foreach ($list as $key => $val) {
+                        $pic = isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['pic'] : '';
+                      ?>
+                        <option value='<?= $key ?>' <?= $key == $pic ? 'selected' : '' ?>><?= $val ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
                 </div>
-              </div>
+              <?php } else { ?>
+                <label class="col-sm-4 control-label">PIC Dealer *</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name='pic_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['pic'] : '' ?>' <?= $disabled ?> <?= $set_disabled ?>>
+                  </div>
+                </div>
+              <?php } ?>
+              <input type="hidden" class="form-control" name='folup[]' required value='<?= $fol_up_sekarang ?>'>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datetimepicker" name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control datetimepicker" id='tglFollowUp_<?= $fol_up_sekarang ?>' name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] == '' ? dMYHIS_en() : $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : dMYHIS_en() ?>' <?= $disabled ?> required <?= $set_disabled == 'disabled' ? 'readonly' : '' ?>>
                 </div>
               </div>
             </div>
@@ -42,15 +72,15 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Keterangan Follow Up <?= $fol_up_sekarang ?></label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name='keteranganFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" name='keteranganFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganFollowUp'] : '' ?>' <?= $disabled ?> <?= $set_disabled ?>>
                 </div>
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Media Komunikasi Fol. Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Media Komunikasi Fol. Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_media_kontak_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_media_kontak_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="id_media_kontak_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_media_kontak_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?> required <?= $set_disabled ?>>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['id_media_kontak_fu'] ?>'><?= $lfu['media_kontak_fu'] ?></option>
@@ -60,10 +90,58 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label">Tgl. Next Follow Up</label>
+              <label class="col-sm-4 control-label">Tgl. Next Follow Up <span id="tglNextFollowUpLabel_<?= $fol_up_sekarang ?>"></span></label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datepicker" name='tglNextFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control datepicker" id='tglNextFollowUp_<?= $fol_up_sekarang ?>' name='tglNextFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglNextFollowUp'] : '' ?>' <?= $disabled ?> <?= $set_disabled ?>>
+                </div>
+              </div>
+            </div>
+            <script>
+              var statusProspek = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['statusProspek'] : '' ?>';
+              $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').on('apply.daterangepicker', function(ev, picker) {
+                let tgl_folup = $('#tglFollowUp_<?= $fol_up_sekarang ?>').val();
+                let new_dt = new Date(tgl_folup);
+                var date = new_dt.getDate();
+                var month = new_dt.getMonth(); //Be careful! January is 0 not 1
+                var year = new_dt.getFullYear();
+                tgl_folup = (month + 1) + "-" + date + "-" + year;
+
+                let tgl_next = picker.startDate.format('YYYY-MM-DD');
+                let next = new Date(tgl_next);
+                var date = next.getDate();
+                var month = next.getMonth(); //Be careful! January is 0 not 1
+                var year = next.getFullYear();
+                tgl_next = (month + 1) + "-" + date + "-" + year;
+                selisih = hitungSelisihHari(tgl_folup, tgl_next);
+                if (selisih < 14) {
+                  statusProspek = 'Hot';
+                } else if (selisih >= 14 && selisih <= 28) {
+                  statusProspek = 'Medium';
+                } else if (selisih > 28) {
+                  statusProspek = 'Low';
+                }
+                $('#statusProspek_<?= $fol_up_sekarang ?>').val(statusProspek);
+              });
+
+              function hitungSelisihHari(tgl1, tgl2) {
+                // varibel miliday sebagai pembagi untuk menghasilkan hari
+                var miliday = 24 * 60 * 60 * 1000;
+                //buat object Date
+                var tanggal1 = new Date(tgl1);
+                var tanggal2 = new Date(tgl2);
+                // Date.parse akan menghasilkan nilai bernilai integer dalam bentuk milisecond
+                var tglPertama = Date.parse(tanggal1);
+                var tglKedua = Date.parse(tanggal2);
+                var selisih = (tglKedua - tglPertama) / miliday;
+                return selisih;
+              }
+            </script>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Status Prospek <span id="inputStatusProspek_<?= $fol_up_sekarang ?>"></span></label>
+              <div class="form-input">
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id='statusProspek_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['statusProspek'] : '' ?>' readonly>
                 </div>
               </div>
             </div>
@@ -71,16 +149,16 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Keterangan Next Action Follow Up</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name='keteranganNextFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganNextFollowUp'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" name='keteranganNextFollowUp_<?= $fol_up_sekarang ?>' value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganNextFollowUp'] : '' ?>' <?= $disabled ?> <?= $set_disabled ?>>
                 </div>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label">Status Komunikasi Fol. Up <?= $fol_up_sekarang ?></label>
+              <label class="col-sm-4 control-label">Status Komunikasi Fol. Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="id_status_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_status_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="id_status_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_status_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?> required <?= $set_disabled ?>>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['id_status_fu'] ?>'><?= $lfu['status_fu'] ?></option>
@@ -90,11 +168,31 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <script>
-              var $eventSelect<?= $fol_up_sekarang ?> = $("#id_status_fu_<?= $fol_up_sekarang ?>");
+              $(document).ready(function() {
+                $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').hide();
+                $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').hide();
+                $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').hide();
 
+                //Cek ID kategori Status Komunikasi
+                id_kategori_status_komunikasi = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['id_kategori_status_komunikasi'] : '' ?>';
+                if (id_kategori_status_komunikasi == 4) {
+                  $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').show();
+                }
+              })
+              var $eventSelect<?= $fol_up_sekarang ?> = $("#id_status_fu_<?= $fol_up_sekarang ?>");
               $eventSelect<?= $fol_up_sekarang ?>.on("change", function(e) {
                 data = $eventSelect<?= $fol_up_sekarang ?>.select2('data')[0];
-                $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val(data.kategori);
+                if (data != undefined) {
+                  $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val(data.kategori);
+                  if (data.idKategori == 4) {
+                    $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').show();
+                  } else {
+                    $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').hide();
+                    $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                  }
+                } else {
+                  $('#kategori_status_komunikasi_<?= $fol_up_sekarang ?>').val('');
+                }
               });
             </script>
 
@@ -108,11 +206,11 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Hasil Status Follow Up</label>
+            <div class="form-group" id="input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>">
+              <label class="col-sm-4 control-label">Hasil Status Follow Up *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>" class='form-control' name='kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>" class='form-control' name='kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>' <?= $disabled ?> required>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['kodeHasilStatusFollowUp'] ?>'><?= $lfu['deskripsiHasilStatusFollowUp'] ?></option>
@@ -121,12 +219,45 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 </div>
               </div>
             </div>
+            <script>
+              $(document).ready(function() {
+                //Cek kodeHasilStatusFollowUp
+                kodeHasilStatusFollowUp = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['kodeHasilStatusFollowUp'] : '' ?>';
+                if (kodeHasilStatusFollowUp == 4 || kodeHasilStatusFollowUp == 2) {
+                  $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
+                  $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').removeAttr('required');
+                  $('#tglNextFollowUpLabel_<?= $fol_up_sekarang ?>').html('');
+                } else {
+                  if (kodeHasilStatusFollowUp == 1) {
+                    $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').attr('required', 'required');
+                    $('#tglNextFollowUpLabel_<?= $fol_up_sekarang ?>').html('*');
+                  }
+                }
+              })
+
+              $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").on("change", function(e) {
+                data = $("#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>").select2('data')[0];
+                $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').removeAttr('required');
+                if (data != undefined) {
+                  if (data.id == 2 || data.id == 4) {
+                    $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').show();
+                  } else {
+                    if (data.id == 1) {
+                      $('#tglNextFollowUp_<?= $fol_up_sekarang ?>').attr('required', 'required');
+                      $('#tglNextFollowUpLabel_<?= $fol_up_sekarang ?>').html('*');
+                    }
+                    $('#input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').hide();
+                    $('#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>').val(null).trigger('change');
+                  }
+                }
+              });
+            </script>
 
             <div class="form-group" id="input_kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>">
-              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Prospect/Not Deal</label>
+              <label class="col-sm-4 control-label">Alasan Follow Up <?= $fol_up_sekarang ?> Not Prospect/Not Deal *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <select style="width:100%" id="kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>" class='form-control' name='kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>' <?= $disabled ?>>
+                  <select style="width:100%" id="kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>" class='form-control' name='kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>' <?= $disabled ?> required>
                     <?php if (isset($list_follow_up[$fol_up_sekarang])) {
                       $lfu = $list_follow_up[$fol_up_sekarang]; ?>
                       <option value='<?= $lfu['kodeAlasanNotProspectNotDeal'] ?>'><?= $lfu['alasanNotProspectNotDeal'] ?></option>
@@ -136,19 +267,34 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <script>
-              // $(document).ready(function() {
-              //   var selected_hasil<?= $fol_up_sekarang ?> = $('#kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').select2().val();
-              //   if (selected_hasil<?= $fol_up_sekarang ?> == 2 || selected_hasil<?= $fol_up_sekarang ?> == 4) {
-              //     $("#")
-              //   }
-              // });
-            </script>
+              $(document).ready(function() {
+                //Cek kodeAlasanNotProspectNotDeal
+                kodeAlasanNotProspectNotDeal = '<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['kodeAlasanNotProspectNotDeal'] : '' ?>';
+                if (kodeAlasanNotProspectNotDeal == 5) {
+                  $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').show();
+                }
+              })
 
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Keterangan Alasan Lainnya</label>
+              $("#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>").on("change", function(e) {
+                data = $("#kodeAlasanNotProspectNotDeal_<?= $fol_up_sekarang ?>").select2('data')[0];
+                if (data == undefined) {
+                  $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').hide();
+                  $('#keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').val('');
+                } else {
+                  if (data.id == 5) {
+                    $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').show();
+                  } else {
+                    $('#input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').hide();
+                    $('#keteranganAlasanLainnya_<?= $fol_up_sekarang ?>').val('');
+                  }
+                }
+              });
+            </script>
+            <div class="form-group" id="input_keteranganAlasanLainnya_<?= $fol_up_sekarang ?>">
+              <label class="col-sm-4 control-label">Keterangan Alasan Lainnya *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganAlasanLainnya'] : '' ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" id='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' name='keteranganAlasanLainnya_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['keteranganAlasanLainnya'] : '' ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>
@@ -168,7 +314,6 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             <?php if ($disabled == '') { ?>
               <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
               <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
-              <button onclick="saveCheckDataAndSendAPI3(this,<?= $i ?>)" type="button" class="btn bg-green btn-flat"><i class='fa fa-save'></i> Simpan Data</button>
             <?php } ?>
           <?php } ?>
         </div>
@@ -177,8 +322,6 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
             *) Tombol <button type="button" class="btn btn-info btn-flat btn-xs">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button> digunakan untuk menambah form follow up baru.
             <br>
             *) Tombol <button type="button" class="btn bg-blue btn-flat btn-xs">Simpan Data</button> digunakan untuk menyimpan data follow up.
-            <br>
-            *) Jika tombol <button type="button" class="btn bg-green btn-flat btn-xs"><i class='fa fa-save'></i> Simpan Data</button> diklik, maka sistem akan menyimpan data follow up dan mengirimkan data ke sistem SEEDS.
           </div>
         <?php } ?>
       </div>
@@ -193,7 +336,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
   function saveDataFollowUp(el, tabs, position, fu) {
     if (position == 'back') {
       var default_name_button = '<i class = "fa fa-backward"></i> Halaman Sebelumnya';
-    } else if (position == 'back') {
+    } else if (position == 'next') {
       var default_name_button = '<i class = "fa fa-forward"></i> Halaman Berikutnya';
     } else {
       var default_name_button = 'Simpan Follow Up';
@@ -201,55 +344,104 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     }
     var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
     val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
+    val_form_follow_up.append('statusProspek', statusProspek);
 
     <?php if ($disabled == 'disabled') { ?>
       changeTabs(tabs);
       return false;
     <?php } ?>
-    $.ajax({
-      beforeSend: function() {
-        $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
-        $(el).attr('disabled', true);
-      },
-      enctype: 'multipart/form-data',
-      url: '<?= site_url(get_controller() . '/saveEditFollowUp') ?>',
-      type: "POST",
-      data: val_form_follow_up,
-      processData: false,
-      contentType: false,
-      // cache: false,
-      dataType: 'JSON',
-      success: function(response) {
-        if (response.status == 1) {
-          changeTabs(tabs);
+    $('#form_data_follow_up_' + fu).validate({
+      highlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().addClass(errorClass);
         } else {
+          $(element).parents('.form-input').addClass('has-error');
+        }
+      },
+      unhighlight: function(element, errorClass, validClass) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          $("#select2-" + elem.attr("id") + "-container").parent().removeClass(errorClass);
+        } else {
+          $(element).parents('.form-input').removeClass('has-error');
+        }
+      },
+      errorPlacement: function(error, element) {
+        var elem = $(element);
+        if (elem.hasClass("select2-hidden-accessible")) {
+          element = $("#select2-" + elem.attr("id") + "-container").parent();
+          error.insertAfter(element);
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    })
+    if ($('#form_data_follow_up_' + fu).valid()) // check if form is valid
+    {
+      $.ajax({
+        beforeSend: function() {
+          $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
+          $(el).attr('disabled', true);
+        },
+        enctype: 'multipart/form-data',
+        url: '<?= site_url(get_controller() . '/saveEditFollowUp') ?>',
+        type: "POST",
+        data: val_form_follow_up,
+        processData: false,
+        contentType: false,
+        // cache: false,
+        dataType: 'JSON',
+        success: function(response) {
+          if (response.status == 1) {
+            changeTabs(tabs);
+            if (position == 1) {
+              Swal.fire({
+                icon: 'success',
+                title: '<font>Informasi</font>',
+                html: '<font>' + response.pesan + '</font>',
+                confirmButtonText: 'Tutup',
+              })
+            }
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: '<font color="white">Peringatan</font>',
+              html: '<font color="white">' + response.pesan + '</font>',
+              background: '#dd4b39',
+              confirmButtonColor: '#cc3422',
+              confirmButtonText: 'Tutup',
+              iconColor: 'white'
+            })
+          }
+          $(el).attr('disabled', false);
+          $(el).html(default_name_button);
+        },
+        error: function() {
           Swal.fire({
             icon: 'error',
             title: '<font color="white">Peringatan</font>',
-            html: '<font color="white">' + response.pesan + '</font>',
+            html: '<font color="white">Telah terjadi kesalahan !</font>',
             background: '#dd4b39',
             confirmButtonColor: '#cc3422',
             confirmButtonText: 'Tutup',
             iconColor: 'white'
           })
+          $(el).html(default_name_button);
+          $(el).attr('disabled', false);
         }
-        $(el).attr('disabled', false);
-        $(el).html(default_name_button);
-      },
-      error: function() {
-        Swal.fire({
-          icon: 'error',
-          title: '<font color="white">Peringatan</font>',
-          html: '<font color="white">Telah terjadi kesalahan !</font>',
-          background: '#dd4b39',
-          confirmButtonColor: '#cc3422',
-          confirmButtonText: 'Tutup',
-          iconColor: 'white'
-        })
-        $(el).html(default_name_button);
-        $(el).attr('disabled', false);
-      }
-    });
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: '<font color="white">Peringatan</font>',
+        html: '<font color="white">Silahkan lengkapi field yang wajib diisi</font>',
+        background: '#dd4b39',
+        confirmButtonColor: '#cc3422',
+        confirmButtonText: 'Tutup',
+        iconColor: 'white'
+      })
+    }
   }
 
   function tambahDataFollowUp(el, fu, tabs_no) {
@@ -364,6 +556,8 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     var val_form_follow_up = new FormData($('#form_data_follow_up_' + fu)[0]);
     val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
     val_form_follow_up.append('is_simpan', true);
+    val_form_follow_up.append('statusProspek', statusProspek);
+
 
     $.ajax({
       beforeSend: function() {
