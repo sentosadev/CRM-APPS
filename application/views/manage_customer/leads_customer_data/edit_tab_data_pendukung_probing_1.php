@@ -291,18 +291,6 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Status Prospek *</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="statusProspek" class='form-control' name='statusProspek' <?= $disabled ?> required>
-            <option></option>
-            <?php $list = ['Low', 'Medium', 'Hot'];
-            foreach ($list as $val) { ?>
-              <option value='<?= $val ?>' <?= $val == $row->statusProspek ? 'selected' : '' ?>><?= $val ?></option>
-            <?php } ?>
-          </select>
-        </div>
-      </div>
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">Longitude</label>

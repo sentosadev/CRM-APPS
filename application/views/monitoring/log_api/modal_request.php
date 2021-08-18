@@ -33,7 +33,7 @@
       dataType: 'JSON',
       success: function(response) {
         if (response.status == 1) {
-          data = response.data.response_data;
+          data = response.data.post_data;
           if (data != null) {
             var jsonPretty = JSON.stringify(JSON.parse(data), undefined, 2);
             $('#contentRequestData').html(syntaxHighlight(jsonPretty));

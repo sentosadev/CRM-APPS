@@ -487,7 +487,6 @@ class Leads_customer_data extends Crm_Controller
       'idMerkMotorYangDimilikiSekarang' => $idMerkMotorYangDimilikiSekarang,
       'merkMotorYangDimilikiSekarang' => $mmds == NULL ? NULL : $mmds->merk_sebelumnya,
       'yangMenggunakanSepedaMotor' => $this->input->post('yangMenggunakanSepedaMotor', true),
-      'statusProspek' => $this->input->post('statusProspek', true),
       'longitude' => (float)$this->input->post('longitude', true),
       'latitude' => (float)$this->input->post('latitude', true),
       'noKK' => $this->input->post('noKK', true),
@@ -838,6 +837,10 @@ class Leads_customer_data extends Crm_Controller
         unset($upd['leads_id']);
         unset($upd['assignedDealer']);
         $this->db->update('leads_follow_up', $upd, $cond);
+        if (isset($upd['statusProspek'])) {
+          $upd_leads_status_prospek = ['statusProspek' => $upd['statusProspek']];
+          $this->db->update('leads', $upd_leads_status_prospek, ['leads_id' => $leads_id]);
+        }
       }
     }
 
