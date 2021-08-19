@@ -1363,6 +1363,16 @@ class Leads_model extends CI_Model
       }
     }
 
+    if (isset($filter['show_hasil_fu_not_prospect'])) {
+      $fs = $filter['show_hasil_fu_not_prospect'];
+      $where .= " AND 
+                      CASE WHEN $fs=0 THEN
+                        CASE WHEN IFNULL(($last_kodeHasilStatusFollowUp),0)=2 THEN 0 ELSE 1 END 
+                      ELSE 1
+                      END = 1  
+                      ";
+    }
+
     $group_by = '';
     if (isset($filter['group_by'])) {
       $group_by = "GROUP BY " . $filter['group_by'];
@@ -1576,11 +1586,16 @@ class Leads_model extends CI_Model
     if ($leads_id != null) {
       $where = " AND ld.leads_id='$leads_id'";
     }
-    return $this->db->query("SELECT leads_id 
+    return $this->db->query("SELECT leads_id,ld.nama,kab.kabupaten_kota,segmentMotor,seriesMotor,kodeDealerPembelianSebelumnya,CONCAT(tp.deskripsi_tipe,'-',twu.deskripsi_warna) tipeWarnaMotor
             FROM leads ld
-            WHERE sourceData NOT IN(28,29)
-            AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
+            LEFT JOIN ms_maintain_kabupaten_kota kab ON kab.id_kabupaten_kota=ld.kabupaten
+            LEFT JOIN ms_maintain_tipe tp ON tp.kode_tipe=ld.kodeTypeUnit
+            LEFT JOIN ms_maintain_warna twu ON twu.kode_warna=ld.kodeWarnaUnit
+            
+            Where 1=1
             $where
           ");
+    // --WHERE sourceData NOT IN(28,29)
+    // --AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
   }
 }

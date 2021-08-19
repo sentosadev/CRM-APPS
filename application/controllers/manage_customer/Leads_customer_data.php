@@ -38,6 +38,7 @@ class Leads_customer_data extends Crm_Controller
     $need_fu = [
       'kodeHasilStatusFollowUpNotIn' => "3, 4",
       'not_contacted' => true,
+      'show_hasil_fu_not_prospect' => 0
     ];
 
     $multi_interaksi = [
@@ -1518,7 +1519,8 @@ class Leads_customer_data extends Crm_Controller
   function getLeadsByLeadsId()
   {
     $leads_id = $this->input->post('leads_id');
-    $data = $this->ld_m->getLeads($leads_id)->row();
+    $fleads = ['leads_id' => $leads_id];
+    $data = $this->ld_m->getLeads($fleads)->row();
     if ($data == NULL) {
       $response = ['status' => 0, 'pesan' => 'Data tidak ditemukan'];
     } else {
@@ -1552,10 +1554,21 @@ class Leads_customer_data extends Crm_Controller
 
   public function download_leads_non_ve()
   {
-    $header = ['Leads ID', 'Kode Dealer'];
+    $header = ['Leads ID', 'Nama', 'Kota/Kabupaten', 'Segment Unit', 'Series Unit', 'Tipe Motor dan Warna Motor yang Diminati', 'Kode Dealer Sebelumnya', 'Assigned Dealer ID', 'Kode Alasan PindahDealer', 'Keterangan Lainnya Tidak Ke Dealer Sebelumnya'];
     $leads = $this->ld_m->getLeadsNonVEBelumAssignedDealer();
     foreach ($leads->result() as $rs) {
-      $data[] = [$rs->leads_id];
+      $data[] = [
+        $rs->leads_id,
+        $rs->nama,
+        $rs->kabupaten_kota,
+        $rs->segmentMotor,
+        $rs->seriesMotor,
+        $rs->tipeWarnaMotor,
+        $rs->kodeDealerPembelianSebelumnya,
+        '',
+        '',
+        '',
+      ];
     }
 
     if (isset($data)) {
@@ -1610,21 +1623,39 @@ class Leads_customer_data extends Crm_Controller
         foreach ($sheet->getRowIterator() as $row) {
           if ($numRow > 0) {
             if ($row[0] == '') break;
+            // send_json(($row));
             //Cek Leads
             $leads = $this->ld_m->getLeadsNonVEBelumAssignedDealer($row[0])->row();
             if ($leads == null) {
               $error[] = 'Leads ID : ' . $row[0] . ' tidak ditemukan';
             } else {
-              //Cek Dealer
-              if (isset($row[1])) {
-                $fdl = ['kode_dealer' => $row[1]];
+              //Cek Assigned Dealer
+              if (isset($row[7])) {
+                $fdl = ['kode_dealer' => $row[7]];
                 $dl = $this->dealer_m->getDealer($fdl)->row();
                 if ($dl == null) {
-                  $error[] = 'Kode Dealer' . $row[1] . ' tidak ditemukan';
+                  $error[] = 'Kode Dealer' . $row[7] . ' tidak ditemukan';
                 } else {
+                  // Cek Dealer Sebelumnya
+                  $id_alasan = null;
+                  $lainnya = null;
+                  if ($row[6] != '') {
+                    //Set Sebagai Pindah Dealer
+                    if ($row[6] != $row[7]) {
+                      $validasi = validasiAlasanPindahDealer($row[8], $row[9]);
+                      if ($validasi) {
+                        $error[] = $validasi;
+                      } else {
+                        $id_alasan = $row[9];
+                        $lainnya = $row[9];
+                      }
+                    }
+                  }
                   $data = [
                     'leads_id' => $row[0],
                     'kode_dealer' => $row[1],
+                    'id_alasan' => $id_alasan,
+                    'lainnya' => $lainnya,
                   ];
                   array_push($save, $data);
                 }
@@ -1638,6 +1669,7 @@ class Leads_customer_data extends Crm_Controller
       }
     }
     $reader->close();
+    // send_json($error);
     if (count($error) == 0) {
       $response_sukses = [];
       $response_error = [];
@@ -1659,13 +1691,15 @@ class Leads_customer_data extends Crm_Controller
         // Insert History Assigned Dealer
         $f_asg = ['leads_id' => $leads_id];
         $insert_history_assigned = [
-          'leads_id'             => $leads_id,
-          'assignedKe'           => $this->ld_m->getLeadsHistoryAssignedDealer($f_asg)->num_rows() + 1,
-          'assignedDealer'       => $assignDealer,
-          'tanggalAssignDealer'  => waktu(),
-          'assignedDealerBy'     => $user->id_user,
-          'created_at'           => waktu(),
-          'created_by'           => $user->id_user,
+          'leads_id'                    => $leads_id,
+          'assignedKe'                  => $this->ld_m->getLeadsHistoryAssignedDealer($f_asg)->num_rows() + 1,
+          'assignedDealer'              => $assignDealer,
+          'tanggalAssignDealer'         => waktu(),
+          'assignedDealerBy'            => $user->id_user,
+          'created_at'                  => waktu(),
+          'created_by'                  => $user->id_user,
+          'alasanReAssignDealer'        => $dt['id_alasan'],
+          'alasanReAssignDealerLainnya' => $dt['lainnya'],
         ];
 
         $ins_history_stage = [

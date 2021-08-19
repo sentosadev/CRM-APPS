@@ -637,3 +637,26 @@ function setStatusProspek($start, $end)
   }
   return $status;
 }
+
+
+function validasiAlasanPindahDealer($id_alasan, $lainnya)
+{
+  $CI = &get_instance();
+  $CI->load->model('alasan_reassign_pindah_dealer_model', 'als_m');
+  if ((string)$id_alasan == '') {
+    $error = 'Alasan Pindah Dealer Kosong';
+  } else {
+    $fals = ['id_alasan' => $id_alasan];
+    $cek_alasan_dealer = $CI->als_m->getAlasanReassign($fals)->row();
+    if ($cek_alasan_dealer == null) {
+      $error = 'Alasan Pindah Dealer Tidak Ditemukan';
+    } else {
+      if ($cek_alasan_dealer->id_alasan == 4 && (string)$lainnya == '') {
+        $error = 'Keterangan Lainnya Tidak Ke Dealer Sebelumnya Kosong';
+      }
+    }
+  }
+  if (isset($error)) {
+    return $error;
+  }
+}
