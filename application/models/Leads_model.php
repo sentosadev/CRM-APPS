@@ -1591,11 +1591,9 @@ class Leads_model extends CI_Model
             LEFT JOIN ms_maintain_kabupaten_kota kab ON kab.id_kabupaten_kota=ld.kabupaten
             LEFT JOIN ms_maintain_tipe tp ON tp.kode_tipe=ld.kodeTypeUnit
             LEFT JOIN ms_maintain_warna twu ON twu.kode_warna=ld.kodeWarnaUnit
-            
-            Where 1=1
+            WHERE sourceData NOT IN(28,29)
+            AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
             $where
           ");
-    // --WHERE sourceData NOT IN(28,29)
-    // --AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
   }
 }

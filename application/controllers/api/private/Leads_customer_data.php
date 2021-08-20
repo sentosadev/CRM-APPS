@@ -47,13 +47,16 @@ class Leads_customer_data extends CI_Controller
   }
   function selectPlatformData()
   {
-    $this->load->model('platform_data_model', 'lm');
+    $this->load->model('platform_data_model', 'platform');
     $search = null;
     if (isset($_POST['searchTerm'])) {
       $search = $_POST['searchTerm'];
     }
     $filter = ['search' => $search, 'select' => 'dropdown', 'aktif' => 1];
-    $response = $this->lm->getPlatformData($filter)->result();
+    if (isset($_POST['id_platform_data_in'])) {
+      $filter['id_platform_data_in'] = ['M1', 'M2', 'M3', 'M4'];
+    }
+    $response = $this->platform->getPlatformData($filter)->result();
     send_json($response);
   }
   function selectSourceLeads()

@@ -22,6 +22,12 @@ class Platform_data_model extends CI_Model
           $where .= " AND mu.id_platform_data='{$filter['id_platform_data']}'";
         }
       }
+      if (isset($filter['id_platform_data_in'])) {
+        if ($filter['id_platform_data_in'] != '') {
+          $in = arr_sql($filter['id_platform_data_in']);
+          $where .= " AND mu.id_platform_data IN ($in)";
+        }
+      }
 
       if (isset($filter['aktif'])) {
         if ($filter['aktif'] != '') {

@@ -398,7 +398,7 @@
 </div>
 <?php
 
-$data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan', 'selectPlatformData', 'selectSourceLeads', 'filterSourceLeadsByPlatformData', 'selectPengeluaran'];
+$data['data'] = ['selectPekerjaan', 'selectPendidikan', 'selectAgama', 'selectDealerPembelianSebelumnya', 'selectLeasingPembelianSebelumnya', 'selectJenisMotorYangDimilikiSekarang', 'selectMerkMotorYangDimilikiSekarang', 'selectSumberProspek', 'selectSubPekerjaan', 'selectPlatformData', 'selectSourceLeads', 'filterSourceLeadsByPlatformData', 'selectPengeluaran', 'filterPlatformDataIn'];
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data);
 
 $data['data'] = ['selectProvinsiFromOtherDb', 'selectKabupatenKotaFromOtherDb', 'selectKecamatanFromOtherDb', 'selectKecamatan2', 'selectKelurahanFromOtherDb'];

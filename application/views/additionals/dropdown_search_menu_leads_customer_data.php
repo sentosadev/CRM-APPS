@@ -69,6 +69,9 @@ if (in_array('selectPlatformData', $data)) { ?>
           data: function(params) {
             return {
               searchTerm: params.term, // search term
+              <?php if (in_array('filterPlatformDataIn', $data)) { ?>
+                id_platform_data_in: true
+              <?php } ?>
             };
           },
           processResults: function(response) {

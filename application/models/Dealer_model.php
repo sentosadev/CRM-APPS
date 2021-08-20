@@ -146,7 +146,7 @@ class Dealer_model extends CI_Model
       if (isset($filter['territory_data_vs_leads'])) {
         if ($filter['territory_data_vs_leads'] == 'true') {
           $leads_id = $filter['leads_id'];
-          $where .= " AND kab_ter.id_kabupaten_kota IS NOT NULL AND (SELECT kabupaten FROM leads WHERE leads_id='$leads_id')=kab_ter.id_kabupaten_kota";
+          $where .= " AND kab_ter.id_kabupaten_kota IS NOT NULL AND (SELECT provinsi FROM leads WHERE leads_id='$leads_id')=kab_ter.id_provinsi";
         }
       }
 
