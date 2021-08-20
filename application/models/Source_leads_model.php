@@ -86,6 +86,7 @@ class Source_leads_model extends CI_Model
     $limit
     ");
   }
+
   function getSourceLeadsPlatformData($filter = null)
   {
     $where = 'WHERE 1=1';
@@ -101,5 +102,10 @@ class Source_leads_model extends CI_Model
     JOIN ms_platform_data pd ON pd.id_platform_data=slpd.id_platform_data
     $where
     ");
+  }
+
+  function cekSourceDataVSPlatformData($source, $platform)
+  {
+    return $this->db->query("SELECT id_platform_data, id_source_leads FROM ms_source_leads_vs_platform_data WHERE id_source_leads='$source' AND id_platform_data='$platform'")->num_rows();
   }
 }

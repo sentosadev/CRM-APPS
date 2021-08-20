@@ -20,6 +20,7 @@ class Leads_customer_data extends Crm_Controller
     $this->load->model('Dealer_model', 'dealer_m');
     $this->load->model('status_fu_model', 'sfu_m');
     $this->load->model('hasil_status_follow_up_model', 'hfu_m');
+    $this->load->model('source_leads_model', 'slm');
     $this->load->helper('sla');
   }
 
@@ -539,6 +540,13 @@ class Leads_customer_data extends Crm_Controller
     if ($gr->platform_for != 'MD') {
       unset($update['platformData']);
       unset($update['sourceData']);
+    } else {
+      //Cek Kombinasi Platform Data & Source Data
+      $cek = $this->slm->cekSourceDataVSPlatformData($update['sourceData'], $update['platformData']);
+      if ($cek == 0) {
+        $response = ['status' => 0, 'pesan' => 'Kombinasi Platform Data & Source Data Tidak Ditemukan'];
+        send_json($response);
+      }
     }
 
     $tes = [
