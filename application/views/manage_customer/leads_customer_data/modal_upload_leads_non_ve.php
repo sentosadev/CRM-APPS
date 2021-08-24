@@ -77,6 +77,7 @@
           var values = new FormData($('#form_upload_leads_non_ve')[0]);
           $.ajax({
             beforeSend: function() {
+              set_errors = [];
               $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
               $(el).attr('disabled', true);
             },
@@ -93,15 +94,38 @@
               if (response.status == 1) {
                 location.reload(true);
               } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: '<font color="white">Peringatan</font>',
-                  html: '<font color="white">' + response.pesan + '</font>',
-                  background: '#dd4b39',
-                  confirmButtonColor: '#cc3422',
-                  confirmButtonText: 'Tutup',
-                  iconColor: 'white'
-                })
+                if (response.errors === undefined) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: '<font color="white">Peringatan</font>',
+                    html: '<font color="white">' + response.pesan + '</font>',
+                    background: '#dd4b39',
+                    confirmButtonColor: '#cc3422',
+                    confirmButtonText: 'Tutup',
+                    iconColor: 'white'
+                  })
+                } else {
+                  for (x of response.errors) {
+                    set_errors.push(x);
+                  }
+                  setButtonDetailKesalahanTerakhir();
+                  Swal.fire({
+                    icon: 'error',
+                    title: '<font color="white">Peringatan</font>',
+                    html: '<font color="white">' + response.pesan + '</font>',
+                    background: '#dd4b39',
+                    cancelButtonColor: '#cc3422',
+                    cancelButtonText: 'Tutup',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2242ccde',
+                    confirmButtonText: 'Detail Kesalahan',
+                    iconColor: 'white'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      showModalErrorUploads()
+                    }
+                  })
+                }
                 $(el).attr('disabled', false);
               }
               $(el).html("<i class='fa fa-upload'></i> Upload");

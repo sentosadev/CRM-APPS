@@ -660,3 +660,9 @@ function validasiAlasanPindahDealer($id_alasan, $lainnya)
     return $error;
   }
 }
+
+
+function empty_to_min($val)
+{
+  return $val == '' ? '-' : $val;
+}

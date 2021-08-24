@@ -1,6 +1,7 @@
 <script>
   $(document).ready(function() {
-    $('.select2').select2()
+    $('.select2').select2();
+    setButtonDetailKesalahanTerakhir();
   })
 </script>
 <style>
@@ -84,6 +85,7 @@
     <div class="box-header with-border">
       <a class="btn btn-primary btn-flat" href="<?= site_url(get_controller() . '/download_leads_non_ve') ?>"><i class='fa fa-download'></i> Download Leads Non-VE</a>
       <button class="btn btn-info btn-flat" onclick="showModalUploadLeadsNonVE()"><i class='fa fa-upload'></i> Upload Leads Non-VE</button>
+      <button id="btnDetailKesalahanUploadTerakhir" class="btn btn-danger btn-flat" onclick="showModalErrorUploads()"><i class="fa fa-cross"></i> Detail Kesalahan Upload Terakhir</button>
       <div class="box-tools pull-right">
         <?= link_on_data_top(user()->id_group); ?>
       </div>
@@ -595,6 +597,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           $('#modal_' + assg_reassg + '_nama').val(data.nama);
           $('#modal_' + assg_reassg + '_namaDealerPembelianSebelumnya').val(data.namaDealerPembelianSebelumnya);
           $('#modal_' + assg_reassg + '_kodeDealerPembelianSebelumnya').val(data.kodeDealerPembelianSebelumnya);
+          $('#modal_' + assg_reassg + '_deskripsiKecamatanDomisili').val(data.deskripsiKecamatanDomisili);
+          $('#modal_' + assg_reassg + '_deskripsiKabupatenKotaDomisili').val(data.deskripsiKabupatenKotaDomisili);
         } else {
           Swal.fire({
             icon: 'error',
@@ -745,4 +749,8 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
       }
     }
   }
+</script>
+<?php $this->load->view('additionals/modal_errors'); ?>
+<script>
+  var set_errors = [];
 </script>

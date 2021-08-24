@@ -49,6 +49,20 @@
                       </div>
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Kecamatan</label>
+                    <div class="form-input">
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" disabled id="modal_assg_deskripsiKecamatanDomisili">
+                      </div>
+                    </div>
+                    <label class="col-sm-2 control-label">Kabupaten</label>
+                    <div class="form-input">
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" id="modal_assg_deskripsiKabupatenKotaDomisili" disabled>
+                      </div>
+                    </div>
+                  </div>
                 </form>
               </div>
               <div class="box-footer" align='center'>

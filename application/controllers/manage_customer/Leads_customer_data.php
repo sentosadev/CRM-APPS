@@ -1537,6 +1537,8 @@ class Leads_customer_data extends Crm_Controller
         'nama' => $data->nama,
         'namaDealerPembelianSebelumnya' => $data->namaDealerPembelianSebelumnya,
         'kodeDealerPembelianSebelumnya' => $data->kodeDealerPembelianSebelumnya,
+        'deskripsiKecamatanDomisili' => $data->deskripsiKecamatanDomisili,
+        'deskripsiKabupatenKotaDomisili' => $data->deskripsiKabupatenKotaDomisili,
       ];
       $response = ['status' => 1, 'data' => $data];
     }
@@ -1628,6 +1630,7 @@ class Leads_customer_data extends Crm_Controller
       $numRow = 0;
       if ($sheet->getIndex() === 0) {
         //looping pembacaan row dalam sheet
+        $baris = 1;
         foreach ($sheet->getRowIterator() as $row) {
           if ($numRow > 0) {
             if ($row[0] == '') break;
@@ -1635,14 +1638,19 @@ class Leads_customer_data extends Crm_Controller
             //Cek Leads
             $leads = $this->ld_m->getLeadsNonVEBelumAssignedDealer($row[0])->row();
             if ($leads == null) {
-              $error[] = 'Leads ID : ' . $row[0] . ' tidak ditemukan';
+              $error[$baris][] = 'Leads ID : ' . $row[0] . ' tidak ditemukan';
             } else {
               //Cek Assigned Dealer
               if (isset($row[7])) {
+                $row[7] = empty_to_min($row[7]);
                 $fdl = ['kode_dealer' => $row[7]];
                 $dl = $this->dealer_m->getDealer($fdl)->row();
                 if ($dl == null) {
-                  $error[] = 'Kode Dealer' . $row[7] . ' tidak ditemukan';
+                  if ($row[7] == '-') {
+                    $error[$baris][] = 'Kode Dealer kosong ';
+                  } else {
+                    $error[$baris][] = 'Kode Dealer : ' . $row[7] . ' tidak ditemukan';
+                  }
                 } else {
                   // Cek Dealer Sebelumnya
                   $id_alasan = null;
@@ -1652,7 +1660,7 @@ class Leads_customer_data extends Crm_Controller
                     if ($row[6] != $row[7]) {
                       $validasi = validasiAlasanPindahDealer($row[8], $row[9]);
                       if ($validasi) {
-                        $error[] = $validasi;
+                        $error[$baris][] = $validasi;
                       } else {
                         $id_alasan = $row[9];
                         $lainnya = $row[9];
@@ -1668,9 +1676,10 @@ class Leads_customer_data extends Crm_Controller
                   array_push($save, $data);
                 }
               } else {
-                $error[] = 'Kode Dealer belum diisi';
+                $error[$baris][] = 'Kode Dealer belum diisi';
               }
             }
+            $baris++;
           }
           $numRow++;
         }
@@ -1751,7 +1760,13 @@ class Leads_customer_data extends Crm_Controller
       $this->session->set_flashdata($pesan);
       $response = ['status' => 1];
     } else {
-      $response = ['status' => 0, 'pesan' => 'Terjadi Error', 'list' => $error];
+      $imp_baris = implode(', ', array_keys($error));
+      $errors = set_errors($error);
+      $response = [
+        'status' => 0,
+        'pesan' => "Terjadi kesalahan pada baris : $imp_baris.",
+        'errors' => $errors
+      ];
     }
     send_json($response);
   }
