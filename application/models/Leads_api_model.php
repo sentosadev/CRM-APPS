@@ -393,12 +393,12 @@ class Leads_api_model extends CI_Model
       }
       //Cek NoHP, NoTelp & Email apakah sudah ada di tabel staging. Jika Ada Simpan Ke Interaksi
       $fsdobel = [
-        'noHP_noTelp_email' => [$noHP, $noTelp, $email]
+        'noHP_noTelp_email' => [$noHP, $noTelp, $email],
+        'setLeads' => 0
       ];
       $cek_dobel = $this->ld_m->getStagingLeads($fsdobel)->row();
       if ($cek_dobel != null) {
         $this->db->insert('staging_table_leads_interaksi', $ins_staging);
-        continue;
       } else {
         $this->db->insert('staging_table_leads', $ins_staging);
       }
