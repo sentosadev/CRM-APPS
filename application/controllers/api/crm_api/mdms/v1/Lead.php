@@ -49,7 +49,7 @@ class Lead extends CI_Controller
     } else {
       $status = 0;
       $data = NULL;
-      $message = ['post_data' => 'Response Body Not Found'];
+      $message = ['post_data' => 'Request Body Not Found'];
     }
 
     $result = [

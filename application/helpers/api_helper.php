@@ -159,7 +159,8 @@ function request_validation($action = NULL)
     insert_api_log($r, $res['status'], $res['message'], null);
     send_json($res);
   }
-  return $set_res;
+  $res['activity'] = $set_res['activity'];
+  return $res;
 }
 
 function insert_api_log($activity, $status, $message, $data)
