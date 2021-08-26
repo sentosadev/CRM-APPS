@@ -180,10 +180,17 @@ class Leads_model extends CI_Model
     $last_tanggalNextFU = "SELECT lfup.tglNextFollowUp 
                   FROM leads_follow_up lfup
                   WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
-
+    $sla = "CASE WHEN IFNULL(leads_sla,'')!='' THEN leads_sla
+              ELSE CASE WHEN msl.id_source_leads=28 OR msl.id_source_leads=28 THEN mcs.sla ELSE msl.src_sla END
+            END
+            ";
+    $sla2 = "CASE WHEN IFNULL(leads_sla2,'')!='' THEN leads_sla2
+              ELSE CASE WHEN msl.id_source_leads=28 OR msl.id_source_leads=28 THEN mcs.sla2 ELSE msl.src_sla2 END
+            END
+            ";
     $ontimeSLA1 = "CASE 
                     WHEN IFNULL(ontimeSLA1,'') = '' THEN 
-                      CASE WHEN IFNULL(sla,'') = '' THEN 1
+                      CASE WHEN IFNULL(($sla),'') = '' THEN 1
                         ELSE 
                           CASE WHEN IFNULL(batasOntimeSLA1,'')=''
                             THEN CASE WHEN TIMEDIFF(customerActionDate,now()) < 0 THEN 0 ELSE 1 END
@@ -198,7 +205,7 @@ class Leads_model extends CI_Model
     $ontimeSLA1_desc = "CASE WHEN ontimeSLA1=1 THEN 'On Track' 
                             WHEN ontimeSLA1=0 THEN 'Overdue' 
                             ELSE 
-                              CASE WHEN IFNULL(sla,'') = '' THEN '-'
+                              CASE WHEN IFNULL(($sla),'') = '' THEN '-'
                                 ELSE 
                                   CASE WHEN IFNULL(batasOntimeSLA1,'')=''
                                     THEN CASE WHEN TIMEDIFF(customerActionDate,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
@@ -211,7 +218,7 @@ class Leads_model extends CI_Model
 
     $ontimeSLA2 = "CASE 
                     WHEN IFNULL(ontimeSLA2,'') = '' THEN 
-                      CASE WHEN IFNULL(sla,'') = '' THEN 1
+                      CASE WHEN IFNULL(($sla2),'') = '' THEN 1
                         ELSE 
                           CASE WHEN IFNULL(batasOntimeSLA2,'')='' THEN
                             CASE WHEN TIMEDIFF(stl.assignedDealer,now()) < 0 THEN 0 ELSE 1 END
@@ -226,7 +233,7 @@ class Leads_model extends CI_Model
     $ontimeSLA2_desc = "CASE WHEN ontimeSLA2=1 THEN 'On Track' 
                             WHEN ontimeSLA2=0 THEN 'Overdue' 
                             ELSE 
-                              CASE WHEN IFNULL(sla,'') = '' THEN '-'
+                              CASE WHEN IFNULL(($sla2),'') = '' THEN '-'
                                    ELSE 
                                     CASE WHEN IFNULL(batasOntimeSLA2,'')='' THEN
                                       CASE WHEN TIMEDIFF(stl.assignedDealer,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
@@ -621,7 +628,12 @@ class Leads_model extends CI_Model
 
     return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id,pld.platform_data descPlatformData,sc.source_leads descSourceLeads,tp.deskripsi_tipe,wr.deskripsi_warna,$concat_desc_tipe_warna concat_desc_tipe_warna,
     $status_api2 status_api2,stl.created_at,($totalInteraksi) totalInteraksi,CASE WHEN stl.customerType='V' THEN 'Invited' WHEN stl.customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc,
-    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate,cs.sla,stl.periodeAwalEvent,stl.periodeAkhirEvent
+    CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate,
+    CASE WHEN sc.id_source_leads=28 OR sc.id_source_leads=29 THEN cs.sla
+         ELSE sc.src_sla END AS sla,
+    CASE WHEN sc.id_source_leads=28 OR sc.id_source_leads=29 THEN cs.sla2
+         ELSE sc.src_sla2 END AS sla2,
+    stl.periodeAwalEvent,stl.periodeAkhirEvent
     FROM staging_table_leads stl
     JOIN ms_platform_data pld ON pld.id_platform_data=stl.platformData
     JOIN ms_source_leads sc ON sc.id_source_leads=stl.sourceData

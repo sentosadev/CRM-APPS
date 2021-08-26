@@ -107,14 +107,14 @@ function request_validation($action = NULL)
           if ($secret_key == '') {
             $res = array(
               'status' => 0,
-              'message' => array('Secret Key Not Found'),
+              'message' => ['authorization' => 'Secret Key Not Found'],
               'data' => null
             );
           } else {
             $invalid_token = true;
             $res = array(
               'status' => 0,
-              'message' => array('Invalid Token'),
+              'message' => ['authorization' => 'Invalid Token'],
               'data' => null
             );
           }
@@ -151,10 +151,16 @@ function request_validation($action = NULL)
   if ($response == 401) {
     $r = $set_res['activity'];
     insert_api_log($r, $res['status'], $res['message'], null);
-    header("HTTP/1.1 401 Unauthorized");
+    $CI->output->set_status_header(401);
+    $response = [
+      'status' => 0,
+      'message' => ['authorization' => 'Invalid API Key']
+    ];
+    send_json($response);
     die;
   }
   if ($invalid_token == true || $token_exp == true) {
+    $CI->output->set_status_header(401);
     $r = $set_res['activity'];
     insert_api_log($r, $res['status'], $res['message'], null);
     send_json($res);

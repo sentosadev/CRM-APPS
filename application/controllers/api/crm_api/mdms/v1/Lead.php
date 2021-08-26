@@ -73,7 +73,6 @@ class Lead extends CI_Controller
       'group_by' => 'stl.noHP'
     ];
     $data = $this->ld_m->getStagingTableVSMainTable($fc)->result_array();
-
     $this->db->trans_begin();
     foreach ($data as $pst) {
       $no_hp = clean_no_hp(clear_removed_html($pst['noHP']));
@@ -151,6 +150,8 @@ class Lead extends CI_Controller
           'batasOntimeSLA1' => $batasSLA1,
           'periodeAwalEvent' => clear_removed_html($pst['periodeAwalEvent']),
           'periodeAkhirEvent' => clear_removed_html($pst['periodeAkhirEvent']),
+          'leads_sla' => $pst['sla'],
+          'leads_sla2' => $pst['sla2'],
         ];
         $this->db->insert('leads', $insert);
         //Set Stage ID 1
@@ -194,7 +195,11 @@ class Lead extends CI_Controller
           'instagram' => clear_removed_html($pst['instagram']),
           'twitter' => clear_removed_html($pst['twitter']),
           'created_at' => waktu(),
-          'batasOntimeSLA1' => $batasSLA1
+          'batasOntimeSLA1' => $batasSLA1,
+          'periodeAwalEvent' => clear_removed_html($pst['periodeAwalEvent']),
+          'periodeAkhirEvent' => clear_removed_html($pst['periodeAkhirEvent']),
+          'leads_sla' => $pst['sla'],
+          'leads_sla2' => $pst['sla2'],
         ];
         $this->db->update('leads', $update, ['leads_id' => $leads_id]);
       }
