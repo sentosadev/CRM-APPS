@@ -230,18 +230,20 @@ class Leads_model extends CI_Model
                     END
                   ";
 
-    $ontimeSLA2_desc = "CASE WHEN ontimeSLA2=1 THEN 'On Track' 
-                            WHEN ontimeSLA2=0 THEN 'Overdue' 
-                            ELSE 
-                              CASE WHEN IFNULL(($sla2),'') = '' THEN '-'
-                                   ELSE 
-                                    CASE WHEN IFNULL(batasOntimeSLA2,'')='' THEN
-                                      CASE WHEN TIMEDIFF(stl.assignedDealer,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
-                                    ELSE
-                                      CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
-                                    END
-                              END
-                        END
+    $ontimeSLA2_desc = "CASE WHEN assignedDealer!='' THEN
+                              CASE WHEN ontimeSLA2=1 THEN 'On Track' 
+                              WHEN ontimeSLA2=0 THEN 'Overdue' 
+                              ELSE 
+                                CASE WHEN IFNULL(($sla2),'') = '' THEN '-'
+                                    ELSE 
+                                      CASE WHEN IFNULL(batasOntimeSLA2,'')='' THEN
+                                        CASE WHEN TIMEDIFF(stl.assignedDealer,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                                      ELSE
+                                        CASE WHEN TIMEDIFF(batasOntimeSLA2,now()) < 0 THEN 'Overdue' ELSE 'On Track' END
+                                      END
+                                END
+                          END
+                        ELSE '-' END
                         ";
 
     $select = "batchID,nama,noHP,email,customerType,eventCodeInvitation,customerActionDate,segmentMotor,seriesMotor,deskripsiEvent,kodeTypeUnit,kodeWarnaUnit,minatRidingTest,jadwalRidingTest, 
