@@ -309,11 +309,11 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
       </div>
       <div class="form-group" style='padding-top:20px'>
         <div class="col-sm-6">
-          <button type="button" id="backTo_<?= $back ?>" class="btn btn-primary btn-flat" onclick="saveDataFollowUp(this,'<?= $back ?>','back',<?= $i ?>)"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
+          <button type="button" id="backTo_<?= $back ?>" class="btn btn-primary btn-flat" onclick="saveDataFollowUp(this,'<?= $back ?>','back',<?= $i ?>,false)"><i class="fa fa-backward"></i> Halaman Sebelumnya</button>
         </div>
         <div class="col-sm-6" align="right">
           <?php if ($i < $tot_tab_fol) { ?>
-            <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i + 1 ?>','next',<?= $i ?>)" type="button" id="#backTo_data_pendukung_probing_1" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
+            <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i + 1 ?>','next',<?= $i ?>,false)" type="button" id="#backTo_data_pendukung_probing_1" class="btn btn-primary btn-flat"><i class="fa fa-forward"></i> Halaman Berikutnya</button>
           <?php } else {
             $set_end = true; ?>
             <?php if ($disabled == '') { ?>
@@ -344,7 +344,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
   var position = '';
   var default_name_button = '';
 
-  function saveDataFollowUp(el, tabs, posit, fu) {
+  function saveDataFollowUp(el, tabs, posit, fu, is_save = true) {
     set_fu = fu;
     set_tabs = tabs;
     position = posit;
@@ -354,6 +354,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
       return false;
     } else if (position == 'next') {
       default_name_button = '<i class = "fa fa-forward"></i> Halaman Berikutnya';
+      changeTabs(tabs);
     } else {
       default_name_button = 'Simpan Follow Up';
     }
@@ -391,7 +392,9 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     })
     if ($('#form_data_follow_up_' + fu).valid()) // check if form is valid
     {
-      showModalFollowUp();
+      if (is_save == true) {
+        showModalFollowUp();
+      }
     } else {
       Swal.fire({
         icon: 'error',

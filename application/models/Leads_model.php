@@ -1050,7 +1050,7 @@ class Leads_model extends CI_Model
     $ymd = tanggal();
     $get_data  = $this->db->query("SELECT RIGHT(followUpID,3) followUpID 
                   FROM leads_follow_up WHERE LEFT(created_at,10)='$ymd'
-                  ORDER BY created_at DESC LIMIT 0,1");
+                  ORDER BY followUpID,created_at DESC LIMIT 0,1");
     if ($get_data->num_rows() > 0) {
       $row = $get_data->row();
       $new_kode = 'FOLUP/' . $dmy . '/' . sprintf("%'.03d", $row->followUpID + 1);
@@ -1066,6 +1066,16 @@ class Leads_model extends CI_Model
       }
     } else {
       $new_kode   = 'FOLUP/' . $dmy . '/001';
+      $i = 0;
+      while ($i < 1) {
+        $cek = $this->db->get_where('leads_follow_up', ['followUpID' => $new_kode])->num_rows();
+        if ($cek > 0) {
+          $new_kode   = 'FOLUP/' . $dmy . '/' . sprintf("%'.03d", substr($new_kode, -3) + 1);
+          $i = 0;
+        } else {
+          $i++;
+        }
+      }
     }
     return strtoupper($new_kode);
   }

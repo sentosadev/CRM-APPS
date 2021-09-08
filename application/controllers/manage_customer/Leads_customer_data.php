@@ -1067,8 +1067,8 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
-    // Cek Apakah Sudah Stage ID 1,4
-    $list_cek_stage = [1, 4];
+    // Cek Apakah Sudah Stage ID 1
+    $list_cek_stage = [1];
     $stage_belum = [];
     foreach ($list_cek_stage as $vs) {
       $lstg = [
@@ -1078,6 +1078,23 @@ class Leads_customer_data extends Crm_Controller
       $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
       if ($cek_stage == NULL) {
         $stage_belum[] = $vs;
+      }
+    }
+
+    //Cek Apakah Perlu FU MD
+    if ($lead->need_fu_md == 1) {
+      // Cek Apakah Sudah Stage ID 4
+      $list_cek_stage = [4];
+      $stage_belum = [];
+      foreach ($list_cek_stage as $vs) {
+        $lstg = [
+          'leads_id' => $leads_id,
+          'stageId' => $vs
+        ];
+        $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
+        if ($cek_stage == NULL) {
+          $stage_belum[] = $vs;
+        }
       }
     }
 
@@ -1131,7 +1148,7 @@ class Leads_customer_data extends Crm_Controller
       'ins_history_stage' => $ins_history_stage,
       'insert_history_assigned' => $insert_history_assigned,
     ];
-    // send_json($tes);
+    send_json($tes);
     $this->db->trans_begin();
     $this->db->update('leads', $update, ['leads_id' => $leads_id]);
     if (isset($ins_history_stage)) {
