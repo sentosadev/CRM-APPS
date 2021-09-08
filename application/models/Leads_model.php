@@ -508,6 +508,11 @@ class Leads_model extends CI_Model
         $where .= " AND need_fu_md={$filter['need_fu_md']}";
       }
 
+      if (isset($filter['noHP_noTelp_email'])) {
+        $fl = $filter['noHP_noTelp_email'];
+        $where .= " AND (stl.noHP='{$fl[0]}' OR stl.noTelp='{$fl[1]}' OR stl.email='{$fl[2]}')";
+      }
+
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
@@ -656,6 +661,10 @@ class Leads_model extends CI_Model
     if (isset($filter['noHP_noTelp_email'])) {
       $fl = $filter['noHP_noTelp_email'];
       $where .= " AND (stl.noHP='{$fl[0]}' OR stl.noTelp='{$fl[1]}' OR stl.email='{$fl[2]}')";
+    }
+    if (isset($filter['setleads'])) {
+      $fl = $filter['setleads'];
+      $where .= " AND stl.setleads='{$fl[0]}'";
     }
 
     if (isset($filter['search'])) {
@@ -1619,5 +1628,58 @@ class Leads_model extends CI_Model
             AND (SELECT COUNT(leads_id) FROM leads_history_assigned_dealer WHERE leads_id=ld.leads_id)=0
             $where
           ");
+  }
+  function setStagingInteraksiToLeadsInteraksi($pst = null)
+  {
+    $fc = [
+      'noHP_noTelp_email' => [$pst['noHP'], $pst['noTelp'], $pst['email']]
+    ];
+    if (isset($pst['setleads'])) {
+      $fc['setleads'] = $pst['setleads'];
+      // send_json($fc);
+    }
+    $dt_interaksi = $this->getStagingTableInteraksi($fc)->result_array();
+    foreach ($dt_interaksi as $itr) {
+      $interaksi_id = $this->getInteraksiID();
+      $insert_interaksi = [
+        'leads_id' => $pst['leads_id'],
+        'interaksi_id' => $interaksi_id,
+        'nama' => clear_removed_html($itr['nama']),
+        'noHP' => clear_removed_html($itr['noHP']),
+        'email' => clear_removed_html($itr['email']),
+        'customerType' => clear_removed_html($itr['customerType']),
+        'eventCodeInvitation' => clear_removed_html($itr['eventCodeInvitation']),
+        'customerActionDate' => clear_removed_html($itr['customerActionDate']),
+        'idKabupaten' => clear_removed_html($itr['kabupaten']),
+        'cmsSource' => clear_removed_html($itr['cmsSource']),
+        'segmentMotor' => clear_removed_html($itr['segmentMotor']),
+        'seriesMotor' => clear_removed_html($itr['seriesMotor']),
+        'deskripsiEvent' => clear_removed_html($itr['deskripsiEvent']),
+        'kodeTypeUnit' => clear_removed_html($itr['kodeTypeUnit']),
+        'kodeWarnaUnit' => clear_removed_html($itr['kodeWarnaUnit']),
+        'minatRidingTest' => clear_removed_html($itr['minatRidingTest']),
+        'jadwalRidingTest' => clear_removed_html($itr['jadwalRidingTest']) == '' ? NULL : clear_removed_html($itr['jadwalRidingTest']),
+        'sourceData' => clear_removed_html($itr['sourceData']),
+        'platformData' => clear_removed_html($itr['platformData']),
+        'noTelp' => clear_removed_html($itr['noTelp']),
+        'assignedDealer' => clear_removed_html($itr['assignedDealer']),
+        'sourceRefID' => clear_removed_html($itr['sourceRefID']),
+        'idProvinsi' => clear_removed_html($itr['provinsi']),
+        'idKelurahan' => clear_removed_html($itr['kelurahan']),
+        'idKecamatan' => clear_removed_html($itr['kecamatan']),
+        'frameNoPembelianSebelumnya' => clear_removed_html($itr['noFramePembelianSebelumnya']),
+        'keterangan' => clear_removed_html($itr['keterangan']),
+        'promoUnit' => clear_removed_html($itr['promoUnit']),
+        'facebook' => clear_removed_html($itr['facebook']),
+        'instagram' => clear_removed_html($itr['instagram']),
+        'twitter' => clear_removed_html($itr['twitter']),
+        'created_at' => waktu(),
+      ];
+      $this->db->insert('leads_interaksi', $insert_interaksi);
+      $setleads = [
+        'setleads' => 1,
+      ];
+      $this->db->update('staging_table_leads_interaksi', $setleads, ['interaksi_id' => $itr['interaksi_id']]);
+    }
   }
 }
