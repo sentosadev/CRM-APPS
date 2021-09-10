@@ -70,9 +70,9 @@ class Lead extends CI_Controller
   {
     $fc = [
       'mainTableNULL' => true,
-      'group_by' => 'stl.noHP'
     ];
     $data = $this->ld_m->getStagingTableVSMainTable($fc)->result_array();
+    // send_json($data);
     $this->db->trans_begin();
     foreach ($data as $pst) {
       $no_hp = clean_no_hp(clear_removed_html($pst['noHP']));
@@ -100,7 +100,11 @@ class Lead extends CI_Controller
 
       $noTelp = clear_removed_html($pst['noTelp']) == '' ? null : clear_removed_html($pst['noTelp']);
 
-      if ((string)$pst['leads_id'] == '') {
+
+      //Cek Apakah Sudah Ada Pada Leads, Jika Sudah Maka Data Akan Disimpan Sebagai Interaksi
+      $fleads['noHP_noTelp_email'] = [$no_hp, $noTelp, $email];
+      $cek_leads = $this->ld_m->getLeads($fleads)->row();
+      if ($cek_leads == null) {
         $leads_id = $leads_id_invited == '' ? $this->ld_m->getLeadsID() : $leads_id_invited;
         $insert = [
           'leads_id' => $leads_id,
@@ -161,103 +165,21 @@ class Lead extends CI_Controller
           'created_at' => waktu(),
         ];
         $this->ld_m->insertLeadsStage($ins_leads_history_stage);
+
+        //Insert Interaksi Pertama.
+        $pst['no_hp']      = $no_hp;
+        $pst['email']      = $email;
+        $pst['sourceData'] = $sourceData;
+        $pst['cdb']        = $cdb;
+        $this->ld_m->setInterasksiFromStageToLeads($leads_id, $pst);
       } else {
-        $leads_id = $pst['leads_id'];
-        $update = [
-          'batchID' => $pst['batchID'],
-          'nama' => clear_removed_html($pst['nama']),
-          'noHP' => clear_removed_html($pst['noHP']),
-          'email' => clear_removed_html($pst['email']),
-          'customerType' => clear_removed_html($pst['customerType']),
-          'eventCodeInvitation' => clear_removed_html($pst['eventCodeInvitation']),
-          'customerActionDate' => clear_removed_html($pst['customerActionDate']),
-          'kabupaten' => clear_removed_html($pst['kabupaten']),
-          'cmsSource' => clear_removed_html($pst['cmsSource']),
-          'segmentMotor' => clear_removed_html($pst['segmentMotor']),
-          'seriesMotor' => clear_removed_html($pst['seriesMotor']),
-          'deskripsiEvent' => clear_removed_html($pst['deskripsiEvent']),
-          'kodeTypeUnit' => clear_removed_html($pst['kodeTypeUnit']),
-          'kodeWarnaUnit' => clear_removed_html($pst['kodeWarnaUnit']),
-          'minatRidingTest' => clear_removed_html($pst['minatRidingTest']),
-          'jadwalRidingTest' => clear_removed_html($pst['jadwalRidingTest']),
-          'sourceData' => clear_removed_html($pst['sourceData']),
-          'platformData' => clear_removed_html($pst['platformData']),
-          'noTelp' => clear_removed_html($pst['noTelp']),
-          'assignedDealer' => clear_removed_html($pst['assignedDealer']),
-          'sourceRefID' => clear_removed_html($pst['sourceRefID']),
-          'provinsi' => clear_removed_html($pst['provinsi']),
-          'kelurahan' => clear_removed_html($pst['kelurahan']),
-          'kecamatan' => clear_removed_html($pst['kecamatan']),
-          'noFramePembelianSebelumnya' => clear_removed_html($pst['noFramePembelianSebelumnya']),
-          'keterangan' => clear_removed_html($pst['keterangan']),
-          'promoUnit' => clear_removed_html($pst['promoUnit']),
-          'facebook' => clear_removed_html($pst['facebook']),
-          'instagram' => clear_removed_html($pst['instagram']),
-          'twitter' => clear_removed_html($pst['twitter']),
-          'created_at' => waktu(),
-          'batasOntimeSLA1' => $batasSLA1,
-          'periodeAwalEvent' => clear_removed_html($pst['periodeAwalEvent']),
-          'periodeAkhirEvent' => clear_removed_html($pst['periodeAkhirEvent']),
-          'leads_sla' => $pst['sla'],
-          'leads_sla2' => $pst['sla2'],
-        ];
-        $this->db->update('leads', $update, ['leads_id' => $leads_id]);
+        $pst['no_hp']      = $no_hp;
+        $pst['email']      = $email;
+        $pst['sourceData'] = $sourceData;
+        $pst['cdb']        = $cdb;
+        $this->ld_m->setInterasksiFromStageToLeads($cek_leads->leads_id, $pst);
+        continue;
       }
-
-      //Insert Interaksi
-      //Cek Interaksi Di Tabel Staging; (Karena Data Pertama Tidak Disimpan Ke Interaksi)
-      $fc = [
-        'mainTableNULL' => true,
-        'noHP' => $pst['noHP']
-      ];
-      $dt_interaksi = $this->ld_m->getStagingTableVSMainTable($fc)->result_array();
-      foreach ($dt_interaksi as $itr) {
-        $interaksi_id = $this->ld_m->getInteraksiID();
-        $insert_interaksi = [
-          'leads_id' => $leads_id,
-          'interaksi_id' => $interaksi_id,
-          'nama' => clear_removed_html($itr['nama']),
-          'noHP' => clear_removed_html($itr['noHP']),
-          'email' => clear_removed_html($itr['email']),
-          'customerType' => clear_removed_html($itr['customerType']),
-          'eventCodeInvitation' => clear_removed_html($itr['eventCodeInvitation']),
-          'customerActionDate' => clear_removed_html($itr['customerActionDate']),
-          'idKabupaten' => clear_removed_html($itr['kabupaten']),
-          'cmsSource' => clear_removed_html($itr['cmsSource']),
-          'segmentMotor' => clear_removed_html($itr['segmentMotor']),
-          'seriesMotor' => clear_removed_html($itr['seriesMotor']),
-          'deskripsiEvent' => clear_removed_html($itr['deskripsiEvent']),
-          'kodeTypeUnit' => clear_removed_html($itr['kodeTypeUnit']),
-          'kodeWarnaUnit' => clear_removed_html($itr['kodeWarnaUnit']),
-          'minatRidingTest' => clear_removed_html($itr['minatRidingTest']),
-          'jadwalRidingTest' => clear_removed_html($itr['jadwalRidingTest']) == '' ? NULL : clear_removed_html($itr['jadwalRidingTest']),
-          'sourceData' => clear_removed_html($itr['sourceData']),
-          'platformData' => clear_removed_html($itr['platformData']),
-          'noTelp' => clear_removed_html($itr['noTelp']),
-          'assignedDealer' => clear_removed_html($itr['assignedDealer']),
-          'sourceRefID' => clear_removed_html($itr['sourceRefID']),
-          'idProvinsi' => clear_removed_html($itr['provinsi']),
-          'idKelurahan' => clear_removed_html($itr['kelurahan']),
-          'idKecamatan' => clear_removed_html($itr['kecamatan']),
-          'frameNoPembelianSebelumnya' => clear_removed_html($itr['noFramePembelianSebelumnya']),
-          'keterangan' => clear_removed_html($itr['keterangan']),
-          'promoUnit' => clear_removed_html($itr['promoUnit']),
-          'facebook' => clear_removed_html($itr['facebook']),
-          'instagram' => clear_removed_html($itr['instagram']),
-          'twitter' => clear_removed_html($itr['twitter']),
-          'created_at' => waktu(),
-        ];
-        $this->db->insert('leads_interaksi', $insert_interaksi);
-        //Set Stage Sudah Dibuat Menjadi Leads(Interaksi)
-        $setleads = [
-          'setleads' => 1,
-        ];
-        $this->db->update('staging_table_leads_interaksi', $setleads, ['stage_id' => $itr['stage_id']]);
-      }
-
-      //Cek & Set Interaksi Di Tabel Staging Interaksi;
-      $pst['leads_id'] = $leads_id;
-      $this->ld_m->setStagingInteraksiToLeadsInteraksi($pst);
 
       //Cek Apakah Perlu Auto Dispatch
       $assignedDealer = clear_removed_html($pst['assignedDealer']);
@@ -318,25 +240,6 @@ class Lead extends CI_Controller
           'setleads' => 1,
         ];
         $this->db->update('staging_table_leads', $setleads, ['stage_id' => $pst['stage_id']]);
-      }
-    }
-
-
-    //Simpan Staging Interaksi Ke Leads Interaksi (Dipisah karena Staging Interaksi Ini Baru Masuk ke table stage, belum ke table leads interaksi)
-    $fcek = ['setleads' => 0];
-    $cek_stage_interaksi = $this->ld_m->getStagingTableInteraksi($fcek)->result_array();
-    foreach ($cek_stage_interaksi as $stg) {
-      $fleads['noHP_noTelp_email'] = [$stg['noHP'], $stg['noTelp'], $stg['email']];
-      $cek_leads = $this->ld_m->getLeads($fleads)->row();
-      if ($cek_leads != null) {
-        $pst = [
-          'leads_id' => $cek_leads->leads_id,
-          'noHP' => $stg['noHP'],
-          'noTelp' => $stg['noTelp'],
-          'email' => $stg['email'],
-          'setleads' => 0
-        ];
-        $this->ld_m->setStagingInteraksiToLeadsInteraksi($pst);
       }
     }
 

@@ -1119,7 +1119,7 @@ class Leads_customer_data extends Crm_Controller
     $alasan_pindah_dealer      = $this->input->post('alasanPindahDealer', true);
     $alasanPindahDealerLainnya = $this->input->post('alasanPindahDealerLainnya', true);
     $tanggalAssignDealer       = waktu();
-    $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla);
+    $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla2);
 
     $update = [
       'assignedDealer'            => $assignDealer,
@@ -1147,8 +1147,9 @@ class Leads_customer_data extends Crm_Controller
       'update' => $update,
       'ins_history_stage' => $ins_history_stage,
       'insert_history_assigned' => $insert_history_assigned,
+      'lead' => $lead
     ];
-    send_json($tes);
+    // send_json($tes);
     $this->db->trans_begin();
     $this->db->update('leads', $update, ['leads_id' => $leads_id]);
     if (isset($ins_history_stage)) {
@@ -1162,7 +1163,6 @@ class Leads_customer_data extends Crm_Controller
       //Melakukan Pengiriman API 3
       $data = $this->ld_m->post_to_api3($leads_id);
       $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
-      // send_json($res_api3);
       if ($res_api3['status'] == 1) {
         $this->db->trans_commit();
         $id_prospek = $res_api3['data']['id_prospek'];
@@ -1315,7 +1315,7 @@ class Leads_customer_data extends Crm_Controller
 
     $assignDealer              = $this->input->post('assignedDealer', true);
     $tanggalAssignDealer       = waktu();
-    $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla);
+    $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla2);
 
     $update = [
       'kodeDealerSebelumnya' => $lead->assignedDealer,
@@ -1563,6 +1563,7 @@ class Leads_customer_data extends Crm_Controller
   }
   function _batasSLA2($kode_dealer, $actionDate, $sla)
   {
+    // send_json($sla);
     $actionTimeStr = date('Y-m-d\TH:i', strtotime($actionDate)); // date('Y-m-d\TH:i');
     $SLAStr = $sla; // '15 hours';
     $operatingHour = operatingHour($kode_dealer);
@@ -1713,7 +1714,7 @@ class Leads_customer_data extends Crm_Controller
         $lead = $this->ld_m->getLeads($fl)->row();
         $assignDealer              = $dt['kode_dealer'];
         $tanggalAssignDealer       = waktu();
-        $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla);
+        $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla2);
 
         $update = [
           'assignedDealer'            => $assignDealer,

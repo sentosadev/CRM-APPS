@@ -145,9 +145,9 @@ class Leads_api_model extends CI_Model
       ];
       $cek_event = $this->event->getEvent($fev)->row();
       if ($cek_event == null) {
-        $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
-        $reject[$noHP] = $errMsg;
-        $errMessages .= $errMsg . '. ';
+        // $errMsg = 'Deskripsi Event : ' . $deskripsiEvent . ' tidak ditemukan';
+        // $reject[$noHP] = $errMsg;
+        // $errMessages .= $errMsg . '. ';
       } else {
         $kode_event        = $cek_event->kode_event;
         $deskripsiEvent    = $cek_event->nama_event;
@@ -391,17 +391,7 @@ class Leads_api_model extends CI_Model
         $ins_staging['periodeAwalEvent'] = $periodeAwalEvent;
         $ins_staging['periodeAkhirEvent'] = $periodeAkhirEvent;
       }
-      //Cek NoHP, NoTelp & Email apakah sudah ada di tabel staging. Jika Ada Simpan Ke Interaksi
-      $fsdobel = [
-        'noHP_noTelp_email' => [$noHP, $noTelp, $email],
-        'setLeads' => 0
-      ];
-      $cek_dobel = $this->ld_m->getStagingLeads($fsdobel)->row();
-      if ($cek_dobel != null) {
-        $this->db->insert('staging_table_leads_interaksi', $ins_staging);
-      } else {
-        $this->db->insert('staging_table_leads', $ins_staging);
-      }
+      $this->db->insert('staging_table_leads', $ins_staging);
       $list_leads[] = [
         'noHP' => $noHP,
         'accepted' => 'Y',

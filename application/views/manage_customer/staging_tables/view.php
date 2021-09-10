@@ -22,11 +22,12 @@
             <th>No. HP</th>
             <th>No. Telp</th>
             <th>Email</th>
+            <th>Customer Type</th>
             <th>Platform Data</th>
             <th>Source Leads</th>
             <th>Tipe & Warna Motor</th>
             <th>Deskripsi Event</th>
-            <th>Total Interaksi</th>
+            <th>Customer Action Date</th>
             <th>Created At</th>
             <th>Status API2</th>
           </thead>
@@ -55,7 +56,7 @@ $this->load->view(get_controller() . '/modal_interaksi', $data);
     var dataTable = $('.serverside-tables').DataTable({
       "processing": true,
       "serverSide": true,
-      "scrollX": true,
+      // "scrollX": true,
       "language": {
         "infoFiltered": "",
         "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
@@ -79,14 +80,14 @@ $this->load->view(get_controller() . '/modal_interaksi', $data);
           "orderable": false
         },
         {
-          "targets": [11],
+          "targets": [12],
           "className": 'text-center'
         },
         // // { "targets":[0],"checkboxes":{'selectRow':true}}
-        {
-          "targets": [9],
-          "className": 'text-center'
-        },
+        // {
+        //   "targets": [9],
+        //   "className": 'text-center'
+        // },
         // // { "targets":[2,4,5], "searchable": false } 
       ],
     });
