@@ -402,7 +402,7 @@
 
   function cekBedaDealerPembelianDenganAssignDealer() {
     kodeDealerPembelianSebelumnya = $('#modal_assg_kodeDealerPembelianSebelumnya').val();
-    if (kodeDealerPembelianSebelumnya != assignedDealer) {
+    if (kodeDealerPembelianSebelumnya != '' && kodeDealerPembelianSebelumnya != assignedDealer) {
       $('#form_alasan_pindah_dealer').show();
     } else {
       $('#form_alasan_pindah_dealer').hide();

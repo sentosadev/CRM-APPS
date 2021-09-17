@@ -102,8 +102,9 @@ class Lead extends CI_Controller
 
 
       //Cek Apakah Sudah Ada Pada Leads, Jika Sudah Maka Data Akan Disimpan Sebagai Interaksi
-      $fleads['noHP_noTelp_email'] = [$no_hp, $noTelp, $email];
+      $fleads['noHP_noTelp_email'] = [empty_to_min($no_hp), empty_to_min($noTelp), empty_to_min($email)];
       $cek_leads = $this->ld_m->getLeads($fleads)->row();
+      // send_json($cek_leads);
       if ($cek_leads == null) {
         $leads_id = $leads_id_invited == '' ? $this->ld_m->getLeadsID() : $leads_id_invited;
         $insert = [

@@ -560,8 +560,6 @@ function clean_no_hp($no_hp)
     $no_hp = '0' . substr($no_hp, 3, 30);
   } elseif (substr($no_hp, 0, 2) == '62') {
     $no_hp = '0' . substr($no_hp, 2, 30);
-  } elseif (substr($no_hp, 0, 1) != '0') {
-    $no_hp = '0' . substr($no_hp, 1, 30);
   }
   return $no_hp;
 }

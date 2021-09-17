@@ -119,6 +119,7 @@ class Follow_up extends CI_Controller
           'kodeHasilStatusFollowUp'             => $post['kodeHasilStatusFollowUp'],
           'kodeAlasanNotProspectNotDeal'        => $post['kodeAlasanNotProspectNotDeal'],
           'keteranganLainnyaNotProspectNotDeal' => $post['keteranganLainnyaNotProspectNotDeal'],
+          'statusProspek'                       => $post['statusProspek'],
           'created_at'                          => waktu()
         ];
 
