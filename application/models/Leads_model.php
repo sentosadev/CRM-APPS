@@ -168,6 +168,10 @@ class Leads_model extends CI_Model
                   FROM leads_follow_up lfup
                   WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
 
+    $keteranganNextFollowUp = "SELECT keteranganNextFollowUp 
+                  FROM leads_follow_up lfup
+                  WHERE leads_id=stl.leads_id ORDER BY lfup.id_int DESC LIMIT 1";
+
     $hasil_fu = "SELECT deskripsiHasilStatusFollowUp 
                   FROM leads_follow_up lfup
                   JOIN ms_hasil_status_follow_up hsfu ON hsfu.kodeHasilStatusFollowUp=lfup.kodeHasilStatusFollowUp
@@ -271,7 +275,9 @@ class Leads_model extends CI_Model
         ($status_fu) deskripsiStatusKontakFU,
         ($hasil_fu) deskripsiHasilStatusFollowUp,
         ($last_kodeHasilStatusFollowUp) kodeHasilStatusFollowUp,
-        ($tanggalNextFU) tanggalNextFU,preferensiPromoDiminatiCustomer,
+        ($tanggalNextFU) tanggalNextFU,
+        ($keteranganNextFollowUp) keteranganNextFollowUp,
+        preferensiPromoDiminatiCustomer,
         CASE WHEN ($pernahTerhubung) = 4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
         kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
         plm.pengeluaran deskripsiPengeluaran,stl.pengeluaran,need_fu_md,($sla) sla,($sla2)sla2,
@@ -1471,7 +1477,7 @@ class Leads_model extends CI_Model
     $this->load->model('dealer_model', 'dlm');
     $this->load->model('kelurahan_model', 'kelm');
     $this->load->model('sumber_prospek_model', 'sprm');
-    $leads = $this->ld_m->getLeads(['leads_id' => $leads_id])->row();
+    $leads = $this->getLeads(['leads_id' => $leads_id])->row();
     $fp = ['id_cdb' => $leads->sourceData];
     $sumber_prospek = $this->sprm->getSumberProspekFromOtherDB($fp)->row()->id;
     $prospek = [
@@ -1517,6 +1523,8 @@ class Leads_model extends CI_Model
       'periodeAwalEvent' => $leads->periodeAwalEvent,
       'periodeAkhirEvent' => $leads->periodeAkhirEvent,
       'deskripsiEvent' => $leads->deskripsiEvent,
+      'tanggalNextFU' => $leads->tanggalNextFU,
+      'keteranganNextFollowUp' => $leads->keteranganNextFollowUp,
     ];
     $ld = ['leads_id' => $leads->leads_id];
     $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();

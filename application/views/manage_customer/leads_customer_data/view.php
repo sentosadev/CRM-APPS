@@ -413,6 +413,9 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
   var leads_id = '';
 
   function showAssign(ld_id) {
+    $('#form_alasan_pindah_dealer').hide();
+    $('#alasanPindahDealer').val('');
+    $('#alasanPindahDealerLainnya').val('');
     leads_id = ld_id;
     setLeadsAssignReassign(leads_id, 'assg');
     $('#modalAssign').modal('show');

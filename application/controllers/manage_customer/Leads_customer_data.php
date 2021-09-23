@@ -1276,9 +1276,25 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
-    // Cek Apakah Sudah Stage ID 1,4,5
-    $list_cek_stage = [1, 4, 5];
+    //Cek Apakah Perlu FU MD
     $stage_belum = [];
+    if ($lead->need_fu_md == 1) {
+      // Cek Apakah Sudah Stage ID 1,4
+      $list_cek_stage = [1, 4];
+      foreach ($list_cek_stage as $vs) {
+        $lstg = [
+          'leads_id' => $leads_id,
+          'stageId' => $vs
+        ];
+        $cek_stage = $this->ld_m->getLeadsStage($lstg)->row();
+        if ($cek_stage == NULL) {
+          $stage_belum[] = $vs;
+        }
+      }
+    }
+
+    // Cek Apakah Sudah Stage ID 5
+    $list_cek_stage = [5];
     foreach ($list_cek_stage as $vs) {
       $lstg = [
         'leads_id' => $leads_id,
@@ -1313,20 +1329,24 @@ class Leads_customer_data extends Crm_Controller
       ];
     }
 
-    $assignDealer              = $this->input->post('assignedDealer', true);
-    $tanggalAssignDealer       = waktu();
-    $batasSLA2                 = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla2);
+    $assignDealer                = $this->input->post('assignedDealer', true);
+    $tanggalAssignDealer         = waktu();
+    $batasSLA2                   = $this->_batasSLA2($assignDealer, $tanggalAssignDealer, $lead->sla2);
+    $alasanReAssignDealer        = $this->input->post('alasanReAssignDealer', true);
+    $alasanReAssignDealerLainnya = $this->input->post('alasanReAssignDealerLainnya', true);
+
 
     $update = [
       'kodeDealerSebelumnya' => $lead->assignedDealer,
       'assignedDealer'       => $assignDealer,
       'tanggalAssignDealer'  => $tanggalAssignDealer,
       'assignedDealerBy'     => $user->id_user,
-      'batasOntimeSLA2'      => $batasSLA2
+      'batasOntimeSLA2'      => $batasSLA2,
+      'alasanPindahDealer'        => $alasanReAssignDealer      == '' ? NULL : $alasanReAssignDealer,
+      'alasanPindahDealerLainnya' => $alasanReAssignDealerLainnya == '' ? NULL : $alasanReAssignDealerLainnya,
     ];
 
     // Insert History Assigned Dealer
-    $alasanReAssignDealerLainnya = $this->input->post('alasanReAssignDealerLainnya', true);
     $insert_history_assigned = [
       'leads_id'             => $leads_id,
       'assignedKe'           => $this->ld_m->getLeadsHistoryAssignedDealer($f_asg)->num_rows() + 1,
@@ -1336,7 +1356,7 @@ class Leads_customer_data extends Crm_Controller
       'ontimeSLA2'           => $lead->ontimeSLA2,
       'created_at'           => waktu(),
       'created_by'           => $user->id_user,
-      'alasanReAssignDealer' => $this->input->post('alasanReAssignDealer', true),
+      'alasanReAssignDealer' => $alasanReAssignDealer,
       'alasanReAssignDealerLainnya' => $alasanReAssignDealerLainnya == '' ? NULL : $alasanReAssignDealerLainnya,
     ];
     // send_json($lead);
