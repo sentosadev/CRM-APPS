@@ -1471,7 +1471,7 @@ class Leads_model extends CI_Model
   ");
   }
 
-  function post_to_api3($leads_id)
+  function post_to_api3($leads_id, $interaksi_id = false)
   {
     $this->load->helper('api');
     $this->load->model('dealer_model', 'dlm');
@@ -1526,9 +1526,15 @@ class Leads_model extends CI_Model
       'tanggalNextFU' => $leads->tanggalNextFU,
       'keteranganNextFollowUp' => $leads->keteranganNextFollowUp,
     ];
-    $ld = ['leads_id' => $leads->leads_id];
-    $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
-    return ['prospek' => $prospek, 'interaksi' => $interaksi];
+    if ($interaksi_id == false) {
+      $ld = ['leads_id' => $leads->leads_id];
+      $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
+      return ['prospek' => $prospek, 'interaksi' => $interaksi];
+    } else {
+      $ld = ['leads_id' => $leads->leads_id, 'interaksi_id' => $interaksi_id];
+      $interaksi = $this->db->get_where('leads_interaksi', $ld)->result();
+      return ['interaksi' => $interaksi];
+    }
   }
 
   function getLeadsBelumAssignDealer($select = false)
@@ -1632,5 +1638,13 @@ class Leads_model extends CI_Model
       'setleads' => 1,
     ];
     $this->db->update('staging_table_leads', $setleads, ['stage_id' => $pst['stage_id']]);
+
+    //Cek Apakah Leads Sudah Prospek. Jika Sudah Prospek Kirim Interaksi Ke NMS
+    $cek_prospek = $this->db->query("SELECT idProspek FROM leads WHERE leads_id='$leads_id' AND IFNULL(idProspek,'')!=''")->row();
+    if ($cek_prospek != null) {
+      //Melakukan Pengiriman API 3 Hanya Interaksi Saja
+      $data = $this->ld_m->post_to_api3($leads_id, $interaksi_id);
+      send_api_post($data, 'mdms', 'nms', 'api_3');
+    }
   }
 }
