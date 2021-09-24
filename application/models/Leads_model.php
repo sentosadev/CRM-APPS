@@ -1473,6 +1473,8 @@ class Leads_model extends CI_Model
 
   function post_to_api3($leads_id, $interaksi_id = false)
   {
+    $this->db_live = $this->load->database('sinsen_live', true);
+
     $this->load->helper('api');
     $this->load->model('dealer_model', 'dlm');
     $this->load->model('kelurahan_model', 'kelm');
@@ -1480,6 +1482,7 @@ class Leads_model extends CI_Model
     $leads = $this->getLeads(['leads_id' => $leads_id])->row();
     $fp = ['id_cdb' => $leads->sourceData];
     $sumber_prospek = $this->sprm->getSumberProspekFromOtherDB($fp)->row()->id;
+    $id_event = $this->db_live->query("SELECT id_event FROM ms_event WHERE nama_event='$leads->deskripsiEvent' OR ms_event.description='$leads->deskripsiEvent'")->row();
     $prospek = [
       'leads_id' => $leads->leads_id,
       'kode_dealer_md' => $leads->assignedDealer,
@@ -1525,6 +1528,9 @@ class Leads_model extends CI_Model
       'deskripsiEvent' => $leads->deskripsiEvent,
       'tanggalNextFU' => $leads->tanggalNextFU,
       'keteranganNextFollowUp' => $leads->keteranganNextFollowUp,
+      'test_ride_preference' => $leads->minatRidingTest,
+      'tgl_tes_kendaraan' => $leads->jadwalRidingTest,
+      'id_event' => $id_event == null ? null : $id_event->id_event,
     ];
     if ($interaksi_id == false) {
       $ld = ['leads_id' => $leads->leads_id];
