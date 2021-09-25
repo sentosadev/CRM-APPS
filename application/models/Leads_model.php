@@ -291,7 +291,7 @@ class Leads_model extends CI_Model
         " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md,
         " . sql_convert_date_dmy('stl.periodeAwalEvent') . " periodeAwalEventId,
         " . sql_convert_date_dmy('stl.periodeAkhirEvent') . " periodeAkhirEventId,
-        batasOntimeSLA1,stl.periodeAwalEvent,stl.periodeAkhirEvent,batasOnTimeSLA2,platform_for
+        batasOntimeSLA1,stl.periodeAwalEvent,stl.periodeAkhirEvent,batasOntimeSLA2,platform_for
         ";
 
     if ($filter != null) {

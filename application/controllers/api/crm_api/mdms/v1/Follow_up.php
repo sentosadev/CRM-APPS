@@ -161,7 +161,7 @@ class Follow_up extends CI_Controller
       $status = 0;
       $message = 'Leads ID tidak ditemukan';
     }
-    return ['status' => $status, 'message' => $message];
+    return ['status' => $status,'data'=>$update_leads, 'message' => $message];
   }
 
   function _stageId_10($post)
