@@ -114,7 +114,11 @@ class Upload_leads_model extends CI_Model
         $order_clm  = $order_column[$order['0']['column']];
         $order_by   = $order['0']['dir'];
         $order_data = " ORDER BY $order_clm $order_by ";
+      } else {
+        $order_data = "ORDER BY mu.created_at DESC";
       }
+    } else {
+      $order_data = "ORDER BY mu.created_at DESC";
     }
 
     $limit = '';
@@ -129,8 +133,8 @@ class Upload_leads_model extends CI_Model
     JOIN ms_platform_data pd ON pd.id_platform_data=mu.id_platform_data
     LEFT JOIN staging_table_leads stl ON stl.noHP=mu.no_hp
     $where
-    $order_data
     GROUP BY mu.leads_id
+    $order_data
     $limit
     ");
   }

@@ -54,7 +54,7 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Gender *</label>
+      <label class="col-sm-2 control-label">Gender</label>
       <div class="form-input">
         <div class="col-sm-1">
           <input type="radio" name="gender" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->gender == '1' ? 'checked' : '' ?> <?= $disabled ?>> Pria
@@ -95,10 +95,10 @@
           <input type="text" class="form-control datepicker" name='tanggalPembelianTerakhir' value='<?= $row->tanggalPembelianTerakhir ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP) *</label>
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (KTP)</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaanKtp' <?= $disabled ?> required>
+          <select style='width:100%' id="kodePekerjaan" class='form-control' name='kodePekerjaanKtp' <?= $disabled ?>>
             <option value='<?= $row->kodePekerjaanKtp ?>'><?= $row->deskripsiPekerjaanKtp ?></option>
           </select>
         </div>
@@ -111,10 +111,10 @@
           <input type="text" class="form-control" name='deskripsiTipeUnitPembelianTerakhir' value='<?= $row->deskripsiTipeUnitPembelianTerakhir ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (Saat Ini) *</label>
+      <label class="col-sm-2 control-label">Deskripsi Pekerjaan (Saat Ini)</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="kodeSubPekerjaan" class='form-control' name='kodePekerjaan' <?= $disabled ?> required>
+          <select style='width:100%' id="kodeSubPekerjaan" class='form-control' name='kodePekerjaan' <?= $disabled ?>>
             <option value='<?= $row->kodePekerjaan ?>'><?= $row->deskripsiPekerjaan ?></option>
           </select>
         </div>
@@ -142,10 +142,10 @@
           <input type="text" class="form-control" name='namaDealerPreferensiCustomer' value='<?= $row->namaDealerPreferensiCustomer ?>' <?= $disabled ?>>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Pendidikan *</label>
+      <label class="col-sm-2 control-label">Pendidikan</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select required style='width:100%' id="idPendidikan" class='form-control' name='idPendidikan' <?= $disabled ?>>
+          <select style='width:100%' id="idPendidikan" class='form-control' name='idPendidikan' <?= $disabled ?>>
             <option value='<?= $row->idPendidikan ?>'><?= $row->deskripsiPendidikan ?></option>
           </select>
         </div>
@@ -163,10 +163,10 @@
       <div class="col-sm-6 col-md-6">
         <div class="form-group">
 
-          <label class="col-sm-4 control-label">Agama *</label>
+          <label class="col-sm-4 control-label">Agama</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select style='width:100%' id="idAgama" class='form-control' name='idAgama' <?= $disabled ?> required>
+              <select style='width:100%' id="idAgama" class='form-control' name='idAgama' <?= $disabled ?>>
                 <option value='<?= $row->idAgama ?>'><?= $row->deskripsiAgama ?></option>
               </select>
             </div>
@@ -176,7 +176,7 @@
           <label class="col-sm-4 control-label">Pengeluaran</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select style='width:100%' id="pengeluaran" class='form-control' name='pengeluaran' <?= $disabled ?> required>
+              <select style='width:100%' id="pengeluaran" class='form-control' name='pengeluaran' <?= $disabled ?>>
                 <option value='<?= $row->pengeluaran ?>'><?= $row->deskripsiPengeluaran ?></option>
               </select>
             </div>
@@ -193,30 +193,30 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Provinsi *</label>
+      <label class="col-sm-2 control-label">Provinsi</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_provinsi_from_other_db" class='form-control' name='provinsi' <?= $disabled ?> required>
+          <select style='width:100%' id="id_provinsi_from_other_db" class='form-control' name='provinsi' <?= $disabled ?>>
             <option value='<?= $row->provinsi ?>'><?= $row->deskripsiProvinsiDomisili ?></option>
           </select>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kabupaten / Kota Domisili *</label>
+      <label class="col-sm-2 control-label">Kabupaten / Kota Domisili</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kabupaten_kota_from_other_db" class='form-control' name='kabupaten' <?= $disabled ?> required>
+          <select style='width:100%' id="id_kabupaten_kota_from_other_db" class='form-control' name='kabupaten' <?= $disabled ?>>
             <option value='<?= $row->kabupaten ?>'><?= $row->deskripsiKabupatenKotaDomisili ?></option>
           </select>
         </div>
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kecamatan Domisili *</label>
+      <label class="col-sm-2 control-label">Kecamatan Domisili</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kecamatan_from_other_db" class='form-control' name='kecamatan' <?= $disabled ?> required>
+          <select style='width:100%' id="id_kecamatan_from_other_db" class='form-control' name='kecamatan' <?= $disabled ?>>
             <option value='<?= $row->kecamatan ?>'><?= $row->deskripsiKecamatanDomisili ?></option>
           </select>
         </div>
@@ -229,10 +229,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kelurahan Domisili *</label>
+      <label class="col-sm-2 control-label">Kelurahan Domisili</label>
       <div class="form-input">
         <div class="col-sm-4">
-          <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?> required>
+          <select style='width:100%' id="id_kelurahan_from_other_db" class='form-control' name='kelurahan' <?= $disabled ?>>
             <option value='<?= $row->kelurahan ?>'><?= $row->deskripsiKelurahanDomisili ?></option>
           </select>
         </div>
@@ -260,108 +260,8 @@
         </div>
       </div>
     </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Jenis Motor Yangg Dimiliki Sekarang</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="idJenisMotorYangDimilikiSekarang" class='form-control' name='idJenisMotorYangDimilikiSekarang' <?= $disabled ?>>
-            <option value='<?= $row->idJenisMotorYangDimilikiSekarang ?>'><?= $row->jenisMotorYangDimilikiSekarang ?></option>
-          </select>
-        </div>
-      </div>
-      <label class="col-sm-2 control-label">Merk Motor Yang Dimiliki Sekarang</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="idMerkMotorYangDimilikiSekarang" class='form-control' name='idMerkMotorYangDimilikiSekarang' <?= $disabled ?>>
-            <option value='<?= $row->idMerkMotorYangDimilikiSekarang ?>'><?= $row->merkMotorYangDimilikiSekarang ?></option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Yang Menggunakan Sepeda Motor</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="yangMenggunakanSepedaMotor" class='form-control' name='yangMenggunakanSepedaMotor' <?= $disabled ?>>
-            <option></option>
-            <?php $list = ['Saya Sendiri', 'Anak', 'Pasangan Suami/Istri'];
-            foreach ($list as $val) { ?>
-              <option value='<?= $val ?>' <?= $val == $row->yangMenggunakanSepedaMotor ? 'selected' : '' ?>><?= $val ?></option>
-            <?php } ?>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Longitude</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="number" class="form-control" name='longitude' value='<?= $row->longitude ?>' <?= $disabled ?>>
-        </div>
-      </div>
-      <label class="col-sm-2 control-label">Latitude</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="number" class="form-control" id='latitude' name='latitude' value='<?= $row->latitude ?>' <?= $disabled ?>>
 
-        </div>
-      </div>
-    </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">No. KK</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="number" class="form-control" name='noKK' value='<?= $row->noKK ?>' <?= $disabled ?>>
-        </div>
-      </div>
-      <label class="col-sm-2 control-label">No. NPWP</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="number" class="form-control" id='npwp' name='npwp' value='<?= $row->npwp ?>' <?= $disabled ?>>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Tempat Lahir</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="text" class="form-control" name='tempatLahir' value='<?= $row->tempatLahir ?>' <?= $disabled ?>>
-        </div>
-      </div>
-      <label class="col-sm-2 control-label">Tgl. Lahir *</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <input type="text" class="form-control datepicker" id='tanggalLahir' name='tanggalLahir' value='<?= $row->tanggalLahir ?>' <?= $disabled ?> required>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Jenis Customer *</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="jenisCustomer" class='form-control' name='jenisCustomer' <?= $disabled ?> required>
-            <option value=""></option>
-            <?php $list = ['regular' => 'Regular', 'group_customer' => 'Group Customer'];
-            foreach ($list as $key => $val) { ?>
-              <option value='<?= $key ?>' <?= $key == $row->jenisCustomer ? 'selected' : '' ?>><?= $val ?></option>
-            <?php } ?>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Jenis Kewarganegaraan</label>
-      <div class="form-input">
-        <div class="col-sm-4">
-          <select style='width:100%' id="jenisKewarganegaraan" class='form-control' name='jenisKewarganegaraan' <?= $disabled ?>>
-            <option value=""></option>
-            <?php $list = ['WNA' => 'WNA', 'WNI' => 'WNI'];
-            foreach ($list as $key => $val) { ?>
-              <option value='<?= $key ?>' <?= $key == $row->jenisKewarganegaraan ? 'selected' : '' ?>><?= $val ?></option>
-            <?php } ?>
-          </select>
-        </div>
-      </div>
       <label class="col-sm-2 control-label">Rencana Pembayaran</label>
       <div class="form-input">
         <div class="col-sm-4">
@@ -372,17 +272,6 @@
               <option value='<?= $key ?>' <?= $key == $row->rencanaPembayaran ? 'selected' : '' ?>><?= $val ?></option>
             <?php } ?>
           </select>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Prioritas Prospect Customer</label>
-      <div class="form-input">
-        <div class="col-sm-1">
-          <input type="radio" name="prioritasProspekCustomer" value="1" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->prioritasProspekCustomer == '1' ? 'checked' : '' ?> <?= $disabled ?>> Ya
-        </div>
-        <div class="col-sm-3">
-          <input type="radio" name="prioritasProspekCustomer" value="0" class="flat-red" style="position: absolute; opacity: 0;" <?= $row->prioritasProspekCustomer == '0' ? 'checked' : '' ?> <?= $disabled ?>> Tidak
         </div>
       </div>
     </div>

@@ -96,6 +96,19 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
             <div class="form-group">
+              <label class="col-sm-4 control-label">Status Komunikasi Fol. Up <?= $fol_up_sekarang ?> *</label>
+              <div class="form-input">
+                <div class="col-sm-8">
+                  <select style="width:100%" id="id_status_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_status_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?> required <?= $set_disabled ?>>
+                    <?php if (isset($list_follow_up[$fol_up_sekarang])) {
+                      $lfu = $list_follow_up[$fol_up_sekarang]; ?>
+                      <option value='<?= $lfu['id_status_fu'] ?>'><?= $lfu['status_fu'] ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-4 control-label">Tgl. Next Follow Up <span id="tglNextFollowUpLabel_<?= $fol_up_sekarang ?>"></span></label>
               <div class="form-input">
                 <div class="col-sm-8">
@@ -160,19 +173,6 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Status Komunikasi Fol. Up <?= $fol_up_sekarang ?> *</label>
-              <div class="form-input">
-                <div class="col-sm-8">
-                  <select style="width:100%" id="id_status_fu_<?= $fol_up_sekarang ?>" class='form-control' name='id_status_fu_<?= $fol_up_sekarang ?>' <?= $disabled ?> required <?= $set_disabled ?>>
-                    <?php if (isset($list_follow_up[$fol_up_sekarang])) {
-                      $lfu = $list_follow_up[$fol_up_sekarang]; ?>
-                      <option value='<?= $lfu['id_status_fu'] ?>'><?= $lfu['status_fu'] ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-            </div>
             <script>
               $(document).ready(function() {
                 $('#input_kodeHasilStatusFollowUp_<?= $fol_up_sekarang ?>').hide();

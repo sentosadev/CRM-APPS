@@ -123,7 +123,8 @@ class Follow_up extends CI_Controller
           'created_at'                          => waktu()
         ];
 
-        if ($ld->ontimeSLA2 == 0 || (string)$ld->ontimeSLA2 == '') {
+        // send_json($ld);
+        if ($ld->ontimeSLA2Field == 0 || (string)$ld->ontimeSLA2Field == '') {
           // Update ontimeSLA2
           $ontimeSLA2_detik = $this->ld_m->setOntimeSLA2_detik($ld->tanggalAssignDealer, $post['tglFollowUp']);
           $update_leads['leads_id'] = $leads_id;
@@ -161,7 +162,7 @@ class Follow_up extends CI_Controller
       $status = 0;
       $message = 'Leads ID tidak ditemukan';
     }
-    return ['status' => $status,'data'=>$update_leads, 'message' => $message];
+    return ['status' => $status,'data'=>isset($update_leads)?$update_leads:null, 'message' => $message];
   }
 
   function _stageId_10($post)

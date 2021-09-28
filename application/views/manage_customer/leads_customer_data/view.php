@@ -337,6 +337,9 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
       "processing": true,
       "serverSide": true,
       "scrollX": true,
+      "order": [
+        [1, "desc"]
+      ],
       "language": {
         "infoFiltered": "",
         "processing": "<p style='font-size:20pt;background:#d9d9d9b8;color:black;width:100%'><i class='fa fa-refresh fa-spin'></i></p>",
@@ -393,6 +396,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
           "targets": [0, 18],
           "orderable": false
         },
+
         {
           "targets": [16, 17, 18],
           "className": 'text-center'

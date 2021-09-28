@@ -276,9 +276,8 @@ class Leads_model extends CI_Model
         ($hasil_fu) deskripsiHasilStatusFollowUp,
         ($last_kodeHasilStatusFollowUp) kodeHasilStatusFollowUp,
         ($tanggalNextFU) tanggalNextFU,
-        ($keteranganNextFollowUp) keteranganNextFollowUp,
-        preferensiPromoDiminatiCustomer,
-        CASE WHEN ($pernahTerhubung) = 4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
+        ($keteranganNextFollowUp) keteranganNextFollowUp,kodeTypeUnitProspect,
+        preferensiPromoDiminatiCustomer,kodeWarnaUnitProspect,kodeTypeUnitDeal,kodeWarnaUnitDeal,deskripsiPromoDeal,CASE WHEN ($pernahTerhubung) = 4 THEN 'Ya' ELSE 'Tidak' END pernahTerhubung,
         kodeDealerPembelianSebelumnya,dl_beli_sebelumnya.nama_dealer namaDealerPembelianSebelumnya,
         plm.pengeluaran deskripsiPengeluaran,stl.pengeluaran,need_fu_md,($sla) sla,($sla2)sla2,
         " . sql_convert_date('tanggalRegistrasi') . " tanggalRegistrasiEng,
@@ -291,7 +290,7 @@ class Leads_model extends CI_Model
         " . sql_convert_date('(' . $tgl_follow_up_md . ')') . " tgl_follow_up_md,
         " . sql_convert_date_dmy('stl.periodeAwalEvent') . " periodeAwalEventId,
         " . sql_convert_date_dmy('stl.periodeAkhirEvent') . " periodeAkhirEventId,
-        batasOntimeSLA1,stl.periodeAwalEvent,stl.periodeAkhirEvent,batasOntimeSLA2,platform_for
+        batasOntimeSLA1,stl.periodeAwalEvent,stl.periodeAkhirEvent,batasOntimeSLA2,platform_for,stl.ontimeSLA2 ontimeSLA2Field
         ";
 
     if ($filter != null) {
@@ -551,6 +550,8 @@ class Leads_model extends CI_Model
         $order_clm  = $order_column[$order['0']['column']];
         $order_by   = $order['0']['dir'];
         $order_data = " ORDER BY $order_clm $order_by ";
+      } else {
+        $order_data = "ORDER BY customerActionDate DESC";
       }
     }
 
@@ -1483,6 +1484,7 @@ class Leads_model extends CI_Model
     $fp = ['id_cdb' => $leads->sourceData];
     $sumber_prospek = $this->sprm->getSumberProspekFromOtherDB($fp)->row()->id;
     $id_event = $this->db_live->query("SELECT id_event FROM ms_event WHERE nama_event='$leads->deskripsiEvent' OR ms_event.description='$leads->deskripsiEvent'")->row();
+    $riding = explode(' ', $leads->jadwalRidingTest);
     $prospek = [
       'leads_id' => $leads->leads_id,
       'kode_dealer_md' => $leads->assignedDealer,
@@ -1521,7 +1523,7 @@ class Leads_model extends CI_Model
       'instagram' => $leads->instagram,
       'twitter' => $leads->twitter,
       'customerType' => $leads->customerType,
-      'batasOnTimeSLA2' => $leads->batasOnTimeSLA2,
+      'batasOnTimeSLA2' => $leads->batasOntimeSLA2,
       'platformData' => $leads->platformData,
       'periodeAwalEvent' => $leads->periodeAwalEvent,
       'periodeAkhirEvent' => $leads->periodeAkhirEvent,
@@ -1529,7 +1531,8 @@ class Leads_model extends CI_Model
       'tanggalNextFU' => $leads->tanggalNextFU,
       'keteranganNextFollowUp' => $leads->keteranganNextFollowUp,
       'test_ride_preference' => $leads->minatRidingTest,
-      'tgl_tes_kendaraan' => $leads->jadwalRidingTest,
+      'tgl_tes_kendaraan' => $riding[0],
+      'jam_tes_kendaraan' => isset($riding[1]) ? $riding[1] : null,
       'id_event' => $id_event == null ? null : $id_event->id_event,
     ];
     if ($interaksi_id == false) {

@@ -57,20 +57,20 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati *</label>
+          <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select style='width:100%' id="id_tipe_from_other_db" class='form-control' name='kodeTypeUnit' <?= $disabled ?> required>
+              <select style='width:100%' id="id_tipe_from_other_db" class='form-control' name='kodeTypeUnit' <?= $disabled ?>>
                 <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
               </select>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-4 control-label">Kode & Warna Motor Diminati *</label>
+          <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
           <div class="form-input">
             <div class="col-sm-8">
-              <select style="width:100%" id="id_warna_from_other_db" class='form-control' name='kodeWarnaUnit' <?= $disabled ?> required>
+              <select style="width:100%" id="id_warna_from_other_db" class='form-control' name='kodeWarnaUnit' <?= $disabled ?>>
                 <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
               </select>
             </div>

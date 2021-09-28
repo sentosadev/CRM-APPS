@@ -69,6 +69,7 @@ class Mft5 extends CI_Controller
         //Cek alasanNotProspectNotDeal
         if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '2' || (string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '4') { //2=Not Prospect, 4=Not Deal
           if ((string)$ld_fol->alasanNotProspectNotDeal == '') {
+            // send_json($ld_fol);
             $error[] = 'alasanNotProspectNotDeal';
           }
         }

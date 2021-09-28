@@ -1700,14 +1700,14 @@ class Leads_customer_data extends Crm_Controller
                       if ($validasi) {
                         $error[$baris][] = $validasi;
                       } else {
-                        $id_alasan = $row[9];
+                        $id_alasan = $row[8];
                         $lainnya = $row[9];
                       }
                     }
                   }
                   $data = [
                     'leads_id' => $row[0],
-                    'kode_dealer' => $row[1],
+                    'kode_dealer' => $row[7],
                     'id_alasan' => $id_alasan,
                     'lainnya' => $lainnya,
                   ];
@@ -1762,6 +1762,8 @@ class Leads_customer_data extends Crm_Controller
           'created_at' => waktu(),
           'stageId' => 5
         ];
+
+        // send_json(['insert_history_assigned' => $insert_history_assigned]);
         $this->db->trans_begin();
         $this->db->update('leads', $update, ['leads_id' => $leads_id]);
         if (isset($ins_history_stage)) {
