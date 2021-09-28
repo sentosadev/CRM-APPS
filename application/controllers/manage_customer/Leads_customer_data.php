@@ -866,15 +866,31 @@ class Leads_customer_data extends Crm_Controller
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
     } else {
       $this->db->trans_commit();
-      //Cek Apakah Gagal Dihubungi Sebanyak 3x
+      //Cek Apakah Gagal Dihubungi Sebanyak 3x Berturut-turun Berbeda Tanggal
       $ffol = [
         'leads_id' => $gr->leads_id,
-        'select' => 'count',
-        'id_kategori_status_komunikasi_not' => 4
+        // 'id_kategori_status_komunikasi_not' => 4
       ];
-      $cek_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
+      $fol = $this->ld_m->getLeadsFollowUp($ffol)->result();
+      // send_json($fol);
+      $cek = 1;
+      $last_tanggal = [];
+      $data_last_tanggal = [];
+      foreach ($fol as $fl) {
+        $tgl_fol = explode(' ', $fl->tglFollowUp);
+        $data_last_tanggal[$tgl_fol[0]][] = $fl->id_kategori_status_komunikasi;
+      }
+      $set_not = 1;
+      foreach ($data_last_tanggal as $dt) {
+        foreach ($dt as $d) {
+          if ($d == 4) {
+            $set_not = 0;
+          }
+        }
+      }
+
       $pesan = '';
-      if ($cek_fol == 3) {
+      if ($set_not == 1) {
         $flast = [
           'leads_id' => $gr->leads_id,
           'order' => "followUpID DESC"
