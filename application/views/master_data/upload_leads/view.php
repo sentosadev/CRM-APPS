@@ -40,6 +40,7 @@
             <th>Kabupaten</th>
             <th>Source Data</th>
             <th>Platform Data</th>
+            <th>RO</th>
             <th>Status API1</th>
             <th>Status API2</th>
           </thead>
@@ -218,10 +219,10 @@
           "targets": [0],
           "orderable": false
         },
-        // {
-        //   "targets": [0, 6, 7],
-        //   "className": 'text-center'
-        // },
+        {
+          "targets": [12, 13, 14],
+          "className": 'text-center'
+        },
         // {
         //   "targets": [3],
         //   "className": 'text-right'

@@ -45,10 +45,10 @@ class Upload_leads extends Crm_Controller
       $params      = [
         'get'   => "id = "
       ];
-      $aktif = '';
-      // if ($rs->aktif == 1) {
-      //   $aktif = '<i class="fa fa-check"></i>';
-      // }
+      $ro = '';
+      if ((string)$rs->kodeDealerSebelumnya != '') {
+        $ro = '<i class="fa fa-check"></i>';
+      }
 
       if ($rs->acceptedVe == 1) {
         $status_api1 = '<label class="label label-success">Accepted</label>';
@@ -75,6 +75,7 @@ class Upload_leads extends Crm_Controller
       $sub_array[] = $rs->kabupaten_kota;
       $sub_array[] = $rs->source_leads;
       $sub_array[] = $rs->platform_data;
+      $sub_array[] = $ro;
       $sub_array[] = $status_api1;
       $sub_array[] = $status_api2;
       // $sub_array[] = link_on_data_details($params, $user->id_user);

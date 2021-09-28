@@ -102,13 +102,14 @@ class Upload_leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,acceptedVe,mu.leads_id,errorMessageFromVe,($status_api2) status_api2,mu.kode_event,mu.id_source_leads";
+        $select = "mu.id_leads_int,mu.event_code_invitation,mu.kode_md,mu.nama,mu.no_hp,mu.no_telp,mu.email,mu.deskripsi_event, mu.created_at, mu.created_by, mu.updated_at, mu.updated_by,mu.status,sc.source_leads,pd.platform_data,kab.kabupaten_kota,acceptedVe,mu.leads_id,errorMessageFromVe,($status_api2) status_api2,mu.kode_event,mu.id_source_leads,mu.kodeDealerSebelumnya";
       }
     }
 
     $order_data = '';
     if (isset($filter['order'])) {
-      $order_column = [null, 'leads_id', 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', 'mu.acceptedVe', "($status_api2)"];
+      $is_ro = "CASE WHEN IFNULL(kodeDealerSebelumnya,'')='' THEN 0 ELSE 1 END ";
+      $order_column = [null, 'leads_id', 'event_code_invitation', 'deskripsi_event', 'mu.kode_md', 'mu.nama', 'mu.no_hp', 'mu.no_telp', 'mu.email', 'kabupaten_kota', 'source_leads', 'platform_data', $is_ro, 'mu.acceptedVe', "($status_api2)"];
       $order = $filter['order'];
       if ($order != '') {
         $order_clm  = $order_column[$order['0']['column']];
