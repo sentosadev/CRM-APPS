@@ -143,6 +143,9 @@ if (in_array('selectPekerjaan', $data)) { ?>
         }
       });
     });
+    $(document.body).on("change", "#kodePekerjaan", function() {
+      $('#kodeSubPekerjaan').val(null).trigger('change');
+    });
   </script>
 <?php } ?>
 

@@ -176,7 +176,7 @@ class Pekerjaan_model extends CI_Model
       $this->db->insert_batch('ms_pekerjaan', $ins_pekerjaan_batch);
     }
     if (isset($upd_pekerjaan_batch)) {
-      $this->db->update_batch('ms_pekerjaan', $upd_pekerjaan_batch, 'id_pekerjaan');
+      $this->db->update_batch('ms_pekerjaan', $upd_pekerjaan_batch, 'kode_pekerjaan');
     }
   }
 

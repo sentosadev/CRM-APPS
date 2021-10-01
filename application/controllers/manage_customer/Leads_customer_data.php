@@ -869,7 +869,7 @@ class Leads_customer_data extends Crm_Controller
       //Cek Apakah Gagal Dihubungi Sebanyak 3x Berturut-turun Berbeda Tanggal
       $ffol = [
         'leads_id' => $gr->leads_id,
-        // 'id_kategori_status_komunikasi_not' => 4
+        'order'=>" followUpKe ASC"
       ];
       $fol = $this->ld_m->getLeadsFollowUp($ffol)->result();
       // send_json($fol);
@@ -881,16 +881,19 @@ class Leads_customer_data extends Crm_Controller
         $data_last_tanggal[$tgl_fol[0]][] = $fl->id_kategori_status_komunikasi;
       }
       $set_not = 1;
-      foreach ($data_last_tanggal as $dt) {
+      $cek=0;
+      foreach ($data_last_tanggal as $key=>$dt) {
+        $set_not = 1;
+        $cek++;
         foreach ($dt as $d) {
           if ($d == 4) {
             $set_not = 0;
+            $cek=0;
           }
         }
       }
-
       $pesan = '';
-      if ($set_not == 1) {
+      if ($set_not == 1 && $cek==3) {
         $flast = [
           'leads_id' => $gr->leads_id,
           'order' => "followUpID DESC"
@@ -902,7 +905,7 @@ class Leads_customer_data extends Crm_Controller
       }
       $response = [
         'status' => 1,
-        'pesan' => 'Berhasil menyimpan data ' . $pesan
+        'pesan' => 'Berhasil menyimpan data' . $pesan
       ];
     }
     send_json($response);
