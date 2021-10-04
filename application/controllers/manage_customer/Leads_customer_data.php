@@ -191,7 +191,13 @@ class Leads_customer_data extends Crm_Controller
     if (user()->kode_dealer != NULL) {
       $filter['assignedDealer'] = user()->kode_dealer;
     }
+    
     $filter['show_hasil_fu_not_prospect'] = $this->input->post('show_hasil_fu_not_prospect');
+    if (isset($filter['kodeHasilStatusFollowUpIn'])) {
+      if (in_array(2,$filter['kodeHasilStatusFollowUpIn'])) {
+        $filter['show_hasil_fu_not_prospect'] = 1;
+      }
+    }
 
     if ($this->input->post('filterBelumFUMD') == 'true') {
       $filter['jumlah_fu_md'] = 0;
