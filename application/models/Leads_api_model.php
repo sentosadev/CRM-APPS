@@ -162,7 +162,7 @@ class Leads_api_model extends CI_Model
       ];
       if ($eventCodeInvitation == '') {
         $finv = [
-          'no_hp_or_no_telp_email_or_event_code_invitation' => [$noHP, $noTelp, $email, $eventCodeInvitation]
+          'no_hp_or_no_telp_email_or_event_code_invitation' => [$noHP, $noTelp, (string)$email, $eventCodeInvitation]
         ];
       }
       $cek_invited = $this->upload_leads->getLeads($finv)->row();
@@ -311,19 +311,7 @@ class Leads_api_model extends CI_Model
         if (!in_array($concat, $insert_series_tipe_motor)) {
           $insert_series_tipe_motor[] = $concat;
         }
-      }
-
-      // Cek cmsSource
-      $cmsSource = clear_removed_html($pst['cmsSource']);
-      if ($cmsSource != '') {
-        $fcms = ['kode_cms_source' => $cmsSource];
-        $cek_cms_source = $this->cms_source->getCMSSource($fcms)->row();
-        if ($cek_cms_source == NULL) {
-          $errMsg = 'CMS Source : ' . $cmsSource . ' tidak ditemukan';
-          $reject[$noHP] = $errMsg;
-          $errMessages .= $errMsg . '. ';
-        }
-      }
+      }     
 
       // Cek segmentMotor
       $segmentMotor = clear_removed_html($pst['segmentMotor']);
@@ -341,6 +329,24 @@ class Leads_api_model extends CI_Model
       $customerType = clear_removed_html($pst['customerType']);
       if ($customerType != 'V') {
         $customerType = 'R';
+      }
+
+      // Cek cmsSource
+      $cmsSource = clear_removed_html($pst['cmsSource']);
+      if (strtolower($customerType)=='v') {
+        if ((string)$cmsSource != '') {
+          $fcms = ['kode_cms_source' => $cmsSource];
+          $cek_cms_source = $this->cms_source->getCMSSource($fcms)->row();
+          if ($cek_cms_source == NULL) {
+            $errMsg = 'CMS Source : ' . $cmsSource . ' tidak ditemukan';
+            $reject[$noHP] = $errMsg;
+            $errMessages .= $errMsg . '. ';
+          }
+        }else{
+          $errMsg        = 'CMS Source wajib diisi. Invited customer';
+          $reject[$noHP] = $errMsg;
+          $errMessages .= $errMsg . '. ';
+        }
       }
 
       if (in_array($noHP, array_keys($reject))) {
