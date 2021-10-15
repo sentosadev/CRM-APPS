@@ -53,7 +53,7 @@ class Mft5 extends CI_Controller
           if ($cek_alasan == NULL) {
             $error[] = 'alasanTidakKeDealerSebelumnya';
           } else {
-            $alasanTidakKeDealerSebelumnya = $cek_alasan->alasanReAssignDealer;
+            $alasanTidakKeDealerSebelumnya = $cek_alasan->id_alasan;
           }
         }
       }
@@ -192,7 +192,7 @@ class Mft5 extends CI_Controller
         unset($list_leads[$key]);
       }
     }
-    // send_json($set_err);
+    send_json($list_leads);
     if (count($list_leads) > 0) {
       $this->_generatedFileMFT($list_leads, $set_err);
     }
