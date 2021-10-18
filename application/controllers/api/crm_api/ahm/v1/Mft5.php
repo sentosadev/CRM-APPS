@@ -58,7 +58,17 @@ class Mft5 extends CI_Controller
         }
       }
 
+      //Set Untuk Follow Up Dealer
+      $picFollowUpD='';
       if ($ld_fol != NULL) {
+        $followUpID                             = $ld_fol->followUpID;
+        $tglFollowUp                            = $ld_fol->tglFollowUp;
+        $id_status_fu                           = $ld_fol->id_status_fu;
+        $kodeHasilStatusFollowUp                = $ld_fol->kodeHasilStatusFollowUp;
+        $kodeAlasanNotProspectNotDeal           = $ld_fol->kodeAlasanNotProspectNotDeal;
+        $keteranganLainnyaNotProspectNotDeal    = $ld_fol->keteranganLainnyaNotProspectNotDeal;
+        $tglNextFollowUp                        = $ld_fol->tglNextFollowUp;
+        $keteranganNextFollowUp                 = $ld_fol->keteranganNextFollowUp;
         // Cek kodeHasilStatusFollowUp  
         if ((string)strtolower($ld_fol->kategori_status_komunikasi) == 'contacted') {
           if ((string)$ld_fol->kodeHasilStatusFollowUp == '') {
@@ -141,6 +151,113 @@ class Mft5 extends CI_Controller
             $error[] = 'kodeLeasingDeal';
           }
         }
+
+        //PIC Follow Up Dealer
+        $picFollowUpD = $ld_fol->pic;
+      }
+
+
+      //Follow Up MD
+      $fhis = [
+        'leads_id' => $lds->leads_id,
+        'assignedDealerIsNULL' => true,
+        'order' => 'followUpKe DESC'
+      ];
+      $ld_fol_md = $this->ld_m->getLeadsFollowUp($fhis)->row();
+      if ($ld_fol == NULL) {
+        $followUpID                             = $ld_fol_md->followUpID;
+        $tglFollowUp                            = $ld_fol_md->tglFollowUp;
+        $id_status_fu                           = $ld_fol_md->id_status_fu;
+        $kodeHasilStatusFollowUp                = $ld_fol_md->kodeHasilStatusFollowUp;
+        $kodeAlasanNotProspectNotDeal           = $ld_fol_md->kodeAlasanNotProspectNotDeal;
+        $keteranganLainnyaNotProspectNotDeal    = $ld_fol_md->keteranganLainnyaNotProspectNotDeal;
+        $tglNextFollowUp                        = $ld_fol_md->tglNextFollowUp;
+        $keteranganNextFollowUp                 = $ld_fol_md->keteranganNextFollowUp;
+        // Cek kodeHasilStatusFollowUp  
+        if ((string)strtolower($ld_fol_md->kategori_status_komunikasi) == 'contacted') {
+          if ((string)$ld_fol_md->kodeHasilStatusFollowUp == '') {
+            $error[] = 'kodeHasilStatusFollowUp';
+          }
+        }
+
+        //Cek alasanNotProspectNotDeal
+        if ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '2' || (string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '4') { //2=Not Prospect, 4=Not Deal
+          if ((string)$ld_fol_md->alasanNotProspectNotDeal == '') {
+            // send_json($ld_fol);
+            $error[] = 'alasanNotProspectNotDeal';
+          }
+        }
+
+        //Cek keteranganLainnyaNotProspectNotDeal
+        if ((string)strtolower($ld_fol_md->kodeAlasanNotProspectNotDeal) == '5') { //5=Lainnya
+          if ((string)$ld_fol_md->keteranganLainnyaNotProspectNotDeal == '') {
+            $error[] = 'keteranganLainnyaNotProspectNotDeal';
+          }
+        }
+
+        //Cek tanggalNextFU
+        if ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '1') { //1=Prospect
+          if ((string)$ld_fol_md->tglNextFollowUp == '') {
+            $error[] = 'tanggalNextFU';
+          }
+        } elseif ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '3') { //3=Deal
+          if ((string)$ld_fol_md->tglNextFollowUp == '') {
+            $error[] = 'tanggalNextFU';
+          }
+        }
+
+        //Cek statusProspect
+        if ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '1') { //1=Prospect
+          if ((string)$ld->statusProspek == '') {
+            $error[] = 'statusProspect';
+          }
+        }
+
+        //Cek kodeTypeUnitProspect & kodeWarnaUnitProspect
+        if ((string)strtolower($ld_fol_md->kodeAlasanNotProspectNotDeal) == '3' || (string)strtolower($ld_fol_md->kodeAlasanNotProspectNotDeal) == '9') {
+          // 3 =Tidak ada stok di Dealer
+          // 9=Indent  unit terlalu lama
+          if ((string)$ld->kodeTypeUnitProspect == '') {
+            $error[] = 'kodeTypeUnitProspect';
+          } elseif ((string)$ld->kodeWarnaUnitProspect == '') {
+            $error[] = 'kodeWarnaUnitProspect';
+          }
+        }
+
+        //Cek ontimeSLA1
+        if ((string)strtolower($ld_fol_md->is_md) == '1' && $ld_fol_md->followUpKe == '1') {
+          if ((string)$ld->ontimeSLA1 == '') {
+            $error[] = 'ontimeSLA1';
+          }
+        }
+
+        //Cek ontimeSLA2
+        if ((string)strtolower($ld_fol_md->is_md) == '0' && $ld_fol_md->followUpKe == '1') {
+          if ((string)$ld->ontimeSLA2 == '') {
+            $error[] = 'ontimeSLA2';
+          }
+        }
+
+        // kodeTypeUnitDeal && kodeWarnaUnitDeal && metodePembayaranDeal
+        if ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '3') { //3=Deal
+          if ((string)$ld->kodeTypeUnitDeal == '') {
+            $error[] = 'kodeTypeUnitDeal';
+          } elseif ((string)$ld->kodeWarnaUnitDeal == '') {
+            $error[] = 'kodeWarnaUnitDeal';
+          } elseif ((string)$ld->metodePembayaranDeal == '') {
+            $error[] = 'metodePembayaranDeal';
+          }
+        }
+
+        // kodeLeasingDeal
+        if ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '3' && (strtolower($ld->metodePembayaranDeal) == 'kredit' || strtolower($ld->metodePembayaranDeal) == 'credit') && (string)$ld->frameNo != '') { //3=Deal
+          if ((string)$ld->kodeLeasingDeal == '') {
+            $error[] = 'kodeLeasingDeal';
+          }
+        }
+
+        //PIC Follow Up Dealer
+        $picFollowUpD = $ld_fol_md->pic;
       }
 
       $list_leads[$key] = [
@@ -163,21 +280,21 @@ class Mft5 extends CI_Controller
         'assignedDealer' => $ld->assignedDealer,
         'tanggalAssignDealer' => $ld->tanggalAssignDealer,
         'alasanTidakKeDealerSebelumnya' => $alasanTidakKeDealerSebelumnya,
-        'followUpID' => $ld_fol == NULL ? '' : $ld_fol->followUpID,
-        'tanggalFollowUp' => $ld_fol == NULL ? '' : $ld_fol->tglFollowUp,
-        'kodeStatusKontakFU' => $ld_fol == NULL ? '' : $ld_fol->id_status_fu,
-        'kodeHasilStatusFollowUp' => $ld_fol == NULL ? '' : $ld_fol->kodeHasilStatusFollowUp,
-        'alasanNotProspectNotDeal' => $ld_fol == NULL ? '' : $ld_fol->kodeAlasanNotProspectNotDeal,
-        'keteranganLainnyaNotProspectNotDeal' => $ld_fol == NULL ? '' : (string)$ld_fol->keteranganLainnyaNotProspectNotDeal,
-        'tanggalNextFU' => $ld_fol == NULL ? '' : (string)$ld_fol->tglNextFollowUp,
+        'followUpID' => $followUpID,
+        'tanggalFollowUp' => $tglFollowUp,
+        'kodeStatusKontakFU' => $id_status_fu,
+        'kodeHasilStatusFollowUp' => $kodeHasilStatusFollowUp,
+        'alasanNotProspectNotDeal' => $kodeAlasanNotProspectNotDeal,
+        'keteranganLainnyaNotProspectNotDeal' => $keteranganLainnyaNotProspectNotDeal,
+        'tanggalNextFU' => (string)$tglNextFollowUp,
         'statusProspect' => $ld->statusProspek,
-        'keteranganNextFollowUp' => $ld_fol == NULL ? '' : (string)$ld_fol->keteranganNextFollowUp,
+        'keteranganNextFollowUp' => (string)$keteranganNextFollowUp,
         'kodeTypeUnitProspect' => $ld->kodeTypeUnit,
         'kodeWarnaUnitProspect' => $ld->kodeWarnaUnit,
-        // 'picFollowUpMD' => $ld->picFollowUpMD, //
-        // 'ontimeSLA1' => $ld->ontimeSLA1, //
-        // 'picFollowUpD' => $ld->picFollowUpD, //
-        // 'ontimeSLA2' => $ld->ontimeSLA2, //
+        'picFollowUpMD' => $ld_fol_md->pic, //
+        'ontimeSLA1' => $ld->ontimeSLA1, //
+        'picFollowUpD' => $picFollowUpD, //
+        'ontimeSLA2' => $ld->ontimeSLA2, //
         'idSPK' => (string)$ld->idSPK,
         'kodeIndent' => $ld->kodeIndent,
         'kodeTypeUnitDeal' => $ld->kodeTypeUnitDeal,
@@ -192,7 +309,7 @@ class Mft5 extends CI_Controller
         unset($list_leads[$key]);
       }
     }
-    send_json($list_leads);
+    send_json(['mft'=>$list_leads,'err'=>$set_err]);
     if (count($list_leads) > 0) {
       $this->_generatedFileMFT($list_leads, $set_err);
     }
