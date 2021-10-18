@@ -76,9 +76,9 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'db_crm_sinsen',
+	'username' => 'newmonju_puad',
+	'password' => 'Roti@2017',
+	'database' => 'newmonju_crm-sinsen',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -95,12 +95,13 @@ $db['default'] = array(
 	'save_queries' => TRUE
 );
 
+
 $db['sinsen_live'] = array(
 	'dsn'	=> '',
 		'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'newmonju_honda_new',
+	'username' => 'newmonju_puad',
+	'password' => 'Roti@2017',
+	'database' => 'newmonju_honda_coba',
 // 	'hostname' => '103.82.242.60',
 // 	'username' => 'sinarse1_testing',
 // 	'password' => 'Testing@#$%',
@@ -120,3 +121,4 @@ $db['sinsen_live'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
