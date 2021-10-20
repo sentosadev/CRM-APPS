@@ -17,12 +17,11 @@ class Mft5 extends CI_Controller
   public function index()
   {
     $fs = [
-      // 'sending_to_ahm_at_is_null' => true
+      'sending_to_ahm_at_is_null' => true
     ];
     $leads_stage = $this->ld_m->getLeadsStage($fs)->result();
     $list_leads = [];
     $set_err = [];
-    // send_json($leads_stage);
     foreach ($leads_stage as $key => $lds) {
       $error = [];
       $fld = ['leads_id' => $lds->leads_id];
@@ -58,8 +57,17 @@ class Mft5 extends CI_Controller
         }
       }
 
-      //Set Untuk Follow Up Dealer
-      $picFollowUpD='';
+      $followUpID                             = '';
+      $tglFollowUp                            = '';
+      $id_status_fu                           = '';
+      $kodeHasilStatusFollowUp                = '';
+      $kodeAlasanNotProspectNotDeal           = '';
+      $keteranganLainnyaNotProspectNotDeal    = '';
+      $tglNextFollowUp                        = '';
+      $keteranganNextFollowUp                 = '';
+      $picFollowUpD                           = '';
+      $pic                                    = '';
+      //Set Untuk Follow Up Dealer      
       if ($ld_fol != NULL) {
         $followUpID                             = $ld_fol->followUpID;
         $tglFollowUp                            = $ld_fol->tglFollowUp;
@@ -69,6 +77,7 @@ class Mft5 extends CI_Controller
         $keteranganLainnyaNotProspectNotDeal    = $ld_fol->keteranganLainnyaNotProspectNotDeal;
         $tglNextFollowUp                        = $ld_fol->tglNextFollowUp;
         $keteranganNextFollowUp                 = $ld_fol->keteranganNextFollowUp;
+        $pic                 = $ld_fol->pic;
         // Cek kodeHasilStatusFollowUp  
         if ((string)strtolower($ld_fol->kategori_status_komunikasi) == 'contacted') {
           if ((string)$ld_fol->kodeHasilStatusFollowUp == '') {
@@ -164,7 +173,7 @@ class Mft5 extends CI_Controller
         'order' => 'followUpKe DESC'
       ];
       $ld_fol_md = $this->ld_m->getLeadsFollowUp($fhis)->row();
-      if ($ld_fol == NULL) {
+      if ($ld_fol == null && $ld_fol_md!=null) {
         $followUpID                             = $ld_fol_md->followUpID;
         $tglFollowUp                            = $ld_fol_md->tglFollowUp;
         $id_status_fu                           = $ld_fol_md->id_status_fu;
@@ -173,6 +182,7 @@ class Mft5 extends CI_Controller
         $keteranganLainnyaNotProspectNotDeal    = $ld_fol_md->keteranganLainnyaNotProspectNotDeal;
         $tglNextFollowUp                        = $ld_fol_md->tglNextFollowUp;
         $keteranganNextFollowUp                 = $ld_fol_md->keteranganNextFollowUp;
+        $pic                                    = $ld_fol_md->pic;
         // Cek kodeHasilStatusFollowUp  
         if ((string)strtolower($ld_fol_md->kategori_status_komunikasi) == 'contacted') {
           if ((string)$ld_fol_md->kodeHasilStatusFollowUp == '') {
@@ -287,11 +297,11 @@ class Mft5 extends CI_Controller
         'alasanNotProspectNotDeal' => $kodeAlasanNotProspectNotDeal,
         'keteranganLainnyaNotProspectNotDeal' => $keteranganLainnyaNotProspectNotDeal,
         'tanggalNextFU' => (string)$tglNextFollowUp,
-        'statusProspect' => $ld->statusProspek,
+        'statusProspect' => $this->_setStatusProspek($ld->statusProspek),
         'keteranganNextFollowUp' => (string)$keteranganNextFollowUp,
         'kodeTypeUnitProspect' => $ld->kodeTypeUnit,
         'kodeWarnaUnitProspect' => $ld->kodeWarnaUnit,
-        'picFollowUpMD' => $ld_fol_md->pic, //
+        'picFollowUpMD' => $pic, //
         'ontimeSLA1' => $ld->ontimeSLA1, //
         'picFollowUpD' => $picFollowUpD, //
         'ontimeSLA2' => $ld->ontimeSLA2, //
@@ -309,7 +319,7 @@ class Mft5 extends CI_Controller
         unset($list_leads[$key]);
       }
     }
-    send_json(['mft'=>$list_leads,'err'=>$set_err]);
+    // send_json(['mft'=>$list_leads,'err'=>$set_err]);
     if (count($list_leads) > 0) {
       $this->_generatedFileMFT($list_leads, $set_err);
     }
@@ -342,6 +352,14 @@ class Mft5 extends CI_Controller
       $this->db->trans_rollback();
     } else {
       $this->db->trans_commit();
+    }
+  }
+
+  function _setStatusProspek($st)
+  {
+    $status =['hot'=>1,'medium'=>2,'low'=>3];
+    if (isset($status[strtolower($st)])) {
+      return $status[strtolower($st)];
     }
   }
   function _generatedFileMFT($data, $set_err)

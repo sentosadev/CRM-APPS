@@ -951,7 +951,7 @@ class Leads_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "lhad.id_int,lhad.assignedDealer,assignedKe,lhad.tanggalAssignDealer,lhad.assignedDealerBy,lhad.created_at,lhad.created_by,dl.nama_dealer,als.alasan alasanReAssignDealer,alasanReAssignDealerLainnya,($tglFollowUp) tglFollowUp,lhad.ontimeSLA2,CASE WHEN lhad.ontimeSLA2=1 THEN 'On Track' WHEN lhad.ontimeSLA2=0 THEN 'Overdue' ELSE '-' END ontimeSLA2_desc";
+        $select = "lhad.id_int,lhad.assignedDealer,assignedKe,lhad.tanggalAssignDealer,lhad.assignedDealerBy,lhad.created_at,lhad.created_by,dl.nama_dealer,als.alasan alasanReAssignDealer,alasanReAssignDealerLainnya,($tglFollowUp) tglFollowUp,lhad.ontimeSLA2,CASE WHEN lhad.ontimeSLA2=1 THEN 'On Track' WHEN lhad.ontimeSLA2=0 THEN 'Overdue' ELSE '-' END ontimeSLA2_desc,als.id_alasan";
       }
     }
 
