@@ -909,9 +909,10 @@ class Leads_customer_data extends Crm_Controller
         $this->db->update('leads_follow_up', $upd_fu, ['followUpID' => $last_fu]);
         $pesan = ". Leads ID Auto Not Prospect";
       }
+      $this->session->set_flashdata(['tabs' => $this->input->post('tabs')]);
+      $this->session->set_flashdata(msg_sukses('Berhasil menyimpan data' . $pesan));
       $response = [
-        'status' => 1,
-        'pesan' => 'Berhasil menyimpan data' . $pesan
+        'status' => 1
       ];
     }
     send_json($response);

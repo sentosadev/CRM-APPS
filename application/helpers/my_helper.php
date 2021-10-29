@@ -101,6 +101,10 @@ function msg_sukses_simpan()
 {
   return  ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Data berhasil disimpan'];
 }
+function msg_sukses($pesan)
+{
+  return  ['icon' => 'success', 'title' => 'Informasi', 'text' => $pesan];
+}
 function msg_sukses_update()
 {
   return  ['icon' => 'success', 'title' => 'Informasi', 'text' => 'Data berhasil diupdate'];
