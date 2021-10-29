@@ -269,7 +269,8 @@ class Upload_leads extends Crm_Controller
               $error[$baris][] = 'Format Email tidak valid';
             }
 
-            $leads_id = $this->ldm->getLeadsID();
+            $this->ldm->fixLeadsId();
+            $leads_id=$_SESSION['leads_id'];
             $data = [
               'totalDataSource' => $totalDataSource,
               'uploadId' => $uploadId,

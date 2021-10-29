@@ -31,9 +31,9 @@ class Cms_source_model extends CI_Model
       if (isset($filter['search'])) {
         if ($filter['search'] != '') {
           $filter['search'] = $this->db->escape_str($filter['search']);
-          $where .= " AND ( mu.id_crm_source LIKE'%{$filter['search']}%'
-                            OR mu.kode_crm_source LIKE'%{$filter['search']}%'
-                            OR mu.deskripsi_crm_source LIKE'%{$filter['search']}%'
+          $where .= " AND ( mu.id_cms_source LIKE'%{$filter['search']}%'
+                            OR mu.kode_cms_source LIKE'%{$filter['search']}%'
+                            OR mu.deskripsi_cms_source LIKE'%{$filter['search']}%'
           )";
         }
       }
