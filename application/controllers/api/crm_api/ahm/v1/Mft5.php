@@ -17,7 +17,7 @@ class Mft5 extends CI_Controller
   public function index()
   {
     $fs = [
-      'sending_to_ahm_at_is_null' => true
+      // 'sending_to_ahm_at_is_null' => true
     ];
     $leads_stage = $this->ld_m->getLeadsStage($fs)->result();
     $list_leads = [];
@@ -103,11 +103,11 @@ class Mft5 extends CI_Controller
         //Cek tanggalNextFU
         if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
           if ((string)$ld_fol->tglNextFollowUp == '') {
-            $error[] = 'tanggalNextFU';
+            // $error[] = 'tanggalNextFU';
           }
         } elseif ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '3') { //3=Deal
           if ((string)$ld_fol->tglNextFollowUp == '') {
-            $error[] = 'tanggalNextFU';
+            // $error[] = 'tanggalNextFU';
           }
         }
 
@@ -208,11 +208,11 @@ class Mft5 extends CI_Controller
         //Cek tanggalNextFU
         if ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '1') { //1=Prospect
           if ((string)$ld_fol_md->tglNextFollowUp == '') {
-            $error[] = 'tanggalNextFU';
+            // $error[] = 'tanggalNextFU';
           }
         } elseif ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '3') { //3=Deal
           if ((string)$ld_fol_md->tglNextFollowUp == '') {
-            $error[] = 'tanggalNextFU';
+            // $error[] = 'tanggalNextFU';
           }
         }
 
@@ -287,7 +287,7 @@ class Mft5 extends CI_Controller
         'deskripsiEvent' => $ld->deskripsiEvent,
         'sourceRefID' => $ld->sourceRefID,
         'kodeMD' => 'E20',
-        'assignedDealer' => $ld->assignedDealer,
+        'assignedDealer' => substr($ld->assignedDealer,0,5),
         'tanggalAssignDealer' => $ld->tanggalAssignDealer,
         'alasanTidakKeDealerSebelumnya' => $alasanTidakKeDealerSebelumnya,
         'followUpID' => $followUpID,
@@ -369,8 +369,8 @@ class Mft5 extends CI_Controller
     if (!is_dir($dir)) {
       mkdir($dir, 0777, true);
     }
-    $namaFile = strtotime(waktu());
-    $path = $dir . '/' . $namaFile . '.LDS';
+    $namaFile = 'AHM-E20-'.gmdate("ymd", time() + 60 * 60 * 7).gmdate("ymdHis", time() + 60 * 60 * 7);
+    $path = $dir . '/' . $namaFile . '.lds';
     $fp = fopen($path, "w");
 
     $sending_to_ahm_at = waktu();
@@ -390,7 +390,6 @@ class Mft5 extends CI_Controller
     }
     fwrite($fp, $content);
     fclose($fp);
-    echo $content;
     // Log MFT5
     $log = [
       'api_key' => '0',
@@ -430,6 +429,7 @@ class Mft5 extends CI_Controller
     } else {
       $this->db->trans_commit();
     }
+    echo json_encode(['path'=>$path,'base'=>base_url('generatedFile/mft/'.$namaFile.'.lds')]);
   }
 
   function schedulerLeadsTransactionTable()

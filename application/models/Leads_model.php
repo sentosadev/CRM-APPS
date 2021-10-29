@@ -715,7 +715,27 @@ class Leads_model extends CI_Model
     } else {
       $new_kode   = 'E20/' . $dmy . '/000001';
     }
+
     return strtoupper($new_kode);
+  }
+
+  function fixLeadsId($leads_id='')
+  {
+    $dmy            = gmdate("dmY", time() + 60 * 60 * 7);
+    if ($leads_id=='') {
+      $row = $this->db->query("SELECT RIGHT(leads_id,6) leads_id FROM leads ORDER BY leads_id_int DESC")->row();
+      $leads_id = 'E20/' . $dmy . '/' . sprintf("%'.06d", $row->leads_id + 1);
+      $this->fixLeadsId($leads_id);
+    }else{
+      $cekl = $this->db->query("SELECT leads_id FROM leads WHERE leads_id='$leads_id'")->row();
+      $ceku = $this->db->query("SELECT leads_id FROM upload_leads WHERE leads_id='$leads_id'")->row();
+      if ($cekl==null && $ceku==null) {
+        $_SESSION['leads_id']=$leads_id;
+      }else{
+        $new_leads_id   = 'E20/' . $dmy . '/' . sprintf("%'.06d", substr($leads_id, -6) + 1);
+        $this->fixLeadsId($new_leads_id);
+      }
+    }
   }
 
   function getLeadsFollowUp($filter = null)
@@ -1515,8 +1535,8 @@ class Leads_model extends CI_Model
       'sumber_prospek' => $sumber_prospek,
       'longitude' => $leads->longitude,
       'latitude' => $leads->latitude,
-      'pekerjaan' => $leads->kodePekerjaanKtp,
-      'sub_pekerjaan' => $leads->kodePekerjaan,
+      'pekerjaan' => (int)$leads->kodePekerjaanKtp,
+      'sub_pekerjaan' => (int)$leads->kodePekerjaan,
       'created_at' => waktu(),
       'tgl_prospek' => tanggal(),
       'noFramePembelianSebelumnya' => $leads->noFramePembelianSebelumnya,
@@ -1532,7 +1552,7 @@ class Leads_model extends CI_Model
       'tanggalNextFU' => $leads->tanggalNextFU,
       'keteranganNextFollowUp' => $leads->keteranganNextFollowUp,
       'test_ride_preference' => $leads->minatRidingTest,
-      'tgl_tes_kendaraan' => $riding[0],
+      'tgl_tes_kendaraan' => $riding[0]==''?null:$riding[0],
       'jam_tes_kendaraan' => isset($riding[1]) ? $riding[1] : null,
       'id_event' => $id_event == null ? null : $id_event->id_event,
     ];

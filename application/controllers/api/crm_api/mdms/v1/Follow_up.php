@@ -54,8 +54,8 @@ class Follow_up extends CI_Controller
     $message = '';
     if ($ld != NULL) {
       $leads_id = $ld->leads_id;
-      //Cek StageId 1,4,5
-      $list_cek_stage = [1, 4, 5];
+      //Cek StageId 1,5
+      $list_cek_stage = [1, 5];
       $stage_belum = [];
       foreach ($list_cek_stage as $vs) {
         $lstg = [
@@ -77,7 +77,7 @@ class Follow_up extends CI_Controller
         } else {
           // Cek Apakah Masuk Stage ID 8
           // 8. Record Follow Up Result by Salespeople Contacted & Prospect
-          if ($post['kodeHasilStatusFollowUp'] == '1') {
+          if ($post['kodeHasilStatusFollowUp'] == '1' || $post['kodeHasilStatusFollowUp']=='3') {
             $stageId = 8;
             // Cek Apakah Masuk Stage ID 9
             // 9. Record Follow Up Result by Salespeople Not Deal
@@ -85,10 +85,12 @@ class Follow_up extends CI_Controller
             $stageId = 9;
           }
         }
+        $followUpID = $this->ld_m->getFollowUpID();
         if (isset($stageId)) {
           $insert_history_stage = [
             'leads_id'   => $leads_id,
             'stageId'    => $stageId,
+            'followUpID' => $followUpID,
             'created_at' => waktu(),
           ];
           $update_leads = [
@@ -105,7 +107,7 @@ class Follow_up extends CI_Controller
         ];
         $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
         $ins_fol_up = [
-          'followUpID'                          => $this->ld_m->getFollowUpID(),
+          'followUpID'                          => $followUpID,
           'followUpKe'                          => $count_fol + 1,
           'leads_id'                            => $post['leads_id'],
           'pic'                                 => $post['pic'],
@@ -173,6 +175,7 @@ class Follow_up extends CI_Controller
       'assignedDealer' => $post['assignedDealer']
     ];
     $ld = $this->ld_m->getLeads($fc)->row();
+    // send_json($fc);
     $status = 1;
     $message = '';
     if ($ld != NULL) {
@@ -180,7 +183,7 @@ class Follow_up extends CI_Controller
       $leads = $post['leads'];
 
       //Cek StageId 1,4,5,8
-      $list_cek_stage = [1, 4, 5, 8];
+      $list_cek_stage = [1, 5];
       $stage_belum = [];
       foreach ($list_cek_stage as $vs) {
         $lstg = [
@@ -192,13 +195,16 @@ class Follow_up extends CI_Controller
           $stage_belum[] = $vs;
         }
       }
-
+      
+      $followUpID = $this->ld_m->getFollowUpID();
       if (count($stage_belum) == 0) {
         //History Stage ID
         $insert_history_stage = [
-          'leads_id' => $leads_id,
-          'stageId' => 10,
-          'created_at' => waktu(),
+          'leads_id'    => $leads_id,
+          'stageId'     => 10,
+          'followUpID'  => $followUpID,
+          'no_spk'      => $leads['idSPK'],
+          'created_at'  => waktu(),
         ];
       }
 
@@ -221,7 +227,7 @@ class Follow_up extends CI_Controller
       ];
       $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
       $ins_fol_up = [
-        'followUpID'              => $this->ld_m->getFollowUpID(),
+        'followUpID'              => $followUpID,
         'followUpKe'              => $count_fol + 1,
         'pic'                     => $post['fol_up']['pic'],
         'tglFollowUp'             => $post['fol_up']['tglFollowUp'],
@@ -277,7 +283,7 @@ class Follow_up extends CI_Controller
       $leads = $post['leads'];
 
       //Cek StageId 1,4,5,8
-      $list_cek_stage = [1, 4, 5, 8, 10];
+      $list_cek_stage = [1, 5, 10];
       $stage_belum = [];
       foreach ($list_cek_stage as $vs) {
         $lstg = [
@@ -290,12 +296,15 @@ class Follow_up extends CI_Controller
         }
       }
 
+      $followUpID=$this->ld_m->getFollowUpID();
       if (count($stage_belum) == 0) {
         //History Stage ID
         $insert_history_stage = [
-          'leads_id' => $leads_id,
-          'stageId' => 11,
-          'created_at' => waktu()
+          'leads_id'    => $leads_id,
+          'stageId'     => 11,
+          'followUpID'  => $followUpID,
+          'no_spk'      => $leads['idSPK'],
+          'created_at'  => waktu()
         ];
       }
 
@@ -319,7 +328,7 @@ class Follow_up extends CI_Controller
       ];
       $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
       $ins_fol_up = [
-        'followUpID'              => $this->ld_m->getFollowUpID(),
+        'followUpID'              => $followUpID,
         'followUpKe'              => $count_fol + 1,
         'pic'                     => $post['fol_up']['pic'],
         'tglFollowUp'             => $post['fol_up']['tglFollowUp'],
@@ -374,7 +383,7 @@ class Follow_up extends CI_Controller
       $leads = $post['leads'];
 
       //Cek StageId 1,4,5,8,10
-      $list_cek_stage = [1, 4, 5, 8, 10];
+      $list_cek_stage = [1,5, 10];
       $stage_belum = [];
       foreach ($list_cek_stage as $vs) {
         $lstg = [

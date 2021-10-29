@@ -77,7 +77,8 @@ class Lead extends CI_Controller
     foreach ($data as $pst) {
       $no_hp = clean_no_hp(clear_removed_html($pst['noHP']));
       $email = clear_removed_html($pst['email']);
-      $fcdb['no_hp_or_email'] = [$no_hp, $email];
+      $no_rangka =clear_removed_html($pst['noFramePembelianSebelumnya']);
+      $fcdb['no_hp_or_email_or_no_rangka'] = [$no_hp, $email,$no_rangka];
       $sourceData = clear_removed_html($pst['sourceData']);
 
       //Cek Apakah Pernah RO CDB
@@ -104,9 +105,13 @@ class Lead extends CI_Controller
       //Cek Apakah Sudah Ada Pada Leads, Jika Sudah Maka Data Akan Disimpan Sebagai Interaksi
       $fleads['noHP_noTelp_email'] = [empty_to_min($no_hp), empty_to_min($noTelp), empty_to_min($email)];
       $cek_leads = $this->ld_m->getLeads($fleads)->row();
-      // send_json($cek_leads);
       if ($cek_leads == null) {
-        $leads_id = $leads_id_invited == '' ? $this->ld_m->getLeadsID() : $leads_id_invited;
+        if ((string)$leads_id_invited=='') {
+          $this->ld_m->fixLeadsId();
+          $leads_id=$_SESSION['leads_id'];
+        }else{
+          $leads_id = $leads_id_invited;
+        }
         $insert = [
           'leads_id' => $leads_id,
           'customerId' => $this->ld_m->getCustomerID(),
@@ -158,8 +163,9 @@ class Lead extends CI_Controller
           'leads_sla' => $pst['sla'],
           'leads_sla2' => $pst['sla2'],
         ];
+        // send_json($insert);
         $this->db->insert('leads', $insert);
-        //Set Stage ID 1
+        
         $ins_leads_history_stage = [
           'leads_id' => $leads_id,
           'stageId' => 1,
@@ -199,6 +205,7 @@ class Lead extends CI_Controller
             $data = $this->ld_m->post_to_api3($leads_id);
             $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
             if ($res_api3['status'] == 1) {
+              $id_prospek = $res_api3['data']['id_prospek'];
               //Membuat History Dispatch Dealer
               $insert_history_assigned = [
                 'leads_id'             => $leads_id,
@@ -229,6 +236,7 @@ class Lead extends CI_Controller
                 'alasanPindahDealerLainnya' => null,
                 'tanggalAssignDealer'       => waktu(),
                 'assignedDealerBy'          => 0,
+                'idProspek'                 => $id_prospek
               ];
               $this->db->update('leads', $update_leads, ['leads_id' => $leads_id]);
             }
