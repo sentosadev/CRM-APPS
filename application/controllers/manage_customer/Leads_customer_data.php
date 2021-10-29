@@ -105,7 +105,7 @@ class Leads_customer_data extends Crm_Controller
       $sub_array[] = $no;
       $sub_array[] = $rs->leads_id;
       $sub_array[] = $rs->nama;
-      $sub_array[] = $rs->kodeDealerSebelumnya;
+      $sub_array[] = $rs->kodeDealerPembelianSebelumnya;
       $sub_array[] = $assigned . $showBtnAssign;
       $sub_array[] = $rs->tanggalAssignDealer;
       $sub_array[] = $rs->deskripsiPlatformData;

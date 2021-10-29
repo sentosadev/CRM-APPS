@@ -292,7 +292,7 @@ class Leads_api_model extends CI_Model
       $cek_tipe = $this->tpm->getTipeWarnaFromOtherDb($ftp)->row();
       $kodeTypeUnit = '';
       $kodeWarnaUnit = '';
-      $seriesMotor = '';
+      $seriesMotor = clear_removed_html($pst['seriesMotor']);
       if ($cek_tipe != NULL) {
         $kodeTypeUnit = $cek_tipe->id_tipe_kendaraan;
         $kodeWarnaUnit = $cek_tipe->id_warna;

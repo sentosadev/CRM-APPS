@@ -19,6 +19,14 @@ class Cdb_nms_model extends CI_Model
           $where .= " AND (spk.no_hp='$no_hp' OR spk.email='$email')";
         }
       }
+      if (isset($filter['no_hp_or_email_or_no_rangka'])) {
+        if ($filter['no_hp_or_email_or_no_rangka'] != '') {
+          $no_hp = $filter['no_hp_or_email_or_no_rangka'][0];
+          $email = $filter['no_hp_or_email_or_no_rangka'][1];
+          $no_rangka = $filter['no_hp_or_email_or_no_rangka'][2];
+          $where .= " AND (spk.no_hp='$no_hp' OR spk.email='$email' OR so.no_rangka='$no_rangka')";
+        }
+      }
 
       $filter = $this->db->escape_str($filter);
       if (isset($filter['no_hp'])) {
