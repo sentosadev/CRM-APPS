@@ -2,6 +2,12 @@
 $total_fol_up = count($list_follow_up) == 0 ? 1 : count($list_follow_up);
 $max_pertab = 2;
 $fol_up_sekarang = 1;
+$hide_tambah=false;
+if (isset($list_follow_up[$total_fol_up])) {
+  if ($list_follow_up[$total_fol_up]['tglFollowUpFormated']=='') {
+    $hide_tambah=true;
+  }
+}
 for ($i = 1; $i <= $tot_tab_fol; $i++) {
   if ($i == 1) {
     $back = 'data_pendukung_probing_1';
@@ -70,7 +76,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
               <label class="col-sm-4 control-label">Tanggal Follow Up <?= $fol_up_sekarang ?> *</label>
               <div class="form-input">
                 <div class="col-sm-8">
-                  <input type="text" class="form-control datetimepicker" id='tglFollowUp_<?= $fol_up_sekarang ?>' name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] == '' ? dMYHIS_en() : $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : dMYHIS_en() ?>' <?= $disabled ?> required <?= $set_disabled == 'disabled' ? 'readonly' : '' ?>>
+                  <input type="text" class="form-control" id='tglFollowUp_<?= $fol_up_sekarang ?>' name='tglFollowUp_<?= $fol_up_sekarang ?>' required value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] == '' ? dMYHIS_en() : $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated'] : dMYHIS_en() ?>' <?= $disabled ?> required <?= $set_disabled == 'disabled' ? 'readonly' : '' ?> readonly>
                 </div>
               </div>
             </div>
@@ -303,6 +309,28 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 </div>
               </div>
             </div>
+            <?php if ($fol_up_sekarang==$total_fol_up) {?>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <select style='width:100%' id="id_tipe_from_other_db" class='form-control' name='kodeTypeUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
+                      <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <select style="width:100%" id="id_warna_from_other_db" class='form-control' name='kodeWarnaUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
+                      <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            <?php } ?>
           </div>
         <?php $fol_up_sekarang++;
         } ?>
@@ -317,16 +345,21 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
           <?php } else {
             $set_end = true; ?>
             <?php if ($disabled == '') { ?>
-              <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
+              <?php if ($hide_tambah==false) { ?>
+                <button onclick="tambahDataFollowUp(this,<?= count($list_follow_up) + 1 ?>,<?= $i ?>)" type="button" id="#nextTo_data_follow_up_<?= $i + 1 ?>" class="btn btn-info btn-flat">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button>
+              <?php }?>
               <button onclick="saveDataFollowUp(this,'data_follow_up_<?= $i ?>',1,<?= $i ?>)" type="button" class="btn bg-blue btn-flat">Simpan Follow Up</button>
             <?php } ?>
           <?php } ?>
         </div>
         <?php if (isset($set_end)) { ?>
           <div class="col-sm-12" align='left' style='margin-top:20px;padding-top:15px;border-top:1px solid #f4f4f4'>
-            *) Tombol <button type="button" class="btn btn-info btn-flat btn-xs">Tambah Follow Up <?= count($list_follow_up) + 1 ?></button> digunakan untuk menambah form follow up baru.
+            <?php if ($hide_tambah==false){ ?>
+            *) Tombol <button type="button" class="btn btn-info btn-flat btn-xs">
+  Tambah Follow Up <?= count($list_follow_up) + 1 ?></button> digunakan untuk menambah form follow up baru.
             <br>
-            *) Tombol <button type="button" class="btn bg-blue btn-flat btn-xs">Simpan Data</button> digunakan untuk menyimpan data follow up.
+            <?php } ?>
+            *) Tombol <button type="button" class="btn bg-blue btn-flat btn-xs">Simpan Follow Up</button> digunakan untuk menyimpan data follow up.
           </div>
         <?php } ?>
       </div>
@@ -472,7 +505,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     })
   }
 
-  function saveDataFollowUpFinal(el) {
+  function saveDataFollowUpFinal(el,tabs_no) {
     Swal.fire({
       title: 'Apakah Anda Yakin ?',
       showCancelButton: true,
@@ -484,6 +517,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
         var val_form_follow_up = new FormData($('#form_data_follow_up_' + set_fu)[0]);
         val_form_follow_up.append('leads_id', '<?= $row->leads_id ?>');
         val_form_follow_up.append('statusProspek', statusProspek);
+        val_form_follow_up.append('set_tabs', set_tabs);
         $.ajax({
           beforeSend: function() {
             $(el).html('<i class="fa fa-spinner fa-spin"></i> Process');
@@ -499,16 +533,7 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
           dataType: 'JSON',
           success: function(response) {
             if (response.status == 1) {
-              changeTabs(set_tabs);
-              if (position == 1) {
-                $('#modalFollowUp').modal('hide');
-                Swal.fire({
-                  icon: 'success',
-                  title: '<font>Informasi</font>',
-                  html: '<font>' + response.pesan + '</font>',
-                  confirmButtonText: 'Tutup',
-                })
-              }
+              location.reload(true);
             } else {
               Swal.fire({
                 icon: 'error',

@@ -255,7 +255,6 @@ class Leads_customer_data extends Crm_Controller
       $filter['assignedDealer'] = $row->assignedDealer;
       $data['list_follow_up'] = $this->ld_m->getLeadsFollowUp($filter);
       $data['interaksi'] = $this->ld_m->getLeadsInteraksi($filter)->result();
-      // send_json($data);
       $this->template_portal($data);
     } else {
       $this->session->set_flashdata(msg_not_found());
@@ -336,21 +335,6 @@ class Leads_customer_data extends Crm_Controller
       send_json($result);
     }
 
-    $kodeTypeUnit = $this->input->post('kodeTypeUnit', true);
-    $kodeWarnaUnit = $this->input->post('kodeWarnaUnit', true);
-    $ftp = [
-      'kode_tipe' => $kodeTypeUnit,
-    ];
-    $get_tipe = $this->tpm->getTipeFromOtherDb($ftp)->row();
-    if ($get_tipe == NULL) {
-      $result = [
-        'status' => 0,
-        'pesan' => 'Kode Type Unit Diminati Tidak Ditemukan'
-      ];
-      send_json($result);
-    }
-
-
     //Get id_karyawan_dealer
     $id_karyawan_dealer = $this->input->post('id_karyawan_dealer', true);
     $kryd = $this->kryd->getSalesmanFromOtherDb(['id_karyawan_dealer' => $id_karyawan_dealer])->row();
@@ -363,29 +347,10 @@ class Leads_customer_data extends Crm_Controller
       'namaPengajuan' => $kryd == NULL ? NULL : $kryd->nama_lengkap,
       'idProvinsiPengajuan' => $this->input->post('idProvinsiPengajuan', true),
       'idKabupatenPengajuan' => $this->input->post('idKabupatenPengajuan', true),
-      'kodeTypeUnit' => $kodeTypeUnit,
-      'kodeWarnaUnit' => $kodeWarnaUnit,
       'minatRidingTest' => $this->input->post('minatRidingTest', true),
       'jadwalRidingTest' => convert_datetime($this->input->post('jadwalRidingTest', true)),
-      'seriesMotor' => $get_tipe->id_series,
       'updated_at'    => waktu(),
       'updated_by' => $user->id_user,
-    ];
-
-    //Sinkron Tabel tipe
-    $arr_kode_tipe = [$this->input->post('kodeTypeUnit', true)];
-
-    //Sinkron Tabel tipe
-    $arr_kode_warna = [$this->input->post('kodeWarnaUnit', true)];
-
-    //Sinkron Tabel series
-    $arr_kode_series = [$get_tipe->id_series];
-
-    //Sinkron Tabel series & tipe
-    $params_cek_series_tipe = [
-      'kode_series' => $get_tipe->id_series,
-      'kode_tipe' => $kodeTypeUnit,
-      'kode_warna' => $kodeWarnaUnit
     ];
 
     //Sinkron Tabel Kabupaten
@@ -397,10 +362,7 @@ class Leads_customer_data extends Crm_Controller
     $tes = ['update' => $update];
     // send_json($tes);
     $this->db->trans_begin();
-    $this->tpm->sinkronTabelTipe($arr_kode_tipe, $user);
-    $this->wrm->sinkronTabelWarna($arr_kode_warna, $user);
-    $this->srs->sinkronTabelSeries($arr_kode_series, $user);
-    $this->srstp->sinkronTabelSeriesTipe($params_cek_series_tipe, $user);
+
     $this->kab->sinkronTabelKabupaten($arr_id_kabupaten, $user);
     $this->prov->sinkronTabelProvinsi($arr_id_provinsi, $user);
     $this->db->update('leads', $update, $fg);
@@ -586,6 +548,10 @@ class Leads_customer_data extends Crm_Controller
   public function saveEditFollowUp()
   {
     $user = user();
+    $this->load->model('tipe_model', 'tpm');
+    $this->load->model('warna_model', 'wrm');
+    $this->load->model('series_model', 'srs');
+    $this->load->model('series_dan_tipe_model', 'srstp');
     $leads_id = $this->input->post('leads_id', true);
     $fg = ['leads_id' => $leads_id];
     $gr = $this->ld_m->getLeads($fg)->row();
@@ -827,6 +793,42 @@ class Leads_customer_data extends Crm_Controller
         }
       }
     }
+    $kodeTypeUnit                 = $this->input->post('kodeTypeUnit', true);
+    $kodeWarnaUnit                = $this->input->post('kodeWarnaUnit', true);
+    if ((string)$kodeTypeUnit!='' || (string)$kodeWarnaUnit!='') {
+      if ($kodeTypeUnit!=$gr->kodeTypeUnit || $kodeWarnaUnit!=$gr->kodeWarnaUnit) {
+        $upd_leads['kodeTypeUnit']    = $kodeTypeUnit;
+        $upd_leads['kodeWarnaUnit']   = $kodeWarnaUnit;
+         //Sinkron Tabel tipe
+        $arr_kode_tipe = [$this->input->post('kodeTypeUnit', true)];
+  
+        //Sinkron Tabel tipe
+        $arr_kode_warna = [$this->input->post('kodeWarnaUnit', true)];
+
+        $ftp = [
+          'kode_tipe' => $kodeTypeUnit,
+        ];
+        $get_tipe = $this->tpm->getTipeFromOtherDb($ftp)->row();
+        if ($get_tipe == NULL) {
+          $result = [
+            'status' => 0,
+            'pesan' => 'Kode Type Unit Diminati Tidak Ditemukan'
+          ];
+          send_json($result);
+        }
+        $upd_leads['seriesMotor']=$get_tipe->id_series;
+
+        //Sinkron Tabel series
+        $arr_kode_series = [$get_tipe->id_series];
+
+        //Sinkron Tabel series & tipe
+        $params_cek_series_tipe = [
+          'kode_series' => $get_tipe->id_series,
+          'kode_tipe' => $kodeTypeUnit,
+          'kode_warna' => $kodeWarnaUnit
+        ];
+      }
+    }
 
     $tes = [
       'upd_fol_up' => isset($upd_fol_up) ? $upd_fol_up : NULL,
@@ -836,6 +838,13 @@ class Leads_customer_data extends Crm_Controller
     ];
     // send_json($tes);
     $this->db->trans_begin();
+
+    if (isset($arr_kode_tipe)) {
+      $this->tpm->sinkronTabelTipe($arr_kode_tipe, $user);
+      $this->wrm->sinkronTabelWarna($arr_kode_warna, $user);
+      $this->srs->sinkronTabelSeries($arr_kode_series, $user);
+      $this->srstp->sinkronTabelSeriesTipe($params_cek_series_tipe, $user);
+    }
 
     if (isset($ins_fol_up)) {
       $this->db->insert_batch('leads_follow_up', $ins_fol_up);
