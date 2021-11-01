@@ -162,28 +162,6 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 return selisih;
               }
             </script>
-            <?php if ($fol_up_sekarang==$total_fol_up) {?>
-              <div class="form-group">
-                <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
-                <div class="form-input">
-                  <div class="col-sm-8">
-                    <select style='width:100%' id="id_tipe_from_other_db" class='form-control' name='kodeTypeUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
-                      <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
-                <div class="form-input">
-                  <div class="col-sm-8">
-                    <select style="width:100%" id="id_warna_from_other_db" class='form-control' name='kodeWarnaUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
-                      <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            <?php } ?>
             <div class="form-group">
               <label class="col-sm-4 control-label">Status Prospek <span id="inputStatusProspek_<?= $fol_up_sekarang ?>"></span></label>
               <div class="form-input">
@@ -331,6 +309,28 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 </div>
               </div>
             </div>
+            <?php if ($fol_up_sekarang==$total_fol_up) {?>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <select style='width:100%' id="id_tipe_from_other_db" class='form-control' name='kodeTypeUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
+                      <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
+                <div class="form-input">
+                  <div class="col-sm-8">
+                    <select style="width:100%" id="id_warna_from_other_db" class='form-control' name='kodeWarnaUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
+                      <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            <?php } ?>
           </div>
         <?php $fol_up_sekarang++;
         } ?>
