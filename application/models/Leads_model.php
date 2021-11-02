@@ -884,7 +884,8 @@ class Leads_model extends CI_Model
         CASE WHEN lfu.tglNextFollowUp='0000-00-00' THEN '' ELSE lfu.tglNextFollowUp END tglNextFollowUp,
         CASE WHEN lfu.created_at='0000-00-00 00:00:00' THEN '' ELSE lfu.created_at END created_at,
         lfu.keteranganFollowUp,lfu.keteranganNextFollowUp,lfu.id_media_kontak_fu,lfu.id_status_fu,lfu.kodeHasilStatusFollowUp,lfu.kodeAlasanNotProspectNotDeal,lfu.noHP,lfu.email,lfu.created_by,lfu.updated_at,lfu.updated_by,media.media_kontak_fu,sts.deskripsi_status_fu status_fu,kategori_status_komunikasi,hks.deskripsiHasilStatusFollowUp,als.alasanNotProspectNotDeal,lfu.status,lfu.assignedDealer,followUpID,
-        CASE WHEN IFNULL(keteranganLainnyaNotProspectNotDeal,'')='' THEN keteranganAlasanLainnya ELSE keteranganLainnyaNotProspectNotDeal END keteranganLainnyaNotProspectNotDeal,keteranganNextFollowUp,$is_md is_md,dl_assg.nama_dealer namaDealerFollowUp,sts.id_kategori_status_komunikasi,lfu.statusProspek";
+        CASE WHEN IFNULL(keteranganLainnyaNotProspectNotDeal,'')='' THEN keteranganAlasanLainnya ELSE keteranganLainnyaNotProspectNotDeal END keteranganLainnyaNotProspectNotDeal,
+        CASE WHEN IFNULL(keteranganLainnyaNotProspectNotDeal,'')='' THEN keteranganAlasanLainnya ELSE keteranganLainnyaNotProspectNotDeal END keteranganAlasanLainnya,keteranganNextFollowUp,$is_md is_md,dl_assg.nama_dealer namaDealerFollowUp,sts.id_kategori_status_komunikasi,lfu.statusProspek";
       }
     }
 
