@@ -21,12 +21,12 @@
           </select>
         </div>
       </div>
-      <label class="col-sm-2 control-label">Keterangan Preferensi Dealer Lain</label>
+      <!-- <label class="col-sm-2 control-label">Keterangan Preferensi Dealer Lain</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" name='keteranganPreferensiDealerLain' value='<?= $row->keteranganPreferensiDealerLain ?>' <?= $disabled ?>>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="form-group">
       <label class="col-sm-2 control-label">Kategori Konsumen</label>
@@ -121,13 +121,13 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Kategori Preferensi Dealer</label>
+      <!-- <label class="col-sm-2 control-label">Kategori Preferensi Dealer</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" name='kategoriPreferensiDealer' value='<?= $row->kategoriPreferensiDealer ?>' <?= $disabled ?>>
         </div>
-      </div>
-      <label class="col-sm-2 control-label">Promo Yang Diminati Customer</label>
+      </div> -->
+      <label class="col-sm-offset-6 col-sm-2 control-label">Promo Yang Diminati Customer</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" id='promoYangDiminatiCustomer' name='promoYangDiminatiCustomer' value='<?= $row->promoYangDiminatiCustomer ?>' <?= $disabled ?>>
@@ -136,13 +136,13 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-2 control-label">Nama Dealer Preferensi Customer</label>
+      <!-- <label class="col-sm-2 control-label">Nama Dealer Preferensi Customer</label>
       <div class="form-input">
         <div class="col-sm-4">
           <input type="text" class="form-control" name='namaDealerPreferensiCustomer' value='<?= $row->namaDealerPreferensiCustomer ?>' <?= $disabled ?>>
         </div>
-      </div>
-      <label class="col-sm-2 control-label">Pendidikan</label>
+      </div> -->
+      <label class="col-sm-offset-6 col-sm-2 control-label">Pendidikan</label>
       <div class="form-input">
         <div class="col-sm-4">
           <select style='width:100%' id="idPendidikan" class='form-control' name='idPendidikan' <?= $disabled ?>>
