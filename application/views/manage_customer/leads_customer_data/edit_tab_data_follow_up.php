@@ -162,28 +162,26 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
                 return selisih;
               }
             </script>
-            <?php if ($fol_up_sekarang==$total_fol_up) {?>
-              <div class="form-group">
-                <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
-                <div class="form-input">
-                  <div class="col-sm-8">
-                    <select style='width:100%' id="id_tipe_from_other_db" class='form-control' name='kodeTypeUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
-                      <option value='<?= $row->kodeTypeUnit ?>'><?= $row->concatKodeTypeUnit ?></option>
-                    </select>
-                  </div>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Kode & Tipe Motor Diminati</label>
+              <div class="form-input">
+                <div class="col-sm-8">
+                  <select style='width:100%' id="id_tipe_from_other_db_<?= $fol_up_sekarang ?>" class='form-control' name='kodeTypeUnit_<?=$fol_up_sekarang?>' <?= $disabled ?> <?= $set_disabled ?>>
+                    <option value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['id_tipe_kendaraan'] : '' ?>'><?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['concatKodeTypeUnit'] : '' ?></option>
+                  </select>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
-                <div class="form-input">
-                  <div class="col-sm-8">
-                    <select style="width:100%" id="id_warna_from_other_db" class='form-control' name='kodeWarnaUnit' <?= $list_follow_up[$fol_up_sekarang]['tglFollowUpFormated']==''?'':'disabled' ?>>
-                      <option value='<?= $row->kodeWarnaUnit ?>'><?= $row->concatKodeWarnaUnit ?></option>
-                    </select>
-                  </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Kode & Warna Motor Diminati</label>
+              <div class="form-input">
+                <div class="col-sm-8">
+                  <select style="width:100%" id="id_warna_from_other_db_<?= $fol_up_sekarang ?>" class='form-control' name='kodeWarnaUnit_<?=$fol_up_sekarang?>' <?= $disabled ?> <?= $set_disabled ?>>
+                    <option value='<?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['id_warna'] : '' ?>'><?= isset($list_follow_up[$fol_up_sekarang]) ? $list_follow_up[$fol_up_sekarang]['concatKodeWarnaUnit'] : '' ?></option>
+                  </select>
                 </div>
               </div>
-            <?php } ?>
+            </div>
             <div class="form-group">
               <label class="col-sm-4 control-label">Status Prospek <span id="inputStatusProspek_<?= $fol_up_sekarang ?>"></span></label>
               <div class="form-input">
@@ -367,7 +365,7 @@ for ($i = 1; $i <= $tot_tab_fol; $i++) {
   </div>
 <?php } ?>
 <?php
-$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilStatusFollowUpMulti', 'selectAlasanNotProspectNotDealMulti'];
+$data['data'] = ['selectMediaKomunikasiFolupMulti', 'selectStatusKomunikasiFolUpMulti', 'selectKategoriStatusKomunikasiMulti', 'selectHasilStatusFollowUpMulti', 'selectAlasanNotProspectNotDealMulti','selectTipeFromOtherDbMulti','selectWarnaFromOtherDbMulti'];
 $data['total_fol_up'] = $total_fol_up;
 $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data); ?>
 <?php $this->load->view('manage_customer/leads_customer_data/modal_follow_up'); ?>

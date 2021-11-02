@@ -825,3 +825,66 @@ if (in_array('selectPengeluaran', $data)) { ?>
   </script>
 <?php
 } ?>
+
+<?php
+if (in_array('selectTipeFromOtherDbMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#id_tipe_from_other_db_<?= $i ?>").select2({
+          ajax: {
+            url: "<?= site_url('api/private/series_tipe/selectTipeFromOtherDb') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+      $(document.body).on("change", "#id_tipe_from_other_db_<?= $i ?>", function() {
+        $('#id_warna_from_other_db_<?= $i ?>').val(null).trigger('change');
+        $('#id_warna_from_other_db_<?= $i ?>').empty().trigger("change");
+      });
+    </script>
+<?php }
+} ?>
+
+<?php
+if (in_array('selectWarnaFromOtherDbMulti', $data)) {
+  for ($i = 1; $i <= $total_fol_up; $i++) {  ?>
+    <script>
+      $(document).ready(function() {
+        $("#id_warna_from_other_db_<?= $i ?>").select2({
+          ajax: {
+            url: "<?= site_url('api/private/series_tipe/selectWarnaFromOtherDb') ?>",
+            type: "POST",
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                searchTerm: params.term, // search term
+                id_tipe_kendaraan: $("#id_tipe_from_other_db_<?=$i?>").val(),
+              };
+            },
+            processResults: function(response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+      });
+    </script>
+<?php }
+} ?>
