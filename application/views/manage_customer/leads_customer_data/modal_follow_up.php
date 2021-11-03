@@ -31,6 +31,14 @@
                 <td id="mdl_tglNextFollowUp"></td>
               </tr>
               <tr>
+                <td align='right'>Kode & Tipe Motor Diminati</td>
+                <td id="mdl_id_tipe"></td>
+              </tr>
+              <tr>
+                <td align='right'>Warna Motor Diminati</td>
+                <td id="mdl_id_warna"></td>
+              </tr>
+              <tr>
                 <td align='right'>Status Prospek</td>
                 <td id="mdl_statusProspek"></td>
               </tr>

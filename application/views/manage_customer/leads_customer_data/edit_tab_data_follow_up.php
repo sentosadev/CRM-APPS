@@ -578,6 +578,8 @@ $this->load->view('additionals/dropdown_search_menu_leads_customer_data', $data)
     $('#mdl_kategori_status_komunikasi').text(': ' + $('#kategori_status_komunikasi_<?= $total_fol_up ?>').val());
     $('#mdl_kodeHasilStatusFollowUp').text(': ' + $('#kodeHasilStatusFollowUp_<?= $total_fol_up ?>').select2('data')[0].text);
     $('#mdl_kodeAlasanNotProspectNotDeal').text(': ' + $('#kodeAlasanNotProspectNotDeal_<?= $total_fol_up ?>').select2('data')[0].text);
+    $('#mdl_id_tipe').text(': ' + $('#id_tipe_from_other_db_<?= $total_fol_up ?>').select2('data')[0].text);
+    $('#mdl_id_warna').text(': ' + $('#id_warna_from_other_db_<?= $total_fol_up ?>').select2('data')[0].text);
     $('#mdl_keteranganAlasanLainnya').text(': ' + $('#keteranganAlasanLainnya_<?= $total_fol_up ?>').val());
     $('#modalFollowUp').modal('show');
   }

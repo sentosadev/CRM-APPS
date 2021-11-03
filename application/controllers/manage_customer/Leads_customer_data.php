@@ -801,10 +801,10 @@ class Leads_customer_data extends Crm_Controller
     $upd_leads['kodeTypeUnit']    = $kodeTypeUnit;
     $upd_leads['kodeWarnaUnit']   = $kodeWarnaUnit;
       //Sinkron Tabel tipe
-    $arr_kode_tipe = [$this->input->post('kodeTypeUnit', true)];
+    $arr_kode_tipe = [$kodeTypeUnit];
 
-    //Sinkron Tabel tipe
-    $arr_kode_warna = [$this->input->post('kodeWarnaUnit', true)];
+    //Sinkron Tabel Warna
+    $arr_kode_warna = [$kodeWarnaUnit];
 
     $ftp = [
       'kode_tipe' => $kodeTypeUnit,
@@ -830,6 +830,9 @@ class Leads_customer_data extends Crm_Controller
     ];
 
     $tes = [
+      'arr_kode_tipe' => isset($arr_kode_tipe) ? $arr_kode_tipe : NULL,
+      'arr_kode_series' => isset($arr_kode_series) ? $arr_kode_series : NULL,
+      'arr_kode_warna' => isset($arr_kode_warna) ? $arr_kode_warna : NULL,
       'upd_fol_up' => isset($upd_fol_up) ? $upd_fol_up : NULL,
       'ins_fol_up' => isset($ins_fol_up) ? $ins_fol_up : NULL,
       'upd_leads' => isset($upd_leads) ? $upd_leads : NULL,
