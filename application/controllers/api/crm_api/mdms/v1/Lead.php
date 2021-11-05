@@ -66,6 +66,25 @@ class Lead extends CI_Controller
     send_json($result);
   }
 
+  function _batasSLA2($kode_dealer, $actionDate, $sla)
+  {
+    // send_json($sla);
+    $actionTimeStr = date('Y-m-d\TH:i', strtotime($actionDate)); // date('Y-m-d\TH:i');
+    $SLAStr = $sla; // '15 hours';
+    $operatingHour = operatingHour($kode_dealer);
+    if ($operatingHour) {
+      $cek = calculateDeadline($actionTimeStr, $SLAStr, $operatingHour);
+      if ($cek) {
+        return $cek->format('Y-m-d H:i:s');
+      } else {
+        return null;
+      }
+    } else {
+      $response = ['status' => 0, 'pesan' => 'Jam operasional Kode Dealer : ' . $kode_dealer . ' belum ditentukan'];
+      send_json($response);
+    }
+  }
+
   function _insertToMainTable()
   {
     $fc = [
@@ -76,7 +95,7 @@ class Lead extends CI_Controller
     $this->db->trans_begin();
     foreach ($data as $pst) {
       $no_hp = clean_no_hp(clear_removed_html($pst['noHP']));
-      $email = clear_removed_html($pst['email']);
+      $email = (string)clear_removed_html($pst['email']);
       $no_rangka =clear_removed_html($pst['noFramePembelianSebelumnya']);
       $fcdb['no_hp_or_email_or_no_rangka'] = [$no_hp, $email,$no_rangka];
       $sourceData = clear_removed_html($pst['sourceData']);
@@ -112,6 +131,11 @@ class Lead extends CI_Controller
         }else{
           $leads_id = $leads_id_invited;
         }
+        if ($cdb!=null) {
+          if ($email=='') {
+            $email =$cdb->email;
+          }
+        }
         $insert = [
           'leads_id' => $leads_id,
           'customerId' => $this->ld_m->getCustomerID(),
@@ -122,7 +146,7 @@ class Lead extends CI_Controller
           'customerType' => clear_removed_html($pst['customerType']),
           'eventCodeInvitation' => $eventCodeInvitation,
           'customerActionDate' => clear_removed_html($pst['customerActionDate']),
-          'kabupaten' => clear_removed_html($pst['kabupaten']),
+          'kabupaten' => $cdb==null?clear_removed_html($pst['kabupaten']):$cdb->idKabupaten,
           'cmsSource' => clear_removed_html($pst['cmsSource']),
           'segmentMotor' => clear_removed_html($pst['segmentMotor']),
           'seriesMotor' => clear_removed_html($pst['seriesMotor']),
@@ -137,8 +161,8 @@ class Lead extends CI_Controller
           'assignedDealer' => clear_removed_html($pst['assignedDealer']),
           'sourceRefID' => clear_removed_html($pst['sourceRefID']),
           'provinsi' => $cdb == NULL ? clear_removed_html($pst['provinsi']) : $cdb->idProvinsi,
-          'kelurahan' => clear_removed_html($pst['kelurahan']),
-          'kecamatan' => clear_removed_html($pst['kecamatan']),
+          'kelurahan' => $cdb==null?clear_removed_html($pst['kelurahan']):$cdb->idKelurahan,
+          'kecamatan' => $cdb==null?clear_removed_html($pst['kecamatan']):$cdb->idKecamatan,
           'noFramePembelianSebelumnya' => $cdb == NULL ? clear_removed_html($pst['noFramePembelianSebelumnya']) : $cdb->frameNoSebelumnya,
           'keterangan' => clear_removed_html($pst['keterangan']),
           'promoUnit' => clear_removed_html($pst['promoUnit']),
@@ -155,6 +179,7 @@ class Lead extends CI_Controller
           'pengeluaran' => $cdb == NULL ? NULL : $cdb->idPengeluaran,
           'idAgama' => $cdb == NULL ? NULL : $cdb->idAgama,
           'gender' => $cdb == NULL ? NULL : $cdb->gender,
+          'noKtp' => $cdb == NULL ? NULL : $cdb->no_ktp,
           'statusNoHp' => $cdb == NULL ? NULL : $cdb->statusNoHp,
           'deskripsiTipeUnitPembelianTerakhir' => $cdb == NULL ? NULL : $cdb->deskripsiTipeUnitPembelianTerakhir,
           'batasOntimeSLA1' => $batasSLA1,
@@ -180,6 +205,7 @@ class Lead extends CI_Controller
         $pst['cdb']        = $cdb;
         $this->ld_m->setInterasksiFromStageToLeads($leads_id, $pst);
       } else {
+        $leads_id = $cek_leads->leads_id;
         $pst['no_hp']      = $no_hp;
         $pst['email']      = $email;
         $pst['sourceData'] = $sourceData;
@@ -201,8 +227,9 @@ class Lead extends CI_Controller
           ];
           $cek_source_need_fu_md = $this->source_m->getSourceLeads($fsl)->row();
           if ($cek_source_need_fu_md == null) {
+            $batasSLA2 =  $this->_batasSLA2($assignedDealer,waktu(),$pst['sla2']);
             //Melakukan Pengiriman API 3
-            $data = $this->ld_m->post_to_api3($leads_id);
+            $data = $this->ld_m->post_to_api3($leads_id,false,$batasSLA2);
             $res_api3 = send_api_post($data, 'mdms', 'nms', 'api_3');
             if ($res_api3['status'] == 1) {
               $id_prospek = $res_api3['data']['id_prospek'];
@@ -231,12 +258,13 @@ class Lead extends CI_Controller
 
               //Update Leads
               $update_leads = [
-                'assignedDealer'            => $assignedDealer,
-                'alasanPindahDealer'        => null,
-                'alasanPindahDealerLainnya' => null,
-                'tanggalAssignDealer'       => waktu(),
-                'assignedDealerBy'          => 0,
-                'idProspek'                 => $id_prospek
+                'assignedDealer'              => $assignedDealer,
+                'batasOntimeSLA2'             => $batasSLA2,
+                'alasanPindahDealer'          => null,
+                'alasanPindahDealerLainnya'   => null,
+                'tanggalAssignDealer'         => waktu(),
+                'assignedDealerBy'            => 0,
+                'idProspek'                   => $id_prospek
               ];
               $this->db->update('leads', $update_leads, ['leads_id' => $leads_id]);
             }

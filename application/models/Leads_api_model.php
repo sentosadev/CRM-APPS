@@ -204,6 +204,15 @@ class Leads_api_model extends CI_Model
         }
       }
 
+      //Reset Event Jika Customer Bukan 28 atau 29
+      $source_invited = [28, 29];
+      if (!in_array($pst['sourceData'],$source_invited)) {
+        $kode_event       = $cek_event==null?null:$cek_event->kode_event;
+        $deskripsiEvent   = '';
+        unset($periodeAwalEvent);
+        unset($periodeAkhirEvent);
+      }
+
       //Cek sourceData
       if ($pst['sourceData'] == '') {
         $errMsg = 'Source Data Wajib Diisi';

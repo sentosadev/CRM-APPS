@@ -1496,7 +1496,7 @@ class Leads_model extends CI_Model
   ");
   }
 
-  function post_to_api3($leads_id, $interaksi_id = false)
+  function post_to_api3($leads_id, $interaksi_id = false,$batasSLA2=null)
   {
     $this->db_live = $this->load->database('sinsen_live', true);
 
@@ -1547,7 +1547,7 @@ class Leads_model extends CI_Model
       'instagram' => $leads->instagram,
       'twitter' => $leads->twitter,
       'customerType' => $leads->customerType,
-      'batasOnTimeSLA2' => $leads->batasOntimeSLA2,
+      'batasOnTimeSLA2' => $batasSLA2==null?$leads->batasOntimeSLA2:$batasSLA2,
       'platformData' => $leads->platformData,
       'periodeAwalEvent' => $leads->periodeAwalEvent,
       'periodeAkhirEvent' => $leads->periodeAkhirEvent,

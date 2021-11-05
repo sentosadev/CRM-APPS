@@ -19,8 +19,8 @@ class Event_model extends CI_Model
         $where .= " AND (ev.kode_event = '$nama_deskripsi_kode'
                            OR ev.nama_event = '$nama_deskripsi_kode'
                            OR ev.description = '$nama_deskripsi_kode'
-                           OR '$tanggal' BETWEEN  ev.start_date AND ev.end_date
                           )
+                          AND '$tanggal' BETWEEN  ev.start_date AND ev.end_date
           ";
       }
       if (isset($filter['nama_deskripsi_event'])) {
