@@ -12,6 +12,9 @@
             <button class="btn bg-red btn-flat"><i class="fa fa-back"></i> Kembali</button>
           </a>
         </h3>
+        <div class="pull-right box-tools">
+          <button type="button" class="btn bg-blue btn-flat" onclick="showModalHistoryInteraksi()">History Interaksi</button>
+        </div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
