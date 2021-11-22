@@ -77,41 +77,6 @@
         </div>
       </div>
       <div class="col-sm-6 col-md-6">
-        <div class="box">
-          <div class="box-header">
-            <h3 class="box-title">
-              Tabel History Interaksi
-            </h3>
-            <div class="box-tools pull-right">
-              <button type="button" onclick="showModalHistoryInteraksi()" class="btn btn-primary btn-flat btn-xs">View All</button>
-            </div>
-          </div>
-          <div class="box-body">
-            <div class="table-responsive">
-              <table class='table table-condensed table-bordered table-striped serverside-tables' style="width:100%">
-                <thead>
-                  <th>Kode Unit + Warna Motor</th>
-                  <th>Tgl. Riding Test</th>
-                  <th>Source Data</th>
-                  <th>Keterangan</th>
-                  <th>Customer Action Date</th>
-                </thead>
-                <tbody>
-                  <?php
-                  foreach ($interaksi as $it) { ?>
-                    <tr>
-                      <td><?= $it->kodeTypeUnit ?> + <?= $it->kodeWarnaUnit ?></td>
-                      <td><?= $it->jadwalRidingTest ?></td>
-                      <td><?= $it->deskripsiSourceData ?></td>
-                      <td></td>
-                      <td><?= $it->customerActionDate ?></td>
-                    </tr>
-                  <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <div class="form-group" style='padding-top:20px'>
