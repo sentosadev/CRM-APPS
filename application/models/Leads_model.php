@@ -535,7 +535,7 @@ class Leads_model extends CI_Model
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
         } elseif ($filter['select'] == 'count') {
-          $select = "COUNT(leads_id) count,stl.customerType";
+          $select = "COUNT(leads_id) count,stl.customerType,stl.sourceData";
         } else {
           $select = $filter['select'];
         }
@@ -638,7 +638,7 @@ class Leads_model extends CI_Model
     }
 
     return $this->db->query("SELECT stl.batchID,stl.nama,stl.noHP,stl.email,stl.customerType,stl.eventCodeInvitation,stl.customerActionDate,stl.kabupaten,stl.cmsSource,stl.segmentMotor,stl.seriesMotor,stl.deskripsiEvent,stl.kodeTypeUnit,stl.kodeWarnaUnit,stl.minatRidingTest,stl.jadwalRidingTest,stl.sourceData,stl.platformData,stl.noTelp,stl.assignedDealer,stl.sourceRefID,stl.provinsi,stl.kelurahan,stl.kecamatan,stl.noFramePembelianSebelumnya,stl.keterangan,stl.promoUnit,stl.facebook,stl.instagram,stl.twitter,stl.created_at,tl.leads_id,stl.stage_id,pld.platform_data descPlatformData,sc.source_leads descSourceLeads,tp.deskripsi_tipe,wr.deskripsi_warna,$concat_desc_tipe_warna concat_desc_tipe_warna,
-    $status_api2 status_api2,stl.created_at,CASE WHEN stl.customerType='V' THEN 'Invited' WHEN stl.customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc,
+    $status_api2 status_api2,stl.created_at,CASE WHEN stl.sourceData=28 THEN 'Invited' WHEN stl.sourceData=29 THEN 'Non Invited' ELSE '' END customerTypeDesc,
     CASE WHEN cs.kode_cms_source IS NULL THEN stl.cmsSource ELSE cs.deskripsi_cms_source END deskripsiCmsSource,stl.deskripsiEvent,stl.facebook,stl.instagram,stl.twitter,stl.customerActionDate,
     CASE WHEN sc.id_source_leads=28 OR sc.id_source_leads=29 THEN cs.sla
          ELSE sc.src_sla END AS sla,
@@ -867,6 +867,12 @@ class Leads_model extends CI_Model
           $where .= " AND ksk.id_kategori_status_komunikasi!='{$this->db->escape_str($filter['id_kategori_status_komunikasi_not'])}'";
         }
       }
+      if (isset($filter['followUpID'])) {
+        if ($filter['followUpID'] != '') {
+          $where .= " AND lfu.followUpID='{$this->db->escape_str($filter['followUpID'])}'";
+        }
+      }
+
       if (isset($filter['select'])) {
         if ($filter['select'] == 'dropdown') {
           $select = "leads_id id, leads_id text";
@@ -1099,10 +1105,10 @@ class Leads_model extends CI_Model
     if (isset($filter['leads_id'])) {
       $where .= " AND lhs.leads_id='{$filter['leads_id']}'";
     }
-    return $this->db->query("SELECT  lhs.leads_id,stageId 
+    return $this->db->query("SELECT  lhs.leads_id,stageId,IFNULL(lhs.followUpID,'') followUpID 
     FROM leads_history_stage lhs
     JOIN leads ld ON ld.leads_id=lhs.leads_id
-    $where");
+    $where ORDER BY lhs.id_int ASC");
   }
 
   function setOntimeSLA1_detik($customerActionDate, $tglFollowUp)
@@ -1200,11 +1206,11 @@ class Leads_model extends CI_Model
     }
 
 
-    return $this->db->query("SELECT COUNT(leads_id) count_cust_type,customerType, 
-    CASE WHEN customerType='V' THEN 'Invited' WHEN customerType='R' THEN 'Non Invited' ELSE '' END customerTypeDesc
+    return $this->db->query("SELECT COUNT(leads_id) count_cust_type, customerType, 
+    CASE WHEN sourceData=28 THEN 'Invited' WHEN sourceData=29 THEN 'Non Invited' ELSE '' END customerTypeDesc
     FROM leads 
     $where
-    GROUP BY customerType");
+    GROUP BY sourceData");
   }
 
   function getLeadsGroupBySourceData($filter = NULL)
@@ -1260,8 +1266,12 @@ class Leads_model extends CI_Model
       ORDER BY id_int DESC LIMIT 1
       ";
 
+    if (isset($filter['reset_md_d'])) {
+      $where = "WHERE 1=1";
+    }
     if (isset($filter['is_workload'])) {
-      $where .= " AND ($last_id_kategori) IS NULL ";
+      $folup = "SELECT COUNT(leads_id) FROM leads_follow_up WHERE leads_id=ld.leads_id";
+      $where .= " AND ($folup)=0";
     }
     if (isset($filter['is_unreachable'])) {
       $where .= " AND ($last_id_kategori)=1 ";
@@ -1343,8 +1353,11 @@ class Leads_model extends CI_Model
     if (isset($filter['selisih_next_lebih_besar_dari'])) {
       $where .= " AND ($selisih_next) > {$filter['selisih_next_lebih_besar_dari']}";
     }
+
     if (isset($filter['kodeHasilStatusFollowUp'])) {
       $where .= " AND ($last_kodeHasilStatusFollowUp) = {$filter['kodeHasilStatusFollowUp']}";
+      if ($filter['kodeHasilStatusFollowUp']==1) {
+      }
     }
 
     if (isset($filter['idSPK_not_null'])) {
@@ -1366,6 +1379,11 @@ class Leads_model extends CI_Model
     if (isset($filter['frameNo_not_null'])) {
       if ($filter['frameNo_not_null'] != '') {
         $where .= " AND IFNULL(ld.frameNo,'') != ''";
+      }
+    }
+    if (isset($filter['frameNo_null'])) {
+      if ($filter['frameNo_null'] != '') {
+        $where .= " AND IFNULL(ld.frameNo,'') = ''";
       }
     }
     if (isset($filter['kodeIndent_not_null'])) {
@@ -1391,7 +1409,7 @@ class Leads_model extends CI_Model
     if (isset($filter['select'])) {
       $select = "ld.leads_id";
     } else {
-      $select = "COUNT(DISTINCT ld.leads_id) count,ld.customerType";
+      $select = "COUNT(DISTINCT ld.leads_id) count,ld.customerType,ld.sourceData";
     }
     return $this->db->query("SELECT $select
     FROM leads ld

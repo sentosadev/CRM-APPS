@@ -142,6 +142,7 @@ class Performance_dashboard extends Crm_Controller
     ];
     send_json($response);
   }
+  
   function loadLeadsFunneling()
   {
 
@@ -152,10 +153,8 @@ class Performance_dashboard extends Crm_Controller
 
     $fds = $filter;
     $fds['tot_leads'] = 0;
-    $fds['group_by'] = " stl.customerType";
-    $get_contact_leads    = $this->pdm->fl_contact_leads($fds);
-    $contact_leads        = $get_contact_leads;
-
+    $contact_leads    = $this->pdm->fl_contact_leads($fds);
+  
     $fds = $filter;
     $get_workload_md_leads    = $this->pdm->workload_md_leads($fds);
     $workload_md_leads        = $get_workload_md_leads;
@@ -211,7 +210,6 @@ class Performance_dashboard extends Crm_Controller
     $lf_conv_sales_of_contacted = number_format((@($sales['sales'] / $contacted_prospetcs['contacted']) * 100), 2);
     $lf_conv_sales_invited = number_format((@($sales['sales'] / $get_leads['invited']) * 100), 2);
     $lf_conv_sales_non_invited = number_format((@($sales['sales'] / $get_leads['non_invited']) * 100), 2);
-
     $result = [
       'status' => 1,
       'data' => [
