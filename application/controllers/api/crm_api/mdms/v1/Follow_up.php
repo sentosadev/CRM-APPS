@@ -77,7 +77,7 @@ class Follow_up extends CI_Controller
         } else {
           // Cek Apakah Masuk Stage ID 8
           // 8. Record Follow Up Result by Salespeople Contacted & Prospect
-          if ($post['kodeHasilStatusFollowUp'] == '1' || $post['kodeHasilStatusFollowUp']=='3') {
+          if ($post['kodeHasilStatusFollowUp'] == '1') {
             $stageId = 8;
             // Cek Apakah Masuk Stage ID 9
             // 9. Record Follow Up Result by Salespeople Not Deal
@@ -396,12 +396,15 @@ class Follow_up extends CI_Controller
         }
       }
 
+
+      $followUpID = $this->ld_m->getFollowUpID();
       if (count($stage_belum) == 0) {
         //History Stage ID
         $insert_history_stage = [
-          'leads_id'   => $leads_id,
-          'stageId'    => $post['stageId'],
-          'created_at' => waktu(),
+          'followUpID'    => $followUpID,
+          'leads_id'      => $leads_id,
+          'stageId'       => $post['stageId'],
+          'created_at'    => waktu(),
         ];
       }
 
@@ -425,7 +428,7 @@ class Follow_up extends CI_Controller
       ];
       $count_fol = $this->ld_m->getLeadsFollowUp($ffol)->row()->count;
       $ins_fol_up = [
-        'followUpID'              => $this->ld_m->getFollowUpID(),
+        'followUpID'              => $followUpID,
         'followUpKe'              => $count_fol + 1,
         'pic'                     => $post['fol_up']['pic'],
         'tglFollowUp'             => $post['fol_up']['tglFollowUp'],

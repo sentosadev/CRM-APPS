@@ -587,7 +587,7 @@ class Leads_customer_data extends Crm_Controller
           'keteranganFollowUp' => $this->input->post('keteranganFollowUp_' . $i, true),
           'keteranganNextFollowUp' => $this->input->post('keteranganNextFollowUp_' . $i, true),
           'pic' => $this->input->post('pic_' . $i, true),
-          'tglFollowUp' => convert_datetime($this->input->post('tglFollowUp_' . $i, true)),
+          'tglFollowUp' => waktu(),
           'tglNextFollowUp' => $this->input->post('tglNextFollowUp_' . $i, true),
           'id_tipe_kendaraan' => $kodeTypeUnit,
           'id_warna' => $kodeWarnaUnit,
@@ -680,24 +680,21 @@ class Leads_customer_data extends Crm_Controller
           send_json($response);
         } else {
           if ((string)$gr->assignedDealer == '') { //Is MD
-            //Cek Apakah Sudah Stage ID 2
-            $fstg2 = ['leads_id' => $leads_id, 'stageId' => 2];
-            $c_stg2 = $this->ld_m->getLeadsStage($fstg2)->row();
-            if ($c_stg2 == NULL) {
-              // Set Stage ID 2
-              // 2. Record Follow Up Result by PIC MD Not Contacted
-              $csf = [
-                'id_status_fu' => $upd_fol['id_status_fu'],
-                'id_kategori_status_komunikasi_not' => 4 //4. Contacted
+            
+            // Set Stage ID 2
+            // 2. Record Follow Up Result by PIC MD Not Contacted
+            $csf = [
+              'id_status_fu' => $upd_fol['id_status_fu'],
+              'id_kategori_status_komunikasi_not' => 4 //4. Contacted
+            ];
+            $cek_status_fu = $this->sfu_m->getStatusFU($csf)->num_rows();
+            if ($cek_status_fu > 0) {
+              $history_stage_id[] = [
+                'followUpID'=>$cek->followUpID,
+                'leads_id' => $leads_id,
+                'created_at' => waktu(),
+                'stageId' => 2
               ];
-              $cek_status_fu = $this->sfu_m->getStatusFU($csf)->num_rows();
-              if ($cek_status_fu > 0) {
-                $history_stage_id[] = [
-                  'leads_id' => $leads_id,
-                  'created_at' => waktu(),
-                  'stageId' => 2
-                ];
-              }
             }
 
             //Cek Apakah Sudah Stage ID 3
@@ -714,6 +711,7 @@ class Leads_customer_data extends Crm_Controller
 
               if ($upd_fol['kodeHasilStatusFollowUp'] == '2' && $cek_status_fu3 > 0) { // 2. Not Prospect
                 $history_stage_id[] = [
+                  'followUpID'=>$cek->followUpID,
                   'leads_id' => $leads_id,
                   'created_at' => waktu(),
                   'stageId' => 3
@@ -729,6 +727,7 @@ class Leads_customer_data extends Crm_Controller
               // 4. Record Follow Up Result by PIC MD Prospect
               if ($upd_fol['kodeHasilStatusFollowUp'] == '1') { // 1. Prospect
                 $history_stage_id[] = [
+                  'followUpID'=>$cek->followUpID,
                   'leads_id' => $leads_id,
                   'created_at' => waktu(),
                   'stageId' => 4
@@ -764,6 +763,7 @@ class Leads_customer_data extends Crm_Controller
                 // Set Stage ID 7
                 // 7. Record Follow Up Result by Salespeople Not Contacted
                 $history_stage_id[] = [
+                  'followUpID'=>$cek->followUpID,
                   'leads_id' => $leads_id,
                   'created_at' => waktu(),
                   'stageId' => 7
@@ -778,6 +778,7 @@ class Leads_customer_data extends Crm_Controller
                   //Set Stage ID 8
                   // 8. Record Follow Up Result by Salespeople Contacted & Prospect
                   $history_stage_id[] = [
+                  'followUpID'=>$cek->followUpID,
                     'leads_id' => $leads_id,
                     'created_at' => waktu(),
                     'stageId' => 8
@@ -786,6 +787,7 @@ class Leads_customer_data extends Crm_Controller
                   //Set Stage ID 9
                   // 9. Record Follow Up Result by Salespeople Not Deal
                   $history_stage_id[] = [
+                    'followUpID'=>$cek->followUpID, 
                     'leads_id' => $leads_id,
                     'created_at' => waktu(),
                     'stageId' => 9
@@ -916,9 +918,22 @@ class Leads_customer_data extends Crm_Controller
           'order' => "followUpID DESC"
         ];
         $last_fu = $this->ld_m->getLeadsFollowUp($flast)->row()->followUpID;
-        $upd_fu = ['kodeHasilStatusFollowUp' => 2];
+        $upd_fu = [
+              'kodeHasilStatusFollowUp' => 2,
+              'kodeAlasanNotProspectNotDeal'=>5,
+              'keteranganLainnyaNotProspectNotDeal'=>'Auto Not Prospect (Not Contacted 3 hari berturut-turut)'
+            ];
         $this->db->update('leads_follow_up', $upd_fu, ['followUpID' => $last_fu]);
         $pesan = ". Leads ID Auto Not Prospect";
+        
+        $history_stage_id = [
+          'followUpID'    => $last_fu,
+          'leads_id'      => $leads_id,
+          'created_at'    => waktu(),
+          'stageId'       => 3
+        ];
+        $this->db->insert('leads_history_stage', $history_stage_id);
+        $this->db->delete('leads_history_stage',['followUpID'=>$last_fu,'stageId'=>2]);
       }
       $this->session->set_flashdata(['tabs' => $this->input->post('tabs')]);
       $this->session->set_flashdata(msg_sukses('Berhasil menyimpan data' . $pesan));
