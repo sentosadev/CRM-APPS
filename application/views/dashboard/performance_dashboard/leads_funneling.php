@@ -33,12 +33,26 @@
             </div>
           </div>
         </div>
+        <?php
+        $user = user();
+        if($user->md_d=='d'){ ?>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box box-default">
+              <div class="box-body">
+                Dealer : <?=$user->nama_dealer?>
+              </div>
+            </div>
+          </div>
+        </div>
+        <?php } ?>
         <div class="row">
           <div class="col-md-4">
             <div class="box box-default">
               <div class="box-body">
                 <table>
-                  <tr>
+                  <?php if ($user->md_d!='d') { ?>
+                    <tr>
                     <td colspan=3>
                       <table class='table table-bordered table-condensed margin-bottom-table'>
                         <tr>
@@ -154,6 +168,7 @@
                       </table>
                     </td>
                   </tr>
+                  <?php } ?>
                   <tr>
                     <td style='width:30%;vertical-align:top' rowspan=2>
                       <table class='table table-bordered table-condensed margin-bottom-table' style='min-height:210px'>

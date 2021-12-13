@@ -55,56 +55,59 @@
   </div>
 </section>
 <section class="content">
+  <?php $user = user(); ?>
   <div class="row">
     <div class="col-lg-12 col-md-12 col-xs-12">
       <table style='width:100%'>
         <tr>
-          <td class='padding-td'>
-            <div class="small-box bg-gray">
-              <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Semua sumber data customer yang berpotensi menghasilkan leads dan diundang ke dalam event">
-                <p>Data Source <br>&nbsp;</p>
-                <h3 class="card_view" id="data_source">&nbsp;</h3>
+          <?php if ($user->md_d!='d') { ?>
+            <td class='padding-td'>
+              <div class="small-box bg-gray">
+                <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Semua sumber data customer yang berpotensi menghasilkan leads dan diundang ke dalam event">
+                  <p>Data Source <br>&nbsp;</p>
+                  <h3 class="card_view" id="data_source">&nbsp;</h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen">&nbsp;</div>
               </div>
-              <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="data_source_persen">&nbsp;</div>
-            </div>
-          </td>
-          <td class='padding-td'>
-            <div class="small-box bg-gray">
-              <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Menampilkan jumlah customer yang diundang dalam VE. % yang ditampilkan adalah perbandingan jumlah Invited dengan Data Source">
-                <p>Invited Pre-Event</p>
-                <h3 class="card_view" id="invited_pre_event">&nbsp;</h3>
+            </td>
+            <td class='padding-td'>
+              <div class="small-box bg-gray">
+                <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Menampilkan jumlah customer yang diundang dalam VE. % yang ditampilkan adalah perbandingan jumlah Invited dengan Data Source">
+                  <p>Invited Pre-Event</p>
+                  <h3 class="card_view" id="invited_pre_event">&nbsp;</h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="invited_pre_event_persen">&nbsp;</div>
               </div>
-              <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="invited_pre_event_persen">&nbsp;</div>
-            </div>
-          </td>
-          <td class='padding-td'>
-            <div class="small-box bg-gray">
-              <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Customer yang hadir dalam VE, melakukan interaksi pada website VE (seluruh CMS Source, kecuali Non CMS), dan telah terverifikasi pada backlog Verification and Classified Customer Leads Data. % yang ditampilkan adalah perbandingan jumlah Leads dengan Data Source">
-                <p>Leads Invited/Non Invited</p>
-                <h3 class="card_view" id="leads_invited_non_invited" style='min-width:136px'>&nbsp;</h3>
+            </td>
+            <td class='padding-td'>
+              <div class="small-box bg-gray">
+                <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Customer yang hadir dalam VE, melakukan interaksi pada website VE (seluruh CMS Source, kecuali Non CMS), dan telah terverifikasi pada backlog Verification and Classified Customer Leads Data. % yang ditampilkan adalah perbandingan jumlah Leads dengan Data Source">
+                  <p>Leads Invited/Non Invited</p>
+                  <h3 class="card_view" id="leads_invited_non_invited" style='min-width:136px'>&nbsp;</h3>
+                </div>
+                <div class="small-box-footer card_view_persen" style="color:black;font-weight:bold" id="leads_invited_non_invited_persen">&nbsp;</div>
               </div>
-              <div class="small-box-footer card_view_persen" style="color:black;font-weight:bold" id="leads_invited_non_invited_persen">&nbsp;</div>
-            </div>
-          </td>
-          <td class='padding-td'>
-            <div class="small-box bg-gray">
-              <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang sudah diprobing, terhubung oleh PIC VE MD, dan siap didispatch ke Dealer. % yang ditampilkan adalah perbandingan jumlah Contacted Leads dengan Leads">
-                <p>Contacted Leads <br>&nbsp;</p>
-                <h3 class="card_view" id="contact_leads">&nbsp;</h3>
+            </td>
+            <td class='padding-td'>
+              <div class="small-box bg-gray">
+                <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang sudah diprobing, terhubung oleh PIC VE MD, dan siap didispatch ke Dealer. % yang ditampilkan adalah perbandingan jumlah Contacted Leads dengan Leads">
+                  <p>Contacted Leads <br>&nbsp;</p>
+                  <h3 class="card_view" id="contact_leads">&nbsp;</h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="contact_leads_persen">&nbsp;</div>
               </div>
-              <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="contact_leads_persen">&nbsp;</div>
-            </div>
-          </td>
-          <td class='padding-td'>
-            <div class="small-box bg-gray">
-              <!-- Tooltip Dealer Belum -->
-              <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang setelah dilakukan probing oleh PIC VE MD tertarik melakukan pembelian dengan kriteria Status Prospect berdasarkan tanggal Next Follow Up: Low (>1bulan), Medium (2-4minggu), Hot (<2minggu) % yang ditampilkan adalah perbandingan jumlah Prospects dengan Contacted Leads">
-                <p>Prospects <br>&nbsp;</p>
-                <h3 class="card_view" id="prospects">&nbsp;</h3>
+            </td>
+            <td class='padding-td'>
+              <div class="small-box bg-gray">
+                <!-- Tooltip Dealer Belum -->
+                <div class="inner" style="min-height:135px" data-toggle="tooltip" data-placement="bottom" data-html="true" data-original-title="Data Leads yang setelah dilakukan probing oleh PIC VE MD tertarik melakukan pembelian dengan kriteria Status Prospect berdasarkan tanggal Next Follow Up: Low (>1bulan), Medium (2-4minggu), Hot (<2minggu) % yang ditampilkan adalah perbandingan jumlah Prospects dengan Contacted Leads">
+                  <p>Prospects <br>&nbsp;</p>
+                  <h3 class="card_view" id="prospects">&nbsp;</h3>
+                </div>
+                <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="prospects_persen">&nbsp;</div>
               </div>
-              <div class="card_view_persen small-box-footer" style="color:black;font-weight:bold" id="prospects_persen">&nbsp;</div>
-            </div>
-          </td>
+            </td>
+          <?php } ?>
           <td class='padding-td'>
             <div class="small-box bg-gray">
               <!-- Tooltip Dealer Belum -->
