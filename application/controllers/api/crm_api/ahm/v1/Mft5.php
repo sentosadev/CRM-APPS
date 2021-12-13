@@ -30,8 +30,10 @@ class Mft5 extends CI_Controller
       $fhis = [
         'leads_id' => $lds->leads_id,
         'assignedDealer' => (string)$ld->assignedDealer,
+        'followUpID'=>$lds->followUpID,
         'order' => 'followUpKe DESC'
       ];
+     
       $ld_fol = $this->ld_m->getLeadsFollowUp($fhis)->row();
       //Cek noFramePembelianSebelumnya
       if ($ld->noFramePembelianSebelumnya != '') {
@@ -67,6 +69,9 @@ class Mft5 extends CI_Controller
       $keteranganNextFollowUp                 = '';
       $picFollowUpD                           = '';
       $pic                                    = '';
+      $kodeTypeUnitProspect                   = '';
+      $kodeWarnaUnitProspect                  = '';
+      $statusProspek                          = '';
       //Set Untuk Follow Up Dealer      
       if ($ld_fol != NULL) {
         $followUpID                             = $ld_fol->followUpID;
@@ -77,7 +82,8 @@ class Mft5 extends CI_Controller
         $keteranganLainnyaNotProspectNotDeal    = $ld_fol->keteranganLainnyaNotProspectNotDeal;
         $tglNextFollowUp                        = $ld_fol->tglNextFollowUp;
         $keteranganNextFollowUp                 = $ld_fol->keteranganNextFollowUp;
-        $pic                 = $ld_fol->pic;
+        $pic                                    = $ld_fol->pic;
+        $statusProspek                          = $ld_fol->statusProspek;
         // Cek kodeHasilStatusFollowUp  
         if ((string)strtolower($ld_fol->kategori_status_komunikasi) == 'contacted') {
           if ((string)$ld_fol->kodeHasilStatusFollowUp == '') {
@@ -113,7 +119,7 @@ class Mft5 extends CI_Controller
 
         //Cek statusProspect
         if ((string)strtolower($ld_fol->kodeHasilStatusFollowUp) == '1') { //1=Prospect
-          if ((string)$ld->statusProspek == '') {
+          if ((string)$ld_fol->statusProspek == '') {
             $error[] = 'statusProspect';
           }
         }
@@ -122,9 +128,11 @@ class Mft5 extends CI_Controller
         if ((string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '3' || (string)strtolower($ld_fol->kodeAlasanNotProspectNotDeal) == '9') {
           // 3 =Tidak ada stok di Dealer
           // 9=Indent  unit terlalu lama
-          if ((string)$ld->kodeTypeUnitProspect == '') {
+          $kodeTypeUnitProspect   = $ld_fol->id_tipe_kendaraan;
+          $kodeWarnaUnitProspect  = $ld_fol->id_warna;
+          if ((string)$ld_fol->id_tipe_kendaraan == '') {
             $error[] = 'kodeTypeUnitProspect';
-          } elseif ((string)$ld->kodeWarnaUnitProspect == '') {
+          } elseif ((string)$ld_fol->id_warna == '') {
             $error[] = 'kodeWarnaUnitProspect';
           }
         }
@@ -162,7 +170,7 @@ class Mft5 extends CI_Controller
         }
 
         //PIC Follow Up Dealer
-        $picFollowUpD = $ld_fol->pic;
+        $picFollowUpD = 2;
       }
 
 
@@ -170,7 +178,8 @@ class Mft5 extends CI_Controller
       $fhis = [
         'leads_id' => $lds->leads_id,
         'assignedDealerIsNULL' => true,
-        'order' => 'followUpKe DESC'
+        'order' => 'followUpKe DESC',
+        'followUpID'=>$lds->followUpID
       ];
       $ld_fol_md = $this->ld_m->getLeadsFollowUp($fhis)->row();
       if ($ld_fol == null && $ld_fol_md!=null) {
@@ -183,6 +192,7 @@ class Mft5 extends CI_Controller
         $tglNextFollowUp                        = $ld_fol_md->tglNextFollowUp;
         $keteranganNextFollowUp                 = $ld_fol_md->keteranganNextFollowUp;
         $pic                                    = $ld_fol_md->pic;
+        $statusProspek                          = $ld_fol_md->statusProspek;
         // Cek kodeHasilStatusFollowUp  
         if ((string)strtolower($ld_fol_md->kategori_status_komunikasi) == 'contacted') {
           if ((string)$ld_fol_md->kodeHasilStatusFollowUp == '') {
@@ -218,7 +228,7 @@ class Mft5 extends CI_Controller
 
         //Cek statusProspect
         if ((string)strtolower($ld_fol_md->kodeHasilStatusFollowUp) == '1') { //1=Prospect
-          if ((string)$ld->statusProspek == '') {
+          if ((string)$ld_fol_md->statusProspek == '') {
             $error[] = 'statusProspect';
           }
         }
@@ -228,9 +238,9 @@ class Mft5 extends CI_Controller
           // 3 =Tidak ada stok di Dealer
           // 9=Indent  unit terlalu lama
           if ((string)$ld->kodeTypeUnitProspect == '') {
-            $error[] = 'kodeTypeUnitProspect';
+            // $error[] = 'kodeTypeUnitProspect';
           } elseif ((string)$ld->kodeWarnaUnitProspect == '') {
-            $error[] = 'kodeWarnaUnitProspect';
+            // $error[] = 'kodeWarnaUnitProspect';
           }
         }
 
@@ -267,9 +277,11 @@ class Mft5 extends CI_Controller
         }
 
         //PIC Follow Up Dealer
-        $picFollowUpD = $ld_fol_md->pic;
+        $picFollowUpD =2;
       }
-
+      if ($pic>2) {
+        $pic = 1;
+      }
       $list_leads[$key] = [
         'leadsID' => $ld->leads_id,
         'stageID' => $lds->stageId,
@@ -297,10 +309,10 @@ class Mft5 extends CI_Controller
         'alasanNotProspectNotDeal' => $kodeAlasanNotProspectNotDeal,
         'keteranganLainnyaNotProspectNotDeal' => $keteranganLainnyaNotProspectNotDeal,
         'tanggalNextFU' => (string)$tglNextFollowUp,
-        'statusProspect' => $this->_setStatusProspek($ld->statusProspek),
+        'statusProspect' => $this->_setStatusProspek($statusProspek),
         'keteranganNextFollowUp' => (string)$keteranganNextFollowUp,
-        'kodeTypeUnitProspect' => $ld->kodeTypeUnit,
-        'kodeWarnaUnitProspect' => $ld->kodeWarnaUnit,
+        'kodeTypeUnitProspect' => $kodeTypeUnitProspect,
+        'kodeWarnaUnitProspect' => $kodeWarnaUnitProspect,
         'picFollowUpMD' => $pic, //
         'ontimeSLA1' => $ld->ontimeSLA1, //
         'picFollowUpD' => $picFollowUpD, //
@@ -343,7 +355,6 @@ class Mft5 extends CI_Controller
       'created_at' => waktu(),
       'response_data' => NULL,
     ];
-
     $this->db->trans_begin();
 
     $this->db->insert('ms_api_access_log', $log);
@@ -364,6 +375,7 @@ class Mft5 extends CI_Controller
   }
   function _generatedFileMFT($data, $set_err)
   {
+    // send_json($data);
     $content = '';
     $dir = getenv("DOCUMENT_ROOT") . "/crm-apps/generatedFile/mft";
     if (!is_dir($dir)) {
@@ -384,9 +396,9 @@ class Mft5 extends CI_Controller
         'stageID' => $val['stageID'],
       ];
       $content .= $sub_content;
-      if ($key < (count($data) - 1)) {
+      // if ($key < (count($data) - 1)) {
         $content .= "\r\n";
-      }
+      // }
     }
     fwrite($fp, $content);
     fclose($fp);

@@ -917,23 +917,37 @@ class Leads_customer_data extends Crm_Controller
           'leads_id' => $gr->leads_id,
           'order' => "followUpID DESC"
         ];
-        $last_fu = $this->ld_m->getLeadsFollowUp($flast)->row()->followUpID;
-        $upd_fu = [
-              'kodeHasilStatusFollowUp' => 2,
-              'kodeAlasanNotProspectNotDeal'=>5,
-              'keteranganLainnyaNotProspectNotDeal'=>'Auto Not Prospect (Not Contacted 3 hari berturut-turut)'
-            ];
-        $this->db->update('leads_follow_up', $upd_fu, ['followUpID' => $last_fu]);
+        $last_fu    = $this->ld_m->getLeadsFollowUp($flast)->row();
+        $followUpID = $this->ld_m->getFollowUpID();
+
+        $ins_fu = [
+          'leads_id'                              => $this->input->post('leads_id', true),
+          'followUpID'                            => $followUpID,
+          'followUpKe'                            => $last_fu->followUpKe+1,
+          'assignedDealer'                        => $last_fu->assignedDealer,
+          'kodeAlasanNotProspectNotDeal'          => 5,
+          'kodeHasilStatusFollowUp'               => 2,
+          'id_media_kontak_fu'                    => 1,
+          'id_status_fu'                          => 8,
+          'pic'                                   => $last_fu->pic,
+          'tglFollowUp'                           => waktu(),
+          'id_tipe_kendaraan'                     => $kodeTypeUnit,
+          'id_warna'                              => $kodeWarnaUnit,
+          'updated_at'                            => waktu(),
+          'updated_by'                            => $user->id_user,
+          'keteranganLainnyaNotProspectNotDeal'   => 'Auto Not Prospect 3x Uncontactable'
+        ];
+        $this->db->insert('leads_follow_up', $ins_fu);
         $pesan = ". Leads ID Auto Not Prospect";
         
         $history_stage_id = [
-          'followUpID'    => $last_fu,
+          'followUpID'    => $followUpID,
           'leads_id'      => $leads_id,
           'created_at'    => waktu(),
           'stageId'       => 3
         ];
         $this->db->insert('leads_history_stage', $history_stage_id);
-        $this->db->delete('leads_history_stage',['followUpID'=>$last_fu,'stageId'=>2]);
+        // $this->db->delete('leads_history_stage',['followUpID'=>$last_fu,'stageId'=>2]);
       }
       $this->session->set_flashdata(['tabs' => $this->input->post('tabs')]);
       $this->session->set_flashdata(msg_sukses('Berhasil menyimpan data' . $pesan));
