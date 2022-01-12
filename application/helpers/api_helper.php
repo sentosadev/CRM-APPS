@@ -198,10 +198,22 @@ function insert_api_log($activity, $status, $message, $data)
 
 function curlPost($url, $data = NULL, $method = NULL, $headers = NULL)
 {
+    
+    $options = array(
+        CURLOPT_RETURNTRANSFER => true,     // return web page
+        CURLOPT_HEADER         => false,    // don't return headers
+        CURLOPT_FOLLOWLOCATION => true,     // follow redirects
+        CURLOPT_AUTOREFERER    => true,     // set referer on redirect
+        CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
+        CURLOPT_TIMEOUT        => 120,      // timeout on response
+        CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
+        CURLOPT_SSL_VERIFYPEER => false     // Disabled SSL Cert checks
+    );
+    
   $ch = curl_init($url);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt_array( $ch, $options );
   // send_json($url);
-  // send_json(['body' => json_decode($data), 'header' => $headers]);
+//   send_json(['body' => $data, 'header' => $headers,'url'=>$url]);
   if (!empty($data)) {
     if ($method == 'json_post') {
       $data = json_encode($data);
@@ -212,9 +224,10 @@ function curlPost($url, $data = NULL, $method = NULL, $headers = NULL)
   if (!empty($headers)) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
   }
+  
   $response = curl_exec($ch);
-  // echo $response;
-  // die;
+//   echo $response;
+//   die;
   if (curl_error($ch)) {
     trigger_error('Curl Error:' . curl_error($ch));
   }
