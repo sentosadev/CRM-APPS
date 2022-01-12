@@ -104,10 +104,25 @@ class Dealer extends Crm_Controller
       'created_by' => $user->id_user,
     ];
 
-    $tes = ['insert' => $insert];
+    $insert_jam_operasional = [
+      'kode_dealer'         => $post['kode_dealer'],
+      'jam_mulai_weekday'   => $post['jam_mulai_weekday'],
+      'jam_selesai_weekday' => $post['jam_selesai_weekday'],
+      'jam_mulai_weekend'   => $post['jam_mulai_weekend'],
+      'jam_selesai_weekend' => $post['jam_selesai_weekend'],
+      'aktif'               => isset($_POST['aktif']) ? 1 : 0,
+      'created_at'          => waktu(),
+      'created_by'          => $user->id_user,
+    ];
+
+    $tes = [
+      'insert' => $insert,
+      'insert_jam_operasional' => $insert_jam_operasional,
+    ];
     // send_json($tes);
     $this->db->trans_begin();
     $this->db->insert('ms_dealer', $insert);
+    $this->db->insert('ms_jam_operasional', $insert_jam_operasional);
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];
@@ -175,10 +190,34 @@ class Dealer extends Crm_Controller
       'updated_by' => $user->id_user,
     ];
 
+    $update_jam_operasional = [
+      'kode_dealer'         => $post['kode_dealer'],
+      'jam_mulai_weekday'   => $post['jam_mulai_weekday'],
+      'jam_selesai_weekday' => $post['jam_selesai_weekday'],
+      'jam_mulai_weekend'   => $post['jam_mulai_weekend'],
+      'jam_selesai_weekend' => $post['jam_selesai_weekend'],
+      'aktif'               => isset($_POST['aktif']) ? 1 : 0,
+      'updated_at'          => waktu(),
+      'updated_by'          => $user->id_user,
+    ];
+
+    $cek = $this->db->get_where('ms_jam_operasional',['kode_dealer'=>$post['kode_dealer']])->row();
+    if ($cek==null) {
+      $update_jam_operasional['created_at']=waktu();
+      $update_jam_operasional['created_by']=$user->id_user;
+    }
+
+
     $tes = ['update' => $update];
     // send_json($tes);
     $this->db->trans_begin();
     $this->db->update('ms_dealer', $update, $fg);
+    if ($cek==null) {
+      $this->db->insert('ms_jam_operasional', $update_jam_operasional);
+    }else{
+      $cond = ['kode_dealer'=>$post['kode_dealer']];
+      $this->db->update('ms_jam_operasional', $update_jam_operasional, $cond);
+    }
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $response = ['status' => 0, 'pesan' => 'Telah terjadi kesalahan !'];

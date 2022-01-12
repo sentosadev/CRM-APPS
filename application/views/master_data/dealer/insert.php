@@ -29,6 +29,35 @@
                 </div>
               </div>
             </div>
+            <h3>Jam Operasional</h3>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Weekday (Mulai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_mulai_weekday' required>
+                </div>
+              </div>
+              <label class="col-sm-2 control-label">Weekday (Selesai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_selesai_weekday' required>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Weekend (Mulai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_mulai_weekend' required>
+                </div>
+              </div>
+              <label class="col-sm-2 control-label">Weekend (Selesai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_selesai_weekend' required>
+                </div>
+              </div>
+            </div>
             <div class="form-group">
               <label class="col-sm-2 control-label">Aktif</label>
               <div class="col-sm-4">

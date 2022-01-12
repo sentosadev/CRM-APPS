@@ -17,7 +17,7 @@
               <label class="col-sm-2 control-label">Kode Dealer <span class='required'>*</span></label>
               <div class="form-input">
                 <div class="col-sm-4">
-                  <input type="text" class="form-control" name='kode_dealer' required value='<?= $row->kode_dealer ?>' <?= $disabled ?>>
+                  <input type="text" class="form-control" name='kode_dealer' required value='<?= $row->kode_dealer ?>' readonly>
                 </div>
               </div>
             </div>
@@ -26,6 +26,35 @@
               <div class="form-input">
                 <div class="col-sm-4">
                   <input type="text" class="form-control" name='nama_dealer' required value='<?= $row->nama_dealer ?>' <?= $disabled ?>>
+                </div>
+              </div>
+            </div>
+            <h3>Jam Operasional</h3>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Weekday (Mulai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_mulai_weekday' required value='<?= $row->jam_mulai_weekday ?>' <?= $disabled ?>>
+                </div>
+              </div>
+              <label class="col-sm-2 control-label">Weekday (Selesai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_selesai_weekday' required value='<?= $row->jam_selesai_weekday ?>' <?= $disabled ?>>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Weekend (Mulai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_mulai_weekend' required value='<?= $row->jam_mulai_weekend ?>' <?= $disabled ?>>
+                </div>
+              </div>
+              <label class="col-sm-2 control-label">Weekend (Selesai) <span class='required'>*</span></label>
+              <div class="form-input">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name='jam_selesai_weekend' required value='<?= $row->jam_selesai_weekend ?>' <?= $disabled ?>>
                 </div>
               </div>
             </div>

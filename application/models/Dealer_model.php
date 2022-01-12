@@ -57,7 +57,7 @@ class Dealer_model extends CI_Model
           $select = $filter['select'];
         }
       } else {
-        $select = "mu.id_dealer, mu.kode_dealer,mu.nama_dealer,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by";
+        $select = "mu.id_dealer, mu.kode_dealer,mu.nama_dealer,mu.aktif,mu.created_at,mu.created_by,mu.updated_at,mu.updated_by,jam_mulai_weekday,jam_selesai_weekday,jam_mulai_weekend,jam_selesai_weekend";
       }
     }
 
@@ -79,6 +79,7 @@ class Dealer_model extends CI_Model
 
     return $this->db->query("SELECT $select
     FROM ms_dealer AS mu
+    LEFT JOIN ms_jam_operasional jo ON jo.kode_dealer=mu.kode_dealer
     $where
     $order_data
     $limit
