@@ -191,7 +191,7 @@ class Leasing_model extends CI_Model
       $this->db->insert_batch('ms_leasing', $ins_leasing_batch);
     }
     if (isset($upd_leasing_batch)) {
-      $this->db->update_batch('ms_leasing', $upd_leasing_batch, 'id_leasing');
+      $this->db->update_batch('ms_leasing', $upd_leasing_batch, 'kode_leasing');
     }
   }
 }
