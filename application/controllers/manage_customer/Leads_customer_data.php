@@ -1668,7 +1668,7 @@ class Leads_customer_data extends Crm_Controller
 
   public function download_leads_non_ve()
   {
-    $header = ['Leads ID', 'Nama', 'Kota/Kabupaten', 'Segment Unit', 'Series Unit', 'Tipe Motor dan Warna Motor yang Diminati', 'Kode Dealer Sebelumnya', 'Assigned Dealer ID', 'Kode Alasan PindahDealer', 'Keterangan Lainnya Tidak Ke Dealer Sebelumnya'];
+    $header = ['Leads ID', 'Nama', 'Kota/Kabupaten', 'Segment Unit', 'Series Unit', 'Tipe Motor dan Warna Motor yang Diminati', 'Kode Dealer Sebelumnya', 'Assigned Dealer ID (Wajib Diisi)', 'Kode Alasan PindahDealer', 'Keterangan Lainnya Tidak Ke Dealer Sebelumnya (Wajib Diisi Jika Kode Alasan Pindah Dealer=5)'];
     $leads = $this->ld_m->getLeadsNonVEBelumAssignedDealer();
     foreach ($leads->result() as $rs) {
       $data[] = [
@@ -1868,6 +1868,117 @@ class Leads_customer_data extends Crm_Controller
     } else {
       $imp_baris = implode(', ', array_keys($error));
       $errors = set_errors($error);
+      $response = [
+        'status' => 0,
+        'pesan' => "Terjadi kesalahan pada baris : $imp_baris.",
+        'errors' => $errors
+      ];
+    }
+    send_json($response);
+  }
+  
+  public function upload_to_api2()
+  {
+    $this->load->model('leads_api_model', 'lda_m');
+    $this->load->library('upload');
+    $ym = date('Y/m');
+    $y_m = date('y-m');
+    $path = "./uploads/to_api2/" . $ym;
+    if (!is_dir($path)) {
+      mkdir($path, 0777, true);
+    }
+
+    $config['upload_path']   = $path;
+    $config['allowed_types'] = '*';
+    $config['max_size']      = '10024';
+    $config['remove_spaces'] = TRUE;
+    $config['overwrite']     = TRUE;
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload('file_upload')) {
+      $new_path = substr($path, 2, 40);
+      $filename = $this->upload->file_name;
+      $path_file = $new_path . '/' . $filename;
+    } else {
+      $err = clear_removed_html($this->security->xss_clean($this->upload->display_errors()));
+      $response = ['icon' => 'error', 'title' => 'Peringatan', 'pesan' => $err];
+      send_json($response);
+    }
+    $reader = ReaderFactory::create(Type::XLSX); //set Type file xlsx
+    $reader->open($path_file); //open file xlsx
+    //siapkan variabel array kosong untuk menampung variabel array data
+    $save   = [];
+    $error = [];
+    $user = user();
+
+    foreach ($reader->getSheetIterator() as $sheet) {
+      $numRow = 0;
+      if ($sheet->getIndex() === 0) {
+        //looping pembacaan row dalam sheet
+        $baris = 1;
+        foreach ($sheet->getRowIterator() as $row) {
+          if ($numRow > 0) {
+            if ($row[0] == '') break;
+            // send_json(($row));
+            $post[]=[
+              'nama' =>$row[0],
+              'noHP' =>$row[1],
+              'email' =>$row[2],
+              'customerType' =>$row[3],
+              'eventCodeInvitation' =>$row[4],
+              'customerActionDate' =>$row[5],
+              'kabupaten' =>$row[6],
+              'provinsi' =>$row[7],
+              'cmsSource' =>$row[8],
+              'segmentMotor' =>$row[9],
+              'seriesMotor' =>$row[10],
+              'deskripsiEvent' =>$row[11],
+              'kodeTypeUnit' =>$row[12],
+              'kodeWarnaUnit' =>$row[13],
+              'minatRidingTest' =>$row[14],
+              'jadwalRidingTest' =>$row[15],
+              'sourceData' =>$row[16],
+              'platformData' =>$row[17],
+              'noTelp' =>isset($row[18])?$row[18]:'',
+              'assignedDealer' =>isset($row[19])?$row[19]:'',
+              'sourceRefID' =>isset($row[20])?$row[20]:'',
+              'provinsi' =>isset($row[21])?$row[21]:'',
+              'kelurahan' =>isset($row[22])?$row[22]:'',
+              'kecamatan' =>isset($row[23])?$row[23]:'',
+              'noFramePembelianSebelumnya' =>isset($row[24])?$row[24]:'',
+              'keterangan' =>isset($row[25])?$row[25]:'',
+              'promoUnit' =>isset($row[26])?$row[26]:'',
+              'facebook' =>isset($row[27])?$row[27]:'',
+              'instagram' =>isset($row[28])?$row[28]:'',
+              'twitter' =>isset($row[29])?$row[29]:'',
+            ];
+            $baris_no_hp[$row[1]] = $baris;
+            $baris++;
+          }
+          $numRow++;
+        }
+      }
+    }
+    $reader->close();
+    $insert_st = $this->lda_m->insertStagingTables($post);
+    // send_json($baris_no_hp);
+    if (count($insert_st['reject']) == 0) {
+      $response_sukses = $insert_st['list_leads'];
+      $response_error = $insert_st['reject'];
+      $pesan = "Data berhasil upload : " . count($response_sukses) . ". Data gagal upload : " . count($response_error);
+      $pesan = ['icon' => 'success', 'title' => 'Informasi', 'text' => $pesan];
+      $this->session->set_flashdata($pesan);
+      $response = ['status' => 1];
+    } else {
+      $list_leads = $insert_st['list_leads'];
+      $errors = [];
+      foreach ($list_leads as $key=>$val) {
+        if ($val['accepted']=='N') {
+          $baris = $baris_no_hp[$val['noHP']];
+          $err[]=$baris;
+          $errors[] = ['<b>'.$baris.'</b>', $val['errorMessage']];
+        }
+      }
+      $imp_baris = implode(', ', $err);
       $response = [
         'status' => 0,
         'pesan' => "Terjadi kesalahan pada baris : $imp_baris.",

@@ -86,6 +86,7 @@
       <a class="btn btn-primary btn-flat" href="<?= site_url(get_controller() . '/download_leads_non_ve') ?>"><i class='fa fa-download'></i> Download Leads Non-VE</a>
       <button class="btn btn-info btn-flat" onclick="showModalUploadLeadsNonVE()"><i class='fa fa-upload'></i> Upload Leads Non-VE</button>
       <button id="btnDetailKesalahanUploadTerakhir" class="btn btn-danger btn-flat" onclick="showModalErrorUploads()"><i class="fa fa-cross"></i> Detail Kesalahan Upload Terakhir</button>
+      <button class="btn btn-primary btn-flat" onclick="showModalUploadToApi2()"><i class='fa fa-upload'></i> Upload To API 2</button>
       <div class="box-tools pull-right">
         <?= link_on_data_top(user()->id_group); ?>
       </div>
@@ -330,6 +331,7 @@ $this->load->view('additionals/dropdown_series_tipe', $data); ?>
 <?php $this->load->view('manage_customer/leads_customer_data/modal_assign_reassign'); ?>
 <?php $this->load->view('manage_customer/leads_customer_data/modal_history'); ?>
 <?php $this->load->view('manage_customer/leads_customer_data/modal_upload_leads_non_ve'); ?>
+<?php $this->load->view('manage_customer/leads_customer_data/modal_upload_to_api2'); ?>
 
 <script>
   $(document).ready(function() {

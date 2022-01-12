@@ -37,7 +37,6 @@ class Leads_api_model extends CI_Model
     $insert_series_tipe_motor = [];
     $now = waktu();
     $this->db->trans_begin();
-
     foreach ($post as $pst) {
 
       //Cek No HP
@@ -139,7 +138,7 @@ class Leads_api_model extends CI_Model
       //Cek deskripsiEvent
       $kode_event = null;
       $deskripsiEvent = clear_removed_html($pst['deskripsiEvent']);
-      $tglCustActDate = substr($customerActionDate, 0, 10);
+      $tglCustActDate = isset($customerActionDate)?substr($customerActionDate, 0, 10):'';
       $fev = [
         'nama_deskripsi_kode_event_or_periode' => [$deskripsiEvent, $tglCustActDate]
       ];
@@ -219,10 +218,10 @@ class Leads_api_model extends CI_Model
         $reject[$noHP] = $errMsg;
         $errMessages .= $errMsg . '. ';
       } else {
-        $fsl = ['id_source_leads' => $pst['sourceData']];
+        $fsl = ['id_or_source_leads' => $pst['sourceData']];
         $cek_source = $this->sl_m->getSourceLeads($fsl)->row();
         if ($cek_source == null) {
-          $errMsg = 'Source Data tidak ditemukan';
+          $errMsg = 'Source Data : '.$pst['sourceData'].' tidak ditemukan';
           $reject[$noHP] = $errMsg;
           $errMessages .= $errMsg . '. ';
         }
@@ -234,7 +233,7 @@ class Leads_api_model extends CI_Model
         $reject[$noHP] = $errMsg;
         $errMessages .= $errMsg . '. ';
       } else {
-        $fpl = ['id_platform_data' => $pst['platformData']];
+        $fpl = ['id_or_platform_data' => $pst['platformData']];
         $cek_pfd = $this->pd_m->getPlatformData($fpl)->num_rows();
         if ($cek_pfd == 0) {
           $errMsg = 'Platform Data : ' . $pst['platformData'] . ' tidak ditemukan';

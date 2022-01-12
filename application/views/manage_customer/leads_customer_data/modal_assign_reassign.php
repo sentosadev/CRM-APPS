@@ -178,7 +178,7 @@
           </form>
           <script>
             $("#alasanPindahDealer").on("change", function(e) {
-              if ($("#alasanPindahDealer").val() == 4) {
+              if ($("#alasanPindahDealer").val() == 5) {
                 $('#input_alasan_pindah_dealer_lainnya').show();
               } else {
                 $('#input_alasan_pindah_dealer_lainnya').hide();
@@ -346,7 +346,7 @@
           </form>
           <script>
             $("#alasanReAssignDealer").on("change", function(e) {
-              if ($("#alasanReAssignDealer").val() == 4) {
+              if ($("#alasanReAssignDealer").val() == 5) {
                 $('#input_alasanReAssignDealerLainnya').show();
               } else {
                 $('#input_alasanReAssignDealerLainnya').hide();
