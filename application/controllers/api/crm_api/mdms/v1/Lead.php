@@ -299,6 +299,8 @@ class Lead extends CI_Controller
     })->everyMinute(2);
 
     $scheduler->run();
+    //redirect
+    redirect("manage-customer/leads-customer-data");
   }
 
   function _batasSLA1($customerActionDate, $sla)

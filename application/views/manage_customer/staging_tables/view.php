@@ -9,6 +9,7 @@
     <div class="box-header with-border">
       <div class="box-tools pull-right">
         <?= link_on_data_top(user()->id_group); ?>
+        <a href="<?php echo base_url() ?>api/crm_api/mdms/v1/lead/schedulerLeadsTransactionTable" class="btn btn-info"><i class="fa fa-upload"></i> Sync to Leads Customer</a>
       </div>
     </div>
     <!-- /.box-header -->
