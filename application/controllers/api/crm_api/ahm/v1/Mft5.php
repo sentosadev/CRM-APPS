@@ -377,7 +377,8 @@ class Mft5 extends CI_Controller
   {
     // send_json($data);
     $content = '';
-    $dir = getenv("DOCUMENT_ROOT") . "/crm/generatedFile/mft";
+    // $dir = getenv("DOCUMENT_ROOT") . "/crm/generatedFile/mft";
+    $dir = getenv("DOCUMENT_ROOT") . "/downloads/lds";
     if (!is_dir($dir)) {
       mkdir($dir, 0777, true);
     }
