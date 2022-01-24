@@ -293,7 +293,7 @@ class Mft5 extends CI_Controller
         'platformData' => $ld->platformData,
         'cmsSource' => $ld->cmsSource,
         'customerActionDate' => $ld->customerActionDate,
-        'kodeDealerPembelianSebelumnya' => $ld->kodeDealerPembelianSebelumnya,
+        'kodeDealerPembelianSebelumnya' => substr($ld->kodeDealerPembelianSebelumnya,0,5),
         'noFramePembelianSebelumnya' => $ld->noFramePembelianSebelumnya,
         'kodeLeasingPembelianSebelumnya' => $ld->kodeLeasingPembelianSebelumnya,
         'deskripsiEvent' => $ld->deskripsiEvent,
