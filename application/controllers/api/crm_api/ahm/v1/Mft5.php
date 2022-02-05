@@ -12,6 +12,7 @@ class Mft5 extends CI_Controller
     parent::__construct();
     $this->load->helper('api');
     $this->load->model('leads_model', 'ld_m');
+    $this->db_live = $this->load->database('sinsen_live', true);
   }
 
   public function index()
@@ -282,6 +283,14 @@ class Mft5 extends CI_Controller
       if ($pic>2) {
         $pic = 1;
       }
+      $tk_prospek = $this->db_live->query("SELECT 
+                CASE WHEN IFNULL(id_warna_lama,'')='' THEN id_warna ELSE id_warna_lama END id_warna,id_tipe_kendaraan
+                FROM ms_item WHERE id_tipe_kendaraan='$kodeTypeUnitProspect' AND id_warna='$kodeWarnaUnitProspect'")->row();
+      
+      $tk_deal = $this->db_live->query("SELECT 
+                CASE WHEN IFNULL(id_warna_lama,'')='' THEN id_warna ELSE id_warna_lama END id_warna,id_tipe_kendaraan
+                FROM ms_item WHERE id_tipe_kendaraan='$ld->kodeTypeUnitDeal' AND id_warna='$ld->kodeWarnaUnitDeal'")->row();
+
       $list_leads[$key] = [
         'leadsID' => $ld->leads_id,
         'stageID' => $lds->stageId,
@@ -311,16 +320,16 @@ class Mft5 extends CI_Controller
         'tanggalNextFU' => (string)$tglNextFollowUp,
         'statusProspect' => $this->_setStatusProspek($statusProspek),
         'keteranganNextFollowUp' => (string)$keteranganNextFollowUp,
-        'kodeTypeUnitProspect' => $kodeTypeUnitProspect,
-        'kodeWarnaUnitProspect' => $kodeWarnaUnitProspect,
+        'kodeTypeUnitProspect' => $tk_prospek->id_tipe_kendaraan,
+        'kodeWarnaUnitProspect' => $tk_prospek->id_warna,
         'picFollowUpMD' => $pic, //
         'ontimeSLA1' => $ld->ontimeSLA1, //
         'picFollowUpD' => $picFollowUpD, //
         'ontimeSLA2' => $ld->ontimeSLA2, //
         'idSPK' => (string)$ld->idSPK,
         'kodeIndent' => $ld->kodeIndent,
-        'kodeTypeUnitDeal' => $ld->kodeTypeUnitDeal,
-        'kodeWarnaUnitDeal' => $ld->kodeWarnaUnitDeal,
+        'kodeTypeUnitDeal' => $tk_deal->id_tipe_kendaraan,
+        'kodeWarnaUnitDeal' => $tk_deal->id_warna,
         'deskripsiPromoDeal' => $ld->deskripsiPromoDeal,
         'metodePembayaranDeal' => $ld->metodePembayaranDeal,
         'kodeLeasingDeal' => $ld->kodeLeasingDeal,
