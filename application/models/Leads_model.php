@@ -1108,7 +1108,7 @@ class Leads_model extends CI_Model
     return $this->db->query("SELECT  lhs.leads_id,stageId,IFNULL(lhs.followUpID,'') followUpID 
     FROM leads_history_stage lhs
     JOIN leads ld ON ld.leads_id=lhs.leads_id
-    $where ORDER BY lhs.id_int ASC");
+    $where ORDER BY lhs.created_at ASC");
   }
 
   function setOntimeSLA1_detik($customerActionDate, $tglFollowUp)
