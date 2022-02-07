@@ -58,6 +58,21 @@ class Mft5 extends CI_Controller
             $alasanTidakKeDealerSebelumnya = $cek_alasan->id_alasan;
           }
         }
+      }else{
+        if ((string)$ld->kodeDealerPembelianSebelumnya!='') {
+          if ($ld->kodeDealerPembelianSebelumnya != $ld->assignedDealer) {
+            $fhad = [
+              'leads_id' => $lds->leads_id,
+              'alasanReAssignDealerNotNULL' => true
+            ];
+            $cek_alasan = $this->ld_m->getLeadsHistoryAssignedDealer($fhad)->row();
+            if ($cek_alasan == NULL) {
+              $error[] = 'alasanTidakKeDealerSebelumnya';
+            } else {
+              $alasanTidakKeDealerSebelumnya = $cek_alasan->id_alasan;
+            }
+          }
+        }
       }
 
       $followUpID                             = '';
