@@ -26,7 +26,9 @@ class Performance_dashboard_model extends CI_Model
   }
   function leads_invited_non_invited($params)
   {
-    $params['sourceLeadsIn']=[28,29];
+    if (!isset($params['sourceLeadsIn'])) {
+      $params['sourceLeadsIn'] = [28, 29];
+    }
     $cust_type = $this->ld_m->getLeadsGroupByCustomerType($params)->result_array();
     $cust_v = isset($cust_type[0]['count_cust_type']) ? $cust_type[0]['count_cust_type'] : 0;
     $cust_r = isset($cust_type[1]['count_cust_type']) ? $cust_type[1]['count_cust_type'] : 0;
@@ -50,7 +52,9 @@ class Performance_dashboard_model extends CI_Model
     if (isset($params['group_by'])) {
       $fds['group_by'] = $params['group_by'];
     }
-    $fds['sourceLeadsIn']=[28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $get_contact_leads = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $contact_leads = 0;
     foreach ($get_contact_leads as $gt) {
@@ -77,11 +81,13 @@ class Performance_dashboard_model extends CI_Model
   {
     $fds                              = $params;
     $fds['kodeHasilStatusFollowUp']   = 1;
-    $fds['sourceLeadsIn']             = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $fds['is_md'] = 1;
-    $fds['reset_md_d']= true;
+    $fds['reset_md_d'] = true;
     $res_prospects = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
-    $prospects=0;
+    $prospects = 0;
     foreach ($res_prospects as $rs) {
       $prospects += $rs->count;
       if ($rs->sourceData == 28) {
@@ -103,7 +109,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['select']                          = 'count_distinct_leads_id';
     $fds['id_kategori_status_komunikasi']   = 4;
     $fds['assignedDealerIsNotNULL']         = true;
-    $fds['sourceLeadsIn']                   = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $contacted_prospects = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $contacted_prospects_persen = number_format((@($contacted_prospects / $params['prospects']) * 100), 2);
     return [
@@ -118,7 +126,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['kodeHasilStatusFollowUp']         = 3;
     $fds['id_kategori_status_komunikasi']   = 4;
     $fds['idSPK_not_null']                  = true;
-    $fds['sourceLeadsIn']                   = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $deal = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $deal_persen = number_format((@($deal / $params['contacted_prospects']) * 100), 2);
     return [
@@ -133,7 +143,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['kodeHasilStatusFollowUp']         = 3;
     $fds['id_kategori_status_komunikasi']   = 4;
     $fds['frameNo_not_null']                = true;
-    $fds['sourceLeadsIn']                   = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $sales = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
     $sales_persen = number_format((@($sales / $params['deal']) * 100), 2);
     return [
@@ -147,7 +159,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_workload'] = true;
     $fds['is_md'] = true;
     $fds['group_by'] = "ld.sourceData";
-    $fds['sourceLeadsIn']=[28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $res_workload = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $workload = 0;
     foreach ($res_workload as $rs) {
@@ -247,7 +261,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['id_kategori_status_komunikasi']   = 4;
     $fds['is_dealer']                       = true;
     $fds['group_by']                        = "ld.sourceData";
-    $fds['sourceLeadsIn']                   = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_contacted = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $contacted = 0;
@@ -272,7 +288,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_workload']   = true;
     $fds['is_dealer']     = true;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_workload = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $workload = 0;
@@ -297,7 +315,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_unreachable']    = true;
     $fds['is_dealer']         = true;
     $fds['group_by']          = "ld.sourceData";
-    $fds['sourceLeadsIn']     = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_unreachable = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $unreachable = 0;
@@ -322,7 +342,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_rejected']   = true;
     $fds['is_dealer']     = true;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_rejected = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $rejected = 0;
@@ -347,7 +369,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_failed'] = true;
     $fds['is_dealer'] = true;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_failed = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $failed = 0;
@@ -373,7 +397,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_contacted'] = true;
     // $fds['is_md'] = true;
     $fds['group_by'] = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $res_contacted = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $contacted = 0;
     foreach ($res_contacted as $rs) {
@@ -398,7 +424,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_dealer'] = true;
     $fds['selisih_next_lebih_kecil_dari'] = 14;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_hot = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $hot = 0;
@@ -425,7 +453,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_dealer'] = true;
     $fds['selisih_next_between'] = [14, 28];
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_medium = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $medium = 0;
@@ -452,7 +482,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_dealer'] = true;
     $fds['selisih_next_lebih_besar_dari'] = 30;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
 
     $res_low = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $low = 0;
@@ -478,7 +510,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_contacted']            = true;
     $fds['is_dealer']               = true;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $fds['kodeHasilStatusFollowUp'] = 3;
     $fds['idSPK_not_null']          = true;
 
@@ -506,7 +540,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['not_contacted']            = true;
     $fds['is_dealer']               = true;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $fds['kodeHasilStatusFollowUpNotIn'] = "3, 4";
 
     $res_need_fu = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
@@ -534,7 +570,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_contacted']            = true;
     $fds['is_dealer']               = true;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $fds['kodeHasilStatusFollowUp'] = 4;
 
     $res_not_deal = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
@@ -561,7 +599,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_contacted']            = true;
     $fds['is_dealer']               = true;
     $fds['group_by']      = "ld.sourceData";
-    $fds['sourceLeadsIn'] = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $fds['kodeHasilStatusFollowUp'] = 3;
     $fds['frameNo_not_null']        = true;
     $fds['idSPK_not_null']          = true;
@@ -589,7 +629,9 @@ class Performance_dashboard_model extends CI_Model
     $fds['is_contacted']              = true;
     $fds['is_dealer']                 = true;
     $fds['group_by']                  = "ld.sourceData";
-    $fds['sourceLeadsIn']             = [28,29];
+    if (!isset($fds['sourceLeadsIn'])) {
+      $fds['sourceLeadsIn'] = [28, 29];
+    }
     $fds['kodeHasilStatusFollowUp']   = 3;
     $fds['kodeIndent_not_null']       = true;
     $fds['idSPK_not_null']            = true;
