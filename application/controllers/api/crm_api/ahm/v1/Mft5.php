@@ -335,16 +335,16 @@ class Mft5 extends CI_Controller
         'tanggalNextFU' => (string)$tglNextFollowUp,
         'statusProspect' => $this->_setStatusProspek($statusProspek),
         'keteranganNextFollowUp' => (string)$keteranganNextFollowUp,
-        'kodeTypeUnitProspect' => $tk_prospek->id_tipe_kendaraan,
-        'kodeWarnaUnitProspect' => $tk_prospek->id_warna,
+        'kodeTypeUnitProspect' => $tk_prospek!=null?$tk_prospek->id_tipe_kendaraan:$kodeTypeUnitProspect,
+        'kodeWarnaUnitProspect' => $tk_prospek!=null?$tk_prospek->id_warna:$kodeWarnaUnitProspect,
         'picFollowUpMD' => $pic, //
         'ontimeSLA1' => $ld->ontimeSLA1, //
         'picFollowUpD' => $picFollowUpD, //
         'ontimeSLA2' => $ld->ontimeSLA2, //
         'idSPK' => (string)$ld->idSPK,
         'kodeIndent' => $ld->kodeIndent,
-        'kodeTypeUnitDeal' => $tk_deal->id_tipe_kendaraan,
-        'kodeWarnaUnitDeal' => $tk_deal->id_warna,
+        'kodeTypeUnitDeal' => $tk_deal!=null?$tk_deal->id_tipe_kendaraan:$ld->kodeTypeUnitDeal,
+        'kodeWarnaUnitDeal' => $tk_deal!=null?$tk_deal->id_warna:$ld->kodeWarnaUnitDeal,
         'deskripsiPromoDeal' => $ld->deskripsiPromoDeal,
         'metodePembayaranDeal' => $ld->metodePembayaranDeal,
         'kodeLeasingDeal' => $ld->kodeLeasingDeal,
