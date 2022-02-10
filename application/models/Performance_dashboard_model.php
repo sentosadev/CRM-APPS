@@ -30,8 +30,15 @@ class Performance_dashboard_model extends CI_Model
       $params['sourceLeadsIn'] = [28, 29];
     }
     $cust_type = $this->ld_m->getLeadsGroupByCustomerType($params)->result_array();
-    $cust_v = isset($cust_type[0]['count_cust_type']) ? $cust_type[0]['count_cust_type'] : 0;
-    $cust_r = isset($cust_type[1]['count_cust_type']) ? $cust_type[1]['count_cust_type'] : 0;
+    $cust_r = 0;
+    $cust_v = 0;
+    foreach ($cust_type as $ct) {
+      if ($ct['customerTypeDesc']=='Invited') {
+        $cust_v=$ct['count_cust_type'];
+      }else{
+        $cust_r=$ct['count_cust_type'];
+      }
+    }
     $leads_invited_non_invited =  $cust_v . '/' . $cust_r;
     $tot_leads = $cust_v + $cust_r;
     $leads_invited_non_invited_persen = number_format((@($tot_leads / $params['data_source']) * 100), 2);
