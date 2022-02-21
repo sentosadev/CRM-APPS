@@ -1265,6 +1265,13 @@ class Leads_model extends CI_Model
       $where AND lfu.leads_id=ld.leads_id 
       ORDER BY id_int DESC LIMIT 1
       ";
+    
+    $all_kodeHasilStatusFollowUp = "SELECT kodeHasilStatusFollowUp
+      FROM leads_follow_up lfu
+      LEFT JOIN ms_dealer dl ON dl.kode_dealer=lfu.assignedDealer
+      LEFT JOIN ms_status_fu sf ON sf.id_status_fu=lfu.id_status_fu
+      $where AND lfu.leads_id=ld.leads_id 
+      ";
 
     if (isset($filter['reset_md_d'])) {
       $where = "WHERE 1=1";
@@ -1358,6 +1365,10 @@ class Leads_model extends CI_Model
       $where .= " AND ($last_kodeHasilStatusFollowUp) = {$filter['kodeHasilStatusFollowUp']}";
       if ($filter['kodeHasilStatusFollowUp']==1) {
       }
+    }
+    
+    if (isset($filter['kodeHasilStatusFollowUpIn'])) {
+      $where .= " AND {$filter['kodeHasilStatusFollowUpIn']} IN ($all_kodeHasilStatusFollowUp)";
     }
 
     if (isset($filter['idSPK_not_null'])) {

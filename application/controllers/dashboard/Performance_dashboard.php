@@ -106,13 +106,13 @@ class Performance_dashboard extends Crm_Controller
 
     $fds = $filter;
     $fds['contacted_prospects'] = $contacted_prospects;
-    $get_deal    = $this->pdm->deal($fds);
+    $get_deal    = $this->pdm->fl_deal($fds);
     $deal        = $get_deal['deal'];
     $deal_persen = $get_deal['deal_persen'];
 
     $fds = $filter;
     $fds['deal'] = $deal;
-    $get_sales    = $this->pdm->sales($fds);
+    $get_sales    = $this->pdm->fl_sales($fds);
     $sales        = $get_sales['sales'];
     $sales_persen = $get_sales['sales_persen'];
 
@@ -168,8 +168,8 @@ class Performance_dashboard extends Crm_Controller
     $get_failed_md_leads    = $this->pdm->failed_md_leads($fds);
     $failed_md_leads        = $get_failed_md_leads;
 
-    $get_contacted_prospetcs    = $this->pdm->contacted_prospetcs($fds);
-    $contacted_prospetcs        = $get_contacted_prospetcs;
+    $get_contacted_prospects    = $this->pdm->contacted_prospects($fds);
+    $contacted_prospects        = $get_contacted_prospects;
 
     $get_workload_prospetcs    = $this->pdm->workload_prospetcs($fds);
     $workload_prospetcs        = $get_workload_prospetcs;
@@ -207,7 +207,7 @@ class Performance_dashboard extends Crm_Controller
     $indent        = $get_indent;
 
     $lf_conv_sales_all_leads = number_format((@($sales['sales'] / $get_leads['tot_leads']) * 100), 2);
-    $lf_conv_sales_of_contacted = number_format((@($sales['sales'] / $contacted_prospetcs['contacted']) * 100), 2);
+    $lf_conv_sales_of_contacted = number_format((@($sales['sales'] / $contacted_prospects['contacted']) * 100), 2);
     $lf_conv_sales_invited = number_format((@($sales['sales'] / $get_leads['invited']) * 100), 2);
     $lf_conv_sales_non_invited = number_format((@($sales['sales'] / $get_leads['non_invited']) * 100), 2);
     $result = [
@@ -231,9 +231,9 @@ class Performance_dashboard extends Crm_Controller
         "lf_failed_leads" => $failed_md_leads['failed'],
         "lf_failed_leads_invited" => $failed_md_leads['failed_invited'],
         "lf_failed_leads_non_invited" => $failed_md_leads['failed_non_invited'],
-        "lf_contacted_prospects" => $contacted_prospetcs['contacted'],
-        "lf_contacted_prospects_invited" => $contacted_prospetcs['contacted_invited'],
-        "lf_contacted_prospects_non_invited" => $contacted_prospetcs['contacted_non_invited'],
+        "lf_contacted_prospects" => $contacted_prospects['contacted'],
+        "lf_contacted_prospects_invited" => $contacted_prospects['contacted_invited'],
+        "lf_contacted_prospects_non_invited" => $contacted_prospects['contacted_non_invited'],
         "lf_workload_prospects" => $workload_prospetcs['workload'],
         "lf_workload_prospects_invited" => $workload_prospetcs['workload_invited'],
         "lf_workload_prospects_non_invited" => $workload_prospetcs['workload_non_invited'],

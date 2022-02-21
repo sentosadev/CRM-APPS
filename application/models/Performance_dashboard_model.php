@@ -110,22 +110,22 @@ class Performance_dashboard_model extends CI_Model
     ];
   }
 
-  function contacted_prospects($params)
-  {
-    $fds                                    = $params;
-    $fds['select']                          = 'count_distinct_leads_id';
-    $fds['id_kategori_status_komunikasi']   = 4;
-    $fds['assignedDealerIsNotNULL']         = true;
-    if (!isset($fds['sourceLeadsIn'])) {
-      $fds['sourceLeadsIn'] = [28, 29];
-    }
-    $contacted_prospects = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
-    $contacted_prospects_persen = number_format((@($contacted_prospects / $params['prospects']) * 100), 2);
-    return [
-      'contacted_prospects' => $contacted_prospects,
-      'contacted_prospects_persen' => $contacted_prospects_persen,
-    ];
-  }
+  // function contacted_prospects($params)
+  // {
+  //   $fds                                    = $params;
+  //   $fds['select']                          = 'count_distinct_leads_id';
+  //   $fds['id_kategori_status_komunikasi']   = 4;
+  //   $fds['assignedDealerIsNotNULL']         = true;
+  //   if (!isset($fds['sourceLeadsIn'])) {
+  //     $fds['sourceLeadsIn'] = [28, 29];
+  //   }
+  //   $contacted_prospects = $this->ld_m->getLeadsFollowUp($fds)->row()->count;
+  //   $contacted_prospects_persen = number_format((@($contacted_prospects / $params['prospects']) * 100), 2);
+  //   return [
+  //     'contacted_prospects' => $contacted_prospects,
+  //     'contacted_prospects_persen' => $contacted_prospects_persen,
+  //   ];
+  // }
   function deal($params)
   {
     $fds = $params;
@@ -262,7 +262,7 @@ class Performance_dashboard_model extends CI_Model
       'failed_non_invited' => isset($failed_non_invited) ? $failed_non_invited : 0,
     ];
   }
-  function contacted_prospetcs($params)
+  function contacted_prospects($params)
   {
     $fds                                    = $params;
     $fds['id_kategori_status_komunikasi']   = 4;
@@ -282,13 +282,19 @@ class Performance_dashboard_model extends CI_Model
         $contacted_non_invited = $rs->count;
       }
     }
-
+    $contacted_prospects_persen=0;
+    if (isset($fds['prospects'])) {
+      $contacted_prospects_persen = number_format((@($contacted / $params['prospects']) * 100), 2);
+    }
     return [
       'contacted' => $contacted,
       'contacted_invited' => isset($contacted_invited) ? $contacted_invited : 0,
       'contacted_non_invited' => isset($contacted_non_invited) ? $contacted_non_invited : 0,
+      'contacted_prospects' => $contacted,
+      'contacted_prospects_persen' => $contacted_prospects_persen,
     ];
   }
+  
   function workload_prospetcs($params)
   {
     $fds                  = $params;
@@ -513,15 +519,12 @@ class Performance_dashboard_model extends CI_Model
 
   function fl_deal($params)
   {
-    $fds                            = $params;
-    $fds['is_contacted']            = true;
-    $fds['is_dealer']               = true;
-    $fds['group_by']      = "ld.sourceData";
+    $fds                = $params;
+    $fds['group_by']    = "ld.sourceData";
     if (!isset($fds['sourceLeadsIn'])) {
       $fds['sourceLeadsIn'] = [28, 29];
     }
-    $fds['kodeHasilStatusFollowUp'] = 3;
-    $fds['idSPK_not_null']          = true;
+    $fds['kodeHasilStatusFollowUpIn'] = 3;
 
     $res_deal = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $deal = 0;
@@ -534,10 +537,16 @@ class Performance_dashboard_model extends CI_Model
       }
     }
 
+    $deal_persen=0;
+    if (isset($fds['contacted_prospects'])) {
+      $deal_persen = number_format((@($deal / $params['contacted_prospects']) * 100), 2);
+    }
+
     return [
-      'deal' => $deal,
-      'deal_invited' => isset($deal_invited) ? $deal_invited : 0,
-      'deal_non_invited' => isset($deal_non_invited) ? $deal_non_invited : 0,
+      'deal'                => $deal,
+      'deal_persen'         => $deal_persen,
+      'deal_invited'        => isset($deal_invited) ? $deal_invited : 0,
+      'deal_non_invited'    => isset($deal_non_invited) ? $deal_non_invited : 0,
     ];
   }
 
@@ -603,15 +612,11 @@ class Performance_dashboard_model extends CI_Model
   function fl_sales($params)
   {
     $fds                            = $params;
-    $fds['is_contacted']            = true;
-    $fds['is_dealer']               = true;
     $fds['group_by']      = "ld.sourceData";
     if (!isset($fds['sourceLeadsIn'])) {
       $fds['sourceLeadsIn'] = [28, 29];
     }
-    $fds['kodeHasilStatusFollowUp'] = 3;
     $fds['frameNo_not_null']        = true;
-    $fds['idSPK_not_null']          = true;
 
     $res_sales = $this->ld_m->getCountLeadsVsFollowUp($fds)->result();
     $sales = 0;
@@ -623,9 +628,14 @@ class Performance_dashboard_model extends CI_Model
         $sales_non_invited = $rs->count;
       }
     }
+    $sales_persen=0;
+    if (isset($fds['deal'])) {
+      $sales_persen = number_format((@($sales / $params['deal']) * 100), 2);
+    }
 
     return [
       'sales' => $sales,
+      'sales_persen'=>$sales_persen,
       'sales_invited' => isset($sales_invited) ? $sales_invited : 0,
       'sales_non_invited' => isset($sales_non_invited) ? $sales_non_invited : 0,
     ];
